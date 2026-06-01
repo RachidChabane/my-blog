@@ -34,14 +34,14 @@ By **01-12-2026** (six months from 01-06-2026), the project passes these gates:
 
 | Signal | Target | How measured |
 |---|---|---|
-| **Autonomous cadence** | ≥ 2 posts/week for ≥ 8 consecutive weeks **Assumption** [OQ-7] | Count of published posts/week from git history |
+| **Autonomous cadence** | ≥ 2 topics/week (each published in FR + EN) for ≥ 8 consecutive weeks **Assumption** [OQ-7] | Count of published topics/week from git history |
 | **Manual effort** | ≤ 15 min/week median owner intervention **Assumption** [OQ-7] | Owner intervention log (count + time per week) |
 | **Pre-publish gate coverage** | 100% of published posts passed the automated fact-check + style gate | Gate logs; zero posts bypass the gate (`NFR-3`) |
 | **Factual defect rate** | ≤ 1 post requiring post-hoc correction per 20 published **Assumption** [OQ-7] | Owner/issue correction log |
 | **Portfolio coverage** | All 5 flagship projects + ≥ 3 others have a showcase page | Site audit vs `PROJECT-INVENTORY.md` |
 | **All-in cost** | ≤ €25/month **Assumption** [OQ-7] | Hosting + LLM API + any service bills |
 
-If these hold, we turn attention to the avatar (`S-1`) and to readership.
+If these hold, we turn attention to readership and the first post-MVP items (`S-2` onward).
 
 ## 18-month definition of "good"
 
@@ -63,16 +63,18 @@ By **01-06-2028**:
 
 ## What "shipped" means at MVP
 
-The MVP is the autonomous publishing engine + the portfolio, running unattended. Concretely (see `roadmap.md`):
+The MVP is the autonomous publishing engine + the bilingual portfolio + the RAG avatar, running unattended. Concretely (see `roadmap.md`):
 
-- A static site with post rendering and a portfolio section (`M-1`, `M-2`, `M-8`).
-- The article pipeline: news-search → topic-select → draft → automated review → auto-publish (`M-3`).
-- The mandatory pre-publish quality gate (`M-4`).
+- A static site (Astro + Cloudflare Pages) with post rendering, an FR/EN language switcher, and a portfolio section (`M-1`, `M-2`, `M-8`).
+- The article pipeline: news-search → topic-select → draft (FR + EN) → automated review → auto-publish (`M-3`).
+- The mandatory pre-publish quality gate, run per language (`M-4`).
 - Twice-weekly scheduling with monitoring, alerting, and auto-resume (`M-5`).
 - Interactive/tmux Claude backend so the pipeline stays on the subscription pool (`M-6`).
 - Secret hygiene and topic memory (`M-7`, `M-9`).
+- The RAG chatbot avatar with event-driven incremental reindex (`M-10`).
+- Bilingual FR/EN plumbing across site, pipeline, and memory (`M-11`).
 
-**The RAG avatar is proposed as the first post-MVP item (`S-1`), not part of the MVP cut. Assumption** [OQ-1] — the owner ratifies or moves it into Must.
+The owner included the avatar in the MVP ([OQ-1], 01-06-2026) and chose bilingual FR/EN content (`D-004`) — both expand the MVP beyond the minimal engine. The build reuses `claude-plan-execute` for the pipeline and a stripped `bayan`-pattern RAG for the avatar (`D-003`).
 
 ## Top risks to "good"
 
@@ -83,6 +85,6 @@ The MVP is the autonomous publishing engine + the portfolio, running unattended.
    *Mitigation.* `M-5` (scheduling + heartbeat/monitoring + failure alerting + auto-resume), per `NFR-8`.
 
 3. **Staleness.** Projects evolve and the portfolio misrepresents them; or the avatar answers from a stale index.
-   *Mitigation.* `M-8` + `S-6` (portfolio generation/re-sync from the inventory); event-triggered incremental reindex for the avatar (`FR-E3`, `S-1`).
+   *Mitigation.* `M-8` + `S-6` (portfolio generation/re-sync from the inventory); event-triggered incremental reindex for the avatar (`FR-E3`, `M-10`).
 
 A fourth risk specific to the toolchain: **the 2026-06-15 Claude billing-pool split** could break the pipeline's economics if it drives `claude -p` (which moves to a metered pool). *Mitigation.* `M-6` — the pipeline uses the interactive/tmux backend to stay on the subscription pool, the pattern proven in `claude-plan-execute`.

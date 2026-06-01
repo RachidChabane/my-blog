@@ -9,44 +9,19 @@ Each entry follows: **question/risk → why it matters → options → resolutio
 
 ## Open
 
-### [OQ-1] Is the RAG avatar in the MVP, or deferred to `S-1`?
-**Why it matters.** This sets the MVP boundary. The brief gives the avatar equal billing with the article pipeline as a "foundation" piece, but the 6-month success metric is autonomous publishing *cadence*, for which the avatar is not required. Misplacing it either bloats the MVP or under-delivers against the brief.
-**Options.**
-- (a) Defer to `S-1` (proposed): ship the publishing engine + portfolio first; add the avatar once cadence is stable.
-- (b) Move into Must: avatar is foundational and ships with v1.
-**Resolution path.** Owner ratifies (a) or moves to (b). If (b), `FR-E1`–`FR-E3` move to a new `M-` block and the MVP estimate grows by ~3–4 weeks.
-**Needed from.** Owner direction. **This is the top blocking decision.**
-
-### [OQ-3] Pipeline + RAG build approach: reuse existing stacks, build lean-fresh, or hybrid?
-**Why it matters.** Roadmap-shaping. The owner already has `claude-plan-execute` (a proven plan→review→implement orchestrator) and `bayan` (a full hybrid-RAG platform). Reusing wholesale imports power but also weight; building fresh is clean but slower; the cost/maintenance envelope differs materially.
-**Options.**
-- (a) **Hybrid (recommended):** drive the article pipeline with `claude-plan-execute` (on its tmux backend), and build a *stripped* bayan-pattern RAG for the avatar (lift retrieval + fusion + "I don't know" gate; drop Arabic/billing/OCR machinery).
-- (b) Reuse both stacks wholesale.
-- (c) Build everything lean and fresh.
-**Resolution path.** Owner picks; if depth is wanted, this OQ escalates to a full `architecture-options.md` (deliberately not written now, per the brief's "design the how later"). Default proposal: (a).
-**Needed from.** Owner direction.
-
-### [OQ-2] Which SSG and static host?
-**Why it matters.** Determines the `M-1`/`M-2` build and the publish→deploy path the pipeline commits into.
-**Options.**
-- (a) Astro + Cloudflare Pages (recommended — strong markdown/content-collections story, generous free tier).
-- (b) Hugo or 11ty + Netlify / GitHub Pages.
-**Resolution path.** Owner preference; otherwise default to (a). Low-stakes, reversible early.
-**Needed from.** Owner direction (or accept default).
-
-### [OQ-4] Avatar LLM + vector store (with `S-1`)?
-**Why it matters.** Drives avatar cost, latency (`NFR-2`), and ops burden.
+### [OQ-4] Avatar LLM + vector store?
+**Why it matters.** Drives avatar cost, latency (`NFR-2`), and ops burden. Now **MVP-blocking** (avatar is `M-10`).
 **Options.**
 - (a) Managed LLM API (e.g. a light Claude/Haiku-tier or OpenRouter model) + a lightweight vector store (sqlite-vss / a managed vector DB) — lean (recommended).
 - (b) Self-hosted small model + pgvector (lifts more of the bayan stack; higher ops).
-**Resolution path.** Decide at `S-1` start; defer for now.
-**Needed from.** Owner direction, post-MVP.
+**Resolution path.** Decide at `M-10` build. Default proposal: (a). Embedder must handle FR + EN (`D-004`).
+**Needed from.** Owner direction.
 
 ### [OQ-5] Which embedding model for the avatar index?
-**Why it matters.** Quality/cost of retrieval; coupled to [OQ-4].
-**Options.** (a) a managed embedding API; (b) a local embedding model.
-**Resolution path.** Decide at `S-1`. Default: managed.
-**Needed from.** Owner direction, post-MVP.
+**Why it matters.** Quality/cost of retrieval; coupled to [OQ-4]. Must be multilingual (bilingual content, `D-004`).
+**Options.** (a) a managed multilingual embedding API; (b) a local multilingual embedding model.
+**Resolution path.** Decide at `M-10` build. Default: managed.
+**Needed from.** Owner direction.
 
 ### [OQ-6] What schedules and triggers the pipeline twice weekly?
 **Why it matters.** `M-5` depends on it; affects where the pipeline runs and how it stays on the subscription pool (`M-6`).
@@ -69,12 +44,6 @@ Each entry follows: **question/risk → why it matters → options → resolutio
 **Resolution path.** Owner sets a default; tune from experience.
 **Needed from.** Owner direction.
 
-### [OQ-9] Language: English only, or FR/EN bilingual?
-**Why it matters.** Doubles or halves pipeline work and shapes the audience (`NFR-11`). Owner is francophone; audience (agentic-AI practitioners) skews English.
-**Options.** (a) EN only (proposed); (b) FR/EN bilingual (`C-2`).
-**Resolution path.** Owner decides.
-**Needed from.** Owner direction.
-
 ### [OQ-10] What is the 18-month readership target?
 **Why it matters.** The `vision.md` 18-month readership signal has no number yet.
 **Options.** Owner-set (monthly uniques / subscribers / returning readers).
@@ -88,10 +57,10 @@ Each entry follows: **question/risk → why it matters → options → resolutio
 **Needed from.** Owner direction.
 
 ### [OQ-12] How hardened must the avatar be against prompt-injection (`NFR-7`)?
-**Why it matters.** A public chat endpoint is an attack surface; injection could try to exfiltrate config or make the avatar misrepresent Rachid.
+**Why it matters.** A public chat endpoint is an attack surface; injection could try to exfiltrate config or make the avatar misrepresent Rachid. MVP-relevant (avatar is `M-10`).
 **Options.** (a) basic input sanitization + system-prompt isolation; (b) add output filtering + allow-listed retrieval only; (c) fuller red-team pass.
-**Resolution path.** Decide at `S-1`; scope to risk.
-**Needed from.** Owner direction, post-MVP.
+**Resolution path.** Decide at `M-10` build; scope to risk.
+**Needed from.** Owner direction.
 
 ### [OQ-13] How does the pipeline source news (`FR-B1`)?
 **Why it matters.** Determines coverage and freshness of the candidate topics.
@@ -100,6 +69,14 @@ Each entry follows: **question/risk → why it matters → options → resolutio
 **Needed from.** Owner direction.
 
 ## Resolved
+
+**[OQ-1] 01-06-2026** — *Is the RAG avatar in the MVP, or deferred to `S-1`?* — **In the MVP** (`M-10`). Owner chose to ship the avatar with v1; `S-1` retired, MVP estimate grew to ~10–14 weeks.
+
+**[OQ-2] 01-06-2026** — *Which SSG and static host?* — **Astro + Cloudflare Pages.** See `D-005`.
+
+**[OQ-3] 01-06-2026** — *Pipeline + RAG build approach?* — **Hybrid:** `claude-plan-execute` for the pipeline + a stripped bayan-pattern RAG for the avatar. See `D-003`. (No `architecture-options.md` needed.)
+
+**[OQ-9] 01-06-2026** — *English only or FR/EN bilingual?* — **Bilingual FR + EN.** See `D-004`. Promoted former `C-2` into the MVP (`M-11`).
 
 **[OQ — site architecture] 01-06-2026** — *Static site vs dynamic app?* — **Static-first, content in git.** See `D-001`. (Intake decision.)
 

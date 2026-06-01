@@ -13,10 +13,10 @@ A scheduled run flows through six stages. Each stage's output is a committed art
 
 1. **Source** (`FR-B1`). Search recent agentic-AI news within scope (agentic coding, Anthropic, OpenAI, open-source LLMs). Output: a ranked candidate list, each item with source URL(s) + date. Sourcing method is open ([OQ-13]) — likely web-search + curated feeds.
 2. **Select** (`FR-B2`). Pick one candidate not covered within the dedup window ([OQ-8]), consulting topic memory (`FR-G1`). Output: the chosen topic + its sources + an angle.
-3. **Draft** (`FR-B3`). Write the full article in house style (`FR-G2`), with ≥ 2 cited sources and topic tags. Output: a draft markdown file.
+3. **Draft** (`FR-B3`). Write the full article in **both French and English** (`D-004`) in house style (`FR-G2`), with ≥ 2 cited sources and topic tags. The two language versions are the same topic and sources, authored as parallel outputs (not a raw machine translation of one). Output: a FR draft + an EN draft.
 4. **Review** (`FR-B4`). A review agent issues a verdict (APPROVED / NEEDS_REVISION); a revise agent edits until approved or the round cap is hit. This is `claude-plan-execute`'s Phase-2 review loop with an editorial prompt. Output: an approved draft, or a terminal "blocked" state.
-5. **Gate** (`FR-C1`, `FR-C2`). The mandatory pre-publish quality gate (§3). Output: pass → proceed; fail → block + alert, nothing publishes.
-6. **Publish** (`FR-B5`). Commit the post to the repo; the build + deploy runs; the post goes live. The commit is authored by the pipeline. No manual step exists in this path.
+5. **Gate** (`FR-C1`, `FR-C2`). The mandatory pre-publish quality gate (§3), run **independently on each language version**. Output: both languages pass → proceed; either fails → block + alert, nothing publishes.
+6. **Publish** (`FR-B5`). Commit both language versions to the repo at parallel URLs; the build + deploy runs; the post goes live. The commit is authored by the pipeline. No manual step exists in this path.
 
 ## §3 The quality gate — the load-bearing stage
 
@@ -41,7 +41,7 @@ The pipeline must survive running with nobody watching (`vision.md` Risk 2):
 
 Coherence across many autonomous runs comes from persistent memory (`M-9`):
 
-- **Topic memory** (`FR-G1`): what's been published, when, and from which sources — queried at Select to avoid repetition.
+- **Topic memory** (`FR-G1`): what's been published, when, and from which sources — queried at Select to avoid repetition. Keyed by *topic* (language-independent), so a topic covered in FR+EN isn't re-selected for either language (`M-11`).
 - **House-style guide** (`FR-G2`): a single spec for voice, structure, citation format, and length, consumed at Draft and enforced at the style gate. This is what keeps 100+ auto-written posts sounding like one coherent publication rather than 100 disconnected LLM outputs.
 
 Both map onto `claude-plan-execute`'s cross-task memory (`evergreen` / per-run lifecycles).

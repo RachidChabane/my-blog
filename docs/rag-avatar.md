@@ -1,11 +1,11 @@
-**Purpose:** The RAG chatbot avatar — how a visitor's question gets a grounded, cited answer drawn only from the site's own content, and how its index stays fresh. Documents a **post-MVP engine** (`S-1`, pending [OQ-1]); constrains the avatar roadmap/requirements.
+**Purpose:** The RAG chatbot avatar — how a visitor's question gets a grounded, cited answer drawn only from the site's own content, and how its index stays fresh. Documents an **MVP engine** (`M-10`); constrains the avatar roadmap/requirements.
 **Status:** draft — last revised 01-06-2026.
 
 ## §1 Why this doc exists
 
 The avatar is the project's second engine and its design is non-obvious in two places: how it stays *grounded* (never fabricating facts about Rachid), and how its index stays *fresh* without a human re-running anything. Both are subtle enough to warrant a coherent treatment rather than scattered FRs. The design lifts patterns from `bayan` (see `inventory/04-knowledge-master-bayan.md`), which is a full production hybrid-RAG system — but the avatar needs a *fraction* of bayan's machinery, so this doc is as much about **what to strip** as what to keep.
 
-**Scope note:** this engine is proposed for `S-1`, after the MVP publishing engine. If [OQ-1] moves the avatar into the MVP, this doc's content moves with it unchanged.
+**Scope note:** the owner placed this engine **in the MVP** (`M-10`, [OQ-1] resolved 01-06-2026). The hybrid build approach (`D-003`) is what makes a stripped bayan-lift affordable inside the MVP. The avatar indexes **both** FR and EN content (`D-004`).
 
 ## §2 What to lift from bayan, and what to strip
 
@@ -39,15 +39,15 @@ This is the part bayan does *not* solve out of the box (its reindex is whole-doc
 
 ## §5 Open choices
 
-The runtime stack is deliberately unfixed (the brief defers "the how"):
+The runtime stack is still unfixed and now **MVP-blocking** (these resolve at `M-10` build, no longer post-MVP):
 
-- **LLM + vector store** ([OQ-4]): lean managed (light model + sqlite-vss / managed vector DB) is the recommended default over self-hosting.
-- **Embedding model** ([OQ-5]).
+- **LLM + vector store** ([OQ-4]): lean managed (light model + sqlite-vss / managed vector DB) is the recommended default over self-hosting. Note the embedder must handle both FR and EN well (`D-004`).
+- **Embedding model** ([OQ-5]): multilingual-capable, given bilingual content.
 - **Prompt-injection hardening** ([OQ-12]): a public chat endpoint is an attack surface; scope the defenses (input sanitization, system-prompt isolation, allow-listed retrieval) to risk at build time (`NFR-7`).
 
 ## Where this surfaces
 
 - `vision.md` § Top risks — Risk 3 (staleness) is mitigated by §3's incremental reindex.
-- `roadmap.md` — `S-1` is this engine; `S-6` (portfolio re-sync) feeds its corpus.
+- `roadmap.md` — `M-10` is this engine; `S-6` (portfolio re-sync) feeds its corpus.
 - `user-requirements.md` — group E (`FR-E1`–`FR-E3`) and `NFR-2`, `NFR-4`, `NFR-7` are the testable form.
 - `open-questions.md` — [OQ-1] (MVP placement), [OQ-3] (hybrid build approach), [OQ-4], [OQ-5], [OQ-12].

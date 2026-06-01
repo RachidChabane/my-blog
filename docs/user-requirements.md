@@ -24,7 +24,7 @@ What disqualifies it for them: factual errors, or content that just restates ann
 
 ## Functional requirements
 
-Group letters: **A** = publishing surface, **B** = content pipeline, **C** = quality & safety gates, **D** = portfolio, **E** = RAG avatar (post-MVP, `S-1`), **F** = operations & owner utilities, **G** = memory / house style.
+Group letters: **A** = publishing surface, **B** = content pipeline, **C** = quality & safety gates, **D** = portfolio, **E** = RAG avatar (`M-10`), **F** = operations & owner utilities, **G** = memory / house style.
 
 ### Group A — Publishing surface
 
@@ -36,6 +36,9 @@ Group letters: **A** = publishing surface, **B** = content pipeline, **C** = qua
 
 **FR-A3** — As a reader on any device, I get a fast, responsive page.
 *Acceptance.* Usable on mobile and desktop; Lighthouse performance ≥ 90. **Assumption** [OQ-7].
+
+**FR-A4** — As a reader, I can switch between the French and English version of the site and of any post.
+*Acceptance.* A language switcher is present site-wide; each post exists in FR and EN at parallel URLs; switching preserves the current post when its translation exists, else falls back to the index (`NFR-11`, `M-11`).
 
 ### Group B — Content pipeline
 
@@ -76,7 +79,7 @@ Group letters: **A** = publishing surface, **B** = content pipeline, **C** = qua
 **FR-D3** — As the Owner (P1), the portfolio never exposes private or sensitive material.
 *Acceptance.* No secrets/keys, no third-party personal data, and no private-repo internals appear on any public page (cf. inventory secret-hygiene flags; `NFR-6`).
 
-### Group E — RAG avatar (post-MVP, `S-1`)
+### Group E — RAG avatar (`M-10`)
 
 **FR-E1** — As a visitor, I can ask the avatar questions about Rachid or the blog.
 *Acceptance.* A chat UI is always present; answers draw on indexed site + portfolio content.
@@ -114,7 +117,7 @@ Group letters: **A** = publishing surface, **B** = content pipeline, **C** = qua
 ### Performance
 
 **NFR-1** — Static pages: Largest Contentful Paint ≤ 2.5 s on a mid-tier mobile device. **Assumption** [OQ-7].
-**NFR-2** — Avatar answer latency P50 ≤ 5 s, P95 ≤ 12 s (query submit → final token). **Assumption** [OQ-7]. (Applies with `S-1`.)
+**NFR-2** — Avatar answer latency P50 ≤ 5 s, P95 ≤ 12 s (query submit → final token). **Assumption** [OQ-7].
 
 ### Correctness
 
@@ -135,7 +138,7 @@ Group letters: **A** = publishing surface, **B** = content pipeline, **C** = qua
 
 ### Internationalization
 
-**NFR-11** — Content language is English (primary). **Assumption** [OQ-9] — the owner may want FR/EN bilingual.
+**NFR-11** — Content is **bilingual French + English**: every article and portfolio page exists in both languages at parallel URLs, and the quality gate (`FR-C1`, `FR-C2`) runs on each language version independently. Per `D-004`.
 
 ## Non-requirements (named so they don't drift in)
 
