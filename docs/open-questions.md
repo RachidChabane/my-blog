@@ -21,6 +21,12 @@ Each entry follows: **question/risk → why it matters → options → resolutio
 **Resolution path.** Set when analytics (`S-4`) lands.
 **Needed from.** Owner direction.
 
+### [OQ-14] What is the writing-flow agent roster, and how do the roles hand off?
+**Why it matters.** `M-3` (the content pipeline) is the project's central bet. `content-pipeline.md` §2 fixes the six *stages*, but the *specialized agents* that carry them — and their prompts, hand-off artifacts, round caps, memory sharing, and FR/EN parallelization — aren't designed yet. The crew is what makes auto-published quality defensible.
+**Options.** First-sketch roles (`content-pipeline.md` §7): research, planning, writing, quality review, fact-checking, humanizing/style. Open: whether humanizing is its own stage or folded into Draft/Gate; reuse of the global **`style-auditor`** agent for the humanizing/style role (preferred over building from scratch); single-crew vs per-stage sub-agents.
+**Resolution path.** A dedicated writing-pipeline design pass before/within the `M-3`/`M-4` build (can be its own doc, e.g. `writing-flow.md`). Model on `claude-plan-execute`'s role separation.
+**Needed from.** Owner + design pass (deferred by owner 02-06-2026: "we'll flesh out the full pipeline later").
+
 ## Resolved
 
 **[OQ-1] 01-06-2026** — *Is the RAG avatar in the MVP, or deferred to `S-1`?* — **In the MVP** (`M-10`). Owner chose to ship the avatar with v1; `S-1` retired, MVP estimate grew to ~10–14 weeks.

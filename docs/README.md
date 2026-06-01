@@ -46,10 +46,11 @@ Stage 5 (`tasks.yaml` hand-off to `claude-plan-execute`) is not yet scaffolded �
 
 ## What's still open
 
-Stage-1 scope is effectively fully decided. Only two **non-blocking** items remain in `open-questions.md`:
+Stage-1 scope is effectively fully decided. Non-blocking items remain in `open-questions.md`:
 
 1. **[OQ-5]** Multilingual embedding model for the avatar index — a build-time pick (default: managed multilingual).
 2. **[OQ-10]** The 18-month readership target — set later when analytics (`S-4`) lands.
+3. **[OQ-14]** The writing-flow agent roster (`content-pipeline.md` §7) — a dedicated design pass before/within the `M-3`/`M-4` build; deferred by the owner.
 
 The exact palette + avatar concept + domain TLD ([OQ-11b]) are delegated to Claude Design (Stage 2).
 

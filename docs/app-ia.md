@@ -206,6 +206,7 @@ Every screen must respect these; they are the testable spine for Stage 4/5.
 - **INV-6 — Avatar groundedness & non-figurativeness.** Cites sources, refuses below threshold, never figurative (`NFR-4`, `D-007`).
 - **INV-7 — Performance.** LCP ≤ 2.5 s mid-tier mobile; Lighthouse perf ≥ 90 (`NFR-1`, `FR-A3`).
 - **INV-8 — Read-only & public.** No login, no accounts, no user-generated content, no comments in v1 (`W-4`, `C-1`).
+- **INV-9 — No emojis; professional icons only.** No emojis in UI chrome or article prose, save a rare deliberate exception; iconography uses a consistent professional SVG icon set, never emoji (`D-007`). Enforced in the article body by the style gate (`FR-C2`) and in components at design/build time.
 
 ## 11. Display modes × screens
 

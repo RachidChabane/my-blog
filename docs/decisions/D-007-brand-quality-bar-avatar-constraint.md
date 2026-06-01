@@ -7,7 +7,10 @@
 - **Positioning:** personal, practitioner voice — the site is Rachid's personal hub on a `rachidchabane.*` domain (exact TLD TBD); the blog reads as his cutting-edge-AI-engineering notebook.
 - **Quality bar:** premium and polished, matching the **caliber and overall feel of `bayan`** (not copying its visual style). Visually engaging, with scroll-animation / motion libraries pulled in for effect.
 - **Avatar — hard constraint:** the avatar must be **distinctive and original**, and **must NOT be a face or any depiction of a living being**. Memorable within that boundary.
+- **No emojis** — in prose or in the UI — save for a rare, deliberate exception. Where iconography is needed, use a **professional icon set** (a consistent line/solid SVG set), never emoji. Keeps the register serious and premium.
 - Concrete palette and the avatar concept are delegated to **Claude Design** (Stage 2), seeded with the above.
+
+> **Palette resolved (02-06-2026):** Claude Design's first auto-generated system came out warm-graphite + champagne-amber, which reads as a clone of well-known products; the palette is now **pinned to cool-ink + a single electric-violet accent** (dark `#0E0F13` / light `#FAFAFB` base, accent `#7C6BFF` / `#5B4BE0`, cool neutrals only). Typography is Fraunces (display) / Inter (body) / JetBrains Mono (code). See `design-system-setup.md`. The design system is created + published.
 
 ## Why
 

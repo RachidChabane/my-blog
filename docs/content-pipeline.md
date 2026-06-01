@@ -42,7 +42,7 @@ The pipeline must survive running with nobody watching (`vision.md` Risk 2):
 Coherence across many autonomous runs comes from persistent memory (`M-9`):
 
 - **Topic memory** (`FR-G1`): what's been published, when, and from which sources — queried at Select to avoid repetition. Dedup is by **semantic similarity** to prior posts, not a fixed time window ([OQ-8]). Keyed by *topic* (language-independent), so a topic covered in FR+EN isn't re-selected for either language (`M-11`).
-- **House-style guide** (`FR-G2`): a single spec for voice, structure, citation format, and length, consumed at Draft and enforced at the style gate. This is what keeps 100+ auto-written posts sounding like one coherent publication rather than 100 disconnected LLM outputs.
+- **House-style guide** (`FR-G2`): a single spec for voice, structure, citation format, and length, consumed at Draft and enforced at the style gate. This is what keeps 100+ auto-written posts sounding like one coherent publication rather than 100 disconnected LLM outputs. The guide encodes the brand register from `D-007`, including **no emojis** in prose (rare deliberate exception only) — the style gate (`FR-C2`) flags emoji use as an off-register tell.
 
 Both map onto `claude-plan-execute`'s cross-task memory (`evergreen` / per-run lifecycles).
 
@@ -50,9 +50,24 @@ Both map onto `claude-plan-execute`'s cross-task memory (`evergreen` / per-run l
 
 Auto-publish means defects *will* occasionally reach production. The owner's recourse (`FR-F3`, `S-2`) is out-of-band: a documented git procedure to unpublish or supersede a post, after which the next build reflects the change. This is deliberately not a routine editing workflow (`W-1`) — it is a safety valve for the rare miss the gate let through, and each use should feed back into a stronger gate.
 
+## §7 The writing flow — agent roster (first sketch, [OQ-14])
+
+The six stages in §2 are *what* happens; they don't yet specify *which specialized agents* carry each stage. The writing flow will be a multi-agent crew (modeled on `claude-plan-execute`'s role separation), not a single prompt. **This is a first sketch — the full roster, hand-offs, prompts, and round caps are deferred to a dedicated design pass ([OQ-14]).** First-cut roles and where they map onto the stages:
+
+| Role (sketch) | Stage (§2) | Notes |
+|---|---|---|
+| **Research** | Source | Native web-search sweep; gathers sources + dates (`FR-B1`). |
+| **Planning** | Select | Picks the angle/outline; consults topic memory + semantic dedup (`FR-B2`, `FR-G1`). |
+| **Writing** | Draft | Drafts FR + EN in house style with citations (`FR-B3`). |
+| **Quality review** | Review | APPROVED / NEEDS_REVISION verdict + revise loop (`FR-B4`). |
+| **Fact-checking** | Gate | Verifies every load-bearing claim against sources; blocking (`FR-C1`). |
+| **Humanizing / style** | Draft↔Gate | De-AI-tells the prose, enforces voice + the no-emoji rule (`FR-C2`, `D-007`). **Reuse candidate:** the global **`style-auditor`** agent already available in this environment (audits prose for AI-generation tells) — prefer reusing it over building one from scratch. (Reconciles the earlier "ijtihad style-auditor" reference in §3 — `style-auditor` is the concrete global agent to use.) |
+
+Open design questions for the later pass ([OQ-14]): exact roster + whether humanizing is its own stage or folded into Draft/Gate; per-role prompts and hand-off artifacts; round caps; how roles share the run's memory; FR-vs-EN parallelization. Until then, §2's six stages remain the contract.
+
 ## Where this surfaces
 
 - `vision.md` § Top risks — Risks 1, 2, and 4 derive from this doc's §3, §4.
 - `roadmap.md` § Must — `M-3` (pipeline), `M-4` (gate), `M-5` (ops), `M-6` (backend), `M-9` (memory) operationalize §2–§5.
 - `user-requirements.md` — groups B, C, G, and `FR-F2`/`FR-F3` are the testable form of these stages.
-- `open-questions.md` — this doc's forks are all resolved: [OQ-6] (scheduling), [OQ-8] (semantic dedup), [OQ-13] (sourcing).
+- `open-questions.md` — resolved: [OQ-6] (scheduling), [OQ-8] (semantic dedup), [OQ-13] (sourcing); **open: [OQ-14]** (writing-flow agent roster, §7).
