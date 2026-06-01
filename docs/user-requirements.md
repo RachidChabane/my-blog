@@ -35,7 +35,7 @@ Group letters: **A** = publishing surface, **B** = content pipeline, **C** = qua
 *Acceptance.* Each post shows publish date (DD-MM-YYYY), ≥ 1 topic tag, and a sources/references list with working links.
 
 **FR-A3** — As a reader on any device, I get a fast, responsive page.
-*Acceptance.* Usable on mobile and desktop; Lighthouse performance ≥ 90. **Assumption** [OQ-7].
+*Acceptance.* Usable on mobile and desktop; Lighthouse performance ≥ 90..
 
 **FR-A4** — As a reader, I can switch between the French and English version of the site and of any post.
 *Acceptance.* A language switcher is present site-wide; each post exists in FR and EN at parallel URLs; switching preserves the current post when its translation exists, else falls back to the index (`NFR-11`, `M-11`).
@@ -46,7 +46,7 @@ Group letters: **A** = publishing surface, **B** = content pipeline, **C** = qua
 *Acceptance.* Output is a ranked candidate list, each with source URL(s) and date; candidates are within the AI-engineering scope (`W-5`, `D-006`).
 
 **FR-B2** — As the AI maintainer, I select a topic not recently covered that best showcases engineering depth.
-*Acceptance.* Selection consults topic memory (`FR-G1`) and rejects any topic covered within the dedup window (**Assumption:** window = N days [OQ-8]); among the rest, it prefers topics that are both timely and demonstrate cutting-edge AI-engineering expertise (`D-006`).
+*Acceptance.* Selection consults topic memory (`FR-G1`) and rejects a candidate when it is too semantically similar to an already-published post (similarity-based dedup, no fixed time window; per [OQ-8]); among the rest, it prefers topics that are both timely and demonstrate cutting-edge AI-engineering expertise (`D-006`).
 
 **FR-B3** — As the AI maintainer, I draft a full article with citations, in house style.
 *Acceptance.* Draft has title, body, ≥ 2 cited sources, ≥ 1 topic tag; conforms to the house-style guide (`FR-G2`).
@@ -88,7 +88,7 @@ Group letters: **A** = publishing surface, **B** = content pipeline, **C** = qua
 *Acceptance.* Each answer links the post/page it used; below the confidence/similarity threshold the avatar says "I don't know" rather than fabricating (`NFR-4`).
 
 **FR-E3** — As the AI maintainer, the avatar's index refreshes when the blog updates.
-*Acceptance.* A publish event triggers an incremental reindex of only changed content within N minutes **Assumption** [OQ-7]; a nightly full reindex runs as a safety net.
+*Acceptance.* A publish event triggers an incremental reindex of only changed content within 5 minutes; a nightly full reindex runs as a safety net.
 
 ### Group F — Operations & owner utilities
 
@@ -116,8 +116,8 @@ Group letters: **A** = publishing surface, **B** = content pipeline, **C** = qua
 
 ### Performance
 
-**NFR-1** — Static pages: Largest Contentful Paint ≤ 2.5 s on a mid-tier mobile device. **Assumption** [OQ-7].
-**NFR-2** — Avatar answer latency P50 ≤ 5 s, P95 ≤ 12 s (query submit → final token). **Assumption** [OQ-7].
+**NFR-1** — Static pages: Largest Contentful Paint ≤ 2.5 s on a mid-tier mobile device..
+**NFR-2** — Avatar answer latency P50 ≤ 5 s, P95 ≤ 12 s (query submit → final token)..
 
 ### Correctness
 
@@ -128,12 +128,12 @@ Group letters: **A** = publishing surface, **B** = content pipeline, **C** = qua
 
 **NFR-5** — No secrets or API keys are committed to the repo; all config comes from env / a secret store (`M-7`).
 **NFR-6** — Neither the portfolio nor the avatar exposes private-repo internals or third-party personal data.
-**NFR-7** — Avatar chat input is hardened against prompt-injection that would exfiltrate config or override instructions. **Assumption:** scope TBD [OQ-12].
+**NFR-7** — The avatar passes a **dedicated prompt-injection red-team pass before launch** (per [OQ-12], `M-12`): input sanitization + system-prompt isolation + grounded-retrieval-only answers, validated by adversarial tests covering config exfiltration and instruction-override attempts. Launch is blocked until the red-team checklist passes.
 
 ### Operations
 
 **NFR-8** — The pipeline runs unattended on schedule; transient failures auto-resume (cf. `claude-plan-execute` exit-code-75 resume loop).
-**NFR-9** — All-in monthly cost ≤ €25. **Assumption** [OQ-7].
+**NFR-9** — All-in monthly cost ≤ €25..
 **NFR-10** — The pipeline uses the interactive/tmux Claude backend to remain on the subscription pool (post 2026-06-15).
 
 ### Internationalization

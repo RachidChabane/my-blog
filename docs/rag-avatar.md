@@ -43,11 +43,11 @@ The runtime stack:
 
 - **LLM + vector store** ([OQ-4], resolved): **managed API + lightweight store** — a light hosted model (Claude Haiku-tier / OpenRouter) + sqlite-vss or a managed vector DB. Cheapest to run, least ops, fits the ≤ €25/mo budget. The specific provider/model settles at `M-10` build.
 - **Embedding model** ([OQ-5]): must be **multilingual** (bilingual FR/EN content, `D-004`); settles at `M-10` build.
-- **Prompt-injection hardening** ([OQ-12]): a public chat endpoint is an attack surface; scope the defenses (input sanitization, system-prompt isolation, allow-listed retrieval) to risk at build time (`NFR-7`).
+- **Prompt-injection hardening** ([OQ-12], resolved): a **full red-team pass is required before launch** (`M-12`, `NFR-7`) — input sanitization + system-prompt isolation + grounded-retrieval-only, validated by adversarial tests for config exfiltration and instruction-override. Launch is blocked until it passes.
 
 ## Where this surfaces
 
 - `vision.md` § Top risks — Risk 3 (staleness) is mitigated by §3's incremental reindex.
 - `roadmap.md` — `M-10` is this engine; `S-6` (portfolio re-sync) feeds its corpus.
 - `user-requirements.md` — group E (`FR-E1`–`FR-E3`) and `NFR-2`, `NFR-4`, `NFR-7` are the testable form.
-- `open-questions.md` — open: [OQ-5] (embedder), [OQ-12] (injection hardening); resolved: [OQ-1] (MVP), [OQ-3] (hybrid), [OQ-4] (managed stack).
+- `open-questions.md` — open: [OQ-5] (embedder); resolved: [OQ-1] (MVP), [OQ-3] (hybrid), [OQ-4] (managed stack), [OQ-12] (red-team).

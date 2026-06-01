@@ -34,12 +34,12 @@ By **01-12-2026** (six months from 01-06-2026), the project passes these gates:
 
 | Signal | Target | How measured |
 |---|---|---|
-| **Autonomous cadence** | ≥ 2 topics/week (each published in FR + EN) for ≥ 8 consecutive weeks **Assumption** [OQ-7] | Count of published topics/week from git history |
-| **Manual effort** | ≤ 15 min/week median owner intervention **Assumption** [OQ-7] | Owner intervention log (count + time per week) |
+| **Autonomous cadence** | ≥ 2 topics/week (each published in FR + EN) for ≥ 8 consecutive weeks | Count of published topics/week from git history |
+| **Manual effort** | ≤ 15 min/week median owner intervention | Owner intervention log (count + time per week) |
 | **Pre-publish gate coverage** | 100% of published posts passed the automated fact-check + style gate | Gate logs; zero posts bypass the gate (`NFR-3`) |
-| **Factual defect rate** | ≤ 1 post requiring post-hoc correction per 20 published **Assumption** [OQ-7] | Owner/issue correction log |
+| **Factual defect rate** | ≤ 1 post requiring post-hoc correction per 20 published | Owner/issue correction log |
 | **Portfolio coverage** | All 5 flagship projects + ≥ 3 others have a showcase page | Site audit vs `PROJECT-INVENTORY.md` |
-| **All-in cost** | ≤ €25/month **Assumption** [OQ-7] | Hosting + LLM API + any service bills |
+| **All-in cost** | ≤ €25/month | Hosting + LLM API + any service bills |
 
 If these hold, we turn attention to readership and the first post-MVP items (`S-2` onward).
 
@@ -49,9 +49,9 @@ By **01-06-2028**:
 
 | Signal | Target | How measured |
 |---|---|---|
-| **Sustained cadence** | ≥ 2 posts/week in ≥ 50 of the trailing 52 weeks **Assumption** [OQ-7] | Git history |
-| **Self-recovery** | ≥ 90% of transient pipeline failures recover without owner action **Assumption** [OQ-7] | Run logs: alert→resolve with no manual step |
-| **Avatar groundedness** | ≥ 95% of avatar answers cite real site content or correctly say "I don't know" **Assumption** [OQ-7] | Sampled eval set against the live index |
+| **Sustained cadence** | ≥ 2 posts/week in ≥ 50 of the trailing 52 weeks | Git history |
+| **Self-recovery** | ≥ 90% of transient pipeline failures recover without owner action | Run logs: alert→resolve with no manual step |
+| **Avatar groundedness** | ≥ 95% of avatar answers cite real site content or correctly say "I don't know" | Sampled eval set against the live index |
 | **Readership** | Owner-set target (e.g. monthly unique readers) **Assumption** [OQ-10] | Analytics (`S-4`) |
 
 ## What this product is *not* trying to be

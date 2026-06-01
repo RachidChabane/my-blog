@@ -59,7 +59,13 @@ Aim: the autonomous publishing engine + a bilingual (FR/EN) portfolio + the RAG 
 |---|---|---|---|
 | M-11 | Bilingual FR/EN plumbing: per-language content model + site switcher + per-language topic memory | M | Both languages are first-class; per `D-004` (`FR-A4`, `NFR-11`). |
 
-**MVP total:** ~10–14 weeks of effort (avatar `M-10` and bilingual `M-11` are the two expansions the owner chose over the minimal engine). **Critical path:** M-1 → M-3 → M-4 → M-5 → M-10 (publish + gate + run unattended, then the avatar on top).
+### Safety
+
+| ID | Feature | Effort | Why |
+|---|---|---|---|
+| M-12 | Avatar prompt-injection **red-team pass** before launch (sanitization + prompt isolation + grounded-only, validated adversarially) | S | The avatar is a public endpoint representing Rachid; per [OQ-12], `NFR-7`. Launch-blocking. |
+
+**MVP total:** ~11–15 weeks of effort (avatar `M-10`, bilingual `M-11`, and the avatar red-team `M-12` are the expansions over the minimal engine). **Critical path:** M-1 → M-3 → M-4 → M-5 → M-10 → M-12 (publish + gate + run unattended, then the avatar, then its red-team before launch).
 
 ## Should (post-MVP, months 2+)
 

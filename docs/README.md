@@ -19,9 +19,18 @@ All dates: **DD-MM-YYYY** (decision records use ISO `YYYY-MM-DD` in their status
 | 4 | [`user-requirements.md`](user-requirements.md) | Personas (P1–P3) + numbered FRs (groups A–G) with acceptance criteria + NFRs. |
 | 5 | [`roadmap.md`](roadmap.md) | MoSCoW with the explicit MVP cut, named Won't list, and risk-to-feature mapping. |
 | 6 | [`open-questions.md`](open-questions.md) | Live log of unresolved decisions (`OQ-N`) and the proposed defaults. |
-| 7 | [`decisions/`](decisions/) | One file per accepted decision: `D-001` (static-first), `D-002` (auto-publish + gates), `D-003` (hybrid build), `D-004` (bilingual FR/EN), `D-005` (Astro + Cloudflare Pages), `D-006` (editorial scope). |
+| 7 | [`decisions/`](decisions/) | One file per accepted decision: `D-001` (static-first), `D-002` (auto-publish + gates), `D-003` (hybrid build), `D-004` (bilingual FR/EN), `D-005` (Astro + Cloudflare Pages), `D-006` (editorial scope), `D-007` (brand + avatar constraint). |
 
 `architecture-options.md` is intentionally **not** written — the high-level fork (static vs dynamic) is settled in `D-001`, and the build-approach fork resolved to hybrid in `D-003` ([OQ-3]). No real architectural fork remains open.
+
+## Stage 2 hand-off (prepared)
+
+The Claude Design hand-off for the **brand & identity system** is scaffolded and ready to run:
+
+- [`claude-design-prompt.md`](claude-design-prompt.md) — paste-ready Claude Design prompt (palette, typography, motion, the **non-figurative avatar** concept, sample layouts). Carries the `D-007` constraints.
+- [`_deck-bundle/`](_deck-bundle/) — step-by-step upload/iterate/export guide + asset folders.
+
+Stage 3 (information architecture, `app-ia.md`) and Stage 5 (`tasks.yaml` hand-off to `claude-plan-execute`) are not yet scaffolded — generate when ready.
 
 ## Conventions
 
@@ -32,10 +41,11 @@ All dates: **DD-MM-YYYY** (decision records use ISO `YYYY-MM-DD` in their status
 
 ## What's still open
 
-The remaining open items are tracked in `open-questions.md`. The top three now:
+Stage-1 scope is effectively fully decided. Only two **non-blocking** items remain in `open-questions.md`:
 
-1. **[OQ-7]** Confirm the proposed cadence / quality / cost / latency targets (currently `**Assumption**` defaults).
-2. **[OQ-11b]** Concrete domain name + visual identity (gates the Stage-2 Claude Design hand-off).
-3. **[OQ-5]** Multilingual embedding model for the avatar index.
+1. **[OQ-5]** Multilingual embedding model for the avatar index — a build-time pick (default: managed multilingual).
+2. **[OQ-10]** The 18-month readership target — set later when analytics (`S-4`) lands.
 
-Recent resolutions (01-06-2026): **[OQ-1]** avatar in MVP (`M-10`) · **[OQ-2]** Astro + Cloudflare Pages (`D-005`) · **[OQ-3]** hybrid build (`D-003`) · **[OQ-4]** managed avatar stack · **[OQ-6]** scheduled Claude Code routine · **[OQ-9]** bilingual FR/EN (`D-004`) · **[OQ-11]** personal practitioner voice · **[OQ-13]** native web-search sourcing + scope clarified (`D-006`) · **[site architecture]** static-first (`D-001`) · **[publish autonomy]** auto-publish + gates (`D-002`) · **[primary goal]** portfolio-led.
+The exact palette + avatar concept + domain TLD ([OQ-11b]) are delegated to Claude Design (Stage 2).
+
+Recent resolutions (01-06-2026): **[OQ-1]** avatar in MVP (`M-10`) · **[OQ-2]** Astro + Cloudflare Pages (`D-005`) · **[OQ-3]** hybrid build (`D-003`) · **[OQ-4]** managed avatar stack · **[OQ-6]** scheduled Claude Code routine · **[OQ-7]** targets confirmed · **[OQ-8]** semantic dedup · **[OQ-9]** bilingual FR/EN (`D-004`) · **[OQ-11]** personal practitioner voice · **[OQ-11b]** brand constraints set (`D-007`) · **[OQ-12]** full red-team pass (`M-12`) · **[OQ-13]** native web-search sourcing + scope (`D-006`) · **[site architecture]** static-first (`D-001`) · **[publish autonomy]** auto-publish + gates (`D-002`) · **[primary goal]** portfolio-led.
