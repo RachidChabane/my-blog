@@ -35,7 +35,9 @@ The Claude Design hand-off is scaffolded and ready, in the order Claude Design e
 
 - [`app-ia.md`](app-ia.md) — **information architecture.** The reconciled source of truth for the public surface: route map, navigation shell, screen inventory (S1–S11), data model, core flows, the single runtime API (avatar), cross-screen invariants, display-mode matrix, and the dependency-ordered implementation order that feeds Stage 5. § 13 lists the Stage-1 amendments it surfaced (search/RSS/about tiers). Feeds Stage 4 (per-screen design in Claude Design, inheriting the published design system) and Stage 5.
 
-Stage 5 (`tasks.yaml` hand-off to `claude-plan-execute`) is not yet scaffolded — generate when `app-ia.md` is approved.
+- [`app-design-prompt.md`](app-design-prompt.md) — **Stage 4 screen-design prompt.** Paste-ready Claude Design prompt (prelude + per-screen specs for Home, Article, index, Portfolio, Project detail, Avatar, About) that *inherits* the published design system and produces high-fidelity mockups, exported to the build via **Handoff to Claude Code**. Derived from `app-ia.md` § 7; scrubbed of internal names/IDs; the no-emoji rule baked in.
+
+Stage 5 (`tasks.yaml` hand-off to `claude-plan-execute`) is not yet scaffolded — generate when the screens are designed and `app-ia.md` is approved.
 
 ## Conventions
 
