@@ -1,6 +1,6 @@
 # my-blog brand & concept deck — step-by-step guide
 
-Use this to drive Claude Design (claude.ai/design) to produce the site's brand system + concept deck from `../claude-design-prompt.md`. You do a brand-asset upload, a prompt paste, and an export.
+Use this to drive Claude Design (claude.ai/design) to produce the site's brand direction from `../claude-design-prompt.md`, then lock it into a **published design system** that later projects inherit. The flow: generate the concept → iterate → codify & publish the design system → export.
 
 ```
 docs/_deck-bundle/
@@ -23,25 +23,28 @@ Active Claude Pro / Max / Team / Enterprise subscription, a browser, and a local
 ## Step 1 — Open Claude Design
 Go to claude.ai/design; pick/create your org; complete onboarding.
 
-## Step 2 — Upload the brand system (optional but helpful)
-If you populated `01-brand-system-upload/`:
-1. Drag any reference screenshot + `brand-spec.md` into the "fonts, logos, assets" zone.
-2. Drag font files into the same zone.
-3. Drop `design-tokens.css` into "Link code from your computer," if you have one.
-4. Wait for extraction (2–5 min); review the UI kit.
-If you have no assets yet, skip — Claude Design will propose a palette and type system from the prompt, which is the point of this step.
+## How the design system fits (read this first)
 
-**Refinement lines you might need:**
-- *"Strip the palette to ~3 core colors + neutrals, with explicit light and dark registers. No decorative gradients."*
-- *"The body font must render French diacritics cleanly and read well at long-article length; show an FR and an EN specimen."*
+Claude Design is built around a **design system** (a reusable UI kit: palette, typography, components, layout patterns) that you **set up and "Publish" once**, after which every project you create — decks, prototypes, screens — **inherits it automatically**. That's the intended order: *design system first, projects second.*
 
-## Step 3 — Create the deck project
-Pick "Slide deck"; select the brand system (if you made one); choose "High fidelity" (not Wireframe).
+But that model assumes you already **have** a brand to extract from assets. You don't yet — you want Claude Design to *propose* the palette and avatar. So for a from-scratch brand the practical order inverts the first two moves:
 
-## Step 4 — Send the prompt
-Open `../claude-design-prompt.md`, copy everything between the `=== PROMPT ===` markers (or run the `awk` one-liner in that file), paste into the Claude Design chat. Attach anything in `02-deck-attachments/` via the paperclip. Send.
+1. **Generate the brand direction** as a concept project (the prompt in `../claude-design-prompt.md`) — Claude proposes palette, type, motion, and the non-figurative avatar.
+2. **Codify the chosen direction into a design system and Publish it** — so the Stage-4 per-screen work (home, post, portfolio, avatar) inherits it automatically.
 
-## Step 5 — Iterate
+(If you already had a brand, you'd do step 2 first and skip step 1.)
+
+## Step 2 — Seed any assets you have (optional)
+If you populated `01-brand-system-upload/` (e.g. a `bayan` caliber-reference screenshot, fonts you like):
+1. Have them ready to drag into the "fonts, logos, assets" zone when you set up the design system.
+2. These *seed* the direction — they don't replace the concept generation, since you're defining a new brand.
+
+If you have no assets, that's fine — the concept prompt drives the palette/type proposal.
+
+## Step 3 — Create the concept project & send the prompt
+Pick "Slide deck", **High fidelity** (not Wireframe). Open `../claude-design-prompt.md`, copy everything between the `=== PROMPT ===` markers (or run the `awk` one-liner in that file), paste into the chat, attach anything in `02-deck-attachments/`, and send.
+
+## Step 4 — Iterate
 
 | Tool | Use it for | How |
 |---|---|---|
@@ -55,8 +58,16 @@ Have these ready (from `../claude-design-prompt.md` § Notes on iterating):
 - **Generic SaaS register** — push back toward the premium, restrained, `bayan`-caliber feel.
 - **Fonts swapped to system defaults** / **a graphic logo appeared** / **motion is generic, not signature**.
 
+## Step 5 — Codify & publish the design system
+Once the concept is right, turn the chosen direction into a reusable, published design system so everything you build next inherits it:
+1. From your org settings (or onboarding), set up the **design system**, seeding it with the concept output + any assets from `01-brand-system-upload/`.
+2. Review the generated UI kit (palette, typography, components, layout); refine with lines like *"Strip the palette to ~3 core colors + neutrals, light + dark registers, no decorative gradients"* and *"The body font must render French diacritics and read at long-article length — show FR + EN specimens."*
+3. **Flip the "Published" toggle on.** After that, any new project (including the Stage-4 screens) inherits the brand automatically — no manual re-setup.
+
+This published design system is the real hand-off to Stage 4 (`../app-design-prompt.md`, after the Stage 3 IA) and, ultimately, to the build.
+
 ## Step 6 — Export
-Export (upper-right) → PDF for sharing. Keep the palette/type/avatar concept — they feed Stage 4 (per-screen design, `../app-design-prompt.md`, generated after Stage 3 IA).
+Export (upper-right) → PDF for sharing. The lasting output is the **published design system** (Step 5), not just the deck PDF — that's what Stage 4 and the build inherit.
 
 ## Step 7 — Soundness check
 Show the result to one person whose design taste you trust before locking the system; first reactions catch what you can no longer see.

@@ -8,7 +8,7 @@
 3. Pick a working name/wordmark for the cover (the domain is `rachidchabane.*`, exact TLD TBD — `[OQ-11b]`).
 4. Populate `_deck-bundle/01-brand-system-upload/` with any reference assets you already have (fonts you like, a screenshot of `bayan` for *caliber* reference — not to copy its style). Optional but improves the first pass.
 5. Copy everything between the `=== PROMPT ===` markers into Claude Design (a "Slide deck" project, High fidelity). Iterate 2–4 rounds.
-6. Carry the resulting palette + type + avatar concept into Stage 4 (per-screen design via `app-design-prompt.md`, after Stage 3 IA).
+6. **Codify the chosen direction into a published Claude Design *design system*** (palette / typography / components / layout) — flip "Published" on — so the Stage-4 per-screen work (`app-design-prompt.md`, after Stage 3 IA) and the eventual build inherit it automatically. This published system, not the deck PDF, is the real hand-off. See `_deck-bundle/README.md` Step 5.
 
 Extraction one-liner:
 
