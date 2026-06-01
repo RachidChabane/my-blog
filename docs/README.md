@@ -27,8 +27,9 @@ All dates: **DD-MM-YYYY** (decision records use ISO `YYYY-MM-DD` in their status
 
 The Claude Design hand-off is scaffolded and ready, in the order Claude Design expects — **design system first, pitch deck second**:
 
-- [`claude-design-prompt.md`](claude-design-prompt.md) — **two** paste-ready prompts: (1) generate & publish the **design system** (palette, typography, components, motion, the **non-figurative avatar** mark — `D-007` constraints baked in); (2) a **pitch deck** that *inherits* the published design system.
-- [`_deck-bundle/`](_deck-bundle/) — step-by-step guide: Phase 1 create & **publish** the design system → Phase 2 build the deck on top → export.
+- [`design-system-setup.md`](design-system-setup.md) — **Phase 1.** A worksheet of values to paste into Claude Design's **"Set up your design system"** *form* (Company name + blurb, "Any other notes?" brand direction with the `D-007` constraints incl. the **non-figurative avatar**, + an attach checklist). The design system is created via the **form**, then **Published**.
+- [`claude-design-prompt.md`](claude-design-prompt.md) — **Phase 2.** The **pitch-deck** chat prompt that *inherits* the published design system.
+- [`_deck-bundle/`](_deck-bundle/) — step-by-step guide tying the two phases together (fill form → publish → build deck → export).
 
 Stage 3 (information architecture, `app-ia.md`) and Stage 5 (`tasks.yaml` hand-off to `claude-plan-execute`) are not yet scaffolded — generate when ready.
 
