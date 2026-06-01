@@ -39,10 +39,10 @@ This is the part bayan does *not* solve out of the box (its reindex is whole-doc
 
 ## §5 Open choices
 
-The runtime stack is still unfixed and now **MVP-blocking** (these resolve at `M-10` build, no longer post-MVP):
+The runtime stack:
 
-- **LLM + vector store** ([OQ-4]): lean managed (light model + sqlite-vss / managed vector DB) is the recommended default over self-hosting. Note the embedder must handle both FR and EN well (`D-004`).
-- **Embedding model** ([OQ-5]): multilingual-capable, given bilingual content.
+- **LLM + vector store** ([OQ-4], resolved): **managed API + lightweight store** — a light hosted model (Claude Haiku-tier / OpenRouter) + sqlite-vss or a managed vector DB. Cheapest to run, least ops, fits the ≤ €25/mo budget. The specific provider/model settles at `M-10` build.
+- **Embedding model** ([OQ-5]): must be **multilingual** (bilingual FR/EN content, `D-004`); settles at `M-10` build.
 - **Prompt-injection hardening** ([OQ-12]): a public chat endpoint is an attack surface; scope the defenses (input sanitization, system-prompt isolation, allow-listed retrieval) to risk at build time (`NFR-7`).
 
 ## Where this surfaces
@@ -50,4 +50,4 @@ The runtime stack is still unfixed and now **MVP-blocking** (these resolve at `M
 - `vision.md` § Top risks — Risk 3 (staleness) is mitigated by §3's incremental reindex.
 - `roadmap.md` — `M-10` is this engine; `S-6` (portfolio re-sync) feeds its corpus.
 - `user-requirements.md` — group E (`FR-E1`–`FR-E3`) and `NFR-2`, `NFR-4`, `NFR-7` are the testable form.
-- `open-questions.md` — [OQ-1] (MVP placement), [OQ-3] (hybrid build approach), [OQ-4], [OQ-5], [OQ-12].
+- `open-questions.md` — open: [OQ-5] (embedder), [OQ-12] (injection hardening); resolved: [OQ-1] (MVP), [OQ-3] (hybrid), [OQ-4] (managed stack).

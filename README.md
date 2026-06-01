@@ -3,7 +3,7 @@
 An **AI-maintained personal blog + portfolio**. Two jobs:
 
 1. **Portfolio** — showcase Rachid Chabane's AI projects (the ones living across `~/dev-env/0-git/`).
-2. **Blog** — publish ~2 articles/week on agentic AI: agentic coding, Anthropic, OpenAI, and open-source LLMs.
+2. **Blog** — publish ~2 articles/week (bilingual FR/EN) on cutting-edge AI engineering: agentic AI & agentic coding, frontier + open-source LLMs, and the craft of building with them — chosen to showcase Rachid's expertise (named labs like Anthropic/OpenAI are examples, not the boundary).
 
 The intent is for the whole thing to run **autonomously, maintained by AI** — no hand-written or hand-edited content:
 

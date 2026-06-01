@@ -42,11 +42,11 @@ Group letters: **A** = publishing surface, **B** = content pipeline, **C** = qua
 
 ### Group B — Content pipeline
 
-**FR-B1** — As the AI maintainer, on a schedule I search recent agentic-AI news and produce ranked candidate topics.
-*Acceptance.* Output is a ranked candidate list, each with source URL(s) and date; candidates are within the agentic-AI scope (`W-5`).
+**FR-B1** — As the AI maintainer, on a schedule I search recent developments in cutting-edge AI engineering (via Claude Code's native web-search tools, optionally specialized search sub-agents) and produce ranked candidate topics.
+*Acceptance.* Output is a ranked candidate list, each with source URL(s) and date; candidates are within the AI-engineering scope (`W-5`, `D-006`).
 
-**FR-B2** — As the AI maintainer, I select a topic not recently covered.
-*Acceptance.* Selection consults topic memory (`FR-G1`) and rejects any topic covered within the dedup window. **Assumption:** window = N days [OQ-8].
+**FR-B2** — As the AI maintainer, I select a topic not recently covered that best showcases engineering depth.
+*Acceptance.* Selection consults topic memory (`FR-G1`) and rejects any topic covered within the dedup window (**Assumption:** window = N days [OQ-8]); among the rest, it prefers topics that are both timely and demonstrate cutting-edge AI-engineering expertise (`D-006`).
 
 **FR-B3** — As the AI maintainer, I draft a full article with citations, in house style.
 *Acceptance.* Draft has title, body, ≥ 2 cited sources, ≥ 1 topic tag; conforms to the house-style guide (`FR-G2`).

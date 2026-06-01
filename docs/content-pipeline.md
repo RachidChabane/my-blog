@@ -11,8 +11,8 @@ The design is modelled on `claude-plan-execute` (see `inventory/02-claude-plan-e
 
 A scheduled run flows through six stages. Each stage's output is a committed artifact that feeds the next, so a run is resumable mid-pipeline.
 
-1. **Source** (`FR-B1`). Search recent agentic-AI news within scope (agentic coding, Anthropic, OpenAI, open-source LLMs). Output: a ranked candidate list, each item with source URL(s) + date. Sourcing method is open ([OQ-13]) — likely web-search + curated feeds.
-2. **Select** (`FR-B2`). Pick one candidate not covered within the dedup window ([OQ-8]), consulting topic memory (`FR-G1`). Output: the chosen topic + its sources + an angle.
+1. **Source** (`FR-B1`). Search recent developments in cutting-edge AI engineering (`D-006`) — agentic AI/coding, frontier + OSS LLMs, building-with-AI — using **Claude Code's native web-search tools** (optionally specialized search sub-agents); per [OQ-13]. No external search-API or RSS infrastructure is required, which keeps cost/ops low. Output: a ranked candidate list, each item with source URL(s) + date.
+2. **Select** (`FR-B2`). Pick one candidate not covered within the dedup window ([OQ-8]), consulting topic memory (`FR-G1`), preferring topics that best showcase engineering depth (`D-006`). Output: the chosen topic + its sources + an angle.
 3. **Draft** (`FR-B3`). Write the full article in **both French and English** (`D-004`) in house style (`FR-G2`), with ≥ 2 cited sources and topic tags. The two language versions are the same topic and sources, authored as parallel outputs (not a raw machine translation of one). Output: a FR draft + an EN draft.
 4. **Review** (`FR-B4`). A review agent issues a verdict (APPROVED / NEEDS_REVISION); a revise agent edits until approved or the round cap is hit. This is `claude-plan-execute`'s Phase-2 review loop with an editorial prompt. Output: an approved draft, or a terminal "blocked" state.
 5. **Gate** (`FR-C1`, `FR-C2`). The mandatory pre-publish quality gate (§3), run **independently on each language version**. Output: both languages pass → proceed; either fails → block + alert, nothing publishes.
@@ -32,7 +32,7 @@ A failed gate retains the draft + the gate's findings as artifacts and alerts th
 
 The pipeline must survive running with nobody watching (`vision.md` Risk 2):
 
-- **Schedule** ([OQ-6]): fires twice weekly. Mechanism open — a scheduled Claude Code routine is the front-runner because it composes with the tmux backend.
+- **Schedule** ([OQ-6], resolved): a **scheduled Claude Code routine** fires twice weekly. Chosen because it composes with the interactive/tmux backend (`M-6`) and with native web-search sourcing — the whole run is one Claude Code session, keeping usage on the subscription pool.
 - **Auto-resume** (`NFR-8`): transient failures and usage-limit stops resume automatically, reusing `claude-plan-execute`'s exit-code-75 sleep-until-reset loop. A run interrupted mid-pipeline resumes from its last committed stage artifact.
 - **Backend** (`M-6`, `NFR-10`): the pipeline drives Claude through the **interactive/tmux backend**, not `claude -p`, to stay on the subscription pool after the 2026-06-15 billing split. This is the migration `claude-plan-execute` already implements.
 - **Monitoring** (`M-5`): a heartbeat confirms runs happen on schedule; missed or failed runs alert the owner (`FR-F2`). Silent failure is the thing we most need to prevent.
@@ -55,4 +55,4 @@ Auto-publish means defects *will* occasionally reach production. The owner's rec
 - `vision.md` § Top risks — Risks 1, 2, and 4 derive from this doc's §3, §4.
 - `roadmap.md` § Must — `M-3` (pipeline), `M-4` (gate), `M-5` (ops), `M-6` (backend), `M-9` (memory) operationalize §2–§5.
 - `user-requirements.md` — groups B, C, G, and `FR-F2`/`FR-F3` are the testable form of these stages.
-- `open-questions.md` — [OQ-6], [OQ-8], [OQ-13] are this doc's unresolved forks.
+- `open-questions.md` — [OQ-8] (dedup window) is this doc's remaining open fork; [OQ-6] (scheduling) and [OQ-13] (sourcing) are resolved.

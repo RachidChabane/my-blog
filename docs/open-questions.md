@@ -9,27 +9,10 @@ Each entry follows: **question/risk → why it matters → options → resolutio
 
 ## Open
 
-### [OQ-4] Avatar LLM + vector store?
-**Why it matters.** Drives avatar cost, latency (`NFR-2`), and ops burden. Now **MVP-blocking** (avatar is `M-10`).
-**Options.**
-- (a) Managed LLM API (e.g. a light Claude/Haiku-tier or OpenRouter model) + a lightweight vector store (sqlite-vss / a managed vector DB) — lean (recommended).
-- (b) Self-hosted small model + pgvector (lifts more of the bayan stack; higher ops).
-**Resolution path.** Decide at `M-10` build. Default proposal: (a). Embedder must handle FR + EN (`D-004`).
-**Needed from.** Owner direction.
-
 ### [OQ-5] Which embedding model for the avatar index?
 **Why it matters.** Quality/cost of retrieval; coupled to [OQ-4]. Must be multilingual (bilingual content, `D-004`).
 **Options.** (a) a managed multilingual embedding API; (b) a local multilingual embedding model.
 **Resolution path.** Decide at `M-10` build. Default: managed.
-**Needed from.** Owner direction.
-
-### [OQ-6] What schedules and triggers the pipeline twice weekly?
-**Why it matters.** `M-5` depends on it; affects where the pipeline runs and how it stays on the subscription pool (`M-6`).
-**Options.**
-- (a) A scheduled Claude Code routine (cron-style) on the owner's machine.
-- (b) GitHub Actions on a schedule.
-- (c) launchd / system cron invoking the runner.
-**Resolution path.** Owner picks; (a) aligns best with the interactive/tmux backend requirement.
 **Needed from.** Owner direction.
 
 ### [OQ-7] Confirm the proposed cadence/quality/cost/latency targets.
@@ -50,10 +33,10 @@ Each entry follows: **question/risk → why it matters → options → resolutio
 **Resolution path.** Set when analytics (`S-4`) lands.
 **Needed from.** Owner direction.
 
-### [OQ-11] Domain name and brand/visual identity?
-**Why it matters.** Feeds the Stage-2 pitch-deck / Claude Design hand-off and the site's look; the avatar's persona may key off it.
-**Options.** TBD — name, tone, palette, avatar character.
-**Resolution path.** Resolve before Stage 2 (Claude Design).
+### [OQ-11b] Concrete domain name + visual identity (palette, avatar character)?
+**Why it matters.** Positioning is settled (personal practitioner voice — see Resolved [OQ-11]), but the Stage-2 Claude Design hand-off still needs a concrete name, palette, and avatar persona.
+**Options.** e.g. a `rachidchabane.*` domain; tone/palette/avatar character TBD.
+**Resolution path.** Pick before generating `claude-design-prompt.md` (Stage 2).
 **Needed from.** Owner direction.
 
 ### [OQ-12] How hardened must the avatar be against prompt-injection (`NFR-7`)?
@@ -62,15 +45,17 @@ Each entry follows: **question/risk → why it matters → options → resolutio
 **Resolution path.** Decide at `M-10` build; scope to risk.
 **Needed from.** Owner direction.
 
-### [OQ-13] How does the pipeline source news (`FR-B1`)?
-**Why it matters.** Determines coverage and freshness of the candidate topics.
-**Options.** (a) web-search API; (b) curated RSS/feeds of key sources (Anthropic/OpenAI blogs, OSS releases); (c) both.
-**Resolution path.** Owner preference; (c) likely. Decide at `M-3` build.
-**Needed from.** Owner direction.
-
 ## Resolved
 
 **[OQ-1] 01-06-2026** — *Is the RAG avatar in the MVP, or deferred to `S-1`?* — **In the MVP** (`M-10`). Owner chose to ship the avatar with v1; `S-1` retired, MVP estimate grew to ~10–14 weeks.
+
+**[OQ-4] 01-06-2026** — *Avatar LLM + vector store?* — **Managed API + lightweight store** (light hosted model + sqlite-vss / managed vector DB, multilingual embedder). Provider/model settles at `M-10` build.
+
+**[OQ-6] 01-06-2026** — *What schedules the pipeline?* — **A scheduled Claude Code routine**, composing with the interactive/tmux backend (`M-6`) and native web-search sourcing.
+
+**[OQ-11] 01-06-2026** — *Brand positioning?* — **Personal, practitioner voice** (Rachid's personal hub; blog as his AI-engineering notebook). Concrete domain + visual identity still to pick ([OQ-11b]).
+
+**[OQ-13] 01-06-2026** — *How does the pipeline source news?* — **Claude Code's native web-search tools** (optionally specialized search sub-agents); no external search-API/RSS infra. Also clarified editorial scope → `D-006`.
 
 **[OQ-2] 01-06-2026** — *Which SSG and static host?* — **Astro + Cloudflare Pages.** See `D-005`.
 

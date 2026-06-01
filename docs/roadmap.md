@@ -92,7 +92,7 @@ Nice-to-have, not commitments:
 - **W-2.** No dynamic backend / database CMS. Content is markdown in git (`D-001`).
 - **W-3.** No monetization — no ads, paywalls, sponsorships, or payments.
 - **W-4.** No user accounts, login, or multi-author roles.
-- **W-5.** No general tech-news scope. Agentic AI only (agentic coding, Anthropic, OpenAI, open-source LLMs).
+- **W-5.** No general tech-news or non-technical AI commentary. Scope is cutting-edge AI engineering only (agentic AI/coding, frontier + OSS LLMs, building-with-AI); named labs/models are examples, not limits (`D-006`).
 
 ## Parking lot ("good ideas, not a fit yet")
 

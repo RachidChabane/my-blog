@@ -5,7 +5,7 @@
 
 This folder is **owner-only** planning material — the Stage-1 foundation produced by `project-bootstrap`. It is not the website; the site's content lives elsewhere (markdown posts, once the blog is built). The single client-facing artifact will be the pitch deck generated later via Claude Design (Stage 2).
 
-**Project model in one line:** an autonomously AI-maintained blog + portfolio that publishes ~2 fact-checked agentic-AI articles per week (bilingual FR/EN) with zero hand-authoring, showcases Rachid Chabane's AI projects, and answers visitor questions via a RAG chatbot avatar.
+**Project model in one line:** an autonomously AI-maintained blog + portfolio that publishes ~2 fact-checked articles per week (bilingual FR/EN) on cutting-edge AI engineering with zero hand-authoring, showcases Rachid Chabane's AI projects, and answers visitor questions via a RAG chatbot avatar.
 
 All dates: **DD-MM-YYYY** (decision records use ISO `YYYY-MM-DD` in their status line for sortability). Currency, where it appears: **€ (EUR)**. All filenames: kebab-case ASCII.
 
@@ -19,7 +19,7 @@ All dates: **DD-MM-YYYY** (decision records use ISO `YYYY-MM-DD` in their status
 | 4 | [`user-requirements.md`](user-requirements.md) | Personas (P1–P3) + numbered FRs (groups A–G) with acceptance criteria + NFRs. |
 | 5 | [`roadmap.md`](roadmap.md) | MoSCoW with the explicit MVP cut, named Won't list, and risk-to-feature mapping. |
 | 6 | [`open-questions.md`](open-questions.md) | Live log of unresolved decisions (`OQ-N`) and the proposed defaults. |
-| 7 | [`decisions/`](decisions/) | One file per accepted decision: `D-001` (static-first), `D-002` (auto-publish + gates), `D-003` (hybrid build), `D-004` (bilingual FR/EN), `D-005` (Astro + Cloudflare Pages). |
+| 7 | [`decisions/`](decisions/) | One file per accepted decision: `D-001` (static-first), `D-002` (auto-publish + gates), `D-003` (hybrid build), `D-004` (bilingual FR/EN), `D-005` (Astro + Cloudflare Pages), `D-006` (editorial scope). |
 
 `architecture-options.md` is intentionally **not** written — the high-level fork (static vs dynamic) is settled in `D-001`, and the build-approach fork resolved to hybrid in `D-003` ([OQ-3]). No real architectural fork remains open.
 
@@ -32,15 +32,10 @@ All dates: **DD-MM-YYYY** (decision records use ISO `YYYY-MM-DD` in their status
 
 ## What's still open
 
-The blocking decisions before MVP work begins are tracked in `open-questions.md`. The top three now:
+The remaining open items are tracked in `open-questions.md`. The top three now:
 
 1. **[OQ-7]** Confirm the proposed cadence / quality / cost / latency targets (currently `**Assumption**` defaults).
-2. **[OQ-4]** Avatar LLM + vector store (now MVP-blocking, since the avatar is `M-10`).
-3. **[OQ-13]** How the pipeline sources news (web-search vs curated feeds vs both).
+2. **[OQ-11b]** Concrete domain name + visual identity (gates the Stage-2 Claude Design hand-off).
+3. **[OQ-5]** Multilingual embedding model for the avatar index.
 
-Recent resolutions (01-06-2026):
-- **[OQ-1]** Avatar is **in the MVP** (`M-10`).
-- **[OQ-2]** **Astro + Cloudflare Pages** (`D-005`).
-- **[OQ-3]** **Hybrid** build approach (`D-003`).
-- **[OQ-9]** **Bilingual FR/EN** (`D-004`).
-- **[site architecture]** static-first, content in git (`D-001`); **[publish autonomy]** full auto-publish + mandatory gates (`D-002`); **[primary goal]** portfolio-led tiebreaker.
+Recent resolutions (01-06-2026): **[OQ-1]** avatar in MVP (`M-10`) · **[OQ-2]** Astro + Cloudflare Pages (`D-005`) · **[OQ-3]** hybrid build (`D-003`) · **[OQ-4]** managed avatar stack · **[OQ-6]** scheduled Claude Code routine · **[OQ-9]** bilingual FR/EN (`D-004`) · **[OQ-11]** personal practitioner voice · **[OQ-13]** native web-search sourcing + scope clarified (`D-006`) · **[site architecture]** static-first (`D-001`) · **[publish autonomy]** auto-publish + gates (`D-002`) · **[primary goal]** portfolio-led.

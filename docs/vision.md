@@ -3,7 +3,7 @@
 
 ## What this product is, in one sentence
 
-An autonomously AI-maintained website that publishes ~2 fact-checked agentic-AI articles per week and showcases Rachid Chabane's AI projects, with a RAG chatbot avatar that answers visitor questions from the site's own content.
+An autonomously AI-maintained website that publishes ~2 fact-checked articles per week on cutting-edge AI engineering and showcases Rachid Chabane's AI projects, with a RAG chatbot avatar that answers visitor questions from the site's own content.
 
 Two load-bearing directives shape every downstream decision:
 
@@ -56,7 +56,7 @@ By **01-06-2028**:
 
 ## What this product is *not* trying to be
 
-- **Not a general tech-news site.** Scope is agentic AI only: agentic coding, Anthropic, OpenAI, open-source LLMs. Everything else is out of scope (`W-5`).
+- **Not a general tech-news site.** Scope is **cutting-edge AI engineering** — agentic AI and agentic coding, frontier and open-source LLMs, and the craft of building with them — chosen to showcase the owner's expertise (`D-006`). Named labs and models (Anthropic, OpenAI, …) are *examples* of subject matter, not the boundary; non-technical AI commentary and general tech news are out (`W-5`).
 - **Not a hand-curated publication.** No human authoring or editing as a normal path (`W-1`). Correction is an exceptional, out-of-band action (`FR-F3`).
 - **Not a media business.** No ads, paywalls, sponsorships, or payments (`W-3`).
 - **Not a dynamic web app.** No CMS, backend database, accounts, or community platform — content lives as markdown in git (`D-001`, `W-2`, `W-4`).
