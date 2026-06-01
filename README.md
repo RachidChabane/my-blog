@@ -25,10 +25,11 @@ project inventory + groundwork (this stage)
 
 | File | Purpose |
 |------|---------|
-| [`PROJECT-INVENTORY.md`](./PROJECT-INVENTORY.md) | Master inventory of every project in `~/dev-env/0-git/` — what's AI-related, what's portfolio-worthy, and what feeds the blog system. **Start here.** |
+| [`docs/`](./docs/) | **Stage-1 planning foundation** (produced by `project-bootstrap`): vision, content-pipeline, rag-avatar, user-requirements, roadmap, open-questions, decisions. **Start at [`docs/README.md`](./docs/README.md).** Currently `draft` — awaiting owner review. |
+| [`PROJECT-INVENTORY.md`](./PROJECT-INVENTORY.md) | Master inventory of every project in `~/dev-env/0-git/` — what's AI-related, what's portfolio-worthy, and what feeds the blog system. |
 | [`inventory/`](./inventory/) | Per-project deep-dive notes (one file per flagship; grouped files for the rest). |
 
-> `docs/` is intentionally left empty — it's reserved for the `project-bootstrap` skill, which generates `vision.md`, `roadmap.md`, `user-requirements.md`, `decisions/`, etc. there. Inventory notes live outside `docs/` so they don't collide with that skill's resume detection.
+> Inventory notes live *outside* `docs/` (at the repo root) so they don't collide with `project-bootstrap`'s resume detection over the `docs/` slate.
 
 ## Repo
 
