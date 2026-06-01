@@ -1,89 +1,116 @@
-**Purpose:** A self-contained prompt to paste into Claude Design (claude.ai/design) to produce the site's **brand & identity system + a short concept deck** — palette, typography, motion language, the non-figurative avatar concept, and sample layouts (home, post, portfolio, avatar). This is the client-facing/brand artifact in `/docs`; everything else is owner-only. Adapted from the standard pitch-deck scaffold because this project's Stage-2 need is brand definition, not an investor pitch.
+**Purpose:** Two paste-ready Claude Design (claude.ai/design) prompts, **in order**: **(1)** generate & publish the site's **design system** (palette, typography, components, layout, motion, the non-figurative avatar mark); **(2)** generate a **pitch/showcase deck** that *inherits* that published design system. This is the brand/client-facing artifact in `/docs`; everything else is owner-only.
 **Status:** draft.
+
+> **Why two prompts, in this order.** Claude Design is built around a *design system* you set up and **Publish** once; every project created afterward inherits it automatically. So you create the design system **first** (Prompt 1), publish it, and **then** build the deck (Prompt 2) on top of it. Because this site has **no brand yet**, Prompt 1 asks Claude Design to *propose* the brand rather than extract it from existing assets. Step-by-step UI flow: `_deck-bundle/README.md`.
 
 ## How to use this file
 
-1. Confirm Stage 1 is settled enough to brand against: `vision.md` (positioning), `D-006` (editorial scope), `D-007` (brand constraints).
-2. Confirm the brand constraints below still hold — especially the **hard avatar constraint** (no face / no living being) and the **premium / `bayan`-caliber** quality bar.
-3. Pick a working name/wordmark for the cover (the domain is `rachidchabane.*`, exact TLD TBD — `[OQ-11b]`).
-4. Populate `_deck-bundle/01-brand-system-upload/` with any reference assets you already have (fonts you like, a screenshot of `bayan` for *caliber* reference — not to copy its style). Optional but improves the first pass.
-5. Copy everything between the `=== PROMPT ===` markers into Claude Design (a "Slide deck" project, High fidelity). Iterate 2–4 rounds.
-6. **Codify the chosen direction into a published Claude Design *design system*** (palette / typography / components / layout) — flip "Published" on — so the Stage-4 per-screen work (`app-design-prompt.md`, after Stage 3 IA) and the eventual build inherit it automatically. This published system, not the deck PDF, is the real hand-off. See `_deck-bundle/README.md` Step 5.
+1. Confirm Stage 1 is settled enough to brand against: `vision.md`, `D-006` (editorial scope), `D-007` (brand constraints — premium/`bayan`-caliber, **non-figurative avatar**, personal practitioner voice, bilingual FR/EN).
+2. Pick a working name/wordmark (domain `rachidchabane.*`, TLD TBD — `[OQ-11b]`).
+3. **Phase 1 — design system:** paste **Prompt 1** into a Claude Design project, iterate, then **codify the result into your org's design system and flip "Published" on** (see `_deck-bundle/README.md` Steps 3–5).
+4. **Phase 2 — deck:** create a new "Slide deck" project (it now inherits the published system), paste **Prompt 2**, iterate, export.
 
-Extraction one-liner:
+Extraction one-liners:
 
 ```bash
-awk '/^=== PROMPT ===$/{flag=1; next} /^=== END PROMPT ===$/{flag=0} flag' docs/claude-design-prompt.md
+# Prompt 1 — design system
+awk '/^=== DESIGN-SYSTEM PROMPT ===$/{f=1;next} /^=== END DESIGN-SYSTEM PROMPT ===$/{f=0} f' docs/claude-design-prompt.md
+# Prompt 2 — pitch deck
+awk '/^=== PITCH-DECK PROMPT ===$/{f=1;next} /^=== END PITCH-DECK PROMPT ===$/{f=0} f' docs/claude-design-prompt.md
 ```
 
-The block below is the prompt itself, in English (instructions to the tool); the brand must support both **French and English** content (`D-004`).
+Both prompts are in English (instructions to the tool); the brand must support **French + English** content (`D-004`).
 
 ---
 
-```
-=== PROMPT ===
+## Prompt 1 — Design system (run first, then Publish)
 
-You are designing the brand identity and a short concept deck for a personal website. Produce a brand system (palette, typography, motion language, a non-figurative avatar mark) and ~12 concept slides that show it applied. Output in English; the site itself is bilingual French/English, so the type system must handle both.
+```
+=== DESIGN-SYSTEM PROMPT ===
+
+You are creating a reusable DESIGN SYSTEM for a personal website (it will be published so every later project — a pitch deck, then individual screens — inherits it). I do not have an existing brand; propose one. Output a reviewable brand/UI-kit board, in English; the site is bilingual French/English, so the type system must render both.
+
+## What the site is, in two sentences
+This is the personal site of Rachid Chabane, an AI engineer: an autonomously AI-maintained blog on cutting-edge AI engineering (agentic AI, agentic coding, frontier and open-source LLMs) that doubles as a portfolio of his AI projects. It writes, fact-checks, and publishes itself with no human in the loop, and a chatbot avatar answers visitor questions grounded only in the site's own content.
+
+## Brand intent (non-negotiable)
+- Positioning: personal, practitioner voice — a serious, original, cutting-edge AI engineer. Not "tech-startup template."
+- Quality bar: premium and polished, matching the *caliber and overall feel* of the reference project "bayan" — NOT copying its visual style. Assume a scroll-animation/motion library is available; motion is tasteful and earns its place.
+- Verbal tone: first-person, precise, technical-literate, confident, no marketing fluff ("revolutionary", "seamless", "next-gen").
+
+## Produce a design system with these parts
+1. **Palette.** ~3 core colors + neutrals, with explicit light AND dark registers, all with hex codes. No decorative gradients, no mesh blobs.
+2. **Typography.** A distinctive display face + a highly readable long-form body face + a mono for code. Name real font families. Show FR and EN specimens (accents, diacritics, ligatures). The body face must read well at article length.
+3. **Components.** Buttons, cards, navigation, tags/metadata, a **language switcher (FR/EN)**, an article/long-form reading layout, a portfolio project card, and the **avatar mark** (idle + active/"thinking" states).
+4. **Layout patterns.** Spacing scale, grid, page structure — editorial and generous, not dashboard-dense.
+5. **Motion language.** 3–4 signature motions (entrance, hover, avatar "thinking", section transition), described and shown as annotated frames.
+6. **The avatar — HARD CONSTRAINT.** The always-present chatbot avatar must be **distinctive and original** and must **NOT be a face, character, mascot, or any depiction of a living being** — absolute. Explore non-figurative directions only (abstract generative mark, typographic/glyph identity, geometric or particle/field motif, a reactive shape that animates while thinking). Propose 2–3 distinct concepts with idle + active states.
+
+## Refuse explicitly
+Stock photos, generic icon sets, skeuomorphic chrome, tech-startup gradient hero, full-width candy buttons, any face/mascot/living-being avatar, decorative gradients.
+
+## Output
+A design-system board: palette swatches with hex, type specimens (FR + EN), the component set, layout/spacing rules, the motion notes, and the 2–3 avatar concepts. I will review it, refine, then publish it as my design system so later projects inherit it.
+
+=== END DESIGN-SYSTEM PROMPT ===
+```
+
+**After Prompt 1:** review the board, refine (use the pushback lines below), pick one avatar direction, then **codify it into your org design system and flip "Published" on** (`_deck-bundle/README.md` Step 5). Only then run Prompt 2.
+
+---
+
+## Prompt 2 — Pitch / showcase deck (run after the design system is published)
+
+```
+=== PITCH-DECK PROMPT ===
+
+Create a pitch/showcase deck for the personal site described below. USE MY PUBLISHED DESIGN SYSTEM — apply its palette, typography, components, and motion; do NOT redefine palette or typography from scratch. Output ~12 slides in English, 16:9, high fidelity, with short speaker notes (≤ 60 words/slide). Export-ready as PDF.
 
 ## What this is, in two sentences
-This is the personal site of Rachid Chabane, an AI engineer: an autonomously AI-maintained blog on cutting-edge AI engineering (agentic AI, agentic coding, frontier and open-source LLMs) that doubles as a portfolio of his AI projects. It is not a generic dev blog — it writes, fact-checks, and publishes itself with no human in the loop, and a chatbot avatar answers visitor questions grounded only in the site's own content.
+The personal site of Rachid Chabane, an AI engineer: an autonomously AI-maintained blog on cutting-edge AI engineering that doubles as a portfolio of his AI projects. It is not a generic dev blog — it writes, fact-checks, and publishes itself with no human in the loop, and a chatbot avatar answers visitor questions grounded only in the site's own content.
 
-## Audience
-The site is portfolio-led: its primary readers are people evaluating Rachid's AI-engineering capability (recruiters, collaborators, clients) and practitioners who read for sharp, accurate takes on agentic AI. The brand must read as "serious, original, cutting-edge AI engineer," not "tech-startup template."
-After viewing, the audience should conclude: this person operates at the frontier of AI engineering and has the taste to match.
+## Audience & purpose
+Portfolio-led: the deck is for people evaluating Rachid's AI-engineering capability (recruiters, collaborators, clients) and for sharing the project. After viewing, the audience should conclude: this person operates at the frontier of AI engineering and has the taste to match.
 
-## Quality bar (non-negotiable)
-Premium and polished, matching the *caliber and overall feel* of the reference project "bayan" — NOT copying its visual style. Visually engaging, with tasteful scroll-driven motion and micro-interactions (assume a motion/scroll-animation library is available). Restraint over decoration; every effect earns its place.
+## Tone
+First-person, practitioner, confident not boastful; precise and technical-literate; no marketing fluff. Typographic wordmark, no graphic logo.
 
-## Tone and voice
-First-person, practitioner, confident but not boastful; precise, technical-literate, no marketing fluff. The wordmark is typographic (no logo graphic). Avoid buzzword soup ("revolutionary", "seamless", "next-gen", "empower").
+## Slides (~12)
+1. Cover — wordmark (working name on the rachidchabane.* domain) at full size, on the brand system.
+2. The idea — the site writes and maintains itself; one sentence, set typographically.
+3. Positioning — portfolio-led personal hub for a cutting-edge AI engineer (paraphrase vision.md).
+4. How it works — the autonomous pipeline: search → topic → draft (FR+EN) → automated review + fact-check gate → auto-publish (cite content-pipeline.md; M-3, M-4).
+5. Trust by design — why a self-publishing site is credible: the mandatory quality gate (M-4) and the avatar's "I don't know" gate (M-10, FR-E2).
+6. The avatar — the non-figurative chatbot identity from the design system, shown in context (idle + active).
+7–9. Portfolio highlights — one slide each for the flagships (e.g. ijtihad-engine, bayan, sternaway/quality-gate, claude-plan-execute): what it is, the engineering depth, the result.
+10. Bilingual & open — FR/EN, cutting-edge AI-engineering scope (D-006).
+11. Roadmap — MVP / 6 months (01-12-2026) / 18 months (01-06-2028), paraphrased from vision.md.
+12. Contact / the ask — how to reach Rachid; the rachidchabane.* domain.
 
-## The hard avatar constraint
-The site has an always-present chatbot avatar. Its visual identity must be **distinctive and original** and must **NOT be a face, character, mascot, or any depiction of a living being** — this is absolute. Explore non-figurative directions: an abstract generative mark, a typographic/glyph identity, a geometric or particle/field motif, a reactive shape that animates while "thinking." Propose 2–3 distinct concepts.
+## Constraints
+Inherit the design system for all visuals. Refuse: stock photos, generic icons, gradient hero, candy buttons, any face/mascot. Keep the avatar non-figurative.
 
-## Narrative arc (~12 slides)
-1. Cover. Typographic wordmark for the site (working name on the `rachidchabane.*` domain) at full size — no graphic logo. Establish the type and palette in one frame.
-2. The idea. The site writes and maintains itself; one sentence, set typographically.
-3. Positioning. Portfolio-led personal hub for a cutting-edge AI engineer (paraphrase `vision.md`).
-4. Voice & tone. The verbal identity, shown as a few sample headline/standfirst pairs (EN + FR).
-5. Palette. Full palette with hex codes, light + dark registers. Restrained (≈3 core colors + neutrals).
-6. Typography. Display + body + mono stack, with FR and EN specimens (accents, ligatures). Name the families.
-7. Motion language. How scroll + micro-interactions feel — describe 3–4 signature motions (entrance, hover, "avatar thinking", section transition).
-8. The avatar — concept A. A non-figurative identity (no face/being). Show idle + active states.
-9. The avatar — concept B. A second distinct non-figurative direction.
-10. Home page concept. Hero + latest posts + portfolio entry points, applying the system.
-11. Post page concept. A bilingual article layout: title, metadata, sources, language switcher, readable measure.
-12. Portfolio + avatar-in-context. A project showcase card grid and the avatar docked/active on a page.
-
-## Visual direction
-- Palette: restrained, ~3 core colors + neutrals, with explicit light and dark registers and hex codes. No gradients-as-decoration, no mesh blobs.
-- Typography: a distinctive display face + a highly readable body face + a mono for code; all must render French diacritics and English cleanly. Name real font families.
-- Brand mark: typographic wordmark, not a graphic logo.
-- Avatar: non-figurative only (see hard constraint).
-- Refuse explicitly: stock photos, generic icon sets, skeuomorphic chrome, tech-startup gradient hero, full-width candy buttons, any face/mascot.
-- Density: generous whitespace, editorial rather than dashboard-dense.
-
-## Output format
-~12 slides, English, 16:9, high fidelity. Include short speaker notes (≤ 60 words/slide) describing the design intent of each frame. Export-ready as PDF.
-
-=== END PROMPT ===
+=== END PITCH-DECK PROMPT ===
 ```
 
 ## Notes on iterating
 
-The first pass will need 2–4 rounds. Likely pushbacks, in the order Claude Design tends to drift:
+First passes need 2–4 rounds. Pushback lines, in the order Claude Design tends to drift:
 
-### Pushback A — the avatar drifted into a face/creature (most important)
-> The avatar on slides 8–9 depicts a face/creature. That violates a hard constraint: the avatar must NOT be a face, character, mascot, or any living being. Replace with purely non-figurative concepts — abstract generative mark, typographic glyph, geometric/particle field, or a reactive "thinking" shape. Show idle and active states.
+### Pushback A — the avatar drifted into a face/creature (most important; Prompt 1)
+> The avatar depicts a face/creature. That violates a hard constraint: it must NOT be a face, character, mascot, or any living being. Replace with purely non-figurative concepts (abstract generative mark, typographic glyph, geometric/particle field, or a reactive "thinking" shape). Show idle and active states.
 
 ### Pushback B — generic SaaS / tech-startup register
-> The register reads as tech-startup, not a serious AI engineer's personal site. Remove gradient hero, coloured shadows, generic icons, candy buttons. Match the premium, restrained caliber referenced (bayan-level), editorial whitespace, motion used sparingly.
+> The register reads as tech-startup, not a serious AI engineer's personal site. Remove gradient hero, coloured shadows, generic icons, candy buttons. Match the premium, restrained, `bayan`-caliber feel; editorial whitespace; motion used sparingly.
 
 ### Pushback C — fonts swapped for system defaults
-> You substituted system fonts. Restore the specified display/body/mono families and show French diacritics + English specimens. The body face is for reading long articles; the display face is for titles and the wordmark only.
+> You substituted system fonts. Restore the specified display/body/mono families and show French diacritics + English specimens. The body face is for long articles; the display face is for titles and the wordmark only.
 
 ### Pushback D — a graphic logo appeared
-> Remove the graphic logo. The brand is typographic — the cover is the bare wordmark in the display family at full size, no graphic element.
+> Remove the graphic logo. The brand is typographic — the wordmark in the display family, no graphic element.
 
-### Pushback E — motion is decorative, not signature
+### Pushback E — the deck redefined the brand instead of inheriting it (Prompt 2)
+> The deck is using its own colors/fonts. Apply my published design system instead — same palette, typography, components, and motion. Do not invent new brand styling.
+
+### Pushback F — motion is decorative, not signature (Prompt 1)
 > The motion reads as generic fade-ins. Define 3–4 *signature* motions tied to the brand (entrance, hover, avatar "thinking", section transition) and show them as annotated frames.

@@ -25,10 +25,10 @@ All dates: **DD-MM-YYYY** (decision records use ISO `YYYY-MM-DD` in their status
 
 ## Stage 2 hand-off (prepared)
 
-The Claude Design hand-off for the **brand & identity system** is scaffolded and ready to run:
+The Claude Design hand-off is scaffolded and ready, in the order Claude Design expects — **design system first, pitch deck second**:
 
-- [`claude-design-prompt.md`](claude-design-prompt.md) — paste-ready Claude Design prompt (palette, typography, motion, the **non-figurative avatar** concept, sample layouts). Carries the `D-007` constraints.
-- [`_deck-bundle/`](_deck-bundle/) — step-by-step upload/iterate/export guide + asset folders.
+- [`claude-design-prompt.md`](claude-design-prompt.md) — **two** paste-ready prompts: (1) generate & publish the **design system** (palette, typography, components, motion, the **non-figurative avatar** mark — `D-007` constraints baked in); (2) a **pitch deck** that *inherits* the published design system.
+- [`_deck-bundle/`](_deck-bundle/) — step-by-step guide: Phase 1 create & **publish** the design system → Phase 2 build the deck on top → export.
 
 Stage 3 (information architecture, `app-ia.md`) and Stage 5 (`tasks.yaml` hand-off to `claude-plan-execute`) are not yet scaffolded — generate when ready.
 
