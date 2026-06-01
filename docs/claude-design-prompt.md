@@ -59,7 +59,7 @@ First passes need 2–3 rounds. Likely pushbacks:
 > The deck is using its own colors/fonts. Apply my published design system instead — same palette, typography, components, and motion. Do not invent new brand styling.
 
 ### Pushback B — generic SaaS / tech-startup register
-> The register reads as tech-startup, not a serious AI engineer. Remove gradient hero, coloured shadows, generic icons, candy buttons. Match the premium, restrained, editorial feel from the design system — warm-neutral base, single accent, generous whitespace, soft low-opacity shadows, motion used sparingly.
+> The register reads as tech-startup, not a serious AI engineer. Remove gradient hero, coloured shadows, generic icons, candy buttons. Match the premium, restrained, editorial feel from the design system — cool-ink neutrals, single violet accent, generous whitespace, soft low-opacity shadows, motion used sparingly.
 
 ### Pushback C — the avatar shown as a face/creature
 > The avatar must stay non-figurative — no face, character, mascot, or living being. Use the avatar mark from the published design system.

@@ -33,9 +33,11 @@ This is the only field Claude Design *reads as brand direction*, so it is writte
 ```
 Positioning: personal, practitioner voice — a serious, original, cutting-edge AI engineer; NOT a tech-startup template.
 
-Quality bar / feel: premium, restrained, editorial. A warm-neutral base (warm off-white in light, warm graphite in dark — not pure white/black, not cool gray) with a SINGLE distinctive accent color that has character (NOT a generic SaaS blue; choose something with warmth and confidence). Full light AND dark registers, both first-class. Generous whitespace; soft, low-opacity shadows; subtle corner radius (~8px); no decorative gradients, no mesh blobs, no glow. Motion is sparing and tasteful — 3–4 signature moments (entrance, hover, avatar "thinking", section transition), each understated.
+Quality bar / feel: premium, restrained, editorial. Full light AND dark registers, both first-class. Generous whitespace; soft, low-opacity shadows; subtle corner radius (~8px); no decorative gradients, no mesh blobs, no glow. Motion is sparing and tasteful — 3–4 signature moments (entrance, hover, avatar "thinking", section transition), each understated.
 
-Palette: ~3 core colors + neutrals max. One accent only.
+Palette (COOL ink + electric violet — neutrals must be COOL gray, NO warmth: no beige/tan/amber/brown). Exactly ONE accent (the violet); semantic states stay muted and secondary.
+- Dark mode (primary): background #0E0F13 (near-black cool charcoal); text #E8E8EC (cool off-white); borders #232530; accent #7C6BFF (electric indigo-violet).
+- Light mode: background #FAFAFB (cool paper); text #16171C (ink); accent #5B4BE0 (deeper violet).
 
 Typography (this is the intended direction — please use these unless you have a strong reason): display/headings/wordmark = "Fraunces" (a variable optical-size serif, editorial and distinctive); long-form body + UI = "Inter"; code = "JetBrains Mono". All three must render French diacritics and English cleanly — show FR and EN specimens.
 
@@ -48,7 +50,7 @@ Refuse: stock photos, generic icon sets, gradient hero, full-width candy buttons
 Brand mark is typographic (a wordmark in the display face), not a graphic logo.
 ```
 
-> **Why these specifics:** the typography, the warm-neutral-base + single-accent approach, the dual light/dark registers, and the restrained-motion / soft-shadow feel are the **caliber benchmark** the owner is targeting (recorded internally in `D-007` as "premium / on par with the owner's other work"). They are spelled out here as concrete, self-contained instructions because Claude Design only sees what's in this field — it has no access to the reference project. The **exact accent color** and the **avatar concept** are deliberately left for Claude Design to *propose* within these constraints, so the site stands on its own rather than cloning an existing project.
+> **Why these specifics:** the typography, the cool-ink + single-accent palette, the dual light/dark registers, and the restrained-motion / soft-shadow feel are the **caliber benchmark** the owner is targeting (recorded internally in `D-007` as "premium / on par with the owner's other work"). They are spelled out here as concrete, self-contained instructions because Claude Design only sees what's in this field — it has no access to the reference project. The **palette is pinned** to cool-ink + electric violet (the first auto-generated palette came out as warm-graphite + amber, which reads as a clone of well-known products; this cool/violet direction keeps the site distinct). The **avatar concept** remains for Claude Design to *propose* within the non-figurative constraint.
 
 ---
 

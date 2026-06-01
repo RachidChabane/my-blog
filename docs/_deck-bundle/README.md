@@ -48,7 +48,7 @@ Submit.
 ## Step 4 — Review & refine the generated UI kit
 Claude generates a design-system kit (palette, typography, components, layout). Refine with Claude Design's two iteration tools: **chat** (broad changes to the overall design) and **inline comments** (click a specific element on the canvas for a targeted change). A good way to validate is to spin up a throwaway test project (a landing page) and see the kit applied. Keep these pushbacks ready (full set in `../design-system-setup.md` and `../claude-design-prompt.md`):
 - **Avatar drifted into a face/creature** — #1 to catch; non-figurative is **absolute**.
-- **Generic SaaS register** — push toward the premium, restrained, editorial feel (warm-neutral base, single accent, generous whitespace, sparing motion).
+- **Generic SaaS register** — push toward the premium, restrained, editorial feel (cool-ink neutrals, single violet accent, generous whitespace, sparing motion).
 - **Fonts swapped to system defaults** / **a graphic logo appeared** / **palette has too many colors / gradients**.
 
 ## Step 5 — PUBLISH the design system  ← the key step
