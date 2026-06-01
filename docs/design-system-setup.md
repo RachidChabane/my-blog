@@ -50,10 +50,15 @@ Brand mark is typographic (a wordmark), not a graphic logo.
 
 ---
 
+## Notes on the setup
+
+- Open the form from onboarding, or via the **organization picker (lower-left)** → org settings. Setting up a design system needs **admin permissions** and the system is **organization-scoped** (all in-org projects inherit it once published).
+- The form's examples are **all optional** — a brand can be created from the blurb + notes alone. But providing at least one real source (code / `.fig` / a brand PDF / fonts) gives Claude more to extract from, so attach one when you actually have it.
+
 ## After submitting the form
 
-1. Claude generates a **design-system UI kit** (palette, typography, components, layout). Review it.
-2. Refine via chat, e.g.: *"Strip the palette to ~3 core colors + neutrals with light + dark registers, no gradients."* · *"The body font must read at long-article length and render French diacritics — show FR + EN specimens."* · *"The avatar must be non-figurative — no face/creature, ever."*
-3. **Flip the "Published" toggle on.** After that, every project you create (the pitch deck next, the Stage-4 screens later, and the build) inherits this design system automatically.
+1. Claude generates a **design-system UI kit** (palette, typography, components, layout). Review it — a quick way is to spin up a throwaway test project (e.g. a landing page) and see the kit applied.
+2. Refine with the two iteration tools — **chat** (broad changes) and **inline comments** (click an element for a targeted change). Example asks: *"Strip the palette to ~3 core colors + neutrals with light + dark registers, no gradients."* · *"The body font must read at long-article length and render French diacritics — show FR + EN specimens."* · *"The avatar must be non-figurative — no face/creature, ever."* If extraction is weak, add or swap source assets.
+3. **Flip the "Published" toggle on.** After that, every in-org project (the pitch deck next, the Stage-4 screens later, and the build) inherits this design system automatically. You can edit it later via org settings → **Open** → **Remix**.
 
 Then proceed to Phase 2: the pitch deck in `claude-design-prompt.md`.

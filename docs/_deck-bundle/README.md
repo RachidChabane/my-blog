@@ -36,7 +36,7 @@ Go to claude.ai/design; pick/create your org; complete onboarding.
 # Phase 1 — Create & publish the design system (via the form)
 
 ## Step 2 — Open "Set up your design system"
-From onboarding or your org settings, open the **"Set up your design system"** form.
+From onboarding, or via the **organization picker (lower-left)** → org settings, open the **"Set up your design system"** form. Setting up a design system needs **admin permissions**, and the system is **organization-scoped** (every in-org project inherits it once published).
 
 ## Step 3 — Fill the form from the worksheet
 Open `../design-system-setup.md` and paste its values into the matching fields:
@@ -46,28 +46,28 @@ Open `../design-system-setup.md` and paste its values into the matching fields:
 Submit.
 
 ## Step 4 — Review & refine the generated UI kit
-Claude generates a design-system kit (palette, typography, components, layout). Refine via chat. Keep these ready (full set in `../design-system-setup.md` and `../claude-design-prompt.md`):
+Claude generates a design-system kit (palette, typography, components, layout). Refine with Claude Design's two iteration tools: **chat** (broad changes to the overall design) and **inline comments** (click a specific element on the canvas for a targeted change). A good way to validate is to spin up a throwaway test project (a landing page) and see the kit applied. Keep these pushbacks ready (full set in `../design-system-setup.md` and `../claude-design-prompt.md`):
 - **Avatar drifted into a face/creature** — #1 to catch; non-figurative is **absolute**.
 - **Generic SaaS register** — push toward the premium, restrained, `bayan`-caliber feel.
 - **Fonts swapped to system defaults** / **a graphic logo appeared** / **palette has too many colors / gradients**.
 
 ## Step 5 — PUBLISH the design system  ← the key step
-**Flip the "Published" toggle on.** After this, every new project (the deck next, the Stage-4 screens later, the build) inherits the brand automatically. This published system — not any PDF — is the durable output.
+**Flip the "Published" toggle on.** After this, every new in-org project (the deck next, the Stage-4 screens later, the build) inherits the brand automatically. This published system — not any PDF — is the durable output. You can edit it later via org settings → **Open** → **Remix** (a chat interface on the design system itself).
 
 ---
 
 # Phase 2 — Create the pitch deck (inherits the design system)
 
 ## Step 6 — Create the deck project & send the prompt
-Create a new **"Slide deck"** project, **High fidelity** — it now inherits your published design system. Open `../claude-design-prompt.md`, copy the prompt between the `=== PROMPT ===` markers (or run its `awk` one-liner), attach anything in `02-deck-attachments/`, and send.
+Create a **new project** and **describe the deck** — Claude Design is prompt-driven, so there's no fixed "deck type" to pick; the project inherits your published design system automatically. Open `../claude-design-prompt.md`, copy the prompt between the `=== PROMPT ===` markers (or run its `awk` one-liner), add any context from `02-deck-attachments/`, and send. The deck renders as interactive HTML on the canvas.
 
 ## Step 7 — Iterate the deck
-Same tools as Step 4. Deck-specific pushback:
+Same two tools — **chat** (broad changes) and **inline comments** (targeted, click an element). Deck-specific pushback:
 - **The deck redefined the brand instead of inheriting it** — tell it to apply the published design system, not invent styling.
 - Jargon / off-tone slides; slide-count creep.
 
 ## Step 8 — Export
-Export (upper-right) → PDF for sharing (PPTX / HTML / Canva also available).
+Export (upper-right). Options: **PDF** (sharing), **PPTX**, **standalone HTML** (best for the interactive/animated version), **Send to Canva**, **Download as .zip**. (Separately, **Handoff to Claude Code** is the export you'll use later for the *site's screens/build*, not the deck — it packages designs for Claude Code to implement.)
 
 ## Step 9 — Soundness check
 Show the result to one person whose design taste you trust before locking it in.

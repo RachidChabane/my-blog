@@ -1,13 +1,13 @@
 **Purpose:** A paste-ready Claude Design chat prompt that generates a **pitch / showcase deck** which *inherits* the site's published design system. This is **Phase 2** — run it only after the design system is created and **Published** via the setup form (see `design-system-setup.md`).
 **Status:** draft.
 
-> **Order matters.** Phase 1 = create & publish the design system through Claude Design's **"Set up your design system"** form (worksheet: `design-system-setup.md`). Phase 2 (this file) = create a "Slide deck" project — which now inherits the published system — and paste the prompt below. Full UI flow: `_deck-bundle/README.md`.
+> **Order matters.** Phase 1 = create & publish the design system through Claude Design's **"Set up your design system"** form (worksheet: `design-system-setup.md`). Phase 2 (this file) = create a **new project**, which inherits the published system, and paste the deck prompt below (Claude Design is prompt-driven — describing a deck is how you make one). Full UI flow: `_deck-bundle/README.md`.
 
 ## How to use this file
 
 1. Confirm the design system from `design-system-setup.md` is created and **Published** in Claude Design.
-2. Create a new **"Slide deck"** project (it inherits the published design system), High fidelity.
-3. Paste the prompt between the sentinels (or `awk`-extract it), iterate, export PDF.
+2. Create a **new project** (it automatically inherits the published design system) and paste the prompt below — Claude Design is prompt-driven, so describing a deck *is* how you make one; there's no separate "deck type" to select.
+3. Paste the prompt between the sentinels (or `awk`-extract it), iterate via **chat + inline comments**, then export (PDF / PPTX / standalone HTML).
 
 Extraction one-liner:
 
