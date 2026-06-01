@@ -11,7 +11,7 @@ This walks you through Claude Design (claude.ai/design) in the order it's meant 
 ```
 docs/_deck-bundle/
 ├── README.md                       ← you are here
-├── 01-brand-system-upload/         ← optional assets for the setup form (fonts, a bayan caliber-reference screenshot)
+├── 01-brand-system-upload/         ← optional assets for the setup form (a licensed font, logo, or inspiration screenshot — usually empty)
 └── 02-deck-attachments/            ← optional files the deck should reference (usually empty)
 ```
 
@@ -41,14 +41,14 @@ From onboarding, or via the **organization picker (lower-left)** → org setting
 ## Step 3 — Fill the form from the worksheet
 Open `../design-system-setup.md` and paste its values into the matching fields:
 - **"Company name and blurb (or name of design system)"** ← Field 1.
-- **"Provide examples … (all optional)"** ← per the worksheet's checklist. For this site: skip the code/`.fig` options (no front-end yet); optionally drag in fonts you like and a **`bayan` screenshot** (so the "bayan caliber" note lands — Claude doesn't know what bayan is otherwise) from `01-brand-system-upload/`.
+- **"Provide examples … (all optional)"** ← per the worksheet's checklist. For this site: skip the code/`.fig` options (no front-end yet). Nothing is required here — the typographic direction (Fraunces / Inter / JetBrains Mono) and the full brand direction are spelled out concretely in the worksheet's notes field, so Claude can act on them without any upload. Drag in a file from `01-brand-system-upload/` only if you have a specific licensed font, logo, or inspiration screenshot.
 - **"Any other notes?"** ← Field 3 (the brand direction, incl. the non-figurative-avatar hard constraint).
 Submit.
 
 ## Step 4 — Review & refine the generated UI kit
 Claude generates a design-system kit (palette, typography, components, layout). Refine with Claude Design's two iteration tools: **chat** (broad changes to the overall design) and **inline comments** (click a specific element on the canvas for a targeted change). A good way to validate is to spin up a throwaway test project (a landing page) and see the kit applied. Keep these pushbacks ready (full set in `../design-system-setup.md` and `../claude-design-prompt.md`):
 - **Avatar drifted into a face/creature** — #1 to catch; non-figurative is **absolute**.
-- **Generic SaaS register** — push toward the premium, restrained, `bayan`-caliber feel.
+- **Generic SaaS register** — push toward the premium, restrained, editorial feel (warm-neutral base, single accent, generous whitespace, sparing motion).
 - **Fonts swapped to system defaults** / **a graphic logo appeared** / **palette has too many colors / gradients**.
 
 ## Step 5 — PUBLISH the design system  ← the key step

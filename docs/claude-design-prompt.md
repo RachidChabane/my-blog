@@ -36,13 +36,13 @@ First-person, practitioner, confident not boastful; precise and technical-litera
 ## Slides (~12)
 1. Cover — wordmark (working name on the rachidchabane.* domain) at full size, on the brand system.
 2. The idea — the site writes and maintains itself; one sentence, set typographically.
-3. Positioning — portfolio-led personal hub for a cutting-edge AI engineer (paraphrase vision.md).
-4. How it works — the autonomous pipeline: search → topic → draft (FR+EN) → automated review + fact-check gate → auto-publish (cite content-pipeline.md; M-3, M-4).
-5. Trust by design — why a self-publishing site is credible: the mandatory quality gate (M-4) and the avatar's "I don't know" gate (M-10, FR-E2).
+3. Positioning — portfolio-led personal hub for a cutting-edge AI engineer.
+4. How it works — the autonomous pipeline: search → pick topic → draft (FR+EN) → automated review + fact-check gate → auto-publish, with no human in the loop.
+5. Trust by design — why a self-publishing site is credible: the mandatory automated quality/fact-check gate every article must pass, and the avatar's "I don't know" gate (it answers only from the site's own content).
 6. The avatar — the non-figurative chatbot identity from the design system, shown in context (idle + active).
-7–9. Portfolio highlights — one slide each for the flagships (e.g. ijtihad-engine, bayan, sternaway/quality-gate, claude-plan-execute): what it is, the engineering depth, the result.
-10. Bilingual & open — FR/EN, cutting-edge AI-engineering scope (D-006).
-11. Roadmap — MVP / 6 months (01-12-2026) / 18 months (01-06-2028), paraphrased from vision.md.
+7–9. Portfolio highlights — one slide each for 3–4 flagship projects. KEEP THESE AS CLEARLY-MARKED PLACEHOLDERS ("[Project name]", "[what it is]", "[engineering depth]", "[result/metric]") for the owner to fill in, or use any project one-pagers attached with this prompt. Do not invent project names or claims.
+10. Bilingual & open — French + English, scoped to cutting-edge AI engineering.
+11. Roadmap — MVP / 6 months (01-12-2026) / 18 months (01-06-2028); keep milestone wording high-level.
 12. Contact / the ask — how to reach Rachid; the rachidchabane.* domain.
 
 ## Constraints
@@ -59,7 +59,7 @@ First passes need 2–3 rounds. Likely pushbacks:
 > The deck is using its own colors/fonts. Apply my published design system instead — same palette, typography, components, and motion. Do not invent new brand styling.
 
 ### Pushback B — generic SaaS / tech-startup register
-> The register reads as tech-startup, not a serious AI engineer. Remove gradient hero, coloured shadows, generic icons, candy buttons. Match the premium, restrained, `bayan`-caliber feel from the design system; editorial whitespace; motion used sparingly.
+> The register reads as tech-startup, not a serious AI engineer. Remove gradient hero, coloured shadows, generic icons, candy buttons. Match the premium, restrained, editorial feel from the design system — warm-neutral base, single accent, generous whitespace, soft low-opacity shadows, motion used sparingly.
 
 ### Pushback C — the avatar shown as a face/creature
 > The avatar must stay non-figurative — no face, character, mascot, or living being. Use the avatar mark from the published design system.

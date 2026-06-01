@@ -22,31 +22,33 @@ All optional. For this project (no front-end code exists yet — pre-build, bran
 - **Link code on GitHub** — *skip* (no front-end repo yet).
 - **Link code from your computer** — *skip* (nothing to point at yet).
 - **Upload a .fig file** — *skip* unless you have a Figma file.
-- **Add fonts, logos and assets** — *optional*: attach any fonts you already favor, and — if you want the "bayan caliber" benchmark in the notes to actually land — a **screenshot of `bayan`** (Claude has no idea what bayan is otherwise). Inspiration screenshots are fine here.
+- **Add fonts, logos and assets** — *optional*: the typographic direction (Fraunces / Inter / JetBrains Mono) is already named concretely in Field 3, so Claude can source them itself — no upload required. Attach files only if you have a specific licensed font, a logo, or an inspiration screenshot you want it to weigh.
 
 (Once the site has a front-end, you'd later point "Link code" at its frontend folder/repo to keep the system in sync — not now.)
 
 ## Field 3 — "Any other notes?"
 
-Paste (brand direction; condensed from `D-007`, `vision.md`, `D-006`):
+This is the only field Claude Design *reads as brand direction*, so it is written to be fully self-contained — every reference is a concrete palette / typography / feel instruction, with no internal project names or shorthand. Paste verbatim:
 
 ```
-Positioning: personal, practitioner voice — a serious, original, cutting-edge AI engineer; NOT a tech-startup template. Quality bar: premium and polished — match the CALIBER and feel of the "bayan" project (not its visual style); tasteful scroll-driven motion, used sparingly.
+Positioning: personal, practitioner voice — a serious, original, cutting-edge AI engineer; NOT a tech-startup template.
 
-Palette: restrained — ~3 core colors + neutrals, with explicit light AND dark registers; no decorative gradients or mesh blobs.
+Quality bar / feel: premium, restrained, editorial. A warm-neutral base (warm off-white in light, warm graphite in dark — not pure white/black, not cool gray) with a SINGLE distinctive accent color that has character (NOT a generic SaaS blue; choose something with warmth and confidence). Full light AND dark registers, both first-class. Generous whitespace; soft, low-opacity shadows; subtle corner radius (~8px); no decorative gradients, no mesh blobs, no glow. Motion is sparing and tasteful — 3–4 signature moments (entrance, hover, avatar "thinking", section transition), each understated.
 
-Typography: a distinctive display face (titles + wordmark) + a highly readable long-form body face (articles) + a mono (code). Must render French diacritics and English cleanly; show FR and EN specimens.
+Palette: ~3 core colors + neutrals max. One accent only.
+
+Typography (this is the intended direction — please use these unless you have a strong reason): display/headings/wordmark = "Fraunces" (a variable optical-size serif, editorial and distinctive); long-form body + UI = "Inter"; code = "JetBrains Mono". All three must render French diacritics and English cleanly — show FR and EN specimens.
 
 Components needed: long-form article/reading layout, portfolio project card, FR/EN language switcher, tags/metadata, and a chatbot avatar mark with idle + "thinking"/active states.
 
-Motion: 3–4 signature motions (entrance, hover, avatar "thinking", section transition), used sparingly.
-
-HARD CONSTRAINT — the avatar must be distinctive and original and must NOT be a face, character, mascot, or any depiction of a living being. Non-figurative only: abstract generative mark, typographic/glyph identity, or geometric/particle motif.
+HARD CONSTRAINT — the avatar must be distinctive and original and must NOT be a face, character, mascot, or any depiction of a living being. Non-figurative only: abstract generative mark, typographic/glyph identity, or geometric/particle motif. Propose a concept in that space.
 
 Refuse: stock photos, generic icon sets, gradient hero, full-width candy buttons, skeuomorphic chrome, any face/mascot.
 
-Brand mark is typographic (a wordmark), not a graphic logo.
+Brand mark is typographic (a wordmark in the display face), not a graphic logo.
 ```
+
+> **Why these specifics:** the typography, the warm-neutral-base + single-accent approach, the dual light/dark registers, and the restrained-motion / soft-shadow feel are the **caliber benchmark** the owner is targeting (recorded internally in `D-007` as "premium / on par with the owner's other work"). They are spelled out here as concrete, self-contained instructions because Claude Design only sees what's in this field — it has no access to the reference project. The **exact accent color** and the **avatar concept** are deliberately left for Claude Design to *propose* within these constraints, so the site stands on its own rather than cloning an existing project.
 
 ---
 
