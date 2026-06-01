@@ -31,7 +31,11 @@ The Claude Design hand-off is scaffolded and ready, in the order Claude Design e
 - [`claude-design-prompt.md`](claude-design-prompt.md) — **Phase 2.** The **pitch-deck** chat prompt that *inherits* the published design system.
 - [`_deck-bundle/`](_deck-bundle/) — step-by-step guide tying the two phases together (fill form → publish → build deck → export).
 
-Stage 3 (information architecture, `app-ia.md`) and Stage 5 (`tasks.yaml` hand-off to `claude-plan-execute`) are not yet scaffolded — generate when ready.
+## Stage 3 hand-off (drafted)
+
+- [`app-ia.md`](app-ia.md) — **information architecture.** The reconciled source of truth for the public surface: route map, navigation shell, screen inventory (S1–S11), data model, core flows, the single runtime API (avatar), cross-screen invariants, display-mode matrix, and the dependency-ordered implementation order that feeds Stage 5. § 13 lists the Stage-1 amendments it surfaced (search/RSS/about tiers). Feeds Stage 4 (per-screen design in Claude Design, inheriting the published design system) and Stage 5.
+
+Stage 5 (`tasks.yaml` hand-off to `claude-plan-execute`) is not yet scaffolded — generate when `app-ia.md` is approved.
 
 ## Conventions
 
