@@ -22,7 +22,7 @@ All optional. For this project (no front-end code exists yet — pre-build, bran
 - **Link code on GitHub** — *skip* (no front-end repo yet).
 - **Link code from your computer** — *skip* (nothing to point at yet).
 - **Upload a .fig file** — *skip* unless you have a Figma file.
-- **Add fonts, logos and assets** — *optional*: the typographic direction (Fraunces / Inter / JetBrains Mono) is already named concretely in Field 3, so Claude can source them itself — no upload required. Attach files only if you have a specific licensed font, a logo, or an inspiration screenshot you want it to weigh.
+- **Add fonts, logos and assets** — **upload the brand fonts here.** Claude Design renders with substitute web fonts otherwise (it shows a *"Missing brand fonts"* warning). The five variable TTFs — Fraunces (+italic), Inter (+italic), JetBrains Mono — are staged in `_deck-bundle/01-brand-system-upload/`; upload all five. A logo or inspiration screenshot is optional on top of that.
 
 (Once the site has a front-end, you'd later point "Link code" at its frontend folder/repo to keep the system in sync — not now.)
 

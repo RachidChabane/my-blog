@@ -11,7 +11,7 @@ This walks you through Claude Design (claude.ai/design) in the order it's meant 
 ```
 docs/_deck-bundle/
 ├── README.md                       ← you are here
-├── 01-brand-system-upload/         ← optional assets for the setup form (a licensed font, logo, or inspiration screenshot — usually empty)
+├── 01-brand-system-upload/         ← brand fonts to upload (Fraunces / Inter / JetBrains Mono variable TTFs + OFL licenses)
 └── 02-deck-attachments/            ← optional files the deck should reference (usually empty)
 ```
 
@@ -41,7 +41,7 @@ From onboarding, or via the **organization picker (lower-left)** → org setting
 ## Step 3 — Fill the form from the worksheet
 Open `../design-system-setup.md` and paste its values into the matching fields:
 - **"Company name and blurb (or name of design system)"** ← Field 1.
-- **"Provide examples … (all optional)"** ← per the worksheet's checklist. For this site: skip the code/`.fig` options (no front-end yet). Nothing is required here — the typographic direction (Fraunces / Inter / JetBrains Mono) and the full brand direction are spelled out concretely in the worksheet's notes field, so Claude can act on them without any upload. Drag in a file from `01-brand-system-upload/` only if you have a specific licensed font, logo, or inspiration screenshot.
+- **"Provide examples … (all optional)"** ← per the worksheet's checklist. For this site: skip the code/`.fig` options (no front-end yet), but **do upload the fonts** — Claude Design renders with substitute web fonts otherwise (a *"Missing brand fonts"* warning). The five variable TTFs (Fraunces +italic, Inter +italic, JetBrains Mono) are staged in `01-brand-system-upload/`; upload all five via "Add fonts, logos and assets". A logo or inspiration screenshot is optional on top.
 - **"Any other notes?"** ← Field 3 (the brand direction, incl. the non-figurative-avatar hard constraint).
 Submit.
 
