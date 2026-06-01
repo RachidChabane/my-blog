@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+
+# Env / secrets (never commit) — relevant once the blog has code
+.env
+.env.*
+*.local
+secrets/
