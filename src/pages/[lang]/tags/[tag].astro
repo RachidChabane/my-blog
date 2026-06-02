@@ -1,0 +1,195 @@
+---
+/**
+ * S5 — Tag index. `/[lang]/tags/<tag>/`: all published articles for one curated
+ * topic, newest-first, in the SAME item layout as S2 (app-ia §S5 "not distinct
+ * from S2") — ArticleListItem rows + the TagChips rail with THIS tag active (the
+ * reuse both components were built for, task 7). One page per curated vocabulary
+ * tag per locale (covers every chip-rail link; an empty curated tag still gets a
+ * valid empty-state page). No pagination: the key_files list only [tag].astro (a
+ * single segment) and per-tag counts are tiny; the Pagination component reuse is
+ * satisfied by S2. No slugMap → switcher falls back to home (switcherHref hardcodes
+ * blog/<slug>, so a tag slugMap would 404 — memory switcher-blog-hardcode-section-pages).
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { articleIndexStrings, tagStrings } from '@/i18n/ui';
+import {
+  getArticlesByTag,
+  toArticleCard,
+  tagRail,
+  tagLabel,
+  formatCount,
+  unknownArticleTags,
+} from '@/lib/content';
+import type { ArticleCard, RailTag } from '@/lib/content';
+import Base from '@/layouts/Base.astro';
+import ArticleListItem from '@/components/ArticleListItem.astro';
+import TagChips from '@/components/TagChips.astro';
+
+export const getStaticPaths = (async () => {
+  const [articles, tagEntries] = await Promise.all([
+    getCollection('articles'),
+    getCollection('tags'),
+  ]);
+  const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
+  return LOCALES.flatMap((lang) => {
+    // Build-time guard (D3): a published article tag outside the vocabulary would
+    // produce a dangling tag-link / orphan page — fail loudly instead.
+    const orphans = unknownArticleTags(articles, tags, lang);
+    if (orphans.length > 0) {
+      throw new Error(
+        `[tags] published ${lang} article(s) carry tags absent from the vocabulary: ${orphans.join(', ')}. ` +
+          `Add them to src/content/tags/index.json or fix the article frontmatter.`
+      );
+    }
+    return tags.map((t) => {
+      const cards = getArticlesByTag(articles, lang, t.slug).map((e) =>
+        toArticleCard(e, lang, tags)
+      );
+      return {
+        params: { lang, tag: t.slug },
+        props: {
+          lang,
+          slug: t.slug,
+          label: tagLabel(t.slug, lang, tags),
+          cards,
+          rail: tagRail(tags, lang),
+        },
+      };
+    });
+  });
+}) satisfies GetStaticPaths;
+
+const { lang, slug, label, cards, rail } = Astro.props as {
+  lang: Locale;
+  slug: string;
+  label: string;
+  cards: ArticleCard[];
+  rail: RailTag[];
+};
+const t = tagStrings(lang);
+const ai = articleIndexStrings(lang);
+const blogBase = localePath(lang, 'blog'); // chip "All" → unfiltered list
+const tagsDir = localePath(lang, 'tags'); // back-link → S4 directory
+const countLabel = formatCount(cards.length, t.countOne, t.countMany);
+const title = `${label} — rachid chabane`;
+---
+
+<Base title={title} description={`${label} — ${countLabel}`} lang={lang}>
+  <div class="rc-index rc-enter">
+    <a class="rc-back" href={tagsDir}>← {t.allTopics}</a>
+    <header class="rc-pagehd">
+      <span class="t-eyebrow">{t.idxEyebrow}</span>
+      <h1 class="rc-pagehd__title">{label}</h1>
+      <span class="rc-pagehd__meta">{countLabel}</span>
+    </header>
+
+    <div class="rc-filterbar">
+      <TagChips
+        rail={rail}
+        activeSlug={slug}
+        allHref={blogBase}
+        allLabel={ai.allTag}
+        ariaLabel={ai.filterAria}
+      />
+    </div>
+
+    {
+      cards.length > 0 ? (
+        <div class="rc-arows">
+          {cards.map((card) => (
+            <ArticleListItem card={card} readCta={ai.readCta} />
+          ))}
+        </div>
+      ) : (
+        <p class="rc-empty-note">{ai.empty}</p>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  /* IDENTICAL column to S2 (app-ia §S5: not distinct from S2). Ports the S2 index
+     styles (.rc-index/.rc-pagehd*/.rc-filterbar/.rc-arows/.rc-empty-note/.rc-enter)
+     + the article-page .rc-back. Tokens only; Base provides <main> (no second one). */
+  .rc-index {
+    width: 100%;
+    max-width: 824px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+  }
+  @media (max-width: 720px) {
+    .rc-index {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+  .rc-back {
+    align-self: flex-start;
+    margin-top: 52px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg-muted);
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-back:hover {
+    color: var(--accent);
+  }
+  .rc-pagehd {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rc-pagehd__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-head);
+    font-size: var(--text-h1);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
+    color: var(--fg);
+  }
+  .rc-pagehd__meta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--fg-subtle);
+  }
+  .rc-filterbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 22px;
+  }
+  .rc-arows {
+    display: flex;
+    flex-direction: column;
+  }
+  .rc-empty-note {
+    margin: 0;
+    padding: 48px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>

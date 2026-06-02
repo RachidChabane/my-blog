@@ -1,0 +1,172 @@
+---
+/**
+ * S4 — Tag directory. `/[lang]/tags/`: the curated topic vocabulary as a list with
+ * per-topic article counts, each linking to its S5 page (app-ia §S4 "Tag list/cloud
+ * with counts → S5", "not an auto-generated dump … curated vocabulary"). Entries +
+ * ordering (TAG_RAIL_ORDER, count>0) come from tagDirectory(); copy from tagStrings;
+ * chrome from Base. No slugMap → switcher → home (decision shared with blog/work
+ * indexes; memory switcher-blog-hardcode-section-pages). No nav inbound link yet —
+ * reachable by URL and via each S5 page's "All topics" back-link (follow-up: a nav
+ * entry touches shared chrome).
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { LOCALES } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { tagStrings } from '@/i18n/ui';
+import { tagDirectory, formatCount } from '@/lib/content';
+import type { TagDirEntry } from '@/lib/content';
+import Base from '@/layouts/Base.astro';
+
+export const getStaticPaths = (async () => {
+  const [articles, tagEntries] = await Promise.all([
+    getCollection('articles'),
+    getCollection('tags'),
+  ]);
+  const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
+  return LOCALES.map((lang) => ({
+    params: { lang },
+    props: { lang, entries: tagDirectory(articles, tags, lang) },
+  }));
+}) satisfies GetStaticPaths;
+
+const { lang, entries } = Astro.props as {
+  lang: Locale;
+  entries: TagDirEntry[];
+};
+const t = tagStrings(lang);
+const title = `${t.dirTitle} — rachid chabane`;
+---
+
+<Base title={title} description={t.dirMeta} lang={lang}>
+  <div class="rc-tagdir-page rc-enter">
+    <header class="rc-pagehd">
+      <span class="t-eyebrow">{t.dirEyebrow}</span>
+      <h1 class="rc-pagehd__title">{t.dirTitle}</h1>
+      <span class="rc-pagehd__meta">{t.dirMeta}</span>
+    </header>
+
+    {
+      entries.length > 0 ? (
+        <ul class="rc-tagdir">
+          {entries.map((e) => (
+            <li>
+              <a
+                class="rc-tagcard"
+                href={e.href}
+                aria-label={`${e.label} — ${formatCount(e.count, t.countOne, t.countMany)}`}
+              >
+                <span class="rc-tagcard__label">{e.label}</span>
+                <span class="rc-tagcard__count">{e.count}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="rc-empty-note">{t.dirEmpty}</p>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  /* Inner content column (Base provides <main>). Same 824px column + header block
+     as the article index; a responsive auto-fill grid of topic cards. Tokens only.
+     The accessible name is the anchor's aria-label ("agents — 3 posts"); the inner
+     spans render the visual label + count. */
+  .rc-tagdir-page {
+    width: 100%;
+    max-width: 824px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+  }
+  @media (max-width: 720px) {
+    .rc-tagdir-page {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+  .rc-pagehd {
+    padding-top: 52px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rc-pagehd__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-head);
+    font-size: var(--text-h1);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
+    color: var(--fg);
+  }
+  .rc-pagehd__meta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--fg-subtle);
+  }
+  .rc-tagdir {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .rc-tagcard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition:
+      border-color var(--dur-hover) var(--ease-soft),
+      color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-tagcard:hover {
+    border-color: var(--border);
+  }
+  .rc-tagcard__label {
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: var(--text-h3);
+    color: var(--fg);
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-tagcard:hover .rc-tagcard__label {
+    color: var(--accent);
+  }
+  .rc-tagcard__count {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg-subtle);
+    flex-shrink: 0;
+  }
+  .rc-empty-note {
+    margin: 0;
+    padding: 48px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>
