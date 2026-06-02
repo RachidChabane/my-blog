@@ -27,7 +27,9 @@ test.describe('theme toggle', () => {
     expect(stored).toBe('dark');
   });
 
-  test('applies a stored dark theme on first paint (no flash)', async ({ page }) => {
+  test('applies a stored dark theme on first paint (no flash)', async ({
+    page,
+  }) => {
     await page.addInitScript(() => localStorage.setItem('rc-theme', 'dark'));
     await page.goto('/en/');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');

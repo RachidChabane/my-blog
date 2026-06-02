@@ -52,7 +52,9 @@ describe('design tokens contract', () => {
   });
 
   it('@font-face uses absolute /fonts/ URLs and every referenced TTF exists', () => {
-    const urls = [...css.matchAll(/url\((['"]?)([^'")]+)\1\)/g)].map((m) => m[2]);
+    const urls = [...css.matchAll(/url\((['"]?)([^'")]+)\1\)/g)].map(
+      (m) => m[2]
+    );
     expect(urls.length).toBeGreaterThanOrEqual(5);
     for (const u of urls) {
       expect(u.startsWith('/fonts/')).toBe(true);
@@ -61,7 +63,13 @@ describe('design tokens contract', () => {
   });
 
   it('exposes the space / radius / motion scales', () => {
-    for (const t of ['--sp-4', '--radius', '--radius-pill', '--ease-soft', '--dur-hover']) {
+    for (const t of [
+      '--sp-4',
+      '--radius',
+      '--radius-pill',
+      '--ease-soft',
+      '--dur-hover',
+    ]) {
       expect(css).toContain(t);
     }
   });

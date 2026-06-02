@@ -119,9 +119,12 @@
   --error: var(--error-l);
 
   --shadow-xs: 0 1px 1px rgba(18, 19, 34, 0.05);
-  --shadow-sm: 0 1px 2px rgba(18, 19, 34, 0.06), 0 1px 3px rgba(18, 19, 34, 0.06);
-  --shadow-md: 0 2px 4px rgba(18, 19, 34, 0.05), 0 6px 16px rgba(18, 19, 34, 0.08);
-  --shadow-lg: 0 12px 32px rgba(18, 19, 34, 0.12), 0 4px 8px rgba(18, 19, 34, 0.06);
+  --shadow-sm:
+    0 1px 2px rgba(18, 19, 34, 0.06), 0 1px 3px rgba(18, 19, 34, 0.06);
+  --shadow-md:
+    0 2px 4px rgba(18, 19, 34, 0.05), 0 6px 16px rgba(18, 19, 34, 0.08);
+  --shadow-lg:
+    0 12px 32px rgba(18, 19, 34, 0.12), 0 4px 8px rgba(18, 19, 34, 0.06);
 }
 
 [data-theme='dark'] {
@@ -162,7 +165,8 @@
    (The .t-* role classes that consume these live in global.css.) */
 :root {
   --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace;
 
   --fraunces-display: 'opsz' 132, 'wght' 460, 'SOFT' 0, 'WONK' 0;

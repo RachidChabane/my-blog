@@ -7,7 +7,10 @@ export type Theme = 'light' | 'dark';
 export const STORAGE_KEY = 'rc-theme';
 
 /** Resolve the effective theme from a (possibly invalid) stored value + system preference. */
-export function resolveTheme(stored: string | null, systemPrefersDark: boolean): Theme {
+export function resolveTheme(
+  stored: string | null,
+  systemPrefersDark: boolean
+): Theme {
   if (stored === 'light' || stored === 'dark') return stored;
   return systemPrefersDark ? 'dark' : 'light';
 }
@@ -25,7 +28,9 @@ function systemPrefersDark(): boolean {
 }
 
 export function getCurrentTheme(): Theme {
-  return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  return document.documentElement.getAttribute('data-theme') === 'dark'
+    ? 'dark'
+    : 'light';
 }
 
 /** Apply to the DOM and persist the choice. */
