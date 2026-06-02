@@ -22,7 +22,9 @@ test.describe('masthead — landmarks, wordmark, nav', () => {
     await expect(page.locator('header nav a[href="/fr/about/"]')).toBeVisible();
   });
 
-  test('EN: wordmark→/en/; nav links are the /en/ parallels', async ({ page }) => {
+  test('EN: wordmark→/en/; nav links are the /en/ parallels', async ({
+    page,
+  }) => {
     await page.goto('/en/');
     await expect(page.locator('header a.masthead__wordmark')).toHaveAttribute(
       'href',
@@ -35,7 +37,9 @@ test.describe('masthead — landmarks, wordmark, nav', () => {
 });
 
 test.describe('search affordance (inert in task 6)', () => {
-  test('FR: present in the masthead with an accessible name', async ({ page }) => {
+  test('FR: present in the masthead with an accessible name', async ({
+    page,
+  }) => {
     await page.goto('/fr/');
     const search = page.locator('header [data-search-trigger]');
     await expect(search).toBeVisible();

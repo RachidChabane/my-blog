@@ -10,7 +10,9 @@ const EMOJI = /\p{Emoji_Presentation}/u;
 
 describe('chrome string table (CHROME)', () => {
   it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
-    expect(Object.keys(CHROME.fr).sort()).toEqual(Object.keys(CHROME.en).sort());
+    expect(Object.keys(CHROME.fr).sort()).toEqual(
+      Object.keys(CHROME.en).sort()
+    );
   });
 
   it('every chrome string is a non-empty string in both locales', () => {

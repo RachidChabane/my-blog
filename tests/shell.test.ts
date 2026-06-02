@@ -36,7 +36,10 @@ describe('chrome components — INV-9 (no emoji) + tokens-only colors', () => {
     it(`${path}: hard-codes no colors (tokens only)`, () => {
       const styles = styleBlocks(src);
       // Non-empty guard: an empty <style> would pass the no-hex checks vacuously.
-      expect(styles.trim().length, 'expected a non-empty <style> block').toBeGreaterThan(0);
+      expect(
+        styles.trim().length,
+        'expected a non-empty <style> block'
+      ).toBeGreaterThan(0);
       expect(styles).not.toMatch(/#[0-9a-fA-F]{3,6}/); // no hex literal
       expect(styles).not.toMatch(/\brgb\(/); // no rgb()/rgba()
       expect(styles).not.toMatch(/\bhsl\(/); // no hsl()/hsla()

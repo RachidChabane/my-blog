@@ -29,7 +29,11 @@ const year = new Date().getFullYear(); // build-time; not asserted (year-brittle
     <span class="footer__word"
       >rachid chabane<span class="footer__dot">.</span></span
     >
-    <a class="footer__rss" href={`/${lang}/rss.xml`} aria-label={c.footerRssAria}>
+    <a
+      class="footer__rss"
+      href={`/${lang}/rss.xml`}
+      aria-label={c.footerRssAria}
+    >
       <svg
         width="14"
         height="14"
@@ -78,7 +82,9 @@ const year = new Date().getFullYear(); // build-time; not asserted (year-brittle
   }
   .footer__word {
     font-family: var(--font-display);
-    font-variation-settings: 'opsz' 28, 'wght' 500;
+    font-variation-settings:
+      'opsz' 28,
+      'wght' 500;
     font-size: 17px;
     letter-spacing: -0.01em;
     color: var(--fg);

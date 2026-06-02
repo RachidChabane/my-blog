@@ -17,7 +17,8 @@ interface Props {
 
 const { lang, slugMap } = Astro.props;
 const c = chrome(lang);
-const ariaFor = (l: Locale): string => (l === 'fr' ? c.switchToFr : c.switchToEn);
+const ariaFor = (l: Locale): string =>
+  l === 'fr' ? c.switchToFr : c.switchToEn;
 ---
 
 <div class="lang-switch" role="group" aria-label={c.langGroupAria}>
