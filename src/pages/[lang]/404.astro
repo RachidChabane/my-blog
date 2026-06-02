@@ -28,7 +28,12 @@ const s = notFoundStrings(lang);
       >
         {s.ctaBlog}
       </a>
-      {/* TODO: add search link once S9 (task-search) is built */}
+      <a
+        href={localePath(lang, 'search')}
+        class="not-found__cta not-found__cta--secondary"
+      >
+        {s.ctaSearch}
+      </a>
     </nav>
   </section>
 </Base>
