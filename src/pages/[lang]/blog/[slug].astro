@@ -1,0 +1,183 @@
+---
+/**
+ * S3 — Article reading surface. `/[lang]/blog/[slug]/`, one page per PUBLISHED
+ * article per locale (FR/EN). A single ~68ch reading column (Fraunces title, meta
+ * row, Inter long-form body with mono code + pull-quote), a Sources list with
+ * resolving out-links, and prev/next by shared tag.
+ *
+ * View-data is precomputed in getStaticPaths (sources / prevNext / slugMap / meta
+ * tags) from the pure helpers in src/lib/content.ts; the body only calls
+ * render(entry) for the markdown <Content/>. Passing slugMap → Base is the ONLY
+ * wiring the parallel-translation language switch needs (switcherHref already
+ * resolves /<lang>/blog/<slug>/ when the counterpart is published; NFR-11 home
+ * fallback otherwise). Coexists with [...page].astro (the index): disjoint path
+ * sets (no article slug is a bare page number).
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { articleDetailStrings } from '@/i18n/ui';
+import {
+  getPublishedArticles,
+  getPrevNextByTag,
+  buildSlugMap,
+  toSourceViews,
+  readingLabel,
+  excerpt,
+  tagLabel,
+} from '@/lib/content';
+import type { PrevNextNav, SourceView } from '@/lib/content';
+import Base from '@/layouts/Base.astro';
+import Prose from '@/components/Prose.astro';
+import SourceList from '@/components/SourceList.astro';
+import PrevNext from '@/components/PrevNext.astro';
+
+export const getStaticPaths = (async () => {
+  const [articles, tagEntries] = await Promise.all([
+    getCollection('articles'),
+    getCollection('tags'),
+  ]);
+  const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
+  return LOCALES.flatMap((lang) =>
+    getPublishedArticles(articles, lang).map((entry) => ({
+      params: { lang, slug: entry.data.slug },
+      props: {
+        lang,
+        entry,
+        sources: toSourceViews(entry.data.sources),
+        prevNext: getPrevNextByTag(articles, entry, lang, tags),
+        slugMap: buildSlugMap(articles, entry.data.translationKey),
+        metaTags: entry.data.tags.map((t) => tagLabel(t, lang, tags)),
+      },
+    }))
+  );
+}) satisfies GetStaticPaths;
+
+const { lang, entry, sources, prevNext, slugMap, metaTags } = Astro.props as {
+  lang: Locale;
+  entry: CollectionEntry<'articles'>;
+  sources: SourceView[];
+  prevNext: PrevNextNav;
+  slugMap: Partial<Record<Locale, string>>;
+  metaTags: string[];
+};
+
+const s = articleDetailStrings(lang);
+const { Content } = await render(entry); // ← the load-bearing call (plan G1)
+const dek = excerpt(entry.body);
+const eyebrow = `${metaTags[0]} · ${s.maintained}`;
+const hasBoth = Boolean(slugMap.fr && slugMap.en);
+const metaItems = [
+  entry.data.publishDate,
+  ...metaTags,
+  readingLabel(entry.body),
+  ...(hasBoth ? [s.bilingualNote] : []),
+];
+const title = `${entry.data.title} — rachid chabane`;
+---
+
+<Base title={title} description={dek} lang={lang} slugMap={slugMap}>
+  <article class="rc-article rc-enter">
+    <a class="rc-back" href={localePath(lang, 'blog')}>← {s.back}</a>
+    <span class="rc-eyebrow">{eyebrow}</span>
+    <h1 class="rc-article__title">{entry.data.title}</h1>
+    <div class="rc-meta">
+      {
+        metaItems.map((m, i) => (
+          <>
+            {i > 0 && <span class="rc-meta__dot" />}
+            <span>{m}</span>
+          </>
+        ))
+      }
+    </div>
+
+    <Prose><Content /></Prose>
+    <SourceList sources={sources} heading={s.sourcesH} />
+    <PrevNext
+      nav={prevNext}
+      prevDir={s.prevDir}
+      nextDir={s.nextDir}
+      ariaLabel={s.prevNextAria}
+    />
+  </article>
+</Base>
+
+<style>
+  /* Reading column. max-width: var(--measure) = 68ch (the task's "~68ch", pinned
+     token). Base provides <main>; this is the inner column. Ports site.css
+     .rc-article / .rc-back / .rc-eyebrow / .rc-article__title + screens.css
+     is-narrow padding-top. Tokens only. */
+  .rc-article {
+    width: 100%;
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: 52px 40px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 720px) {
+    .rc-article {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+  .rc-back {
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg-muted);
+    padding: 0 0 28px;
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-back:hover {
+    color: var(--accent);
+  }
+  .rc-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-meta);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rc-article__title {
+    margin: 12px 0 16px;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-head);
+    font-size: var(--text-h1);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    max-width: 18ch;
+  }
+  .rc-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-subtle);
+  }
+  .rc-meta__dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--fg-subtle);
+    display: inline-block;
+  }
+  /* translate-only entrance (reduced-motion neutralized via tokens.css) */
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>
