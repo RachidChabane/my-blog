@@ -19,6 +19,9 @@ secrets/
 dist/
 .astro/
 
+# Avatar index artifact (deploy-time; a real one needs EMBEDDINGS_API_KEY)
+public/avatar-index.json
+
 # Dependencies
 node_modules/
 
