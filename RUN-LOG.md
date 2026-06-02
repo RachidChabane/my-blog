@@ -123,3 +123,11 @@ Applied the RELAUNCH RULE (safe — no concurrent cpe):
 **Watch next**: whether the complex opus/max plans (6, 23, …) now complete under the 45m timeout — that validates the root-cause fix. CAP still armed: a plan that fails AGAIN under 45m → root-cause that task individually.
 
 Note: cpe's cross-task memory recorded a lesson during the run — "use `\p{Cc}/gu`, not `\u`-escaped control ranges, in sanitizers (BLOCK lint)" — i.e. the avatar guard's input sanitizer hit `no-control-regex` and the agents self-corrected. No action needed.
+
+---
+
+## 2026-06-02 09:04 — plan_timeout fix VALIDATED + task 4/11 reruns
+
+- **Task 4 re-run → DONE** (commit `601402e`) — confirms the eslint Node-globals fix cleared its original block.
+- **Task 6 plan SUCCEEDED** under the 45m timeout: `plans/task-6/plan.md` (36KB) written, status now `reviewing`. This is the task whose plan failed twice at the old 0.8×20m=960s cutoff → **the plan_timeout=45 root-cause fix is validated.**
+- Done now: [1,2,3,4,5,17,19]; task 6 reviewing; task 11 pending (reset, will re-run); task 23 `planning` is stale pre-relaunch status (not yet re-claimed; serial loop is on task 6). Loop healthy. No intervention needed.
