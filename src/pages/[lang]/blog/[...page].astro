@@ -1,0 +1,181 @@
+---
+/**
+ * S2 — Article index. `/[lang]/blog/` (page 1) + `/[lang]/blog/2/`, … via Astro's
+ * paginate() on a `[...page]` rest route (plan decision #2): idiomatic, SEO/deep-
+ * linkable, no client JS. The rest route is required — a rest segment cannot be
+ * named index.astro, and `[page].astro` (single segment) would collide with task
+ * 8's `[slug].astro`; `[...page]` only risks a slug literally named "2".
+ *
+ * View-models + ordering come from src/lib/content.ts; copy from src/i18n/ui.ts;
+ * chrome (masthead/footer/avatar/skip-link) from Base. No slugMap → the language
+ * switcher falls back to the localized home (plan decision #6; NFR-11 holds since
+ * both /fr/blog/ and /en/blog/ exist).
+ */
+import type { GetStaticPaths, Page } from 'astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { articleIndexStrings } from '@/i18n/ui';
+import {
+  ARTICLES_PER_PAGE,
+  getPublishedArticles,
+  toArticleCard,
+  tagRail,
+} from '@/lib/content';
+import type { ArticleCard, RailTag } from '@/lib/content';
+import Base from '@/layouts/Base.astro';
+import ArticleListItem from '@/components/ArticleListItem.astro';
+import TagChips from '@/components/TagChips.astro';
+import Pagination from '@/components/Pagination.astro';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const [articles, tagEntries] = await Promise.all([
+    getCollection('articles'),
+    getCollection('tags'),
+  ]);
+  const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
+  return LOCALES.flatMap((lang) => {
+    const cards = getPublishedArticles(articles, lang).map((e) =>
+      toArticleCard(e, lang, tags)
+    );
+    return paginate(cards, {
+      params: { lang },
+      props: { lang, rail: tagRail(tags, lang) },
+      pageSize: ARTICLES_PER_PAGE,
+    });
+  });
+}) satisfies GetStaticPaths;
+
+const { page, lang, rail } = Astro.props as {
+  page: Page<ArticleCard>;
+  lang: Locale;
+  rail: RailTag[];
+};
+const s = articleIndexStrings(lang);
+const blogBase = localePath(lang, 'blog'); // "/<lang>/blog/"
+const title = `${s.title} — rachid chabane`;
+---
+
+<Base title={title} lang={lang}>
+  <div class="rc-index rc-enter">
+    <header class="rc-pagehd">
+      <span class="t-eyebrow">{s.eyebrow}</span>
+      <h1 class="rc-pagehd__title">{s.title}</h1>
+      <span class="rc-pagehd__meta">{page.total} {s.countSuffix}</span>
+    </header>
+
+    <div class="rc-filterbar">
+      <TagChips
+        rail={rail}
+        activeSlug={null}
+        allHref={blogBase}
+        allLabel={s.allTag}
+        ariaLabel={s.filterAria}
+      />
+    </div>
+
+    {
+      page.data.length > 0 ? (
+        <div class="rc-arows">
+          {page.data.map((card) => (
+            <ArticleListItem card={card} readCta={s.readCta} />
+          ))}
+        </div>
+      ) : (
+        <p class="rc-empty-note">{s.empty}</p>
+      )
+    }
+
+    <Pagination
+      currentPage={page.currentPage}
+      lastPage={page.lastPage}
+      baseUrl={blogBase}
+      prevUrl={page.url.prev}
+      nextUrl={page.url.next}
+      prevLabel={s.prev}
+      nextLabel={s.next}
+      ariaLabel={s.pagerAria}
+    />
+  </div>
+</Base>
+
+<style>
+  /* Centered content column. Merges site.css .rc-main base + screens.css
+     .rc-main.rc-index (824px). Base already provides <main>; this is just the
+     inner column (no second <main>). Tokens only. */
+  .rc-index {
+    width: 100%;
+    max-width: 824px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+  }
+  @media (max-width: 720px) {
+    .rc-index {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+
+  .rc-pagehd {
+    padding-top: 52px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rc-pagehd__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-head);
+    font-size: var(--text-h1);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
+    color: var(--fg);
+  }
+  .rc-pagehd__meta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--fg-subtle);
+  }
+
+  .rc-filterbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 22px;
+  }
+
+  .rc-arows {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rc-empty-note {
+    margin: 0;
+    padding: 48px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+
+  /* Translate-only entrance (no opacity fade) so content is never hidden if the
+     animation is paused; prefers-reduced-motion neutralizes it via tokens.css. */
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>
