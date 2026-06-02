@@ -220,3 +220,13 @@ Hygiene: gitignored `.playwright-mcp/` (visual-check scratch) so it can't be swe
 
 **Task 25 DONE** — `ea98ad7 feat: draft + review + humanize (style-auditor as auditor)` (+ WIP 268c755/d6e89e3/4399bf1/3bf4e57: house_style.md, draft prompt builders, fixtures, offline test suite). The content-engine draft→review→humanize stages with the style-auditor as quality auditor, offline-tested (fakes). Passed its one-shot pipeline gate (pytest -q + ruff) first try. **20/30 done** [+25].
 Scheduler advanced to **task 18 "feat: home/hub (S1)" — planning** (tmux `cpe-4b67b155`, 23:58) → the pending HOME hero. Home visual re-check is armed for when task 18 lands. Task 10 still zombie, task 16 still blocked. Effective-stuck = 2 < tripwire(3), cpe healthy (2 procs) → RIDE. Pushed task-25 commits.
+
+## 2026-06-03 01:15 — CORRECTION: task 10 = HOME (not task 18); task 18 (avatar index) DONE; end-game mapped
+
+**Task-number map correction** (I had wrongly inferred task 18 = home from a tasks.yaml line position; the real flat `tasks[]` order is authoritative):
+- **task 10 = "feat: home / hub (S1)" = THE HOME hero.** It is the socket-error zombie on the reset ledger. The live /[lang]/ placeholder "Bientôt disponible" is task 10's *unbuilt* output — NOT a regression, NOT a yet-to-come task. It builds only after `--reset 10` + relaunch.
+- **task 18 = "deploy-time avatar index builder"** (chunk.ts, index-build.ts, build-avatar-index CLI, avatar-index.json artifact) — NOT the home. **Now DONE** (`8746a7a`), passed its one-shot gate. **21/30** [+18].
+**Dependency graph (from tasks.yaml depends_on):** task 29 (full-site e2e) deps=[10,13,14,15,16,20]; task 30 (launch gate) deps=[22,28,29]. → **29 & 30 are GATED behind task 10 (home) + task 16 (404)**, so they stay PENDING (won't run early / won't fail prematurely) until 10+16 build. This protects the end-game.
+**End-game path:** ride eligible tasks (22→21→26→27→28, in scheduler order) to the natural loop drain (when nothing is eligible because 29 needs 10+16). At drain → ONE controlled relaunch with `claude-plan-execute --reset 10 16` → fresh scheduler builds home(10) + 404(16) → unblocks 29 → 30 → 30/30. Did NOT reset 10 mid-run: the running process holds it in `_attempted` (a reset wouldn't re-claim it) and a mid-run state.json edit races the live cpe; serial scheduler ⇒ no parallelism lost by waiting.
+**HOME visual re-check now correctly armed for TASK 10's completion (post-relaunch), not task 18.** Task 10 plan-socket-error retry watch stays armed (146k over-long plan → if it recurs, lower plan effort / pre-seed plan.md / split; advisor on the lever).
+Now: task 22 (avatar red-team) planning, effective-stuck=2, cpe healthy → RIDE. Pushed task-18 commits.
