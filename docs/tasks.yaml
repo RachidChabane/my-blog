@@ -21,6 +21,12 @@ defaults:
   # plans mid-think before they wrote plan.md (observed: tasks 6, 23). 45m -> fallback
   # at 36m, well past real plan think-time. Implement/review timeouts left at default.
   plan_timeout_minutes: 45
+  # Same idle-fallback issue as plan (0.8*review_timeout): default 15m fired at
+  # 720s and cut long opus/max reviews off before they wrote review-N.md
+  # (observed: task 14 review_missing at exactly 721s; task 8 review also hit 721s
+  # but won the race). 30m -> fallback at 24m. Implement (60m) left as-is: it
+  # streams output continuously so it doesn't trip the idle detector.
+  review_timeout_minutes: 30
   max_review_rounds: 3
   on_max_review_rounds: fail   # autonomous-safe: a plan that can't pass review blocks+alerts, never auto-approves
   parallelism: 1

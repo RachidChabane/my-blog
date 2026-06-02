@@ -131,3 +131,15 @@ Note: cpe's cross-task memory recorded a lesson during the run — "use `\p{Cc}/
 - **Task 4 re-run → DONE** (commit `601402e`) — confirms the eslint Node-globals fix cleared its original block.
 - **Task 6 plan SUCCEEDED** under the 45m timeout: `plans/task-6/plan.md` (36KB) written, status now `reviewing`. This is the task whose plan failed twice at the old 0.8×20m=960s cutoff → **the plan_timeout=45 root-cause fix is validated.**
 - Done now: [1,2,3,4,5,17,19]; task 6 reviewing; task 11 pending (reset, will re-run); task 23 `planning` is stale pre-relaunch status (not yet re-claimed; serial loop is on task 6). Loop healthy. No intervention needed.
+
+---
+
+## 2026-06-02 14:01 — Same idle-fallback in REVIEW phase (task 14) → raise review_timeout
+
+Build reached 12/30 done [1,2,3,4,5,6,7,8,11,17,19,23] smoothly. **Task 14 (about) BLOCKED** — `block_reason: review_missing`: its plan succeeded (37KB plan.md) but the **review agent didn't write review-1.md**. usage.jsonl: review phase ran **721s = 0.8×15m** (the review idle-fallback) → cut off before writing the file. Confirmed same mechanism as the plan failures, one phase over: a *successful* review (task 8) ALSO hit 721s but won the write-race. So opus/max reviews (120–160k output) sit right at the 12m edge.
+
+**Fix**: `review_timeout_minutes: 30` in `docs/tasks.yaml` (idle-fallback → 24m). Validated: `--explain` → plan 45 / review 30 / implement 60, 0 loader warnings. Implement (60m) left as-is — it streams output continuously so it doesn't go idle and trip the detector (no implement has failed this way). **Effect on next relaunch.**
+
+**Decision**: did NOT interrupt the healthy productive loop (task 12 reviewing, ~15 tasks still to do) to apply this sooner — total wall-clock is serial either way (advisor principle), and review-blocked tasks auto-retry on relaunch. Accept that ~1–2 more reviews may hit the old 720s under the current run and block; they join the ledger. If review-blocks accumulate badly (≥3–4 fast), reconsider a proactive relaunch.
+
+**Deferred-reset ledger (blocked, `--reset` on next relaunch): task 14** (+ any further review/gate blocks). plan/review timeouts now 45/30 for the relaunch.
