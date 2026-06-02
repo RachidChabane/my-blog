@@ -23,6 +23,7 @@ import {
   getArticlesByTag,
   tagDirectory,
   unknownArticleTags,
+  getRelatedArticles,
 } from '@/lib/content';
 import type {
   ArticleEntryLike,
@@ -916,5 +917,72 @@ describe('toProjectCard', () => {
     expect(card.href).toBe('/en/work/mcp-secrets-vault/');
     expect(card.isLive).toBe(true);
     expect(card.isLive).toBe(isLiveStatus(e.data.status));
+  });
+});
+
+/* ----------------------------------------- getRelatedArticles (S7, task 13) */
+describe('getRelatedArticles — resolve project relatedArticles', () => {
+  it('returns [] for undefined and for empty keys', () => {
+    expect(getRelatedArticles([entry()], undefined, 'fr')).toEqual([]);
+    expect(getRelatedArticles([entry()], [], 'fr')).toEqual([]);
+  });
+
+  it('resolves keys to published current-lang articles, preserving key order', () => {
+    const articles = [
+      entry({
+        translationKey: 'k1',
+        slug: 's1',
+        title: 'T1',
+        publishDate: '01-01-2026',
+        body: 'word '.repeat(400), // 400 words → 2 min
+      }),
+      entry({
+        translationKey: 'k2',
+        slug: 's2',
+        title: 'T2',
+        publishDate: '02-02-2026',
+        body: 'tiny', // 1 word → 1 min
+      }),
+    ];
+    // given order ['k2','k1'] is preserved (NOT input/date order)
+    const out = getRelatedArticles(articles, ['k2', 'k1'], 'fr');
+    expect(out.map((r) => r.href)).toEqual(['/fr/blog/s2/', '/fr/blog/s1/']);
+    // each row maps title / dateDisplay / readingLabel from its article
+    expect(out[0]).toEqual({
+      href: '/fr/blog/s2/',
+      title: 'T2',
+      dateDisplay: '02-02-2026',
+      readingLabel: '1 min',
+    });
+    expect(out[1]).toEqual({
+      href: '/fr/blog/s1/',
+      title: 'T1',
+      dateDisplay: '01-01-2026',
+      readingLabel: '2 min',
+    });
+  });
+
+  it('drops a draft key, an other-lang-only key, and a missing key', () => {
+    const articles = [
+      entry({ translationKey: 'kd', slug: 'sd', lang: 'fr', publishState: 'draft' }),
+      entry({ translationKey: 'ko', slug: 'so', lang: 'en', publishState: 'published' }),
+    ];
+    // kd = draft, ko = wrong lang for 'fr', kmissing = absent → all dropped
+    expect(getRelatedArticles(articles, ['kd', 'ko', 'kmissing'], 'fr')).toEqual(
+      []
+    );
+  });
+
+  it('resolves the same key to the per-locale published article', () => {
+    const articles = [
+      entry({ translationKey: 'kx', slug: 'en-x', lang: 'en' }),
+      entry({ translationKey: 'kx', slug: 'fr-x', lang: 'fr' }),
+    ];
+    expect(getRelatedArticles(articles, ['kx'], 'en').map((r) => r.href)).toEqual(
+      ['/en/blog/en-x/']
+    );
+    expect(getRelatedArticles(articles, ['kx'], 'fr').map((r) => r.href)).toEqual(
+      ['/fr/blog/fr-x/']
+    );
   });
 });

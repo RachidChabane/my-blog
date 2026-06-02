@@ -585,3 +585,45 @@ export function toProjectCard(
     isLive: isLiveStatus(status),
   };
 }
+
+/* ---- Related articles on the project detail page (S7, task 13) ---- */
+
+/** A related-article row on the project detail page (S7). */
+export interface RelatedArticleVM {
+  href: string; // /<lang>/blog/<slug>/
+  title: string;
+  dateDisplay: string; // DD-MM-YYYY (as stored)
+  readingLabel: string; // "N min"
+}
+
+/**
+ * Resolve a project's `relatedArticles` (translationKeys) to published articles in
+ * `lang`, preserving the given key order. Keys with no published current-lang match
+ * (draft, other lang, or absent) are dropped silently, so a dangling key never
+ * breaks render or links an unbuilt page (INV-3). Empty/undefined keys → []. Pure
+ * (no astro:content import) — mirrors buildSlugMap's published+lang discipline.
+ */
+export function getRelatedArticles(
+  entries: ArticleEntryLike[],
+  keys: string[] | undefined,
+  lang: Locale
+): RelatedArticleVM[] {
+  if (!keys || keys.length === 0) return [];
+  const out: RelatedArticleVM[] = [];
+  for (const key of keys) {
+    const e = entries.find(
+      (a) =>
+        a.data.translationKey === key &&
+        a.data.lang === lang &&
+        a.data.publishState === 'published'
+    );
+    if (!e) continue;
+    out.push({
+      href: localePath(lang, `blog/${e.data.slug}`),
+      title: e.data.title,
+      dateDisplay: e.data.publishDate,
+      readingLabel: readingLabel(e.body),
+    });
+  }
+  return out;
+}
