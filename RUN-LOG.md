@@ -169,3 +169,13 @@ Relaunch validated: tasks 14 & 15 completed (review_timeout=30 works end-to-end)
 This is a CASCADE: `e2e/404.spec.ts` is committed (`bafefa3`) and the e2e gate runs the WHOLE suite → the 4 failures would block task 10's + every UI task's e2e gate. Fixed the root cause: scoped all three 404 recovery-CTA locators to `.not-found__nav` (excludes the masthead). Verified: `playwright test e2e/404.spec.ts` → **10/10 pass**; full `pnpm -s lint` → exit 0. Also added an e2e NOTE to task 16's description in tasks.yaml (validated, 0 warnings) so its re-run doesn't re-introduce the strict-mode bug.
 
 Only 1 blocked (task 16) < tripwire(3) → did NOT relaunch; rode the productive loop (task 10 planning). **Task 16 deferred-reset** (reset+rerun at next loop stop/drain; its deliverables are committed & correct, e2e now green).
+
+---
+
+## 2026-06-02 20:07 — task 10 plan socket error (stuck-planning); task 13 active
+
+17/30 done. Investigated task 10's long-running `planning`: its plan ran **2161s = 0.8×45m** (the new idle-fallback window) and died `Exit code: 1 / API Error: The socket connection was closed unexpectedly` — a NEW failure mode (not the no-plan-md idle-fallback): the claude API socket dropped during a ~36-min single plan call (146k output — opus/max over-long plan again). Task 10 is stuck `planning` + in this run's `_attempted` → won't auto-retry this run. **Task 13 is the real active task** (fresh 28KB plan.md at 20:07 — healthy).
+
+Effective stuck count = 2 (task 16 blocked + task 10 stuck-planning-errored), still < tripwire(3), and task 13 is productive → RIDE. Both task 10 + task 16 get `--reset` + rerun at the next drain/relaunch (a fresh scheduler clears `_attempted`, so task 10 retries; the socket error is most likely transient — a retry at different timing should clear it).
+- **Watch**: if task 10's plan socket-errors AGAIN on retry, it's the over-long-plan fragility → consider lowering plan effort (max→high) for that task or splitting it. Also now count stuck-`planning`-with-error-output toward the tripwire, not just status=blocked.
+- Deferred-reset ledger: **task 10, task 16**.
