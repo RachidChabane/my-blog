@@ -14,6 +14,8 @@ import {
   ABOUT,
   aboutStrings,
   CONTACTS,
+  SEARCH,
+  searchStrings,
 } from '@/i18n/ui';
 import { LOCALES } from '@/i18n/index';
 
@@ -292,5 +294,46 @@ describe('contact links (CONTACTS)', () => {
       expect(EMOJI.test(c.label)).toBe(false);
       if ('value' in c && c.value) expect(EMOJI.test(c.value)).toBe(false);
     }
+  });
+});
+
+describe('search string table (SEARCH)', () => {
+  it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
+    expect(Object.keys(SEARCH.fr).sort()).toEqual(Object.keys(SEARCH.en).sort());
+  });
+
+  it('every search string is a non-empty string in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(SEARCH[locale])) {
+        expect(typeof value, `${locale}.${key}`).toBe('string');
+        expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('contains no emoji in any string (INV-9)', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(SEARCH[locale])) {
+        expect(EMOJI.test(value), `${locale}.${key} = "${value}"`).toBe(false);
+      }
+    }
+  });
+
+  it('count templates carry the {n} placeholder for the island to substitute', () => {
+    for (const locale of LOCALES) {
+      expect(SEARCH[locale].countOne, `${locale}.countOne`).toContain('{n}');
+      expect(SEARCH[locale].countMany, `${locale}.countMany`).toContain('{n}');
+    }
+  });
+
+  // The task names this string ("quiet empty state"); lock it to the source.
+  it('carries the no-result empty-state copy verbatim', () => {
+    expect(SEARCH.fr.empty).toBe('Aucun résultat');
+    expect(SEARCH.en.empty).toBe('No results');
+  });
+
+  it('searchStrings(lang) returns the locale record', () => {
+    expect(searchStrings('fr')).toBe(SEARCH.fr);
+    expect(searchStrings('en')).toBe(SEARCH.en);
   });
 });

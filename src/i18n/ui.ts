@@ -390,3 +390,49 @@ export const CONTACTS: Contact[] = [
   },
   { icon: 'linkedin', label: 'LinkedIn', href: null },
 ];
+
+/**
+ * Search (S9) copy. Dedicated table — sibling to ARTICLE_INDEX, kept out of
+ * ChromeStrings per this file's header. The page returns ARTICLES (not avatar
+ * answers); copy is authored here in the S2 tone (no design mockup for S9).
+ * `countOne/countMany` carry the `{n}` placeholder substituted in the Search
+ * island's a11y live region (mirrors TAGS + formatCount). Typographic `…`
+ * (U+2026) / `’` (U+2019) need no escaping (INV-9 safe).
+ */
+export interface SearchStrings {
+  eyebrow: string; // mono kicker — "Index"
+  title: string; // <h1> — "Recherche" / "Search"
+  inputLabel: string; // input aria-label
+  placeholder: string; // input placeholder
+  idleHint: string; // quiet line when the query is empty (the "empty-query state")
+  empty: string; // quiet no-match line — "Aucun résultat" / "No results"
+  countOne: string; // a11y live-region singular — "{n} résultat" / "{n} result"
+  countMany: string; // a11y live-region plural — "{n} résultats" / "{n} results"
+}
+
+export const SEARCH: Record<Locale, SearchStrings> = {
+  fr: {
+    eyebrow: 'Index',
+    title: 'Recherche',
+    inputLabel: 'Rechercher des articles',
+    placeholder: 'Rechercher un article…',
+    idleHint: 'Saisissez un mot-clé pour trouver un article.',
+    empty: 'Aucun résultat',
+    countOne: '{n} résultat',
+    countMany: '{n} résultats',
+  },
+  en: {
+    eyebrow: 'Index',
+    title: 'Search',
+    inputLabel: 'Search articles',
+    placeholder: 'Search articles…',
+    idleHint: 'Type a keyword to find an article.',
+    empty: 'No results',
+    countOne: '{n} result',
+    countMany: '{n} results',
+  },
+};
+
+export function searchStrings(lang: Locale): SearchStrings {
+  return SEARCH[lang];
+}
