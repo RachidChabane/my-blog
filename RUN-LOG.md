@@ -105,3 +105,21 @@ Tasks 1,2,3,5,**17** done. **task 23's plan also errored** (exit 1, no plan.md) 
 **Why now, not after**: the next relaunch fans into many complex opus/max plans (UI 7,8,9,10,12,13,14,15,20 + pipeline 24,25,26,27,28). Adding the mitigation before that relaunch avoids burning 16-min plan attempts across the slate. Ride+retry+per-task CAP still stands as the safety net (advisor-confirmed converging: tasks 2 & 17 are opus/max plans that succeeded).
 
 **Stuck-planning set now (auto-retry on relaunch with the 45m window): task 6, task 23** (+ task 19 if it fails). Deferred-reset ledger (blocked, need `--reset`): task 4, task 11.
+
+---
+
+## 2026-06-02 08:33 — Loop drained → RELAUNCH (with plan_timeout=45)
+
+Loop exited 0 ("ALL TASKS COMPLETE" = the drain, not real success). **task 19 succeeded** (avatar query endpoint, commit `7fecd84`) before the drain. Done at drain: [1,2,3,5,17,19]. Confirmed no cpe process / no tmux before acting.
+
+Applied the RELAUNCH RULE (safe — no concurrent cpe):
+1. Pushed task-19 commits (`7fecd84`).
+2. **Pre-relaunch baseline verified green**: `pnpm -s lint` exit 0 (astro check + eslint + prettier all clean), `pnpm -s test` = **136 passed**.
+3. `--reset 4` + `--reset 11` (both blocked; their root causes already fixed — eslint Node globals for 4, gen-portfolio YAML for 11). Did NOT reset 6/23 (planning → auto-eligible).
+4. Relaunched `claude-plan-execute-loop … ` in background (bg id bsz7a1p45).
+
+**Verified the fix is live**: task-4 `resolved-config.json` → `plan_timeout_minutes: 45` (review 15, implement 60). Fresh scheduler now working task 4 (planning); will retry 6, 23 with the 36m idle-fallback window and fan into the UI (7,8,9,10,12,13,14,15,20) + pipeline (24,25,26,27,28) branches.
+
+**Watch next**: whether the complex opus/max plans (6, 23, …) now complete under the 45m timeout — that validates the root-cause fix. CAP still armed: a plan that fails AGAIN under 45m → root-cause that task individually.
+
+Note: cpe's cross-task memory recorded a lesson during the run — "use `\p{Cc}/gu`, not `\u`-escaped control ranges, in sanitizers (BLOCK lint)" — i.e. the avatar guard's input sanitizer hit `no-control-regex` and the agents self-corrected. No action needed.
