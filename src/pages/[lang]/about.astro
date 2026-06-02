@@ -1,0 +1,293 @@
+---
+/**
+ * S8 — About / contact. `/[lang]/about/` (FR + EN). A short owner-fill bio block,
+ * a quiet contact list (plain links, NO backend form per W-2), and a REAL
+ * "how this site works" credibility note. Honors D-007 (non-figurative: the
+ * AvatarMark lattice stands in for a portrait — no face/photo).
+ *
+ * Copy + contact data from src/i18n/ui.ts (ABOUT / CONTACTS); chrome
+ * (masthead/footer/avatar/skip-link) from Base. No slugMap → the language switcher
+ * falls back to the localized home (blog/work decision #6; NFR-11 holds since both
+ * /fr/about/ and /en/about/ exist). GitHub is the one live, verifiably-public link
+ * (repo remote); email + LinkedIn are owner-fill placeholder rows (a privacy-gated
+ * owner decision — CLAUDE.md #3 / FR-D3 / NFR-6), promoted to live <a> the moment a
+ * non-null href is set in CONTACTS.
+ */
+import type { GetStaticPaths } from 'astro';
+import { LOCALES } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { aboutStrings, CONTACTS } from '@/i18n/ui';
+import Base from '@/layouts/Base.astro';
+import AvatarMark from '@/components/AvatarMark.astro';
+import ContactIcon from '@/components/ContactIcon.astro';
+
+export const getStaticPaths = (() =>
+  LOCALES.map((lang) => ({
+    params: { lang },
+    props: { lang },
+  }))) satisfies GetStaticPaths;
+
+const { lang } = Astro.props as { lang: Locale };
+const s = aboutStrings(lang);
+const isExternal = (href: string): boolean => href.startsWith('http');
+const title = `${s.title} — rachid chabane`;
+---
+
+<Base title={title} description={s.metaDesc} lang={lang}>
+  <section class="rc-about rc-enter">
+    <span class="rc-about__eyebrow t-eyebrow">{s.eyebrow}</span>
+    <div class="rc-about__mark"><AvatarMark size={64} /></div>
+    <h1 class="rc-about__title">{s.title}</h1>
+    <p class="rc-about__tagline">{s.tagline}</p>
+
+    <section class="rc-sec">
+      <h2 class="rc-sec__h">{s.bioH}</h2>
+      <div class="rc-ph">
+        <span class="rc-ph__label">{s.bioLabel}</span>
+        <span class="rc-ph__text">{s.bioText}</span>
+      </div>
+    </section>
+
+    <section class="rc-sec">
+      <h2 class="rc-sec__h">{s.contactH}</h2>
+      <div class="rc-contact">
+        {
+          CONTACTS.map((c) =>
+            c.href ? (
+              <a
+                class="rc-contact__row"
+                href={c.href}
+                target={isExternal(c.href) ? '_blank' : undefined}
+                rel={isExternal(c.href) ? 'noopener noreferrer' : undefined}
+              >
+                <span class="rc-contact__ico">
+                  <ContactIcon name={c.icon} />
+                </span>
+                <span class="rc-contact__key">{c.label}</span>
+                <span class="rc-contact__val">{c.value}</span>
+                <span class="rc-contact__ext" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            ) : (
+              <div class="rc-contact__row is-placeholder">
+                <span class="rc-contact__ico">
+                  <ContactIcon name={c.icon} />
+                </span>
+                <span class="rc-contact__key">{c.label}</span>
+                <span class="rc-contact__val">{s.contactPh}</span>
+              </div>
+            )
+          )
+        }
+      </div>
+    </section>
+
+    <section class="rc-sec">
+      <h2 class="rc-sec__h">{s.howH}</h2>
+      <div class="rc-howit">
+        <div class="rc-howit__mark"><AvatarMark size={34} /></div>
+        <div class="rc-howit__body">
+          <span class="rc-howit__lbl">{s.howLbl}</span>
+          <p class="rc-howit__text">{s.howText}</p>
+        </div>
+      </div>
+    </section>
+  </section>
+</Base>
+
+<style>
+  /* Inner reading column (Base already provides <main>; no second <main>). 68ch via
+     --measure, matching the article reading column ([slug].astro). Tokens only. */
+  .rc-about {
+    width: 100%;
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: 52px 40px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 720px) {
+    .rc-about {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+
+  /* eyebrow uses the global .t-eyebrow role class (mono/uppercase/--fg-subtle). */
+
+  /* non-figurative mark — portrait stand-in (screens.css .rc-about__mark). */
+  .rc-about__mark {
+    margin: 6px 0 2px;
+  }
+  .rc-about__title {
+    margin: 12px 0 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-head);
+    font-size: var(--text-h1);
+    line-height: 1.12;
+    letter-spacing: var(--tracking-tight);
+    color: var(--fg);
+  }
+  .rc-about__tagline {
+    margin: 6px 0 0;
+    font-family: var(--font-body);
+    font-size: var(--text-body-lg);
+    line-height: 1.55;
+    color: var(--fg-muted);
+    max-width: 54ch;
+  }
+
+  /* sections (screens.css .rc-sec / .rc-sec__h — plain text heading, no number
+     span, so no display:flex). */
+  .rc-sec {
+    margin-top: 46px;
+  }
+  .rc-sec__h {
+    margin: 0 0 18px;
+    font-family: var(--font-display);
+    font-variation-settings:
+      'opsz' 32,
+      'wght' 480;
+    font-size: 23px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+  }
+
+  /* owner-fill placeholder block (screens.css .rc-ph). */
+  .rc-ph {
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    background: var(--fill-subtle);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .rc-ph__label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+  .rc-ph__text {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+
+  /* contact list — quiet plain links, no form (screens.css .rc-contact*). The
+     design's <button> reset is adapted to block-level flex anchors/divs (the global
+     `a` reset already drops underline + inherits color). */
+  .rc-contact {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2px;
+  }
+  .rc-contact__row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 2px;
+    border: 0;
+    border-bottom: 1px solid var(--hairline);
+    transition: padding var(--dur-hover) var(--ease-soft);
+  }
+  .rc-contact__row:hover {
+    padding-left: 8px;
+  }
+  .rc-contact__ico {
+    display: inline-flex;
+    color: var(--fg-muted);
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-contact__row:hover .rc-contact__ico {
+    color: var(--accent);
+  }
+  .rc-contact__key {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--fg);
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-contact__row:hover .rc-contact__key {
+    color: var(--accent);
+  }
+  .rc-contact__val {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg-subtle);
+  }
+  .rc-contact__ext {
+    color: var(--accent);
+    font-size: 13px;
+  }
+  /* owner-fill rows are non-interactive (not links): neutralize the hover shift and
+     mute the key so they read as not-yet-filled. */
+  .rc-contact__row.is-placeholder {
+    cursor: default;
+  }
+  .rc-contact__row.is-placeholder:hover {
+    padding-left: 2px;
+  }
+  .rc-contact__row.is-placeholder:hover .rc-contact__ico,
+  .rc-contact__row.is-placeholder:hover .rc-contact__key {
+    color: var(--fg-muted);
+  }
+  .rc-contact__row.is-placeholder .rc-contact__key {
+    color: var(--fg-muted);
+  }
+
+  /* how-it-works credibility note (screens.css .rc-howit*). */
+  .rc-howit {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding: 22px 24px;
+    border-radius: var(--radius-lg);
+    background: var(--accent-soft);
+    border-left: 2px solid var(--accent);
+  }
+  .rc-howit__mark {
+    flex: none;
+    margin-top: 2px;
+  }
+  .rc-howit__body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .rc-howit__lbl {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+  .rc-howit__text {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 15.5px;
+    line-height: 1.62;
+    color: var(--fg);
+  }
+
+  /* Translate-only entrance (no opacity fade) so content is never hidden if the
+     animation is paused; prefers-reduced-motion neutralizes it via tokens.css. */
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>
