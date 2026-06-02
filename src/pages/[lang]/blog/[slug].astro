@@ -81,20 +81,31 @@ const title = `${entry.data.title} — rachid chabane`;
 <Base title={title} description={dek} lang={lang} slugMap={slugMap}>
   <article class="rc-article rc-enter">
     <a class="rc-back" href={localePath(lang, 'blog')}>← {s.back}</a>
-    <span class="rc-eyebrow">{eyebrow}</span>
-    <h1 class="rc-article__title">{entry.data.title}</h1>
-    <div class="rc-meta">
-      {
-        metaItems.map((m, i) => (
-          <>
-            {i > 0 && <span class="rc-meta__dot" />}
-            <span>{m}</span>
-          </>
-        ))
-      }
-    </div>
+    {/* S9 search corpus (task 15): data-pagefind-body restricts Pagefind to the
+        article reading column. The wrapper EXCLUDES the back-link, SourceList and
+        PrevNext (below) so neighbour titles never pollute search results. */}
+    <div
+      class="rc-pf-body"
+      data-pagefind-body
+      data-pagefind-meta={`date:${entry.data.publishDate}, reading:${readingLabel(entry.body)}`}
+    >
+      <span class="rc-eyebrow">{eyebrow}</span>
+      <h1 class="rc-article__title" data-pagefind-meta="title">
+        {entry.data.title}
+      </h1>
+      <div class="rc-meta">
+        {
+          metaItems.map((m, i) => (
+            <>
+              {i > 0 && <span class="rc-meta__dot" />}
+              <span>{m}</span>
+            </>
+          ))
+        }
+      </div>
 
-    <Prose><Content /></Prose>
+      <Prose><Content /></Prose>
+    </div>
     <SourceList sources={sources} heading={s.sourcesH} />
     <PrevNext
       nav={prevNext}
@@ -123,6 +134,11 @@ const title = `${entry.data.title} — rachid chabane`;
       padding-left: 22px;
       padding-right: 22px;
     }
+  }
+  /* Search-index wrapper (task 15): no box, so .rc-article's flex column and all
+     descendant selectors are unchanged; only Pagefind sees the data-* markers. */
+  .rc-pf-body {
+    display: contents;
   }
   .rc-back {
     align-self: flex-start;
