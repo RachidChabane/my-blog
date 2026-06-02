@@ -277,9 +277,14 @@ const s = avatarStrings(lang);
       else open();
     });
     closeBtn.addEventListener('click', close);
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      send();
+    sendBtn.addEventListener('click', send);
+    // The composer is a div, not a <form> (avoids a duplicate landmark / the W-2
+    // no-backend-form check on every page) — wire Enter explicitly.
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        send();
+      }
     });
 
     // No scrim (D3): close on Escape or a click outside the dock. The outside

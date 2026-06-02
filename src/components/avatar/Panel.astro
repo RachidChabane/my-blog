@@ -31,7 +31,7 @@ const { strings } = Astro.props;
   data-state="idle"
   hidden
 >
-  <header class="rc-ava__head">
+  <div class="rc-ava__head">
     <span class="rc-mark is-idle" data-avatar-headmark aria-hidden="true">
       {Array.from({ length: 16 }).map(() => <b class="rc-mark__node" />)}
     </span>
@@ -60,7 +60,7 @@ const { strings } = Astro.props;
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
-  </header>
+  </div>
 
   <div
     class="rc-ava__body"
@@ -72,7 +72,7 @@ const { strings } = Astro.props;
   >
   </div>
 
-  <form class="rc-ava__input" data-avatar-form>
+  <div class="rc-ava__input" data-avatar-form>
     <input
       data-avatar-input
       type="text"
@@ -82,7 +82,7 @@ const { strings } = Astro.props;
     />
     <button
       class="rc-send"
-      type="submit"
+      type="button"
       data-avatar-send
       aria-label={strings.send}
     >
@@ -101,7 +101,7 @@ const { strings } = Astro.props;
         <polyline points="5 12 12 5 19 12"></polyline>
       </svg>
     </button>
-  </form>
+  </div>
 
   <!-- copy-bearing templates cloned at runtime (COPY NEVER LIVES IN JS) -->
   <template data-tpl-user>
