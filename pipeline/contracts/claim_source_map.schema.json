@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rachidchabane.example/schemas/claim_source_map.schema.json",
+  "title": "ClaimSourceMap",
+  "description": "PINNED claim->source provenance contract (task 24). Documentation / external-tooling mirror of pipeline/contracts/claim_source_map.py; the Python validator is the runtime truth. Drift between the two is guarded by a test that compares $defs.*.required + property names (NOT regex patterns).",
+  "type": "object",
+  "required": ["claims", "sources"],
+  "properties": {
+    "claims": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/claim" }
+    },
+    "sources": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/sourceRecord" }
+    }
+  },
+  "$defs": {
+    "excerptSpan": {
+      "type": "object",
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "sourceRecord": {
+      "type": "object",
+      "required": ["source_id", "label", "url", "retrieved_at", "excerpt"],
+      "properties": {
+        "source_id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "pattern": "^https?://" },
+        "retrieved_at": { "type": "string", "minLength": 1 },
+        "excerpt": { "type": "string", "minLength": 1 },
+        "source_date": { "type": "string", "minLength": 1 }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "required": ["lang", "claim", "source_id"],
+      "properties": {
+        "lang": { "enum": ["fr", "en"] },
+        "claim": { "type": "string", "minLength": 1 },
+        "source_id": { "type": "string", "minLength": 1 },
+        "excerpt_span": { "$ref": "#/$defs/excerptSpan" }
+      }
+    }
+  }
+}
