@@ -210,3 +210,49 @@ export const PORTFOLIO_INDEX: Record<Locale, PortfolioIndexStrings> = {
 export function portfolioIndexStrings(lang: Locale): PortfolioIndexStrings {
   return PORTFOLIO_INDEX[lang];
 }
+
+/**
+ * Tag surfaces (S4 directory + S5 tag index) copy. One combined table — S4 and S5
+ * are a single feature and share the count templates. The chip-rail/CTA/empty copy
+ * S5 needs is REUSED from ARTICLE_INDEX (allTag, filterAria, readCta, empty), not
+ * re-translated here. Count templates carry a `{n}` placeholder composed via
+ * formatCount() in the page (a function here would break the Object.entries string
+ * guard in ui.test.ts). `·`/`←`/`→` are typographic punctuation, not emoji (INV-9).
+ */
+export interface TagStrings {
+  dirEyebrow: string; // S4 mono kicker — "Index"
+  dirTitle: string; // S4 <h1> — "Sujets" / "Topics"
+  dirMeta: string; // S4 subtitle — "Parcourir les articles par sujet" / "Browse articles by topic"
+  dirEmpty: string; // S4 empty-state — "Aucun sujet pour le moment." / "No topics yet."
+  idxEyebrow: string; // S5 mono kicker above the tag-name <h1> — "Sujet" / "Topic"
+  allTopics: string; // S5 back-link to S4 — "Tous les sujets" / "All topics"
+  countOne: string; // singular count template — "{n} écrit" / "{n} post"
+  countMany: string; // plural count template — "{n} écrits" / "{n} posts"
+}
+
+export const TAGS: Record<Locale, TagStrings> = {
+  fr: {
+    dirEyebrow: 'Index',
+    dirTitle: 'Sujets',
+    dirMeta: 'Parcourir les articles par sujet',
+    dirEmpty: 'Aucun sujet pour le moment.',
+    idxEyebrow: 'Sujet',
+    allTopics: 'Tous les sujets',
+    countOne: '{n} écrit',
+    countMany: '{n} écrits',
+  },
+  en: {
+    dirEyebrow: 'Index',
+    dirTitle: 'Topics',
+    dirMeta: 'Browse articles by topic',
+    dirEmpty: 'No topics yet.',
+    idxEyebrow: 'Topic',
+    allTopics: 'All topics',
+    countOne: '{n} post',
+    countMany: '{n} posts',
+  },
+};
+
+export function tagStrings(lang: Locale): TagStrings {
+  return TAGS[lang];
+}

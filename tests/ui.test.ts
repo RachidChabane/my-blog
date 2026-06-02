@@ -7,6 +7,8 @@ import {
   articleDetailStrings,
   PORTFOLIO_INDEX,
   portfolioIndexStrings,
+  TAGS,
+  tagStrings,
 } from '@/i18n/ui';
 import { LOCALES } from '@/i18n/index';
 
@@ -142,5 +144,45 @@ describe('portfolio-index string table (PORTFOLIO_INDEX)', () => {
   it('portfolioIndexStrings(lang) returns the locale record', () => {
     expect(portfolioIndexStrings('fr')).toBe(PORTFOLIO_INDEX.fr);
     expect(portfolioIndexStrings('en')).toBe(PORTFOLIO_INDEX.en);
+  });
+});
+
+describe('tag string table (TAGS)', () => {
+  it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
+    expect(Object.keys(TAGS.fr).sort()).toEqual(Object.keys(TAGS.en).sort());
+  });
+
+  it('every tag string is a non-empty string in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(TAGS[locale])) {
+        expect(typeof value, `${locale}.${key}`).toBe('string');
+        expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('contains no emoji in any string (INV-9)', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(TAGS[locale])) {
+        expect(EMOJI.test(value), `${locale}.${key} = "${value}"`).toBe(false);
+      }
+    }
+  });
+
+  it('carries the directory title copy verbatim', () => {
+    expect(TAGS.fr.dirTitle).toBe('Sujets');
+    expect(TAGS.en.dirTitle).toBe('Topics');
+  });
+
+  it('count templates carry the {n} placeholder for formatCount to substitute', () => {
+    for (const locale of LOCALES) {
+      expect(TAGS[locale].countOne, `${locale}.countOne`).toContain('{n}');
+      expect(TAGS[locale].countMany, `${locale}.countMany`).toContain('{n}');
+    }
+  });
+
+  it('tagStrings(lang) returns the locale record', () => {
+    expect(tagStrings('fr')).toBe(TAGS.fr);
+    expect(tagStrings('en')).toBe(TAGS.en);
   });
 });
