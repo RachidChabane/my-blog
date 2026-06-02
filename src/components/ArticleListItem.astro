@@ -31,7 +31,13 @@ const { card, readCta } = Astro.props;
   <h3 class="rc-arow__title"><a href={card.href}>{card.title}</a></h3>
   <p class="rc-arow__dek">{card.dek}</p>
   <div class="rc-arow__tags">
-    {card.tags.map((t) => <a class="rc-tag" href={t.href}>{t.label}</a>)}
+    {
+      card.tags.map((t) => (
+        <a class="rc-tag" href={t.href}>
+          {t.label}
+        </a>
+      ))
+    }
   </div>
   <span class="rc-arow__cta" aria-hidden="true">{readCta} →</span>
 </article>

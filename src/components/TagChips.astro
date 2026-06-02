@@ -17,13 +17,7 @@ interface Props {
   ariaLabel: string;
 }
 
-const {
-  rail,
-  activeSlug = null,
-  allHref,
-  allLabel,
-  ariaLabel,
-} = Astro.props;
+const { rail, activeSlug = null, allHref, allLabel, ariaLabel } = Astro.props;
 ---
 
 <nav class="rc-chiprow" role="group" aria-label={ariaLabel} data-tag-rail>

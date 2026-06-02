@@ -1,5 +1,9 @@
 [
-  { "id": "agents", "slug": "agents", "label": { "fr": "agents", "en": "agents" } },
+  {
+    "id": "agents",
+    "slug": "agents",
+    "label": { "fr": "agents", "en": "agents" }
+  },
   { "id": "rag", "slug": "rag", "label": { "fr": "RAG", "en": "RAG" } },
   {
     "id": "agentic-coding",

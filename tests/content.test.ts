@@ -18,7 +18,10 @@ import type { ArticleFrontmatter, Tag } from '@/content/schemas';
 const TAGS: Tag[] = [
   { slug: 'agents', label: { fr: 'agents', en: 'agents' } },
   { slug: 'rag', label: { fr: 'RAG', en: 'RAG' } },
-  { slug: 'agentic-coding', label: { fr: 'agentic coding', en: 'agentic coding' } },
+  {
+    slug: 'agentic-coding',
+    label: { fr: 'agentic coding', en: 'agentic coding' },
+  },
   { slug: 'evaluation', label: { fr: 'évaluation', en: 'evaluation' } },
   { slug: 'llm-oss', label: { fr: 'LLM open-source', en: 'open-source LLM' } },
   { slug: 'retrieval', label: { fr: 'retrieval', en: 'retrieval' } },
@@ -126,7 +129,8 @@ describe('readingTime / readingLabel', () => {
   });
 
   it('does not count fenced code toward reading time', () => {
-    const fence = '```\n' + Array.from({ length: 400 }, () => 'x').join(' ') + '\n```';
+    const fence =
+      '```\n' + Array.from({ length: 400 }, () => 'x').join(' ') + '\n```';
     expect(readingTime(`Short intro.\n\n${fence}`)).toBe(1);
   });
 
@@ -214,8 +218,14 @@ describe('tagRail', () => {
       { slug: 'qualite', label: { fr: 'qualité', en: 'quality' } },
       { slug: 'rag', label: { fr: 'RAG', en: 'RAG' } },
       { slug: 'evaluation', label: { fr: 'évaluation', en: 'evaluation' } },
-      { slug: 'agentic-coding', label: { fr: 'agentic coding', en: 'agentic coding' } },
-      { slug: 'llm-oss', label: { fr: 'LLM open-source', en: 'open-source LLM' } },
+      {
+        slug: 'agentic-coding',
+        label: { fr: 'agentic coding', en: 'agentic coding' },
+      },
+      {
+        slug: 'llm-oss',
+        label: { fr: 'LLM open-source', en: 'open-source LLM' },
+      },
     ];
     const rail = tagRail(shuffled, 'en');
     expect(rail.map((r) => r.slug)).toEqual([...TAG_RAIL_ORDER]);
@@ -246,7 +256,10 @@ describe('tagRail', () => {
       { slug: 'agents', label: { fr: 'agents', en: 'agents' } },
       { slug: 'rag', label: { fr: 'RAG', en: 'RAG' } },
     ];
-    expect(tagRail(partial, 'fr').map((r) => r.slug)).toEqual(['agents', 'rag']);
+    expect(tagRail(partial, 'fr').map((r) => r.slug)).toEqual([
+      'agents',
+      'rag',
+    ]);
   });
 });
 
