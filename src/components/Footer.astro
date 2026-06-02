@@ -4,9 +4,10 @@
  * the design's rich home.jsx footer), a quiet autonomous-maintenance credit, and
  * the copyright tail. Ports .rc-footer (tokens only).
  *
- * RSS href is the raw `/${lang}/rss.xml` — NOT localePath(lang, 'rss.xml'),
- * which would yield `/fr/rss.xml/` (a wrong trailing slash on a file). The RSS
- * route (task 16) dangles until then, same as the nav links.
+ * RSS href is the raw `/${lang}/rss.xml` template. Building it through the
+ * locale-path helper with an 'rss.xml' subpath would instead yield
+ * `/fr/rss.xml/` (a wrong trailing slash on a file). The RSS route (task 16)
+ * dangles until then, same as the nav links.
  */
 import type { Locale } from '@/i18n/index';
 import { chrome } from '@/i18n/ui';
