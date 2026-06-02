@@ -15,7 +15,11 @@
  */
 import { localePath } from '@/i18n/index';
 import type { Locale } from '@/i18n/index';
-import type { ArticleFrontmatter, Tag } from '@/content/schemas';
+import type {
+  ArticleFrontmatter,
+  ProjectFrontmatter,
+  Tag,
+} from '@/content/schemas';
 
 /** 8 seeds → pages of 5 + 3 (exercises pagination); reused by task 9. */
 export const ARTICLES_PER_PAGE = 5;
@@ -319,4 +323,106 @@ export function getPrevNextByTag(
     }
   }
   return { prev, next };
+}
+
+/* ============================================================ Portfolio (S6) */
+/**
+ * Pure project query + view-model helpers — the portfolio analog of the article
+ * seam above. Still no `astro:content` import, so vitest exercises them directly.
+ * Projects need no `body` for the card: `summary` is a real frontmatter field
+ * (unlike the article dek, which is derived from the body). The S6 route maps
+ * published projects → ProjectCardVM once, decoupling ProjectCard.astro from
+ * collection internals.
+ */
+
+/** Structural shape of a glob-loaded project entry (the subset the card uses). */
+export interface ProjectEntryLike {
+  id: string;
+  data: ProjectFrontmatter;
+}
+
+/** View-model the project card renders (named `…VM` to avoid colliding with the component). */
+export interface ProjectCardVM {
+  slug: string;
+  lang: Locale;
+  href: string; // /<lang>/work/<slug>/
+  name: string;
+  summary: string; // frontmatter `summary` verbatim (the one-liner)
+  stack: string[];
+  status: string; // localized free-text status, rendered verbatim
+  isLive: boolean; // derived → accent status dot
+}
+
+/**
+ * Curated portfolio order, by `translationKey`. Glob-loader order is not
+ * guaranteed (same reason as TAG_RAIL_ORDER), so impose it: flagships first
+ * (app-ia.md line 86 order), then the rest. Any published project whose
+ * translationKey is absent here is appended, sorted alpha by slug, so a future
+ * project never silently vanishes. Editorial order is tunable.
+ */
+export const PROJECT_ORDER = [
+  'sterna-ai-platform',
+  'claude-plan-execute',
+  'ijtihad-engine',
+  'bayan-rag-platform',
+  'atelier',
+  'mcp-secrets-vault',
+  'athletic-tracker',
+] as const;
+
+/**
+ * Statuses that earn the accent "live" status-dot. The design reserves the
+ * accent for production-live status only ("l’accent ne sert qu’au survol et au
+ * statut « en production »"), so match EXACTLY against a normalized set — not
+ * `startsWith`, which would wrongly catch "active (paused)". Easily tuned later;
+ * a documented editorial judgment, not pinned in e2e (visual → Playwright-MCP).
+ */
+const LIVE_STATUSES: ReadonlySet<string> = new Set([
+  'shipped',
+  'in production', // EN
+  'publié',
+  'en production', // FR
+]);
+
+/** True when `status` denotes production-live (case-insensitive, trimmed). */
+export function isLiveStatus(status: string): boolean {
+  return LIVE_STATUSES.has(status.trim().toLowerCase());
+}
+
+/**
+ * Published projects for `lang`, in curated PROJECT_ORDER (by translationKey);
+ * extras (translationKey absent from the order) are appended alpha-by-slug.
+ * Does not mutate the input (filter → new array → sort).
+ */
+export function getPublishedProjects(
+  entries: ProjectEntryLike[],
+  lang: Locale
+): ProjectEntryLike[] {
+  const order = new Map(PROJECT_ORDER.map((k, i) => [k as string, i]));
+  return entries
+    .filter((e) => e.data.publishState === 'published' && e.data.lang === lang)
+    .sort((a, b) => {
+      const ai = order.get(a.data.translationKey) ?? Number.MAX_SAFE_INTEGER;
+      const bi = order.get(b.data.translationKey) ?? Number.MAX_SAFE_INTEGER;
+      if (ai !== bi) return ai - bi; // curated order
+      return a.data.slug < b.data.slug ? -1 : a.data.slug > b.data.slug ? 1 : 0; // extras: alpha
+    });
+}
+
+/** Assemble the card view-model for one project entry. */
+export function toProjectCard(
+  entry: ProjectEntryLike,
+  lang: Locale
+): ProjectCardVM {
+  const { slug, name, summary, stack, status } = entry.data;
+  return {
+    slug,
+    lang,
+    name,
+    summary,
+    stack,
+    status,
+    href: localePath(lang, `work/${slug}`), // /<lang>/work/<slug>/ (matches task-13 route)
+    isLive: isLiveStatus(status),
+  };
 }

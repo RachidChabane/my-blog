@@ -14,9 +14,18 @@ import {
   toSourceViews,
   buildSlugMap,
   getPrevNextByTag,
+  PROJECT_ORDER,
+  isLiveStatus,
+  getPublishedProjects,
+  toProjectCard,
 } from '@/lib/content';
-import type { ArticleEntryLike } from '@/lib/content';
-import type { ArticleFrontmatter, Tag } from '@/content/schemas';
+import type { ArticleEntryLike, ProjectEntryLike } from '@/lib/content';
+import type {
+  ArticleFrontmatter,
+  ProjectFrontmatter,
+  Tag,
+} from '@/content/schemas';
+import { PORTFOLIO_PROJECTS } from '../scripts/gen-portfolio';
 
 /* -------------------------------------------------------------- fixtures */
 const TAGS: Tag[] = [
@@ -497,5 +506,189 @@ describe('getPrevNextByTag', () => {
       prev: null,
       next: null,
     });
+  });
+});
+
+/* ====================================================== portfolio (S6) ==== */
+/** Build a ProjectEntryLike with sensible defaults; override per test. */
+function projectEntry(
+  over: Partial<ProjectFrontmatter> & { id?: string } = {}
+): ProjectEntryLike {
+  const { id, ...data } = over;
+  return {
+    id: id ?? 'id',
+    data: {
+      translationKey: 'k',
+      lang: 'fr',
+      slug: 's',
+      name: 'N',
+      summary: 'one-liner',
+      stack: ['TS'],
+      status: 'active',
+      links: [],
+      publishState: 'published',
+      ...data,
+    },
+  };
+}
+
+/* ----------------------------------------------- 12. isLiveStatus */
+describe('isLiveStatus', () => {
+  it('classifies only production-live statuses as live', () => {
+    expect(isLiveStatus('shipped')).toBe(true);
+    expect(isLiveStatus('publié')).toBe(true);
+    expect(isLiveStatus('in production')).toBe(true);
+    expect(isLiveStatus('en production')).toBe(true);
+    for (const s of [
+      'active',
+      'actif',
+      'active (paused)',
+      'actif (en pause)',
+      'MVP ready',
+      'MVP prêt',
+      'pre-launch',
+      'pré-lancement',
+    ]) {
+      expect(isLiveStatus(s), s).toBe(false);
+    }
+  });
+
+  it('is case-insensitive, trims, and treats empty as not-live', () => {
+    expect(isLiveStatus('  SHIPPED  ')).toBe(true);
+    expect(isLiveStatus('Publié')).toBe(true);
+    expect(isLiveStatus('EN PRODUCTION')).toBe(true);
+    expect(isLiveStatus('')).toBe(false);
+    expect(isLiveStatus('   ')).toBe(false);
+  });
+
+  it('matches the real seed statuses in both langs (guards silent misclassification)', () => {
+    // Only mcp-secrets-vault (shipped / publié) is production-live.
+    const expectedLive: Record<string, boolean> = {
+      'sterna-ai-platform': false,
+      'claude-plan-execute': false,
+      'ijtihad-engine': false,
+      'bayan-rag-platform': false,
+      atelier: false,
+      'mcp-secrets-vault': true,
+      'athletic-tracker': false,
+    };
+    for (const p of PORTFOLIO_PROJECTS) {
+      const want = expectedLive[p.translationKey];
+      expect(want, `unmapped translationKey ${p.translationKey}`).toBeDefined();
+      expect(isLiveStatus(p.status.en), `${p.translationKey} en`).toBe(want);
+      expect(isLiveStatus(p.status.fr), `${p.translationKey} fr`).toBe(want);
+    }
+  });
+});
+
+/* ----------------------------------------------- 13. PROJECT_ORDER coverage */
+describe('PROJECT_ORDER', () => {
+  it('covers every seed translationKey (no project silently un-ordered)', () => {
+    for (const p of PORTFOLIO_PROJECTS) {
+      expect([...PROJECT_ORDER], p.translationKey).toContain(p.translationKey);
+    }
+  });
+});
+
+/* ----------------------------------------------- 14. getPublishedProjects */
+describe('getPublishedProjects', () => {
+  it('drops drafts and other-locale entries', () => {
+    const mixed = [
+      projectEntry({
+        translationKey: 'sterna-ai-platform',
+        lang: 'fr',
+        slug: 'a',
+        publishState: 'published',
+      }),
+      projectEntry({
+        translationKey: 'atelier',
+        lang: 'fr',
+        slug: 'b',
+        publishState: 'draft',
+      }),
+      projectEntry({
+        translationKey: 'bayan-rag-platform',
+        lang: 'en',
+        slug: 'c',
+        publishState: 'published',
+      }),
+    ];
+    expect(getPublishedProjects(mixed, 'fr').map((e) => e.data.slug)).toEqual([
+      'a',
+    ]);
+  });
+
+  it('orders by PROJECT_ORDER (translationKey) regardless of input order', () => {
+    const shuffled = [
+      projectEntry({ translationKey: 'athletic-tracker', slug: 'at' }),
+      projectEntry({ translationKey: 'sterna-ai-platform', slug: 'st' }),
+      projectEntry({ translationKey: 'bayan-rag-platform', slug: 'ba' }),
+      projectEntry({ translationKey: 'claude-plan-execute', slug: 'cpe' }),
+    ];
+    expect(
+      getPublishedProjects(shuffled, 'fr').map((e) => e.data.translationKey)
+    ).toEqual([
+      'sterna-ai-platform',
+      'claude-plan-execute',
+      'bayan-rag-platform',
+      'athletic-tracker',
+    ]);
+  });
+
+  it('appends an unknown-translationKey project after ordered ones, alpha by slug', () => {
+    const items = [
+      projectEntry({ translationKey: 'zzz-unknown', slug: 'zzz-b' }),
+      projectEntry({ translationKey: 'sterna-ai-platform', slug: 'st' }),
+      projectEntry({ translationKey: 'yyy-unknown', slug: 'aaa-a' }),
+    ];
+    expect(getPublishedProjects(items, 'fr').map((e) => e.data.slug)).toEqual([
+      'st', // ordered (sterna) first
+      'aaa-a', // extras sorted alpha by slug
+      'zzz-b',
+    ]);
+  });
+
+  it('does not mutate the input array', () => {
+    const items = [
+      projectEntry({ translationKey: 'athletic-tracker', slug: 'b' }),
+      projectEntry({ translationKey: 'sterna-ai-platform', slug: 'a' }),
+    ];
+    const before = items.map((e) => e.data.slug);
+    getPublishedProjects(items, 'fr');
+    expect(items.map((e) => e.data.slug)).toEqual(before);
+  });
+});
+
+/* ----------------------------------------------- 15. toProjectCard */
+describe('toProjectCard', () => {
+  it('builds the work href, maps fields, sets lang and a non-live isLive', () => {
+    const e = projectEntry({
+      lang: 'fr',
+      slug: 'mon-projet',
+      name: 'Mon Projet',
+      summary: 'Une ligne.',
+      stack: ['TS', 'Astro'],
+      status: 'actif',
+    });
+    const card = toProjectCard(e, 'fr');
+    expect(card.href).toBe('/fr/work/mon-projet/');
+    expect(card.name).toBe('Mon Projet');
+    expect(card.summary).toBe('Une ligne.');
+    expect(card.stack).toEqual(['TS', 'Astro']);
+    expect(card.status).toBe('actif');
+    expect(card.lang).toBe('fr');
+    expect(card.isLive).toBe(isLiveStatus('actif')); // false
+  });
+
+  it('uses the localized slug; isLive tracks isLiveStatus for a live status', () => {
+    const e = projectEntry({
+      lang: 'en',
+      slug: 'mcp-secrets-vault',
+      status: 'shipped',
+    });
+    const card = toProjectCard(e, 'en');
+    expect(card.href).toBe('/en/work/mcp-secrets-vault/');
+    expect(card.isLive).toBe(true);
+    expect(card.isLive).toBe(isLiveStatus(e.data.status));
   });
 });
