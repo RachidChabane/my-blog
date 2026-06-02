@@ -233,7 +233,7 @@ Build screens single-language-complete then layer the second language (INV-1), s
 
 ## 13. Reconciliation notes (Stage-1 amendments this IA surfaced)
 
-Per IA discipline, the IA is the reconciled source of truth but Stage-1 docs must be amended to match — flagged here, not silently overridden:
+Per IA discipline, the IA is the reconciled source of truth but Stage-1 docs must be amended to match. **Applied 02-06-2026:** search/about/RSS are now MVP — `roadmap.md` `M-13` + `user-requirements.md` `FR-A5`/`FR-A6`/`FR-A7`; `S-5` (RSS) promoted. Original flags, for the record:
 
 - **Site search (S9) is new.** No `FR-` or roadmap ID covers search. Decide its tier: if MVP (as chosen in Stage 3), add a Must (e.g. a new `M-13` "client-side article search") and a `FR-A5`; if deferable, mark it Should. **Recommendation:** Should/early-post-MVP — the avatar (`M-10`) already answers content questions, so search is partly redundant at MVP (noted on S9). Owner to confirm.
 - **RSS is `S-5` (post-MVP) but was selected as an MVP surface.** Either promote `S-5` into the MVP or keep RSS as a fast-follow. **Recommendation:** RSS is cheap and static — promote the per-language feed into MVP surface work (step 5) without disturbing the engine critical path.

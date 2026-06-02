@@ -1,0 +1,670 @@
+# =============================================================================
+# my-blog — complete build slate for claude-plan-execute
+# Drives the full MVP end to end: Astro shell + reading surface + portfolio +
+# about/search/RSS + avatar (UI + backend) + content engine (M-3/M-4) + launch.
+# Every task ships code tests; UI tasks ship @playwright/test e2e. Slate goes
+# GREEN WITHOUT SECRETS (fakes/fixtures); live integration is the post-secret step.
+# Read docs/persona.md + docs/decisions/ before planning. Gates: docs/invariants.yaml.
+# Serial first (parallelism: 1) — optimize ordering later.
+# =============================================================================
+
+version: 1
+
+defaults:
+  model: opus
+  effort: max
+  test_command: "pnpm -s test"
+  lint_command: "pnpm -s lint"
+  gates: [tests, lint]
+  max_review_rounds: 3
+  on_max_review_rounds: fail   # autonomous-safe: a plan that can't pass review blocks+alerts, never auto-approves
+  parallelism: 1
+  branch_per_task: false
+  base_branch: main
+  persona_file: docs/persona.md
+  decisions_dir: docs/decisions
+  task_class_models:
+    ui:       { model: opus,   effort: max }
+    backend:  { model: opus,   effort: max }
+    pipeline: { model: opus,   effort: max }
+    infra:    { model: sonnet, effort: medium }
+    content:  { model: sonnet, effort: medium }
+
+phases:
+  - id: p0-foundation
+    title: "Foundation — scaffold, tokens, i18n, secret hygiene, content schema"
+  - id: p1-reading
+    title: "Reading surface — shell, index, article, tags, home"
+  - id: p2-portfolio
+    title: "Portfolio — generate from inventory, index, detail"
+  - id: p3-secondary
+    title: "Secondary surfaces — about, search, RSS/sitemap/404"
+  - id: p4-avatar
+    title: "Avatar — retrieval lib, index, endpoint, UI, reindex, red-team"
+  - id: p5-engine
+    title: "Content engine — harness, stages, M-4 gate, publish, memory, scheduling"
+  - id: p6-launch
+    title: "Integration & launch gate"
+
+tasks:
+  # ---------------------------------------------------------------- P0
+  - id: 1
+    phase: p0-foundation
+    task_class: infra
+    title: "chore: scaffold Astro + TS site, Cloudflare Pages, test/CI harness"
+    description: |
+      Scaffold the project (D-001, D-005). Astro + TypeScript (strict), pnpm.
+      Install deps. Set up the test harness so the gates are green from task 1:
+      vitest (`pnpm test`) with a passing smoke test; @playwright/test
+      (`pnpm test:e2e`) with playwright.config.ts whose `webServer` runs the
+      site, plus a smoke e2e; ESLint + Prettier (`pnpm lint`) + `astro check`.
+      Add a GitHub Actions CI workflow running lint + tests + e2e. Add Cloudflare
+      Pages config (wrangler.toml / adapter) and a base Layout. `/` redirects to
+      a default locale (stub until task 3). Harden .gitignore (node_modules,
+      .env, dist). Commit nothing secret.
+    key_files:
+      - package.json
+      - pnpm-lock.yaml
+      - astro.config.mjs
+      - tsconfig.json
+      - wrangler.toml
+      - .gitignore
+      - .github/workflows/ci.yml
+      - playwright.config.ts
+      - src/layouts/Base.astro
+      - src/pages/index.astro
+      - tests/smoke.test.ts
+      - e2e/smoke.spec.ts
+    commit_message: "chore: scaffold Astro + Cloudflare Pages with vitest + playwright + CI"
+    depends_on: []
+
+  - id: 2
+    phase: p0-foundation
+    task_class: ui
+    title: "feat: design tokens + self-hosted fonts + light/dark theme"
+    description: |
+      Port the design system into the build. Translate
+      design/screens/my-blog-screens/project/colors_and_type.css into
+      src/styles/tokens.css — the PINNED token contract (palette, type scale,
+      space, radius, motion). RENAME the `--ember-*` scale to `--iris-*` (the
+      values are already correct electric-violet; the name is a vestige). Keep
+      the cool-gray neutrals, single violet accent, light + dark via
+      [data-theme], and the prefers-reduced-motion block. Self-host the variable
+      fonts (copy the TTFs from design/.../fonts into public/fonts, add
+      @font-face). Add a theme-toggle island persisting choice + honoring
+      prefers-color-scheme. Components MUST reference token variables — no
+      hard-coded colors/fonts (enforced in review).
+    key_files:
+      - src/styles/tokens.css
+      - src/styles/global.css
+      - public/fonts/Fraunces-Variable.ttf
+      - public/fonts/Inter-Variable.ttf
+      - public/fonts/JetBrainsMono-Variable.ttf
+      - src/components/ThemeToggle.astro
+      - src/lib/theme.ts
+      - tests/tokens.test.ts
+    commit_message: "feat: design tokens, self-hosted fonts, light/dark theme"
+    depends_on: [1]
+
+  - id: 3
+    phase: p0-foundation
+    task_class: infra
+    title: "feat: bilingual /fr//en/ path-prefix routing + i18n helpers"
+    description: |
+      Bilingual plumbing (M-11, D-004, app-ia.md §5). Path-prefix routing:
+      every page under /fr/ and /en/. `/` redirects to the default locale
+      (preference / Accept-Language). src/i18n/index.ts is the PINNED i18n
+      contract: locale list, default, the translationKey join (links a post's
+      FR+EN versions), route builders, and the language-switcher fallback (lands
+      on the parallel translation, else the localized index — never a dead
+      switch, NFR-11). Unit-test routing + switcher fallback.
+    key_files:
+      - src/i18n/index.ts
+      - src/pages/index.astro
+      - src/middleware.ts
+      - tests/i18n.test.ts
+    commit_message: "feat: bilingual path-prefix routing + i18n helpers"
+    depends_on: [1]
+
+  - id: 4
+    phase: p0-foundation
+    task_class: infra
+    title: "chore: secret-hygiene baseline (M-7)"
+    description: |
+      Establish secret hygiene (M-7, NFR-5). Confirm .gitignore covers .env and
+      all secret-bearing files. Author .env.example documenting every required
+      key NAME with placeholder-only values (Cloudflare token + account id,
+      ANTHROPIC_API_KEY, embedding provider key if separate) — see persona.md
+      "Manual steps". Add src/lib/env.ts: a typed, validated accessor that reads
+      from env and fails loudly with a helpful message when a key is missing
+      (so the site degrades gracefully without secrets rather than leaking).
+      The `secret-scan` gate (docs/invariants.yaml) must pass.
+    key_files:
+      - .gitignore
+      - .env.example
+      - src/lib/env.ts
+      - tests/env.test.ts
+    commit_message: "chore: secret-hygiene baseline (.env.example, env accessor)"
+    depends_on: [1]
+
+  - id: 5
+    phase: p0-foundation
+    task_class: infra
+    title: "feat: content collections schema (Article, Project, Tag)"
+    description: |
+      The PINNED content schema (app-ia.md §4). src/content/config.ts: Zod
+      schemas for Article, Project, Tag with the exact fields — translationKey,
+      lang, slug, title, body, publishDate, tags[], sources[] ({label,url,date}),
+      contentHash, publishState. Only publishState=published builds. Add a small
+      bilingual fixture set (FR+EN pairs sharing translationKey) used by later
+      tasks' tests. Unit-test schema validation + the translationKey pairing.
+    key_files:
+      - src/content/config.ts
+      - src/content/fixtures/article.fr.md
+      - src/content/fixtures/article.en.md
+      - tests/content-schema.test.ts
+    commit_message: "feat: content collections schema + bilingual fixtures"
+    depends_on: [1]
+
+  # ---------------------------------------------------------------- P1
+  - id: 6
+    phase: p1-reading
+    task_class: ui
+    title: "feat: navigation shell (masthead, footer, avatar launcher slot)"
+    description: |
+      The shared chrome (app-ia.md §6). Base layout with: masthead (typographic
+      wordmark → home; nav Articles · Projets · À propos; search affordance;
+      language switcher using i18n helpers; theme toggle), footer (RSS link,
+      language switch, quiet "écrit et maintenu de façon autonome" credit), and
+      a fixed-corner non-figurative avatar-launcher SLOT (the avatar component
+      lands in task 20). Match the handoff screens. No emojis; professional SVG
+      icons only (INV-9). e2e: nav, language switch, theme toggle persist.
+    key_files:
+      - src/layouts/Base.astro
+      - src/components/Masthead.astro
+      - src/components/Footer.astro
+      - src/components/SearchTrigger.astro
+      - src/components/LanguageSwitcher.astro
+      - src/components/AvatarLauncher.astro
+      - e2e/shell.spec.ts
+    commit_message: "feat: navigation shell + footer + avatar launcher slot"
+    depends_on: [2, 3]
+
+  - id: 7
+    phase: p1-reading
+    task_class: ui
+    title: "feat: article index (S2) with pagination + tag filter"
+    description: |
+      Article index (FR-A1, S2). Editorial list (not a card grid), newest-first,
+      paginated; per item title/dek/date(DD-MM-YYYY)/tags/reading-time; tag-filter
+      chips. This item layout is reused by tag and search results. Build from the
+      content collection (task 5) per locale. e2e: list renders, pagination,
+      filter.
+    key_files:
+      - src/pages/[lang]/blog/index.astro
+      - src/components/ArticleListItem.astro
+      - src/components/Pagination.astro
+      - e2e/blog-index.spec.ts
+    commit_message: "feat: article index with pagination and tag filter"
+    depends_on: [5, 6]
+
+  - id: 8
+    phase: p1-reading
+    task_class: ui
+    title: "feat: article page (S3) — reading column, sources, lang switch"
+    description: |
+      The core reading surface (FR-A1, FR-A2, S3). Single editorial reading
+      column (~68ch): title (Fraunces), meta row, long-form body (Inter) with
+      code (JetBrains Mono) + blockquote, a Sources list with resolving links,
+      prev/next by tag. The language switcher lands on the parallel translation
+      (translationKey). e2e: renders fixture article, sources link out, lang
+      switch lands on the EN/FR counterpart.
+    key_files:
+      - src/pages/[lang]/blog/[slug].astro
+      - src/components/Prose.astro
+      - src/components/SourceList.astro
+      - e2e/article.spec.ts
+    commit_message: "feat: article page with sources and bilingual switch"
+    depends_on: [5, 6]
+
+  - id: 9
+    phase: p1-reading
+    task_class: ui
+    title: "feat: tag directory (S4) + tag index (S5)"
+    description: |
+      Tag taxonomy pages. /[lang]/tags/ lists topics with counts; /[lang]/tags/
+      [tag]/ lists that topic's articles reusing the article-index item layout
+      (task 7). e2e: directory → tag index navigation.
+    key_files:
+      - src/pages/[lang]/tags/index.astro
+      - src/pages/[lang]/tags/[tag].astro
+      - e2e/tags.spec.ts
+    commit_message: "feat: tag directory and per-tag index"
+    depends_on: [7]
+
+  - id: 10
+    phase: p1-reading
+    task_class: ui
+    title: "feat: home / hub (S1)"
+    description: |
+      Home (S1). Restrained hero (wordmark + one-line statement set in Fraunces),
+      a "Derniers articles" list (3–5, from task 7's data), and a "Projets"
+      teaser strip (2–3 cards → portfolio, from task 12). No SaaS landing tropes,
+      no gradient hero, no email modal. e2e: hero, latest articles, teaser links.
+    key_files:
+      - src/pages/[lang]/index.astro
+      - src/components/Hero.astro
+      - e2e/home.spec.ts
+    commit_message: "feat: home hub with latest articles and portfolio teaser"
+    depends_on: [7, 12]
+
+  # ---------------------------------------------------------------- P2
+  - id: 11
+    phase: p2-portfolio
+    task_class: content
+    title: "feat: generate portfolio content from the inventory (public-safe)"
+    description: |
+      Generate Project entries (FR-D2). A reproducible script reads
+      PROJECT-INVENTORY.md / inventory/ and emits Project content-collection
+      entries (FR + EN) into src/content/work/. PUBLIC-SAFE ONLY (FR-D3, NFR-6):
+      public-facing project names + descriptions, stack, status, public links —
+      NO secrets, NO private-repo internals, NO internal codenames/raw dir names,
+      NO third-party data. No hand-authored prose (W-1) — derive from the
+      inventory. Test reproducibility + a safety assertion (no flagged terms).
+      The `content-safety` gate also reviews this (advisory).
+    key_files:
+      - scripts/gen-portfolio.ts
+      - src/content/work/.gitkeep
+      - tests/gen-portfolio.test.ts
+    commit_message: "feat: generate public-safe portfolio content from inventory"
+    depends_on: [5]
+
+  - id: 12
+    phase: p2-portfolio
+    task_class: ui
+    title: "feat: portfolio index (S6)"
+    description: |
+      Portfolio index (FR-D1, S6). Restrained grid of uniform project cards
+      (name, one-line, stack chips, status, quiet link) → project detail. Built
+      from the generated Project collection (task 11). e2e: cards render, link to
+      detail, hover state uses the accent sparingly.
+    key_files:
+      - src/pages/[lang]/work/index.astro
+      - src/components/ProjectCard.astro
+      - e2e/work-index.spec.ts
+    commit_message: "feat: portfolio index with project cards"
+    depends_on: [6, 11]
+
+  - id: 13
+    phase: p2-portfolio
+    task_class: ui
+    title: "feat: project detail (S7)"
+    description: |
+      Project detail (FR-D1, S7). Reading-column page: name, summary, "Ce que
+      c'est", "Ingénierie" (the depth), stack, status, public links, optional
+      related articles. Public-safe only (INV-4). e2e: renders a generated
+      project, links resolve.
+    key_files:
+      - src/pages/[lang]/work/[slug].astro
+      - e2e/work-detail.spec.ts
+    commit_message: "feat: project detail page"
+    depends_on: [11, 12]
+
+  # ---------------------------------------------------------------- P3
+  - id: 14
+    phase: p3-secondary
+    task_class: ui
+    title: "feat: about / contact page (S8, FR-A6)"
+    description: |
+      About/contact (FR-A6, S8). Localized /[lang]/about/: short bio block,
+      contact links (mailto + professional links — NO server-side form, W-2),
+      and an optional "Comment ce site fonctionne" credibility note. Honors the
+      non-figurative brand rule (no face/photo treatment that breaks D-007).
+      e2e: page renders in both locales, links present.
+    key_files:
+      - src/pages/[lang]/about.astro
+      - e2e/about.spec.ts
+    commit_message: "feat: about / contact page"
+    depends_on: [6]
+
+  - id: 15
+    phase: p3-secondary
+    task_class: ui
+    title: "feat: client-side article search (S9, FR-A5)"
+    description: |
+      Search (FR-A5, S9). Integrate Pagefind (build-time prebuilt index, no
+      server, D-001). Search page + a client island: query input, results in the
+      article-index item layout, scoped to the current language, quiet empty
+      state ("Aucun résultat"). Distinct from the avatar (returns articles, not
+      answers). e2e: query returns a known fixture, empty query state.
+    key_files:
+      - src/pages/[lang]/search.astro
+      - src/components/Search.tsx
+      - astro.config.mjs
+      - package.json
+      - e2e/search.spec.ts
+    commit_message: "feat: client-side article search (Pagefind)"
+    depends_on: [7]
+
+  - id: 16
+    phase: p3-secondary
+    task_class: infra
+    title: "feat: per-language RSS + sitemap + robots + 404 (FR-A7)"
+    description: |
+      Distribution + SEO basics. Per-language /[lang]/rss.xml (FR-A7): valid
+      feed of published posts in that language, newest-first, regenerated on
+      build, linked in the footer. Add sitemap (@astrojs/sitemap), robots.txt,
+      and a localized 404 (S11). Unit-test feed validity + item ordering.
+    key_files:
+      - src/pages/[lang]/rss.xml.ts
+      - src/pages/[lang]/404.astro
+      - public/robots.txt
+      - astro.config.mjs
+      - tests/rss.test.ts
+    commit_message: "feat: per-language RSS, sitemap, robots, localized 404"
+    depends_on: [5, 7]
+
+  # ---------------------------------------------------------------- P4 (avatar)
+  - id: 17
+    phase: p4-avatar
+    task_class: backend
+    title: "feat: avatar retrieval lib — contracts, hybrid + RRF + threshold"
+    description: |
+      The avatar's retrieval core (M-10, rag-avatar.md §2/§4), TypeScript.
+      src/lib/avatar/contracts.ts is the PINNED provider contract: Embedder /
+      VectorStore / Reranker / LLMProvider interfaces + the static index-artifact
+      JSON shape. Implement hybrid lexical + vector retrieval, Reciprocal Rank
+      Fusion, and the threshold "I don't know" gate (returns near-misses, does
+      NOT call the LLM, below threshold — NFR-4). Ship FAKE providers + a fixture
+      corpus so everything tests WITHOUT secrets. Unit-test RRF ordering and the
+      threshold short-circuit.
+    key_files:
+      - src/lib/avatar/contracts.ts
+      - src/lib/avatar/retrieval.ts
+      - src/lib/avatar/rrf.ts
+      - src/lib/avatar/threshold.ts
+      - src/lib/avatar/fakes.ts
+      - tests/avatar-retrieval.test.ts
+    commit_message: "feat: avatar retrieval lib (contracts, hybrid, RRF, threshold)"
+    depends_on: [5]
+
+  - id: 18
+    phase: p4-avatar
+    task_class: backend
+    title: "feat: deploy-time avatar index builder (incremental, hash-keyed)"
+    description: |
+      Build the static index artifact (rag-avatar.md §3). Chunk published posts +
+      portfolio pages markdown-section-aware (citation = post URL + heading
+      anchor); embed via the Embedder seam; emit the index artifact the endpoint
+      loads. Incremental: store a contentHash per post, re-embed only changed
+      slugs, delete stale chunks. Multilingual content (FR+EN). Tests use the
+      fake embedder + fixtures (no secrets). This concretizes OQ-4/OQ-5 behind
+      the seams (see persona.md).
+    key_files:
+      - scripts/build-avatar-index.ts
+      - src/lib/avatar/chunk.ts
+      - src/lib/avatar/index-build.ts
+      - tests/avatar-index.test.ts
+    commit_message: "feat: deploy-time incremental avatar index builder"
+    depends_on: [17, 8, 13]
+
+  - id: 19
+    phase: p4-avatar
+    task_class: backend
+    title: "feat: avatar query endpoint (Cloudflare Pages Function)"
+    description: |
+      The runtime endpoint (FR-E1, FR-E2, NFR-2). functions/api/avatar/query.ts:
+      load the index, run retrieval (task 17), apply the threshold gate — below
+      threshold return "I don't know" WITHOUT invoking the LLM (NFR-4) — else
+      stream a synthesized answer with CITATIONS PRECEDING PROSE. Harden:
+      input sanitization, system-prompt isolation from user input, grounded-only
+      (no exfiltration). Use the LLMProvider seam; tests run on the FAKE provider
+      (no secrets). Unit-test the grounded path, the refusal path, and that the
+      LLM is never called below threshold.
+    key_files:
+      - functions/api/avatar/query.ts
+      - src/lib/avatar/synthesize.ts
+      - src/lib/avatar/guard.ts
+      - tests/avatar-endpoint.test.ts
+    commit_message: "feat: avatar query endpoint with grounded synthesis + refusal"
+    depends_on: [17]
+
+  - id: 20
+    phase: p4-avatar
+    task_class: ui
+    title: "feat: avatar overlay UI (S10), wired to the endpoint"
+    description: |
+      The always-present avatar UI (S10). Idle launcher = the non-figurative mark
+      from the design system (NEVER a face/creature/living being — D-007). Active
+      chat panel with idle / thinking / answering / "je ne sais pas" states; the
+      accent on the active state; citations shown before prose. Wire to
+      /api/avatar/query (mock the fetch in e2e). Present on every route via the
+      shell slot (task 6). e2e: open, ask → grounded answer with citation; ask →
+      "I don't know" state.
+    key_files:
+      - src/components/Avatar.tsx
+      - src/components/avatar/Panel.tsx
+      - src/styles/avatar.css
+      - e2e/avatar.spec.ts
+    commit_message: "feat: non-figurative avatar overlay UI wired to endpoint"
+    depends_on: [6, 19]
+
+  - id: 21
+    phase: p4-avatar
+    task_class: backend
+    title: "feat: event-driven incremental reindex + nightly safety net"
+    description: |
+      Keep the index fresh (FR-E3). On a publish event (build hook / git push)
+      enqueue an incremental reindex of only changed posts (reusing task 18);
+      add a nightly full reindex as a safety net against missed events. Tests
+      assert only changed slugs are re-embedded and stale chunks are removed
+      (fake embedder).
+    key_files:
+      - scripts/reindex.ts
+      - src/lib/avatar/reindex.ts
+      - .github/workflows/reindex.yml
+      - tests/avatar-reindex.test.ts
+    commit_message: "feat: event-driven incremental reindex + nightly full reindex"
+    depends_on: [18]
+
+  - id: 22
+    phase: p4-avatar
+    task_class: backend
+    title: "test: avatar prompt-injection red-team (M-12, NFR-7) — launch-blocking"
+    description: |
+      The launch-blocking red-team (M-12, NFR-7). Author a comprehensive
+      ADVERSARIAL TEST SUITE against the endpoint guard (task 19): config/secret
+      exfiltration attempts, system-prompt override / "ignore previous
+      instructions", coercion to answer ungrounded, role-play jailbreaks, data
+      leakage of private content. Harden src/lib/avatar/guard.ts until ALL pass.
+      Because these are deterministic tests run by the `tests` gate + CI, a
+      regression BLOCKS — this is the launch gate's hard dependency (task 30).
+    key_files:
+      - src/lib/avatar/guard.ts
+      - tests/avatar-redteam.test.ts
+      - e2e/avatar-redteam.spec.ts
+    commit_message: "test: avatar prompt-injection red-team suite + hardening"
+    depends_on: [19, 20]
+
+  # ---------------------------------------------------------------- P5 (engine)
+  - id: 23
+    phase: p5-engine
+    task_class: pipeline
+    title: "feat: content-engine harness on claude-plan-execute (Python)"
+    description: |
+      The writing engine substrate (writing-flow.md §1/§2, M-6). Python under
+      pipeline/. Wrap claude-plan-execute as the orchestration substrate: a run =
+      a slate of dependent tasks; author the editorial tasks-template.yaml shape;
+      configure the tmux/interactive backend (M-6, NFR-10) + exit-code-75
+      auto-resume (NFR-8). Provide a FAKE claude driver so the harness tests run
+      offline (no subscription, no secrets). Unit-test slate assembly + resume.
+    test_command: "pytest -q pipeline"
+    lint_command: "ruff check pipeline"
+    key_files:
+      - pipeline/runner.py
+      - pipeline/config.py
+      - pipeline/tasks-template.yaml
+      - pipeline/fakes.py
+      - pipeline/tests/test_runner.py
+    commit_message: "feat: content-engine harness on claude-plan-execute"
+    depends_on: [5]
+
+  - id: 24
+    phase: p5-engine
+    task_class: pipeline
+    title: "feat: research + select stages + claim-source-map contract"
+    description: |
+      Stages 1–2 (writing-flow.md §3/§4). pipeline/contracts/claim_source_map.py
+      (+ JSON schema) is the PINNED provenance contract: {claim, source_id,
+      excerpt_span}[] + sources[] {source_id, url, retrieved_at, excerpt}.
+      Research captures source EXCERPTS (not just URLs) → candidates.json. Select
+      → brief.md (angle, outline, claim skeleton, fallback shortlist) with
+      semantic dedup via the shared multilingual Embedder (OQ-5) against topic
+      memory. Tests use fakes + fixtures.
+    test_command: "pytest -q pipeline"
+    lint_command: "ruff check pipeline"
+    key_files:
+      - pipeline/contracts/claim_source_map.py
+      - pipeline/contracts/claim_source_map.schema.json
+      - pipeline/stages/research.py
+      - pipeline/stages/select.py
+      - pipeline/prompts/research.py
+      - pipeline/prompts/select.py
+      - pipeline/tests/test_research_select.py
+    commit_message: "feat: research + select stages + claim-source-map contract"
+    depends_on: [23]
+
+  - id: 25
+    phase: p5-engine
+    task_class: pipeline
+    title: "feat: draft + review + humanize stages"
+    description: |
+      Stages 3–4 (writing-flow.md §3/§5). Draft writes FR + EN as parallel
+      outputs carrying the claim→source map (task 24 contract). Review = the
+      APPROVED/NEEDS_REVISION loop, also enforcing the claim→source map is
+      complete. Humanize = the global `style-auditor` as AUDITOR ONLY: it flags
+      AI-tells → a SEPARATE revise agent applies edits → style-auditor re-checks
+      (the gate keeps its teeth). House-style guide (no-emoji, voice) consumed at
+      draft + style. Tests with fakes.
+    test_command: "pytest -q pipeline"
+    lint_command: "ruff check pipeline"
+    key_files:
+      - pipeline/stages/draft.py
+      - pipeline/stages/review.py
+      - pipeline/stages/humanize.py
+      - pipeline/house_style.md
+      - pipeline/tests/test_draft_review.py
+    commit_message: "feat: draft + review + humanize (style-auditor as auditor)"
+    depends_on: [24]
+
+  - id: 26
+    phase: p5-engine
+    task_class: pipeline
+    title: "feat: M-4 quality gate — fact-check provenance, grounding, style"
+    description: |
+      The load-bearing gate (M-4, FR-C1/C2/C3, NFR-3, writing-flow.md §4/§5).
+      Run per language, blocking on any failure: (a) FACT-CHECK — verify each
+      load-bearing claim against its mapped captured excerpt; block on any
+      unsupported claim; (b) SOURCE-GROUNDING — every factual statement traces
+      to a cited reachable source, no uncited claims, no dead links; (c) STYLE —
+      style-auditor re-check incl. the no-emoji rule. Gate-repair loop, then
+      TERMINAL FAILURE → fall back to the next-ranked topic from the brief
+      shortlist (protect cadence); skip + alert only if the shortlist is dry.
+      A failing gate retains artifacts + alerts (FR-C3). Thorough tests
+      (supported/unsupported claims, dead link, emoji, fallback path).
+    test_command: "pytest -q pipeline"
+    lint_command: "ruff check pipeline"
+    key_files:
+      - pipeline/gate/__init__.py
+      - pipeline/gate/factcheck.py
+      - pipeline/gate/grounding.py
+      - pipeline/gate/style.py
+      - pipeline/gate/fallback.py
+      - pipeline/tests/test_gate.py
+    commit_message: "feat: M-4 quality gate (fact-check provenance + grounding + style)"
+    depends_on: [25]
+
+  - id: 27
+    phase: p5-engine
+    task_class: pipeline
+    title: "feat: publish stage + topic memory + shared embedder"
+    description: |
+      Stage 6 + memory (FR-B5, FR-G1/G2, M-9, writing-flow.md §6/§8). Publish
+      commits the approved+gated FR & EN posts to src/content at parallel URLs,
+      triggers the build, and emits the avatar reindex event (task 21). Topic
+      memory (evergreen): published topics + sources + embeddings, language-
+      independent keys, queried by Select for dedup. House-style guide is the
+      shared FR-G2 spec. The multilingual Embedder (OQ-5) is shared with the
+      avatar index (task 18) — one implementation behind the seam. Tests with
+      fakes; assert bilingual-or-nothing publish.
+    test_command: "pytest -q pipeline"
+    lint_command: "ruff check pipeline"
+    key_files:
+      - pipeline/stages/publish.py
+      - pipeline/memory/topic_memory.py
+      - pipeline/memory/embedder.py
+      - pipeline/tests/test_publish_memory.py
+    commit_message: "feat: publish stage + topic memory + shared embedder"
+    depends_on: [26, 18]
+
+  - id: 28
+    phase: p5-engine
+    task_class: pipeline
+    title: "feat: scheduling, monitoring, alerting, pause/resume (M-5)"
+    description: |
+      Unattended operation (M-5, FR-F2, FR-F4, writing-flow.md §7). A twice-weekly
+      scheduler entry that runs one slate; a heartbeat that confirms runs happen
+      and alerts on missed/failed/blocked runs (FR-F2, naming the reason);
+      auto-resume wiring (exit-75); a config flag to pause/resume the schedule
+      without a code change (FR-F4). Tests simulate a missed run → alert, and
+      pause → no run.
+    test_command: "pytest -q pipeline"
+    lint_command: "ruff check pipeline"
+    key_files:
+      - pipeline/schedule/cron.py
+      - pipeline/schedule/heartbeat.py
+      - pipeline/schedule/alert.py
+      - pipeline/tests/test_schedule.py
+    commit_message: "feat: scheduling + monitoring + alerting + pause/resume"
+    depends_on: [23, 26]
+
+  # ---------------------------------------------------------------- P6 (launch)
+  - id: 29
+    phase: p6-launch
+    task_class: ui
+    title: "test: full-site e2e, accessibility, performance budgets"
+    description: |
+      Whole-system verification. Cross-screen @playwright/test specs covering
+      every screen in FR + EN and light + dark: navigation, language switch
+      (never dead-ends), theme, reading flow, search, and the avatar (grounded +
+      "I don't know"). Accessibility pass (axe: landmarks, focus-visible,
+      contrast). Performance budget assertions aligned to NFR-1 (LCP ≤ 2.5s) /
+      Lighthouse ≥ 90. These run in CI.
+    key_files:
+      - e2e/full-site.spec.ts
+      - e2e/a11y.spec.ts
+      - e2e/perf.spec.ts
+      - tests/integration.test.ts
+    commit_message: "test: full-site e2e, a11y, and performance budgets"
+    depends_on: [10, 13, 14, 15, 16, 20]
+
+  - id: 30
+    phase: p6-launch
+    task_class: infra
+    title: "chore: launch-readiness gate + deploy config (launch-blocking)"
+    description: |
+      The launch gate. A check script asserting launch readiness: the avatar
+      red-team suite (task 22) passes, both per-language quality gates exist,
+      secret-scan is clean, the perf/a11y budgets (task 29) pass, and the
+      Cloudflare Pages deploy config is valid (build command, output dir, env
+      var NAMES present — values supplied by the owner per persona.md). Produce
+      LAUNCH.md: a readiness report + the consolidated owner manual-steps
+      checklist (Cloudflare token, ANTHROPIC_API_KEY, embedder key, domain, tmux
+      login). Do NOT auto-deploy to production — leave go-live to the owner once
+      secrets are in.
+    key_files:
+      - scripts/launch-check.ts
+      - LAUNCH.md
+      - tests/launch-check.test.ts
+    commit_message: "chore: launch-readiness gate + deploy config + LAUNCH.md"
+    depends_on: [22, 28, 29]

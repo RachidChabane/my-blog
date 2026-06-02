@@ -1,0 +1,59 @@
+# Custom gates for the my-blog build slate (claude-plan-execute).
+# Registry gates `tests` + `lint` come from defaults.gates in tasks.yaml.
+# Policy (per docs/persona.md): deterministic gates BLOCK; agent gates WARN
+# (the monitoring Claude instance acts on warnings). The avatar red-team is a
+# deterministic adversarial TEST SUITE (task 22, run by `tests`) so it blocks via CI.
+
+# --- secret hygiene (M-7, NFR-5): no real secret material in tracked source/config.
+- name: secret-scan
+  kind: shell
+  regex_must_not_match: '(-----BEGIN [A-Z ]+PRIVATE KEY-----|sk-ant-api[0-9]{2}-[A-Za-z0-9_-]{20}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10})'
+  files: [src, functions, pipeline, scripts, public, .github, astro.config.mjs, wrangler.toml, package.json]
+  on_failure: block
+  when: [always]
+  comment: "Blocks committed API keys / private keys. Excludes .env (gitignored), *.example, docs, node_modules."
+
+# --- end-to-end browser tests (@playwright/test). Playwright manages its own webServer.
+- name: e2e
+  kind: shell
+  command: "pnpm test:e2e"
+  timeout_minutes: 25
+  on_failure: block
+  when: [task_class:ui, "touches:src/pages/**", "touches:src/components/**", "touches:src/layouts/**", "touches:e2e/**"]
+  comment: "Deterministic browser flows. Visual/exploratory fidelity is the monitoring instance's job via Playwright MCP, not this gate."
+
+# --- portfolio / content public-safety (FR-D3, NFR-6). Advisory (warn).
+- name: content-safety
+  kind: agent
+  model: sonnet
+  effort: medium
+  on_failure: warn
+  when: ["touches:src/content/**", "touches:scripts/gen-portfolio*", "touches:src/pages/**/work/**"]
+  timeout_minutes: 10
+  prompt_template: |
+    You are a release gate for a PUBLIC personal site. Inspect the diff's generated
+    portfolio/content pages and assert NONE of the following leak:
+      - secrets, API keys, tokens, or credentials;
+      - private-repo internals or unreleased details;
+      - internal project CODENAMES or raw repo/directory names (use public-safe names only);
+      - third-party personal data.
+    Portfolio entries must read as public-safe names + descriptions (FR-D3, NFR-6).
+    Emit findings as JSON after the line BEGIN_FINDINGS_JSON, then end your response with a
+    sentinel line: `Verdict: PASS` if nothing leaks, or `Verdict: FAIL` if any leak is present.
+
+# --- avatar endpoint security review (public runtime endpoint). Advisory (warn).
+- name: security-review
+  kind: agent
+  model: opus
+  effort: medium
+  on_failure: warn
+  when: ["touches:functions/api/avatar/**", "touches:src/lib/avatar/**"]
+  timeout_minutes: 12
+  prompt_template: |
+    Security review of the avatar endpoint diff (functions/api/avatar, src/lib/avatar).
+    Check: input sanitization; system-prompt isolation from user input; grounded-retrieval-ONLY
+    answers (no data/tool exfiltration paths); the threshold "I don't know" gate short-circuits
+    BEFORE the synthesis LLM; no secrets in code; safe error handling; no reflected user input.
+    Note: the comprehensive adversarial suite is task 22's job — flag regressions here, don't
+    duplicate it. Emit findings as JSON after BEGIN_FINDINGS_JSON, then end your response with a
+    sentinel line: `Verdict: PASS` (no security regression) or `Verdict: FAIL` (regression found).

@@ -65,6 +65,12 @@ Aim: the autonomous publishing engine + a bilingual (FR/EN) portfolio + the RAG 
 |---|---|---|---|
 | M-12 | Avatar prompt-injection **red-team pass** before launch (sanitization + prompt isolation + grounded-only, validated adversarially) | S | The avatar is a public endpoint representing Rachid; per [OQ-12], `NFR-7`. Launch-blocking. |
 
+### Secondary surfaces
+
+| ID | Feature | Effort | Why |
+|---|---|---|---|
+| M-13 | Secondary surfaces: About/contact page, client-side article **search** (prebuilt index), per-language **RSS**, sitemap/robots/404 | S | Owner confirmed these as MVP surfaces in Stage 3 (`app-ia.md` §13); `FR-A5` (search), `FR-A6` (about), `FR-A7` (RSS). Promotes former `S-5` (RSS) into the MVP. |
+
 **MVP total:** ~11–15 weeks of effort (avatar `M-10`, bilingual `M-11`, and the avatar red-team `M-12` are the expansions over the minimal engine). **Critical path:** M-1 → M-3 → M-4 → M-5 → M-10 → M-12 (publish + gate + run unattended, then the avatar, then its red-team before launch).
 
 ## Should (post-MVP, months 2+)
@@ -77,7 +83,7 @@ Order roughly by value-to-cost ratio.
 | S-2 | Post-hoc correction / pull workflow (flag, supersede, or unpublish a bad post via git) | S | Safety net under auto-publish (Risk 1) | The first defect that reaches production. |
 | S-3 | SEO basics (sitemap, meta, Open Graph) | S | Portfolio + article reach | When readership becomes an explicit goal. |
 | S-4 | Analytics / readership tracking | S | Needed to measure the 18-month readership signal | When measuring reach (`vision.md` 18-mo). |
-| S-5 | RSS feed / newsletter | M | Distribution to returning readers | Evidence of returning-reader demand. |
+| ~~S-5~~ | ~~RSS feed / newsletter~~ | — | **RSS promoted to MVP (`M-13`) 02-06-2026** per Stage-3 surface choice (`app-ia.md` §13). The *newsletter* part remains out of MVP (see `C-1`-adjacent parking lot). ID not reused. | — |
 | S-6 | Periodic portfolio re-sync from the `0-git` inventory | S | Mitigates portfolio staleness (Risk 3) | When a flagship project evolves materially. |
 
 ## Could (months 3+ to 12+)

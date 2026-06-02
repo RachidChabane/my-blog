@@ -40,6 +40,15 @@ Group letters: **A** = publishing surface, **B** = content pipeline, **C** = qua
 **FR-A4** — As a reader, I can switch between the French and English version of the site and of any post.
 *Acceptance.* A language switcher is present site-wide; each post exists in FR and EN at parallel URLs; switching preserves the current post when its translation exists, else falls back to the index (`NFR-11`, `M-11`).
 
+**FR-A5** — As a reader, I can search articles by keyword. *(MVP per Stage-3 surface choice; `M-13`.)*
+*Acceptance.* A search affordance is present site-wide; queries run against a **client-side prebuilt index** (no server), scoped to the current language; results use the article-index item layout; an empty result shows a quiet "no results" state. Distinct from the avatar (search returns articles; the avatar answers).
+
+**FR-A6** — As a visitor, I can read an About/contact page and find how to reach Rachid. *(`M-13`.)*
+*Acceptance.* A localized `/[lang]/about/` page exists with a bio, contact links (no server-side form, per `W-2`), and an optional "how this site works" note; honors the non-figurative brand rule (`D-007`).
+
+**FR-A7** — As a returning reader, I can subscribe to a per-language RSS feed. *(`M-13`; promoted from `S-5`.)*
+*Acceptance.* `/[lang]/rss.xml` is a valid feed of published posts in that language, newest-first, regenerated on build; linked in the footer.
+
 ### Group B — Content pipeline
 
 **FR-B1** — As the AI maintainer, on a schedule I search recent developments in cutting-edge AI engineering (via Claude Code's native web-search tools, optionally specialized search sub-agents) and produce ranked candidate topics.

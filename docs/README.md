@@ -38,7 +38,15 @@ The Claude Design hand-off is scaffolded and ready, in the order Claude Design e
 
 - [`app-design-prompt.md`](app-design-prompt.md) — **Stage 4 screen-design prompt.** Paste-ready Claude Design prompt (prelude + per-screen specs for Home, Article, index, Portfolio, Project detail, Avatar, About) that *inherits* the published design system and produces high-fidelity mockups, exported to the build via **Handoff to Claude Code**. Derived from `app-ia.md` § 7; scrubbed of internal names/IDs; the no-emoji rule baked in.
 
-Stage 5 (`tasks.yaml` hand-off to `claude-plan-execute`) is not yet scaffolded — generate when the screens are designed and `app-ia.md` is approved.
+## Stage 5 hand-off (the build slate) — authored
+
+The complete `claude-plan-execute` hand-off that drives the end-to-end build. **Validated against the real `claude-plan-execute` loader** (zero warnings).
+
+- [`tasks.yaml`](tasks.yaml) — the full **30-task** slate across 7 phases (foundation → reading → portfolio → secondary → avatar → content engine → launch). Each task carries `key_files`, `depends_on`, `commit_message`, and code tests; UI tasks carry `@playwright/test` e2e. Serial (`parallelism: 1`). Covers `M-1`…`M-13`.
+- [`persona.md`](persona.md) — the context every plan/implement agent reads: architecture (Astro+CF; avatar = CF Function with in-memory hybrid retrieval behind swappable seams, concretizing `OQ-4`/`OQ-5`; pipeline = Python on `claude-plan-execute`), the **pinned shared contracts**, the non-negotiables, and the **owner manual-steps** (secrets/keys/domain — the only non-automated work).
+- [`invariants.yaml`](invariants.yaml) — custom gates: `secret-scan` + `e2e` (block), `content-safety` + `security-review` (warn). The avatar red-team is a deterministic test suite (task 22) so it blocks via CI.
+
+The build goes **green without secrets** (fakes/fixtures); live integration is the explicit post-secret step. Next: install/point `claude-plan-execute` at `docs/tasks.yaml` and run (a separate go — this is where code gets written).
 
 ## Conventions
 
