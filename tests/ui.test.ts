@@ -11,6 +11,9 @@ import {
   tagStrings,
   NOT_FOUND,
   notFoundStrings,
+  ABOUT,
+  aboutStrings,
+  CONTACTS,
 } from '@/i18n/ui';
 import { LOCALES } from '@/i18n/index';
 
@@ -221,5 +224,73 @@ describe('not-found string table (NOT_FOUND)', () => {
   it('notFoundStrings(lang) returns the locale record', () => {
     expect(notFoundStrings('fr')).toBe(NOT_FOUND.fr);
     expect(notFoundStrings('en')).toBe(NOT_FOUND.en);
+  });
+});
+
+describe('about string table (ABOUT)', () => {
+  it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
+    expect(Object.keys(ABOUT.fr).sort()).toEqual(Object.keys(ABOUT.en).sort());
+  });
+
+  it('every about string is a non-empty string in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(ABOUT[locale])) {
+        expect(typeof value, `${locale}.${key}`).toBe('string');
+        expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('localizes the how-it-works heading (design-sourced)', () => {
+    expect(ABOUT.fr.howH).toBe('Comment ce site fonctionne');
+    expect(ABOUT.en.howH).toBe('How this site works');
+  });
+
+  // Lock the e2e substrings to the source so the string + assertion cannot drift.
+  it('how-it-works text carries the human-out-of-the-loop claim the e2e asserts', () => {
+    expect(ABOUT.fr.howText).toContain('sans intervention humaine');
+    expect(ABOUT.en.howText).toContain('no human in the loop');
+  });
+
+  it('contains no emoji in any string (INV-9)', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(ABOUT[locale])) {
+        expect(EMOJI.test(value), `${locale}.${key} = "${value}"`).toBe(false);
+      }
+    }
+  });
+
+  it('aboutStrings(lang) returns the locale record', () => {
+    expect(aboutStrings('fr')).toBe(ABOUT.fr);
+    expect(aboutStrings('en')).toBe(ABOUT.en);
+  });
+});
+
+describe('contact links (CONTACTS)', () => {
+  it('ships GitHub as a real, verifiably-public link', () => {
+    const gh = CONTACTS.find((c) => c.icon === 'github');
+    expect(gh?.href).toBe('https://github.com/RachidChabane');
+  });
+
+  // Tripwire: encodes the deliberate privacy decision (CLAUDE.md #3 / FR-D3). The
+  // owner handoff flips these to a valid mailto/https AND must update the e2e
+  // is-placeholder count (about.spec.ts) from 2 to 1 per filled entry.
+  it('stages email and linkedin as owner-fill (no committed personal data)', () => {
+    expect(CONTACTS.find((c) => c.icon === 'mail')?.href).toBeNull();
+    expect(CONTACTS.find((c) => c.icon === 'linkedin')?.href).toBeNull();
+  });
+
+  it('every live href is https or mailto; every entry has a non-empty label', () => {
+    for (const c of CONTACTS) {
+      expect(c.label.trim().length).toBeGreaterThan(0);
+      if (c.href) expect(c.href).toMatch(/^(https:\/\/|mailto:)/);
+    }
+  });
+
+  it('contains no emoji in labels/values (INV-9)', () => {
+    for (const c of CONTACTS) {
+      expect(EMOJI.test(c.label)).toBe(false);
+      if ('value' in c && c.value) expect(EMOJI.test(c.value)).toBe(false);
+    }
   });
 });
