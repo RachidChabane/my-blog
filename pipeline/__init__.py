@@ -21,7 +21,24 @@ from .config import (
     discover_loop_bin,
     ensure_cpe_importable,
 )
-from .fakes import FakeClaudeDriver
+from .contracts import (
+    Claim,
+    ClaimSourceMap,
+    ContractError,
+    Embedder,
+    ExcerptSpan,
+    PriorTopic,
+    SourceRecord,
+    TopicMemoryReader,
+    cosine,
+    load_topic_memory,
+)
+from .fakes import (
+    FakeClaudeDriver,
+    FakeEmbedder,
+    FakeTopicMemory,
+    tokenize,
+)
 from .runner import (
     AssembledSlate,
     CpeLoopDriver,
@@ -51,4 +68,19 @@ __all__ = [
     "load_slate",
     "resume_point",
     "run",
+    # contracts (task 24)
+    "Claim",
+    "ClaimSourceMap",
+    "ContractError",
+    "ExcerptSpan",
+    "SourceRecord",
+    "Embedder",
+    "PriorTopic",
+    "TopicMemoryReader",
+    "cosine",
+    "load_topic_memory",
+    # offline doubles (task 24)
+    "FakeEmbedder",
+    "FakeTopicMemory",
+    "tokenize",
 ]

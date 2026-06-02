@@ -6,15 +6,21 @@ requirement — resume tests must exercise the real on-disk shape, not fiction)
 and writes minimal per-stage artifact stubs under ``plans/task-<id>/`` so
 artifact/resume assertions test reality.
 
-No fake ``Embedder`` / ``LLMProvider`` / web-search lives here — those belong to
-tasks 24/27.
+``FakeEmbedder`` / ``FakeTopicMemory`` (task 24) live here — offline doubles for
+the OQ-5 ``Embedder`` / ``TopicMemoryReader`` seams (``pipeline.contracts.embedder``),
+mirroring the avatar TS fake (``src/lib/avatar/fakes.ts``). No fake ``LLMProvider`` /
+web-search lives here yet — those belong to task 27.
 """
 from __future__ import annotations
 
 import json
+import math
+import re
+import unicodedata
 from datetime import UTC, datetime
 
 from .config import PipelineConfig, ensure_cpe_importable
+from .contracts.embedder import PriorTopic
 from .runner import AssembledSlate, SlateResult, _usage_limit_code
 
 # Per-stage artifact stubs the fake writes on stage completion. Real content is
@@ -131,4 +137,89 @@ class FakeClaudeDriver:
         )
 
 
-__all__ = ["FakeClaudeDriver", "STAGE_ARTIFACTS"]
+# ---------------------------------------------------------------------------
+# Offline OQ-5 embedder / topic-memory doubles (task 24)
+# ---------------------------------------------------------------------------
+
+
+def tokenize(text: str) -> list[str]:
+    """Lowercase, fold diacritics (NFD + strip combining marks), split on non-[a-z0-9].
+
+    FAITHFUL to the avatar TS ``tokenize`` (``src/lib/avatar/lexical.ts:17-24``) — NOT
+    the ASCII-only ``re.findall(r"[a-z0-9]+", text.lower())``, which shreds accented FR
+    (``"récupération" -> ['r','cup','ration']``) so an accented term and its ASCII
+    spelling would never dedup. Folding makes them collapse to the same bag, so the
+    fake operates on the §1.5 canonical ``dedup_key`` form.
+
+    ``tokenize("Récupération") == tokenize("recuperation") == ["recuperation"]``.
+    """
+    folded = unicodedata.normalize("NFD", text.lower())
+    folded = "".join(ch for ch in folded if not unicodedata.combining(ch))
+    return re.findall(r"[a-z0-9]+", folded)
+
+
+def _fnv1a(token: str) -> int:
+    """FNV-1a 32-bit hash — mirrors the TS ``fnv1a`` (tokens are ASCII post-fold)."""
+    h = 2166136261
+    for ch in token:
+        h ^= ord(ch)
+        h = (h * 16777619) & 0xFFFFFFFF
+    return h
+
+
+class FakeEmbedder:
+    """Deterministic token-hash bag-of-words ``Embedder`` — mirrors the avatar TS fake.
+
+    Each token bumps slot ``fnv1a(token) % dimensions``; the vector is L2-normalized,
+    so texts sharing tokens get high cosine and disjoint vocabularies get ~0.
+
+    LOUD CAVEAT (mirror ``src/lib/avatar/fakes.ts``): this measures literal TOKEN
+    OVERLAP, not meaning, and is MONOLINGUAL — recognizing one topic phrased in two
+    natural languages is the real multilingual embedder's job (OQ-5, task 27). It is
+    safe for dedup HERE only because ``dedup_key``s are a single canonical form by
+    convention (§1.5) — its tokenizer folds diacritics so spelling variants of the
+    canonical key agree. A green fake suite locks the MECHANICS (dedup order, the
+    threshold gate, parse/validate), NOT retrieval quality. Fully deterministic
+    (no ``random``/``Date``): the same token bag always yields a bit-identical vector.
+    """
+
+    def __init__(self, dimensions: int = 256) -> None:
+        self.dimensions = dimensions
+        self.model = f"fake-hash-{dimensions}"
+
+    def _vectorize(self, text: str) -> list[float]:
+        vec = [0.0] * self.dimensions
+        for token in tokenize(text):
+            vec[_fnv1a(token) % self.dimensions] += 1.0
+        norm = math.sqrt(sum(v * v for v in vec))
+        if norm == 0.0:
+            return vec  # empty text -> zero vector; cosine() yields 0.0
+        return [v / norm for v in vec]
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        return [self._vectorize(t) for t in texts]
+
+    def embed_query(self, text: str) -> list[float]:
+        return self._vectorize(text)
+
+
+class FakeTopicMemory:
+    """Offline ``TopicMemoryReader`` — wraps a fixed ``list[PriorTopic]`` (task 24).
+
+    The persistent evergreen store implementing this Protocol is task 27.
+    """
+
+    def __init__(self, topics: list[PriorTopic]) -> None:
+        self._topics = list(topics)
+
+    def prior_topics(self) -> list[PriorTopic]:
+        return list(self._topics)
+
+
+__all__ = [
+    "FakeClaudeDriver",
+    "STAGE_ARTIFACTS",
+    "tokenize",
+    "FakeEmbedder",
+    "FakeTopicMemory",
+]
