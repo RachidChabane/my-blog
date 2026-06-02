@@ -18,6 +18,8 @@ import {
   CONTACTS,
   SEARCH,
   searchStrings,
+  AVATAR,
+  avatarStrings,
 } from '@/i18n/ui';
 import { LOCALES } from '@/i18n/index';
 
@@ -381,5 +383,43 @@ describe('search string table (SEARCH)', () => {
   it('searchStrings(lang) returns the locale record', () => {
     expect(searchStrings('fr')).toBe(SEARCH.fr);
     expect(searchStrings('en')).toBe(SEARCH.en);
+  });
+});
+
+describe('avatar string table (AVATAR)', () => {
+  it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
+    expect(Object.keys(AVATAR.fr).sort()).toEqual(
+      Object.keys(AVATAR.en).sort()
+    );
+  });
+
+  it('every avatar string is a non-empty string in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(AVATAR[locale])) {
+        expect(typeof value, `${locale}.${key}`).toBe('string');
+        expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('contains no emoji in any string (INV-9)', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(AVATAR[locale])) {
+        expect(EMOJI.test(value), `${locale}.${key} = "${value}"`).toBe(false);
+      }
+    }
+  });
+
+  // Lock the out-of-scope chip + FR head title verbatim (the e2e specs assert
+  // these exact strings; source + assertion cannot drift).
+  it('carries the out-of-scope tag and FR title verbatim', () => {
+    expect(AVATAR.fr.refuseTag).toBe('hors périmètre');
+    expect(AVATAR.en.refuseTag).toBe('out of scope');
+    expect(AVATAR.fr.title).toBe('Demander à l’agent');
+  });
+
+  it('avatarStrings(lang) returns the locale record', () => {
+    expect(avatarStrings('fr')).toBe(AVATAR.fr);
+    expect(avatarStrings('en')).toBe(AVATAR.en);
   });
 });

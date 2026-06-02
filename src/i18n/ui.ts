@@ -492,3 +492,60 @@ export const SEARCH: Record<Locale, SearchStrings> = {
 export function searchStrings(lang: Locale): SearchStrings {
   return SEARCH[lang];
 }
+
+/**
+ * Avatar overlay (S10) copy. Dedicated table — sibling to SEARCH, kept out of
+ * ChromeStrings per this file's header. Powers the always-present non-figurative
+ * agent panel (task 20). Strings lifted verbatim from the design `T`
+ * (avatar-overlay.jsx). `title`/`open` intentionally equal `chrome.avatarAria`:
+ * the launcher uses `chrome(lang).avatarAria`, the panel head uses
+ * `avatarStrings(lang).title` — the duplication is accepted (parity tests check
+ * only non-empty + key-set match). Typographic apostrophes (U+2019 ’) and the
+ * ellipsis (U+2026 …) need no escaping (Prettier-stable, INV-9 safe).
+ */
+export interface AvatarStrings {
+  title: string; // panel head title (= chrome.avatarAria)
+  subtitle: string; // panel head sub-line
+  placeholder: string; // input placeholder
+  inputLabel: string; // input aria-label
+  thinking: string; // thinking-row label
+  refuseTag: string; // out-of-scope chip
+  sourceLbl: string; // citation label
+  open: string; // launcher aria fallback (= chrome.avatarAria)
+  close: string; // close button aria-label
+  send: string; // send button aria-label
+  error: string; // network-failure line (generic, localized, no internals)
+}
+
+export const AVATAR: Record<Locale, AvatarStrings> = {
+  fr: {
+    title: 'Demander à l’agent',
+    subtitle: 'répond à partir du site, avec sources',
+    placeholder: 'Posez une question sur ce site…',
+    inputLabel: 'Question pour l’agent',
+    thinking: 'recherche dans le site…',
+    refuseTag: 'hors périmètre',
+    sourceLbl: 'Source',
+    open: 'Demander à l’agent',
+    close: 'Fermer',
+    send: 'Envoyer',
+    error: 'Une erreur est survenue. Réessayez.',
+  },
+  en: {
+    title: 'Ask the agent',
+    subtitle: 'answers from the site, with sources',
+    placeholder: 'Ask a question about this site…',
+    inputLabel: 'Question for the agent',
+    thinking: 'searching the site…',
+    refuseTag: 'out of scope',
+    sourceLbl: 'Source',
+    open: 'Ask the agent',
+    close: 'Close',
+    send: 'Send',
+    error: 'Something went wrong. Try again.',
+  },
+};
+
+export function avatarStrings(lang: Locale): AvatarStrings {
+  return AVATAR[lang];
+}
