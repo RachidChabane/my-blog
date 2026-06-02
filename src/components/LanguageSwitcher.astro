@@ -1,0 +1,76 @@
+---
+/**
+ * LanguageSwitcher — FR⇄EN segmented control rendered as LINKS (not buttons):
+ * language switching IS navigation, needs no JS (correct for SSG), and preserves
+ * the a[lang] + aria-current + href contract that i18n.spec.ts and switcherHref
+ * assume. Ports the design's .rc-seg segmented pill (tokens only). Reused in the
+ * masthead and the footer mirror. NFR-11: switcherHref never dead-ends.
+ */
+import { LOCALES, switcherHref } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { chrome } from '@/i18n/ui';
+
+interface Props {
+  lang: Locale;
+  slugMap?: Partial<Record<Locale, string>>;
+}
+
+const { lang, slugMap } = Astro.props;
+const c = chrome(lang);
+const ariaFor = (l: Locale): string => (l === 'fr' ? c.switchToFr : c.switchToEn);
+---
+
+<div class="lang-switch" role="group" aria-label={c.langGroupAria}>
+  {
+    LOCALES.map((locale) => (
+      <a
+        class:list={['lang-switch__btn', { 'is-on': locale === lang }]}
+        href={switcherHref(locale, slugMap)}
+        lang={locale}
+        hreflang={locale}
+        aria-current={locale === lang ? 'true' : undefined}
+        aria-label={ariaFor(locale)}
+      >
+        {locale.toUpperCase()}
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  /* Ported from design .rc-seg / .rc-seg__btn (+ .is-on) — tokens only. */
+  .lang-switch {
+    display: inline-flex;
+    background: var(--fill-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    padding: 3px;
+    gap: 2px;
+  }
+  .lang-switch__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--fg-muted);
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    transition: all var(--dur-hover) var(--ease-soft);
+  }
+  .lang-switch__btn:hover {
+    color: var(--fg);
+  }
+  .lang-switch__btn.is-on {
+    background: var(--surface);
+    color: var(--accent);
+    box-shadow: var(--shadow-xs);
+  }
+  .lang-switch__btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-ring);
+    color: var(--fg);
+  }
+</style>

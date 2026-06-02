@@ -3,14 +3,16 @@
  * Theme toggle — non-figurative Lucide sun/moon icon button (INV-9: SVG, no emoji).
  * Both icons render; CSS shows the right one per [data-theme]. The island script
  * binds toggleTheme() to every .theme-toggle (future-proof for the task-6 footer).
+ * `label` lets the masthead/footer pass a localized aria-label; defaults to the
+ * original English string so the single prior caller (Base.astro) is unaffected.
  */
+interface Props {
+  label?: string;
+}
+const { label = 'Toggle light and dark theme' } = Astro.props;
 ---
 
-<button
-  type="button"
-  class="theme-toggle"
-  aria-label="Toggle light and dark theme"
->
+<button type="button" class="theme-toggle" aria-label={label}>
   <svg
     class="theme-toggle__icon theme-toggle__icon--moon"
     width="18"
