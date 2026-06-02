@@ -7,7 +7,7 @@ tasks, driven on the **tmux** backend (subscription pool) with **exit-code-75
 auto-resume**.
 
 This package is **tooling that commits markdown to the repo** — not a hosted
-service. Task 23 ships the *harness* only; stage logic, prompt builders, the M-4
+service. Task 23 ships the _harness_ only; stage logic, prompt builders, the M-4
 quality gate, topic memory/embedder, the house-style guide, scheduling and the
 fallback-to-next-topic policy are named seams owned by tasks 24–28.
 
@@ -62,7 +62,7 @@ runner.
 
 **Implication for stages (tasks 24–27):** the editorial `claude` agent runs with
 **cwd = `run_dir`** (inside the repo). Address repo files (`src/content/…`) via
-`config.repo_root`, *not* cwd-relative. Git still works (`.git` is found upward).
+`config.repo_root`, _not_ cwd-relative. Git still works (`.git` is found upward).
 
 ## Running
 
@@ -89,7 +89,7 @@ The production driver's argv/env/exit-code mapping is tested via a monkeypatched
 
 > **Live-only boundary:** the tests prove the driver's argv/env shape, the
 > exit-code mapping, and that the fake writes the sentinel at the correct
-> `plans/USAGE_LIMIT` path — **not** that the live loop wrapper *consumes* it and
+> `plans/USAGE_LIMIT` path — **not** that the live loop wrapper _consumes_ it and
 > auto-resumes. That path is only exercisable in a real tmux run.
 
 Humans wanting the editable install instead of the discovery bootstrap:
@@ -101,10 +101,13 @@ uv pip install -e /Users/rachid/dev-env/0-git/claude-plan-execute
 ## Notes
 
 - `persona_file: pipeline/house_style.md` and `invariants_file:
-  pipeline/invariants.yaml` are **intentionally** distinct from the build slate's
+pipeline/invariants.yaml` are **intentionally** distinct from the build slate's
   `docs/persona.md` / `docs/invariants.yaml`: the editorial run is a separate
   slate with separate gates. Don't "fix" them to point at `docs/`. Both files are
   authored later (tasks 25/26); cpe injects `""`/empty for a missing file.
 - See `docs/writing-flow.md` (the content engine), `docs/persona.md` (conventions),
   and `inventory/02-claude-plan-execute.md` (the cpe reference).
+
+```
+
 ```

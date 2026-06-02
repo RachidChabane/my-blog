@@ -19,31 +19,31 @@ version: 2
 defaults:
   model: sonnet
   effort: medium
-  plans_dir: plans                          # relative to --dir (run_dir); see README + plan §1
-  claude_backend: tmux                      # M-6 / NFR-10 — subscription pool
-  on_max_review_rounds: fail                # autonomous-safe: block, never auto-approve
-  persona_file: pipeline/house_style.md     # FR-G2 (task 25 authors; missing => "")
+  plans_dir: plans # relative to --dir (run_dir); see README + plan §1
+  claude_backend: tmux # M-6 / NFR-10 — subscription pool
+  on_max_review_rounds: fail # autonomous-safe: block, never auto-approve
+  persona_file: pipeline/house_style.md # FR-G2 (task 25 authors; missing => "")
   invariants_file: pipeline/invariants.yaml # M-4 agent gates (task 26 authors)
-  parallelism: 1                            # fan-out is structural (depends_on); >1 needs branch_per_task
+  parallelism: 1 # fan-out is structural (depends_on); >1 needs branch_per_task
   branch_per_task: false
   base_branch: main
   caps:
     max_minutes_per_phase: 30
-    max_review_rounds: 2                    # OQ-14b
-    max_gate_repair_rounds: 1               # OQ-14b — M-4 gate-repair before terminal-block
+    max_review_rounds: 2 # OQ-14b
+    max_gate_repair_rounds: 1 # OQ-14b — M-4 gate-repair before terminal-block
 phases:
   - id: source
-    title: "Research — web-search sweep, capture source excerpts (FR-B1)"
+    title: 'Research — web-search sweep, capture source excerpts (FR-B1)'
   - id: select
-    title: "Select — angle, semantic dedup vs topic memory, claim skeleton + fallback shortlist (FR-B2)"
+    title: 'Select — angle, semantic dedup vs topic memory, claim skeleton + fallback shortlist (FR-B2)'
   - id: draft
-    title: "Draft — FR+EN parallel outputs + claim->source map; review loop; M-4 gates (FR-B3/B4/C1/C2)"
+    title: 'Draft — FR+EN parallel outputs + claim->source map; review loop; M-4 gates (FR-B3/B4/C1/C2)'
   - id: publish
-    title: "Publish — commit FR+EN at parallel URLs; trigger build + avatar reindex (FR-B5)"
+    title: 'Publish — commit FR+EN at parallel URLs; trigger build + avatar reindex (FR-B5)'
 tasks:
   - id: research
     phase: source
-    title: "Research candidates with captured source excerpts"
+    title: 'Research candidates with captured source excerpts'
     description: |
       [STAGE: Research — writing-flow.md §3 role 1 / §4. Prompt body authored by
       task 24 (pipeline/prompts/research.py); this is a substrate placeholder.]
@@ -52,11 +52,11 @@ tasks:
       the fact-check provenance chain rests on captured text). Write the ranked
       candidate list to plans/task-research/candidates.json.
     key_files: [pipeline/stages/research.py]
-    commit_message: "content(research): candidates.json"
+    commit_message: 'content(research): candidates.json'
     depends_on: []
   - id: select
     phase: select
-    title: "Select topic+angle, dedup vs topic memory, build brief"
+    title: 'Select topic+angle, dedup vs topic memory, build brief'
     description: |
       [STAGE: Select — writing-flow.md §3 role 2 / §8. Authored by task 24.]
       Pick one candidate not too semantically similar to prior posts (shared
@@ -64,11 +64,11 @@ tasks:
       brief.md: chosen topic, angle, outline, the claim skeleton, and the
       fallback shortlist (OQ-14a).
     key_files: [pipeline/stages/select.py]
-    commit_message: "content(select): brief.md"
+    commit_message: 'content(select): brief.md'
     depends_on: [research]
   - id: draft
     phase: draft
-    title: "Draft FR+EN with claim->source map (review loop + M-4 gates apply here)"
+    title: 'Draft FR+EN with claim->source map (review loop + M-4 gates apply here)'
     description: |
       [STAGE: Draft+Review+Humanize — writing-flow.md §3 roles 3/4/4b, §5.
       Authored by tasks 25/26.]
@@ -81,17 +81,17 @@ tasks:
       (task 26); a blocking gate => this task blocks => publish never runs
       (bilingual-or-nothing).
     key_files: [pipeline/stages/draft.py]
-    commit_message: "content(draft): FR + EN drafts + claim->source map"
+    commit_message: 'content(draft): FR + EN drafts + claim->source map'
     depends_on: [select]
     # gates_extra: [factcheck-fr, factcheck-en, grounding-fr, grounding-en, style-fr, style-en]  # task 26 wires + registers via invariants.yaml
   - id: publish
     phase: publish
-    title: "Publish FR+EN to src/content at parallel URLs; trigger build + reindex"
+    title: 'Publish FR+EN to src/content at parallel URLs; trigger build + reindex'
     description: |
       [STAGE: Publish — writing-flow.md §3 role 6. Authored by task 27.]
       Commit the approved+gated FR & EN posts to src/content at parallel URLs,
       trigger the build, and emit the avatar reindex event (task 21). No manual
       step on this path (D-002).
     key_files: [pipeline/stages/publish.py]
-    commit_message: "content(publish): FR + EN article"
+    commit_message: 'content(publish): FR + EN article'
     depends_on: [draft]
