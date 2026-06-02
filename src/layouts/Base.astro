@@ -34,6 +34,12 @@ const c = chrome(lang);
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={lang === 'fr' ? 'Flux RSS' : 'RSS Feed'}
+      href={`/${lang}/rss.xml`}
+    />
   </head>
   <body>
     <a class="skip-link" href="#main">{c.skipToContent}</a>

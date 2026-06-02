@@ -517,6 +517,57 @@ export function getPublishedProjects(
     });
 }
 
+/* ---- RSS helpers (task 16) ---- */
+
+/**
+ * "DD-MM-YYYY" → JavaScript Date at midnight UTC.
+ * Companion to parsePublishDate — returns a real Date for RSS pubDate.
+ * Malformed input → epoch (same zero-sentinel as parsePublishDate).
+ */
+export function parsePublishDateToDate(s: string): Date {
+  const parts = s.split('-');
+  if (parts.length !== 3) return new Date(0);
+  const [dd, mm, yyyy] = parts;
+  const iso = `${yyyy}-${mm}-${dd}T00:00:00Z`;
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? new Date(0) : d;
+}
+
+/** RSS feed item shape (mirrors @astrojs/rss RSSFeedItem; pure so vitest can cover it). */
+export interface RssFeedItem {
+  title: string;
+  pubDate: Date;
+  description: string;
+  link: string;
+}
+
+/**
+ * Map one published ArticleEntryLike to an RSS feed item.
+ * Uses parsePublishDateToDate and excerpt (both pure).
+ */
+export function toRssFeedItem(
+  entry: ArticleEntryLike,
+  lang: Locale
+): RssFeedItem {
+  return {
+    title: entry.data.title,
+    pubDate: parsePublishDateToDate(entry.data.publishDate),
+    description: excerpt(entry.body),
+    link: localePath(lang, `blog/${entry.data.slug}`),
+  };
+}
+
+/**
+ * Full RSS item list for `lang`: published articles newest-first, mapped to feed items.
+ * Pure — takes pre-fetched entries so vitest can call it without astro:content.
+ */
+export function getFeedItems(
+  entries: ArticleEntryLike[],
+  lang: Locale
+): RssFeedItem[] {
+  return getPublishedArticles(entries, lang).map((e) => toRssFeedItem(e, lang));
+}
+
 /** Assemble the card view-model for one project entry. */
 export function toProjectCard(
   entry: ProjectEntryLike,

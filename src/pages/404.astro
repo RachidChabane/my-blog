@@ -1,0 +1,68 @@
+---
+import Base from '@/layouts/Base.astro';
+import { DEFAULT_LOCALE, localePath } from '@/i18n/index';
+import { notFoundStrings } from '@/i18n/ui';
+
+const lang = DEFAULT_LOCALE;
+const s = notFoundStrings(lang);
+---
+
+<Base title={s.title} lang={lang}>
+  <section class="not-found">
+    <p class="not-found__code t-eyebrow">{s.eyebrow}</p>
+    <h1 class="not-found__headline">{s.title}</h1>
+    <p class="not-found__body">{s.body}</p>
+    <nav class="not-found__nav" aria-label="Récupération">
+      <a href={localePath(lang)} class="not-found__cta">{s.ctaHome}</a>
+      <a href={localePath(lang, 'blog')} class="not-found__cta not-found__cta--secondary">
+        {s.ctaBlog}
+      </a>
+    </nav>
+  </section>
+</Base>
+
+<style>
+  .not-found {
+    max-width: 640px;
+    margin: var(--sp-9) auto;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+  .not-found__code {
+    margin: 0;
+    color: var(--accent);
+  }
+  .not-found__headline {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    color: var(--fg);
+  }
+  .not-found__body {
+    margin: 0;
+    color: var(--fg-muted);
+  }
+  .not-found__nav {
+    display: flex;
+    gap: var(--sp-3);
+    flex-wrap: wrap;
+    margin-top: var(--sp-2);
+  }
+  .not-found__cta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  .not-found__cta--secondary {
+    color: var(--fg-muted);
+  }
+  @media (max-width: 720px) {
+    .not-found {
+      padding: 0 22px;
+    }
+  }
+</style>

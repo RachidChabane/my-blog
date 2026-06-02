@@ -256,3 +256,37 @@ export const TAGS: Record<Locale, TagStrings> = {
 export function tagStrings(lang: Locale): TagStrings {
   return TAGS[lang];
 }
+
+/**
+ * S11 — 404 Not Found page copy. Localized headline, body, and back-to-home CTA.
+ * Search affordance from the S11 spec is deferred until S9 (task TBD) — slot noted
+ * in the 404 page as a TODO comment so the intent is not lost.
+ */
+export interface NotFoundStrings {
+  title: string;
+  eyebrow: string;
+  body: string;
+  ctaHome: string;
+  ctaBlog: string;
+}
+
+export const NOT_FOUND: Record<Locale, NotFoundStrings> = {
+  fr: {
+    title: 'Page introuvable',
+    eyebrow: '404',
+    body: 'La page que vous cherchez n’existe pas ou a été déplacée.',
+    ctaHome: 'Retour à l’accueil',
+    ctaBlog: 'Tous les articles',
+  },
+  en: {
+    title: 'Page not found',
+    eyebrow: '404',
+    body: 'The page you’re looking for doesn’t exist or has been moved.',
+    ctaHome: 'Back to home',
+    ctaBlog: 'All articles',
+  },
+};
+
+export function notFoundStrings(lang: Locale): NotFoundStrings {
+  return NOT_FOUND[lang];
+}
