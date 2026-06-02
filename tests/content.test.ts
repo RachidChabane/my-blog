@@ -350,13 +350,15 @@ describe('getArticlesByTag', () => {
   ];
 
   it('returns only published same-lang carriers, newest-first', () => {
-    expect(getArticlesByTag(fixture, 'fr', 'rag').map((e) => e.data.slug)).toEqual(
-      ['new', 'mid', 'old']
-    );
+    expect(
+      getArticlesByTag(fixture, 'fr', 'rag').map((e) => e.data.slug)
+    ).toEqual(['new', 'mid', 'old']);
   });
 
   it('excludes a draft / other-lang carrier and a non-carrier', () => {
-    const slugs = getArticlesByTag(fixture, 'fr', 'rag').map((e) => e.data.slug);
+    const slugs = getArticlesByTag(fixture, 'fr', 'rag').map(
+      (e) => e.data.slug
+    );
     expect(slugs).not.toContain('draft-rag');
     expect(slugs).not.toContain('en-rag');
     expect(slugs).not.toContain('other');
@@ -435,9 +437,11 @@ describe('tagDirectory', () => {
       { slug: 'zeta-extra', label: { fr: 'zeta', en: 'zeta' } },
     ];
     expect(
-      tagDirectory([entry({ slug: 'x1', tags: ['agents'] })], withExtra, 'fr').map(
-        (e) => e.slug
-      )
+      tagDirectory(
+        [entry({ slug: 'x1', tags: ['agents'] })],
+        withExtra,
+        'fr'
+      ).map((e) => e.slug)
     ).toEqual(['agents']);
   });
 
@@ -461,13 +465,21 @@ describe('tagDirectory', () => {
 describe('unknownArticleTags', () => {
   it('a clean corpus (every tag curated) → []', () => {
     expect(
-      unknownArticleTags([entry({ slug: 'c1', tags: ['agents', 'rag'] })], TAGS, 'fr')
+      unknownArticleTags(
+        [entry({ slug: 'c1', tags: ['agents', 'rag'] })],
+        TAGS,
+        'fr'
+      )
     ).toEqual([]);
   });
 
   it('surfaces a published tag absent from the vocabulary', () => {
     expect(
-      unknownArticleTags([entry({ slug: 'r1', tags: ['agents', 'rogue'] })], TAGS, 'fr')
+      unknownArticleTags(
+        [entry({ slug: 'r1', tags: ['agents', 'rogue'] })],
+        TAGS,
+        'fr'
+      )
     ).toEqual(['rogue']);
   });
 

@@ -1,4 +1,10 @@
 [
-  { "topic_id": "prior-rrf", "dedup_key": "reciprocal rank fusion hybrid retrieval" },
-  { "topic_id": "prior-astro", "dedup_key": "astro cloudflare pages static deploy" }
+  {
+    "topic_id": "prior-rrf",
+    "dedup_key": "reciprocal rank fusion hybrid retrieval"
+  },
+  {
+    "topic_id": "prior-astro",
+    "dedup_key": "astro cloudflare pages static deploy"
+  }
 ]

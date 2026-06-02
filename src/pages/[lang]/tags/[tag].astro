@@ -25,6 +25,7 @@ import {
   unknownArticleTags,
 } from '@/lib/content';
 import type { ArticleCard, RailTag } from '@/lib/content';
+import type { Tag } from '@/content/schemas';
 import Base from '@/layouts/Base.astro';
 import ArticleListItem from '@/components/ArticleListItem.astro';
 import TagChips from '@/components/TagChips.astro';
@@ -34,7 +35,11 @@ export const getStaticPaths = (async () => {
     getCollection('articles'),
     getCollection('tags'),
   ]);
-  const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
+  // `file()`-loader entries type `.data` as `any`; pin to Tag[] so the inner
+  // tags.map((t) => …) below isn't an implicit-any (memory:
+  // reading-surface-content-conventions). The other pages only PASS tags into
+  // typed fns, so they never needed this; S5 maps over it directly.
+  const tags: Tag[] = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
   return LOCALES.flatMap((lang) => {
     // Build-time guard (D3): a published article tag outside the vocabulary would
     // produce a dangling tag-link / orphan page — fail loudly instead.
@@ -113,8 +118,8 @@ const title = `${label} — rachid chabane`;
 
 <style>
   /* IDENTICAL column to S2 (app-ia §S5: not distinct from S2). Ports the S2 index
-     styles (.rc-index/.rc-pagehd*/.rc-filterbar/.rc-arows/.rc-empty-note/.rc-enter)
-     + the article-page .rc-back. Tokens only; Base provides <main> (no second one). */
+     styles (rc-index, rc-pagehd, rc-filterbar, rc-arows, rc-empty-note, rc-enter)
+     + the article-page rc-back. Tokens only; Base provides <main> (no second one). */
   .rc-index {
     width: 100%;
     max-width: 824px;
