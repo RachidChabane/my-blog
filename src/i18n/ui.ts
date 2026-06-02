@@ -290,3 +290,103 @@ export const NOT_FOUND: Record<Locale, NotFoundStrings> = {
 export function notFoundStrings(lang: Locale): NotFoundStrings {
   return NOT_FOUND[lang];
 }
+
+/**
+ * About (S8) copy. Sibling table to ARTICLE_DETAIL / NOT_FOUND. Bio + tagline are
+ * owner-fill PLACEHOLDERS (the build never fabricates first-person facts); the
+ * how-it-works note is REAL — it describes the autonomous pipeline (a P2
+ * credibility asset), carries no personal data/secrets, and is lifted verbatim
+ * from the design `T` (about.jsx). `howLbl` intentionally matches
+ * ARTICLE_DETAIL.maintained.
+ */
+export interface AboutStrings {
+  metaDesc: string; // <meta name="description"> (site-level, safe)
+  eyebrow: string; // mono eyebrow
+  title: string; // h1
+  tagline: string; // owner-fill placeholder (bracketed)
+  bioH: string; // "Bio"
+  bioLabel: string; // owner-fill label
+  bioText: string; // owner-fill placeholder (bracketed)
+  contactH: string; // "Contact"
+  contactPh: string; // owner-fill hint shown as the value of placeholder rows
+  howH: string; // "Comment ce site fonctionne" / "How this site works"
+  howLbl: string; // "maintenu par l’agent" / "agent-maintained"
+  howText: string; // REAL credibility paragraph (verbatim from about.jsx)
+}
+
+export const ABOUT: Record<Locale, AboutStrings> = {
+  fr: {
+    metaDesc:
+      'À propos de Rachid Chabane et de ce carnet d’ingénierie IA maintenu de façon autonome.',
+    eyebrow: 'À propos',
+    title: 'À propos',
+    tagline:
+      '[une ligne — qui vous êtes, en bref : rôle, terrain, ce qui vous tient à cœur]',
+    bioH: 'Bio',
+    bioLabel: 'à compléter — première personne',
+    bioText:
+      '[bio courte, première personne — parcours, ce que vous construisez, et le fil qui relie vos projets et vos écrits. Deux ou trois phrases suffisent.]',
+    contactH: 'Contact',
+    contactPh: 'à compléter',
+    howH: 'Comment ce site fonctionne',
+    howLbl: 'maintenu par l’agent',
+    howText:
+      'Ce carnet n’a pas de rédacteur humain au quotidien. Un agent explore la littérature et les dépôts, rédige chaque note en français et en anglais, vérifie ses affirmations contre des sources citées, puis publie — sans intervention humaine dans la boucle. Les erreurs restent possibles ; chaque page expose ses sources pour qu’on puisse la contredire.',
+  },
+  en: {
+    metaDesc:
+      'About Rachid Chabane and this autonomously maintained AI engineering notebook.',
+    eyebrow: 'About',
+    title: 'About',
+    tagline:
+      '[one line — who you are, in brief: role, field, what you care about]',
+    bioH: 'Bio',
+    bioLabel: 'owner-filled — first person',
+    bioText:
+      '[short bio, first person — background, what you build, and the thread that ties your projects to your writing. Two or three sentences are enough.]',
+    contactH: 'Contact',
+    contactPh: 'owner-filled',
+    howH: 'How this site works',
+    howLbl: 'agent-maintained',
+    howText:
+      'This notebook has no day-to-day human editor. An agent surveys the literature and repositories, drafts each note in French and English, checks its claims against cited sources, then publishes — with no human in the loop. Errors remain possible; every page exposes its sources so it can be challenged.',
+  },
+};
+
+export function aboutStrings(lang: Locale): AboutStrings {
+  return ABOUT[lang];
+}
+
+/**
+ * Contact destinations (S8). Locale-neutral: hrefs and proper-noun labels are the
+ * same in FR/EN. ONLY verifiably-public links are committed live (GitHub = the repo
+ * remote). Email + LinkedIn are owner-fill (href: null) — publishing a personal
+ * address/handle is a privacy-gated owner decision (CLAUDE.md #3 / FR-D3 / NFR-6),
+ * not a build default. Fill them by adding `value` + `href` here (one line); the page
+ * promotes any entry with a non-null href to a live <a>. No backend form (W-2).
+ */
+export type ContactIconName = 'mail' | 'github' | 'linkedin';
+
+export interface ContactLink {
+  icon: ContactIconName;
+  label: string;
+  value: string; // displayed (e.g. the handle)
+  href: string; // 'https://…' or 'mailto:…'
+}
+export interface ContactPlaceholder {
+  icon: ContactIconName;
+  label: string;
+  href: null;
+}
+export type Contact = ContactLink | ContactPlaceholder;
+
+export const CONTACTS: Contact[] = [
+  { icon: 'mail', label: 'Email', href: null },
+  {
+    icon: 'github',
+    label: 'GitHub',
+    value: 'RachidChabane',
+    href: 'https://github.com/RachidChabane',
+  },
+  { icon: 'linkedin', label: 'LinkedIn', href: null },
+];

@@ -1,0 +1,47 @@
+---
+/**
+ * Non-figurative brand glyph (D-007) — an abstract 4×4 lattice ("maillage"),
+ * never a face/character/mascot/photo. Pure CSS, tokens only. Used as a portrait
+ * stand-in on the About page (size 64) and beside the how-it-works note (size 34).
+ * Mirrors AvatarLauncher's static lattice (16 nodes; #6 & #11 emphasized) but is a
+ * standalone, sizeable component; the launcher is deliberately left untouched (its
+ * literal source is pinned by shell.test.ts).
+ */
+interface Props {
+  size?: number;
+}
+const { size = 40 } = Astro.props;
+---
+
+<span class="avatar-glyph" style={`--glyph-size:${size}px`} aria-hidden="true">
+  {Array.from({ length: 16 }).map(() => <b class="avatar-glyph__node" />)}
+</span>
+
+<style>
+  .avatar-glyph {
+    display: inline-grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    place-items: center;
+    gap: 2px;
+    width: var(--glyph-size, 40px);
+    height: var(--glyph-size, 40px);
+    padding: 14%;
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--accent) 13%, transparent);
+  }
+  .avatar-glyph__node {
+    width: 11%;
+    height: 11%;
+    min-width: 3px;
+    min-height: 3px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.62;
+  }
+  /* emphasized nodes — matches AvatarLauncher's static state */
+  .avatar-glyph__node:nth-child(6),
+  .avatar-glyph__node:nth-child(11) {
+    opacity: 1;
+  }
+</style>
