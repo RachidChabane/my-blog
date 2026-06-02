@@ -1,0 +1,148 @@
+---
+/**
+ * Pagination — page navigator for the S2 list. Props are decoupled from Astro's
+ * `Page` object (plan decision: advisor-recommended) so task 9's different route
+ * shape can reuse it. Numbered hrefs follow the verified `[...page]` URL scheme
+ * (page 1 = baseUrl, page N = baseUrl + N + "/"); prev/next presence comes from
+ * the route's page.url.prev/next, but the actual edge href is derived with the
+ * same `hrefFor` so the trailing-slash form is consistent (review comment #2).
+ * Disabled edges render as <span aria-disabled> — never a dead <a>. Styles ported
+ * from screens.css .rc-pager* — tokens only.
+ */
+interface Props {
+  currentPage: number;
+  lastPage: number;
+  baseUrl: string; // ends with "/", e.g. "/fr/blog/"
+  prevUrl?: string;
+  nextUrl?: string;
+  prevLabel: string;
+  nextLabel: string;
+  ariaLabel: string;
+}
+
+const {
+  currentPage,
+  lastPage,
+  baseUrl,
+  prevUrl,
+  nextUrl,
+  prevLabel,
+  nextLabel,
+  ariaLabel,
+} = Astro.props;
+
+const hrefFor = (n: number): string => (n === 1 ? baseUrl : `${baseUrl}${n}/`);
+
+/** Page items with gap markers: all pages when <= 7, else 1 … c-1 c c+1 … last. */
+function pageWindow(current: number, last: number): (number | 'gap')[] {
+  if (last <= 7) return Array.from({ length: last }, (_, i) => i + 1);
+  const items: (number | 'gap')[] = [1];
+  const start = Math.max(2, current - 1);
+  const end = Math.min(last - 1, current + 1);
+  if (start > 2) items.push('gap');
+  for (let n = start; n <= end; n++) items.push(n);
+  if (end < last - 1) items.push('gap');
+  items.push(last);
+  return items;
+}
+
+const items = pageWindow(currentPage, lastPage);
+const hasPrev = Boolean(prevUrl);
+const hasNext = Boolean(nextUrl);
+---
+
+{
+  lastPage > 1 && (
+    <nav class="rc-pager" aria-label={ariaLabel}>
+      {hasPrev ? (
+        <a class="rc-pager__btn rc-pager__edge" href={hrefFor(currentPage - 1)}>
+          ← {prevLabel}
+        </a>
+      ) : (
+        <span class="rc-pager__btn rc-pager__edge" aria-disabled="true">
+          ← {prevLabel}
+        </span>
+      )}
+
+      {items.map((it) =>
+        it === 'gap' ? (
+          <span class="rc-pager__gap" aria-hidden="true">
+            …
+          </span>
+        ) : it === currentPage ? (
+          <span class="rc-pager__btn is-on" aria-current="page">
+            {it}
+          </span>
+        ) : (
+          <a class="rc-pager__btn" href={hrefFor(it)}>
+            {it}
+          </a>
+        )
+      )}
+
+      {hasNext ? (
+        <a class="rc-pager__btn rc-pager__edge" href={hrefFor(currentPage + 1)}>
+          {nextLabel} →
+        </a>
+      ) : (
+        <span class="rc-pager__btn rc-pager__edge" aria-disabled="true">
+          {nextLabel} →
+        </span>
+      )}
+    </nav>
+  )
+}
+
+<style>
+  /* Ported from screens.css .rc-pager / .rc-pager__btn (+ :hover, .is-on,
+     disabled) / .rc-pager__edge / .rc-pager__gap. Tokens only. Hover is scoped
+     to real <a> buttons (the is-on / disabled / gap controls are <span>s). */
+  .rc-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 40px;
+    padding-top: 28px;
+    border-top: 1px solid var(--hairline);
+  }
+  .rc-pager__btn {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg-muted);
+    transition: all var(--dur-hover) var(--ease-soft);
+  }
+  a.rc-pager__btn:hover {
+    border-color: var(--border);
+    color: var(--fg);
+  }
+  .rc-pager__btn.is-on {
+    background: var(--accent);
+    color: var(--fg-on-accent);
+    border-color: transparent;
+  }
+  .rc-pager__btn[aria-disabled='true'] {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .rc-pager__edge {
+    letter-spacing: 0.04em;
+  }
+  .rc-pager__gap {
+    width: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg-subtle);
+    font-family: var(--font-mono);
+  }
+</style>

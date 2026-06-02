@@ -79,3 +79,53 @@ export const NAV_ITEMS = [
   { key: 'navWork', path: 'work' },
   { key: 'navAbout', path: 'about' },
 ] as const;
+
+/**
+ * Article index (S2) copy. Dedicated table — kept out of ChromeStrings (nav/footer
+ * chrome) per this file's header. Strings lifted verbatim from the design `T`
+ * (articles.jsx). The count line is composed in the page: `${total} ${countSuffix}`.
+ * `·` and `→` are typographic punctuation, not emoji (INV-9 safe).
+ */
+export interface ArticleIndexStrings {
+  eyebrow: string; // "Carnet" / "Notebook"
+  title: string; // "Articles"
+  countSuffix: string; // follows the count: "écrits · du plus récent"
+  allTag: string; // "Tous" / "All"
+  filterAria: string; // chip-rail group aria-label
+  readCta: string; // "Lire" / "Read" (rendered "<readCta> →")
+  prev: string; // pager previous
+  next: string; // pager next
+  pagerAria: string; // pager nav aria-label
+  empty: string; // empty-state line
+}
+
+export const ARTICLE_INDEX: Record<Locale, ArticleIndexStrings> = {
+  fr: {
+    eyebrow: 'Carnet',
+    title: 'Articles',
+    countSuffix: 'écrits · du plus récent',
+    allTag: 'Tous',
+    filterAria: 'Filtrer par tag',
+    readCta: 'Lire',
+    prev: 'Précédent',
+    next: 'Suivant',
+    pagerAria: 'Pagination',
+    empty: 'Aucun article pour le moment.',
+  },
+  en: {
+    eyebrow: 'Notebook',
+    title: 'Articles',
+    countSuffix: 'posts · newest first',
+    allTag: 'All',
+    filterAria: 'Filter by tag',
+    readCta: 'Read',
+    prev: 'Previous',
+    next: 'Next',
+    pagerAria: 'Pagination',
+    empty: 'No articles yet.',
+  },
+};
+
+export function articleIndexStrings(lang: Locale): ArticleIndexStrings {
+  return ARTICLE_INDEX[lang];
+}

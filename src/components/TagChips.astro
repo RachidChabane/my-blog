@@ -1,0 +1,80 @@
+---
+/**
+ * TagChips — the tag-filter chip rail. Reused by S2 (this page, activeSlug=null →
+ * "All" highlighted) and S5 (task 9, pass the current tag slug). Chips are LINKS
+ * to S5 tag pages (plan decision #1: app-ia's "tag filter (→ S5)"), not a
+ * client-side filter — cross-page-correct and JS-free. The tag targets dangle
+ * until task 9, the same convention as the masthead nav links (asserted by href,
+ * never clicked). Styles ported from screens.css .rc-chiprow/.rc-chip — tokens only.
+ */
+import type { RailTag } from '@/lib/content';
+
+interface Props {
+  rail: RailTag[];
+  activeSlug?: string | null;
+  allHref: string;
+  allLabel: string;
+  ariaLabel: string;
+}
+
+const {
+  rail,
+  activeSlug = null,
+  allHref,
+  allLabel,
+  ariaLabel,
+} = Astro.props;
+---
+
+<nav class="rc-chiprow" role="group" aria-label={ariaLabel} data-tag-rail>
+  <a
+    class:list={['rc-chip', { 'is-on': !activeSlug }]}
+    href={allHref}
+    aria-current={!activeSlug ? 'true' : undefined}>{allLabel}</a
+  >
+  {
+    rail.map((t) => (
+      <a
+        class:list={['rc-chip', { 'is-on': t.slug === activeSlug }]}
+        href={t.href}
+        aria-current={t.slug === activeSlug ? 'true' : undefined}
+      >
+        {t.label}
+      </a>
+    ))
+  }
+</nav>
+
+<style>
+  /* Ported from screens.css .rc-chiprow / .rc-chip (+ :hover, .is-on). Tokens
+     only. display:inline-flex added so the chips render as pills as <a> (the
+     design chips were <button>s). */
+  .rc-chiprow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .rc-chip {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 6px 13px;
+    border-radius: var(--radius-pill);
+    background: var(--fill-subtle);
+    color: var(--fg-muted);
+    border: 1px solid var(--border-subtle);
+    transition: all var(--dur-hover) var(--ease-soft);
+  }
+  .rc-chip:hover {
+    color: var(--fg);
+    border-color: var(--border);
+  }
+  .rc-chip.is-on {
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    border-color: transparent;
+  }
+</style>

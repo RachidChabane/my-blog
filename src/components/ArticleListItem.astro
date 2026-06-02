@@ -1,0 +1,134 @@
+---
+/**
+ * ArticleListItem — one editorial row in the S2 article list. Reused by S5 (tag
+ * pages), S9 (search results) and S1 (home "latest"): "Same item layout as S2"
+ * (app-ia §7). Renders an ArticleCard view-model (built in src/lib/content.ts).
+ *
+ * No nested <a> (plan decision #5): the title is the sole article link, tags are
+ * sibling links to S5, and the "Read →" CTA is a decorative aria-hidden span — so
+ * there's no <a> inside <a> and no redundant a11y announcement. Row hover styling
+ * lives on the non-anchor <article> container. Styles ported from the design
+ * (site.css/screens.css) into this scoped block — tokens only, nothing inherited.
+ */
+import type { ArticleCard } from '@/lib/content';
+
+interface Props {
+  card: ArticleCard;
+  readCta: string;
+}
+
+const { card, readCta } = Astro.props;
+---
+
+<article class="rc-arow">
+  <div class="rc-arow__head">
+    <div class="rc-meta">
+      <span>{card.dateDisplay}</span>
+      <span class="rc-meta__dot"></span>
+      <span>{card.readingLabel}</span>
+    </div>
+  </div>
+  <h3 class="rc-arow__title"><a href={card.href}>{card.title}</a></h3>
+  <p class="rc-arow__dek">{card.dek}</p>
+  <div class="rc-arow__tags">
+    {card.tags.map((t) => <a class="rc-tag" href={t.href}>{t.label}</a>)}
+  </div>
+  <span class="rc-arow__cta" aria-hidden="true">{readCta} →</span>
+</article>
+
+<style>
+  /* Ported from site.css .rc-arow* / .rc-meta* / .rc-tag and screens.css
+     .rc-arow__tags (+ the index grid-template). Tokens only. */
+  .rc-arow {
+    text-align: left;
+    border-bottom: 1px solid var(--hairline);
+    padding: 26px 0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-auto-rows: min-content;
+    gap: 8px 24px;
+    transition: padding var(--dur-hover) var(--ease-soft);
+  }
+  .rc-arow:hover {
+    padding-left: 12px;
+  }
+  .rc-arow__head {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .rc-meta {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-subtle);
+  }
+  .rc-meta__dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--fg-subtle);
+    display: inline-block;
+  }
+  .rc-arow__title {
+    grid-column: 1;
+    margin: 2px 0 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: var(--text-h3);
+    line-height: 1.25;
+    color: var(--fg);
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-arow__title a {
+    color: inherit;
+  }
+  .rc-arow:hover .rc-arow__title {
+    color: var(--accent);
+  }
+  .rc-arow__dek {
+    grid-column: 1;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+    max-width: 64ch;
+  }
+  .rc-arow__tags {
+    grid-column: 1;
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+  .rc-tag {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 4px 11px;
+    border-radius: var(--radius-pill);
+    background: var(--fill-subtle);
+    color: var(--fg-muted);
+    border: 1px solid var(--border-subtle);
+    transition:
+      color var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-tag:hover {
+    color: var(--fg);
+    border-color: var(--border);
+  }
+  .rc-arow__cta {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    align-self: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+</style>
