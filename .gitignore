@@ -26,6 +26,7 @@ node_modules/
 test-results/
 playwright-report/
 playwright/.cache/
+.playwright-mcp/
 coverage/
 
 # Claude Code session data (auto-generated, not source)

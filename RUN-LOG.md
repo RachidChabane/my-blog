@@ -200,3 +200,18 @@ Effective-stuck = 2 (task 10 zombie + task 16 blocked) < tripwire(3), task 20 pr
 **Task 20 passed review round 3 cleanly** (my 22:08 convergence read was right — reviewer narrowed 5 findings→1→accept, NOT a thrash loop; never hit `on_max_review_rounds: fail`). Implemented in chunks A–E + a safe-href hardening fix, then **landed**: `696e911 feat: non-figurative avatar overlay UI wired to endpoint` (also a5d6945 fix `<a>`-in-template leak / isSafeHref reject test). Passed the one-shot gate (`max_gate_repair_rounds: 0`) first try — tests+lint+e2e green. I held the 22:39 RUN-LOG write to avoid an index.lock race during its active implement; writing now (no task implementing, lock absent).
 **19/30 done** [+20]. Scheduler advanced to **task 25 (pipeline, planning)** — tmux `cpe-0c379302` (22:56). Task 10 still zombie, task 16 still blocked. Effective-stuck = 2 < tripwire(3). Pushed through 696e911.
 **Next**: avatar UI is the last major UI surface → running Playwright MCP visual checks now (home/blog/article/portfolio/about/avatar, FR+EN, light+dark) vs design/screens/my-blog-screens/screenshots.
+
+## 2026-06-02 23:06 — PLAYWRIGHT VISUAL CHECK (post task-20 avatar UI) — all built surfaces PASS
+
+Triggered by task 20 (avatar UI) landing. `pnpm build` (exit 0) → `astro preview :4321` → Playwright MCP @ 1440×1024 (design viewport). Compared live vs `design/screens/my-blog-screens/project/screenshots/*`.
+**PASS — built surfaces match design + brand invariants:**
+- **Shell** (masthead/footer/launcher): wordmark `rachid chabane.`, nav Articles·Projets·À propos, Rechercher, FR/EN, theme toggle, bottom-right avatar launcher. Fonts Fraunces+Inter+JetBrains-Mono, cool-ink + iris-violet. ✓
+- **Avatar overlay (task 20)**: opens as a dialog — Fraunces header "Demander à l'agent" + mono sub "répond à partir du site, avec sources", non-figurative violet dot-grid mark (NO face/photo/emoji), composer + violet send. The idle "Une erreur est survenue" string is `.visually-hidden` (off-screen template swapped into the live region only on real error) — NOT a visible leak (verified via getComputedStyle). ✓
+- **Blog index**: eyebrow "Carnet", editorial list (not cards), date·reading-time·dek·tags·"Lire →", tag-filter chips, pagination; real content. ✓
+- **About**: faithful to apropos.png — non-figurative lattice mark (D-007 ✓), bio/contact placeholders, real "Comment ce site fonctionne" note, SVG line-icons (not emoji). ✓
+- **Portfolio (Projets)**: 3-col grid, 7 published projects (incl. "Claude Plan Execute" — this very orchestrator), "Projet · NN" + status + mono tech chips + "Voir →". ✓
+- **Dark mode**: cool-ink bg + violet accent preserved, mark/chrome adapt, sun icon. ✓
+- **EN i18n parallel**: /en/about/→"About"/"How this site", /en/work/→"Projects" — English, no FR leak. ✓
+- **Emoji scan**: 0 hits across 62 built HTML files (arrows ←/→/↗ are typographic glyphs). ✓
+**Pending, NOT a regression**: home hero `/[lang]/` shows placeholder "Bientôt disponible" — the designed hero (écran 01) is **task 18 "feat: home/hub (S1)"**, still pending. Will build when task 18 runs; did NOT touch its files. No fixes required from this pass.
+Hygiene: gitignored `.playwright-mcp/` (visual-check scratch) so it can't be swept into a cpe commit. cpe state during check: 19/30 done, task 25 (pipeline) planning, effective-stuck=2. Screenshots saved under .playwright-mcp/ (light+dark, FR home/blog/about/work + avatar overlay). Will re-run a full pass once task 18 (home) + remaining UI land.
