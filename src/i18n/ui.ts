@@ -171,3 +171,42 @@ export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
 export function articleDetailStrings(lang: Locale): ArticleDetailStrings {
   return ARTICLE_DETAIL[lang];
 }
+
+/**
+ * Portfolio index (S6) copy. Dedicated table — sibling to ARTICLE_INDEX, kept out
+ * of ChromeStrings per this file's header. Copy lifted verbatim from the design `T`
+ * (projects.jsx). `ordinalWord` is rendered uppercased via CSS ("PROJET · 01") and
+ * `viewCta` as a decorative "<viewCta> →". The em-dash `—` in `meta` and the `·`/`→`
+ * are typographic punctuation, not emoji (INV-9 safe).
+ */
+export interface PortfolioIndexStrings {
+  eyebrow: string; // "Travaux" / "Work"
+  title: string; // "Projets" / "Projects" (the <h1>)
+  meta: string; // "Sélection — code et systèmes" / "Selection — code and systems"
+  ordinalWord: string; // "Projet" / "Project" (rendered uppercased via CSS → "PROJET · 01")
+  viewCta: string; // "Voir" / "View" (rendered "<viewCta> →", decorative)
+  empty: string; // empty-state line
+}
+
+export const PORTFOLIO_INDEX: Record<Locale, PortfolioIndexStrings> = {
+  fr: {
+    eyebrow: 'Travaux',
+    title: 'Projets',
+    meta: 'Sélection — code et systèmes',
+    ordinalWord: 'Projet',
+    viewCta: 'Voir',
+    empty: 'Aucun projet pour le moment.',
+  },
+  en: {
+    eyebrow: 'Work',
+    title: 'Projects',
+    meta: 'Selection — code and systems',
+    ordinalWord: 'Project',
+    viewCta: 'View',
+    empty: 'No projects yet.',
+  },
+};
+
+export function portfolioIndexStrings(lang: Locale): PortfolioIndexStrings {
+  return PORTFOLIO_INDEX[lang];
+}

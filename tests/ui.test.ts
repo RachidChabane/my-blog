@@ -5,6 +5,8 @@ import {
   chrome,
   ARTICLE_DETAIL,
   articleDetailStrings,
+  PORTFOLIO_INDEX,
+  portfolioIndexStrings,
 } from '@/i18n/ui';
 import { LOCALES } from '@/i18n/index';
 
@@ -103,5 +105,42 @@ describe('NAV_ITEMS', () => {
       expect(typeof CHROME.fr[item.key]).toBe('string');
       expect(typeof CHROME.en[item.key]).toBe('string');
     }
+  });
+});
+
+describe('portfolio-index string table (PORTFOLIO_INDEX)', () => {
+  it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
+    expect(Object.keys(PORTFOLIO_INDEX.fr).sort()).toEqual(
+      Object.keys(PORTFOLIO_INDEX.en).sort()
+    );
+  });
+
+  it('every portfolio string is a non-empty string in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(PORTFOLIO_INDEX[locale])) {
+        expect(typeof value, `${locale}.${key}`).toBe('string');
+        expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('contains no emoji in any string (INV-9)', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(PORTFOLIO_INDEX[locale])) {
+        expect(EMOJI.test(value), `${locale}.${key} = "${value}"`).toBe(false);
+      }
+    }
+  });
+
+  it('carries the design-sourced eyebrow/title copy verbatim', () => {
+    expect(PORTFOLIO_INDEX.fr.title).toBe('Projets');
+    expect(PORTFOLIO_INDEX.en.title).toBe('Projects');
+    expect(PORTFOLIO_INDEX.fr.eyebrow).toBe('Travaux');
+    expect(PORTFOLIO_INDEX.en.eyebrow).toBe('Work');
+  });
+
+  it('portfolioIndexStrings(lang) returns the locale record', () => {
+    expect(portfolioIndexStrings('fr')).toBe(PORTFOLIO_INDEX.fr);
+    expect(portfolioIndexStrings('en')).toBe(PORTFOLIO_INDEX.en);
   });
 });
