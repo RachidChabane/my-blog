@@ -183,3 +183,7 @@ Effective stuck count = 2 (task 16 blocked + task 10 stuck-planning-errored), st
 ## 2026-06-02 21:08 — heartbeat: task 13 DONE, task 20 reviewing (ride)
 
 18/30 done [+13]. Task 13 (project detail S7) landed (`94834a1`, pushed). **Task 20 (avatar UI) advanced plan→reviewing** — fresh `plans/task-20/plan.md` + live tmux `cpe-47f97064` (21:04). Owner asked re the dashboard showing 10+20 "planning": clarified it's not concurrent (cpe serial) — task 20 was the live plan, task 10 a stale `planning` label (socket-error zombie: error-output.txt, no plan.md, not re-claimed this run). Now task 20 = reviewing, task 10 still zombie. Effective-stuck = 2 (task 10 + task 16) < tripwire(3), loop productive → RIDE. Deferred-reset ledger unchanged: task 10 + task 16 (reset+relaunch at next drain). 0 unpushed.
+
+## 2026-06-02 21:38 — heartbeat: task 20 plan→review→revise cycle (ride)
+
+18/30 done (unchanged). Task 20 (avatar UI) churning through cpe's plan/review/revise cycle — usage.jsonl: plan 1242s/270k-out (21:04), review-1 521s (21:12), **revise 1442s/679k-out completed clean (21:36)**; new tmux `cpe-2092e72d` (21:36) = next phase (re-review or implement). Status still grouped as `reviewing`. Heavy outputs (270k plan, 679k revise) but NO socket error — unlike task 10, every phase closed cleanly. cpe procs (85141/85142) alive. Effective-stuck = 2 (task 10 zombie + task 16 blocked) < tripwire(3), productive → RIDE. Ledger unchanged. 0 unpushed.
