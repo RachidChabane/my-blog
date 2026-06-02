@@ -106,6 +106,24 @@ describe('buildFrontmatter() schema validation', () => {
       expect(['draft', 'published']).toContain(entry.publishState);
     }
   });
+
+  it('mcp-secrets-vault wires the two public-safe relatedArticles (locks the regenerate)', () => {
+    const mcp = PORTFOLIO_PROJECTS.find(
+      (p) => p.translationKey === 'mcp-secrets-vault'
+    );
+    expect(mcp).toBeDefined();
+    expect(mcp!.relatedArticles).toEqual([
+      'evaluating-tool-using-agents',
+      'deterministic-agent-workflows',
+    ]);
+    // the wiring survives into the emitted frontmatter in both locales
+    expect(buildFrontmatter(mcp!, 'en').relatedArticles).toEqual(
+      mcp!.relatedArticles
+    );
+    expect(buildFrontmatter(mcp!, 'fr').relatedArticles).toEqual(
+      mcp!.relatedArticles
+    );
+  });
 });
 
 describe('safetyCheck()', () => {

@@ -14,6 +14,9 @@ status: 'publié'
 links:
   - label: 'npm'
     url: 'https://www.npmjs.com/package/mcp-secrets-vault'
+relatedArticles:
+  - 'evaluating-tool-using-agents'
+  - 'deterministic-agent-workflows'
 publishState: 'published'
 ---
 

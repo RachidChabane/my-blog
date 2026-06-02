@@ -315,6 +315,10 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     links: [
       { label: 'npm', url: 'https://www.npmjs.com/package/mcp-secrets-vault' },
     ],
+    // Public-safe related reads (both published in FR + EN); thematically on-point
+    // for a tool-using-agent secrets server. Stored as translationKeys (locale-
+    // neutral); the S7 page resolves them to the current locale (task 13).
+    relatedArticles: ['evaluating-tool-using-agents', 'deterministic-agent-workflows'],
     publishState: 'published',
     en: {
       slug: 'mcp-secrets-vault',
