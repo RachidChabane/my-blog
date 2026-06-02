@@ -15,7 +15,7 @@ defaults:
   effort: max
   test_command: "pnpm -s test"
   lint_command: "pnpm -s lint"
-  gates: [tests, lint]
+  gates: [tests, lint, invariant-grep]
   max_review_rounds: 3
   on_max_review_rounds: fail   # autonomous-safe: a plan that can't pass review blocks+alerts, never auto-approves
   parallelism: 1
@@ -23,6 +23,7 @@ defaults:
   base_branch: main
   persona_file: docs/persona.md
   decisions_dir: docs/decisions
+  invariants_file: docs/invariants.yaml
   task_class_models:
     ui:       { model: opus,   effort: max }
     backend:  { model: opus,   effort: max }
