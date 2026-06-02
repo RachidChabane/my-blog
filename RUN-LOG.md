@@ -157,3 +157,15 @@ Fixes applied (root-cause, while loop stopped):
 2. With eslint passing, prettier then flagged 3 more task-16 committed files (masked by the && chain): `src/pages/[lang]/404.astro`, `src/pages/404.astro`, `tests/rss.test.ts` → `prettier --write`. Full `pnpm -s lint` now exit 0 (astro check 0 err, eslint clean, prettier all clean).
 
 Controlled relaunch: SIGTERM'd wrapper+runner (clean — manual-stop preserves status), verified zero cpe procs + tmux gone + state.json valid, committed the fixes, `--reset 14 15 16`, relaunched with plan=45/review=30. The review_missing tasks (14,15) now retry with the 24m review idle-fallback; task 16 re-runs with eslint passing.
+
+---
+
+## 2026-06-02 19:31 — task 16 2nd failure (e2e strict-mode) — fix the test (cascade) + guard re-run
+
+Relaunch validated: tasks 14 & 15 completed (review_timeout=30 works end-to-end), 17/30 done [+14,15], task 10 actively re-claimed (no longer stale). BUT **task 16 blocked again** — `gate_failed (e2e, lint)`:
+- **e2e**: 4 failures in `e2e/404.spec.ts` (blog/search CTA, FR+EN). Root cause = a **test bug**, not a page bug: the 404 page renders the masthead (Base layout), which links to `/[lang]/blog/` (Articles nav) and `/[lang]/search/` (SearchTrigger). The recovery-CTA assertions used unscoped `a[href="/lang/blog/"]`/`search/` → matched 2 elements → Playwright **strict-mode** failure. (The home CTA test passed because it used `.first()`.) eslint was CLEAN (the .mjs fix held).
+- **lint**: prettier flagged the same `e2e/404.spec.ts` (re-run regenerated it unformatted; the && chain reached prettier once eslint passed).
+
+This is a CASCADE: `e2e/404.spec.ts` is committed (`bafefa3`) and the e2e gate runs the WHOLE suite → the 4 failures would block task 10's + every UI task's e2e gate. Fixed the root cause: scoped all three 404 recovery-CTA locators to `.not-found__nav` (excludes the masthead). Verified: `playwright test e2e/404.spec.ts` → **10/10 pass**; full `pnpm -s lint` → exit 0. Also added an e2e NOTE to task 16's description in tasks.yaml (validated, 0 warnings) so its re-run doesn't re-introduce the strict-mode bug.
+
+Only 1 blocked (task 16) < tripwire(3) → did NOT relaunch; rode the productive loop (task 10 planning). **Task 16 deferred-reset** (reset+rerun at next loop stop/drain; its deliverables are committed & correct, e2e now green).

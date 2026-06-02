@@ -368,6 +368,10 @@ tasks:
       feed of published posts in that language, newest-first, regenerated on
       build, linked in the footer. Add sitemap (@astrojs/sitemap), robots.txt,
       and a localized 404 (S11). Unit-test feed validity + item ordering.
+      e2e NOTE: the 404 page renders the masthead (which links to /[lang]/blog/
+      and /[lang]/search/), so scope any 404 recovery-CTA Playwright assertion to
+      the page's own nav (e.g. `.not-found__nav a[href=...]`) — an unscoped
+      a[href] locator matches 2 elements and fails Playwright strict-mode.
     key_files:
       - src/pages/[lang]/rss.xml.ts
       - src/pages/[lang]/404.astro
