@@ -1,0 +1,101 @@
+---
+/* PrevNext — related-by-tag footer nav (app-ia §S3). Up to two link cards
+   (static nav, no JS): prev = nearest older tag-mate, next = nearest newer. The
+   whole <nav> is omitted when neither neighbour exists (helper returns both
+   null). Explicit per-card grid-column keeps a lone card on its own side (the
+   design always had both; the seed corpus often yields one). Ports screens.css
+   .rc-pn / .rc-pn__card / .rc-pn__dir / .rc-pn__title / .rc-pn__topic. Tokens
+   only. */
+import type { PrevNextNav } from '@/lib/content';
+
+interface Props {
+  nav: PrevNextNav;
+  prevDir: string;
+  nextDir: string;
+  ariaLabel: string;
+}
+
+const { nav, prevDir, nextDir, ariaLabel } = Astro.props;
+---
+
+{
+  (nav.prev || nav.next) && (
+    <nav class="rc-pn" aria-label={ariaLabel}>
+      {nav.prev && (
+        <a class="rc-pn__card rc-pn__card--prev" href={nav.prev.href}>
+          <span class="rc-pn__dir">← {prevDir}</span>
+          <span class="rc-pn__title">{nav.prev.title}</span>
+          <span class="rc-pn__topic">{nav.prev.topic}</span>
+        </a>
+      )}
+      {nav.next && (
+        <a class="rc-pn__card rc-pn__card--next" href={nav.next.href}>
+          <span class="rc-pn__dir">{nextDir} →</span>
+          <span class="rc-pn__title">{nav.next.title}</span>
+          <span class="rc-pn__topic">{nav.next.topic}</span>
+        </a>
+      )}
+    </nav>
+  )
+}
+
+<style>
+  /* Ported from screens.css .rc-pn / .rc-pn__card* — tokens only. */
+  .rc-pn {
+    margin-top: 52px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .rc-pn__card {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding: 20px 22px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-xs);
+    text-align: left;
+    transition:
+      box-shadow var(--dur-hover) var(--ease-soft),
+      transform var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-pn__card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--border);
+  }
+  /* Lone-card stability: each card keeps its own column even when alone. */
+  .rc-pn__card--prev {
+    grid-column: 1;
+  }
+  .rc-pn__card--next {
+    grid-column: 2;
+    text-align: right;
+    align-items: flex-end;
+  }
+  .rc-pn__dir {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rc-pn__title {
+    font-family: var(--font-display);
+    font-variation-settings:
+      'opsz' 30,
+      'wght' 500;
+    font-size: 17px;
+    line-height: 1.28;
+    color: var(--fg);
+  }
+  .rc-pn__topic {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--fg-subtle);
+  }
+</style>

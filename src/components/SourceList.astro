@@ -1,0 +1,123 @@
+---
+/* SourceList — the article's Sources block (app-ia §S3). Renders SourceView[]
+   (built in src/lib/content.ts). Each title is a resolving external link opened
+   in a new tab with rel="noopener noreferrer" (prevents tabnabbing; matches the
+   design). Meta line = `date · host`, host omitted when the URL was unparseable.
+   The decorative ↗ (U+2197, text-presentation — not matched by the
+   Emoji_Presentation guard) is aria-hidden. Ports screens.css .rc-sources /
+   .rc-source* + the shared .rc-meta__dot (scoped styles don't inherit the
+   global one). Tokens only. */
+import type { SourceView } from '@/lib/content';
+
+interface Props {
+  sources: SourceView[];
+  heading: string;
+}
+
+const { sources, heading } = Astro.props;
+---
+
+<section class="rc-sources" aria-label={heading}>
+  <h2 class="rc-sources__h">{heading}</h2>
+  {
+    sources.map((s) => (
+      <div class="rc-source">
+        <span class="rc-source__n">{s.n}</span>
+        <div class="rc-source__main">
+          <div class="rc-source__title">
+            <a href={s.url} target="_blank" rel="noopener noreferrer">
+              {s.label}
+              <span class="rc-source__ext" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          </div>
+          <div class="rc-source__meta">
+            <span>{s.date}</span>
+            {s.host && (
+              <>
+                <span class="rc-meta__dot" />
+                <span>{s.host}</span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    ))
+  }
+</section>
+
+<style>
+  /* Ported from screens.css .rc-sources / .rc-source* — tokens only. */
+  .rc-sources {
+    margin-top: 56px;
+    padding-top: 30px;
+    border-top: 1px solid var(--hairline);
+  }
+  .rc-sources__h {
+    margin: 0 0 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+  .rc-source {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--hairline);
+    align-items: baseline;
+    transition: padding var(--dur-hover) var(--ease-soft);
+  }
+  .rc-source:hover {
+    padding-left: 8px;
+  }
+  .rc-source__n {
+    flex: none;
+    width: 22px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-subtle);
+  }
+  .rc-source__main {
+    flex: 1;
+  }
+  .rc-source__title {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--fg);
+  }
+  .rc-source__title a {
+    color: inherit;
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-source:hover .rc-source__title a {
+    border-bottom-color: var(--accent);
+    color: var(--accent);
+  }
+  .rc-source__ext {
+    margin-left: 6px;
+    color: var(--accent);
+    font-size: 13px;
+  }
+  .rc-source__meta {
+    margin-top: 5px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-subtle);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .rc-meta__dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--fg-subtle);
+    display: inline-block;
+  }
+</style>
