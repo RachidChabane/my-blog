@@ -89,3 +89,19 @@ State: done [1,2,3,5]; task 4 blocked (deferred); task 6 stuck `planning` (ridin
 **content-safety (HIGH, warn/advisory) — ACCEPTED with rationale**: the gate flagged that `gen-portfolio.ts` + its test hardcode the private deny-list terms (codenames, third-party names, secret-adjacent names). But: **the repo is PRIVATE** (`gh repo view` → PRIVATE) and the gate itself confirmed the **generated content / public surface is clean** (the deployed static site is what's public). The deny-list is *functional* (the test asserts generated content contains none of them) — removing it would break the safety check; moving it to a gitignored file would break CI. Decision: accept (no public leak; non-negotiable #3 "public pages/avatar answers" is satisfied). Documented as a deviation for the final report.
 
 **Task 11 status**: still `blocked` → needs `--reset 11` + re-run after loop exits (its content is now committed & valid). Deferred-reset ledger now: **task 4, task 11** (both blocked); task 6 (planning) auto-retries on relaunch.
+
+---
+
+## 2026-06-02 07:22 — ROOT CAUSE of the plan `exit 1` failures + fix (plan_timeout)
+
+Tasks 1,2,3,5,**17** done. **task 23's plan also errored** (exit 1, no plan.md) — same signature as task 6. NOT a one-off, NOT usage-limit (no sentinel ever), NOT a restart (task 6 mtimes unchanged since 05:28 ⇒ same continuous run). Diagnosed properly this time:
+
+**Evidence** — opus plan usage (`output` tokens / `duration`): task 6 FAIL 124k/961.4s · task 23 FAIL 181k/961.3s · task 17 SUCCESS 239k/961.4s · task 5 (sonnet) success 42k/306s. Output size is NOT the discriminator (the success had the most). The **identical ~961s** across all opus plans is the tell. Read the failed-plan session transcript (`139cb9be…jsonl`): 62 `tool_use` steps, **no `end_turn`, no `Write` to plan.md** — the agent was cut off *mid-work* before writing the plan file.
+
+**Root cause** (cpe source `claude_session.py:385` `wait_for_completion`): `idle_fallback_fraction = 0.8`, so the tmux backend's idle-fallback fires at `0.8 * plan_timeout`. plan_timeout is a hardcoded **20m default ⇒ 0.8×1200s = 960s**. Long opus/max plans have multi-minute *thinking* blocks (the live pane literally shows "Imagining… 5m… almost done thinking with max effort"); when such a silent block straddles 960s with an idle-looking pane, the fallback misfires and cuts the agent off before it writes plan.md. Task 17 wrote plan.md before 960s → survived; 6 & 23 didn't.
+
+**Fix** (config, not source — clean, project-local): set `plan_timeout_minutes: 45` in `docs/tasks.yaml` defaults (individually settable per schema; implement/review left at 60/15). Idle-fallback now at 0.8×45m = **36m**, well past real plan think-time. Validated: `--explain` shows `plan_timeout_minutes: 45 [from project_defaults]`, loader 0 warnings, 30 tasks. **Effect on next relaunch** (running loop already parsed the old value; task 19, currently planning, may still hit the old 960s and get retried).
+
+**Why now, not after**: the next relaunch fans into many complex opus/max plans (UI 7,8,9,10,12,13,14,15,20 + pipeline 24,25,26,27,28). Adding the mitigation before that relaunch avoids burning 16-min plan attempts across the slate. Ride+retry+per-task CAP still stands as the safety net (advisor-confirmed converging: tasks 2 & 17 are opus/max plans that succeeded).
+
+**Stuck-planning set now (auto-retry on relaunch with the 45m window): task 6, task 23** (+ task 19 if it fails). Deferred-reset ledger (blocked, need `--reset`): task 4, task 11.
