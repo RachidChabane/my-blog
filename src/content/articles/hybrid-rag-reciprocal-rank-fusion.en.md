@@ -26,6 +26,20 @@ document's rank, so a result that scores well in either retriever rises without 
 score normalization. The single `k` constant is far easier to reason about than a
 weighted blend of incomparable lexical and cosine scores.
 
+> Fusing two imperfect rankings beats over-optimizing a single one.
+
+```python
+# reciprocal rank fusion — fuse N rankings by rank, not score
+from collections import defaultdict
+
+def rrf(rankings, k=60):
+    scores = defaultdict(float)
+    for ranking in rankings:
+        for rank, doc_id in enumerate(ranking):
+            scores[doc_id] += 1 / (k + rank + 1)
+    return sorted(scores, key=scores.get, reverse=True)
+```
+
 In practice the lexical arm catches exact identifiers and rare terms the embedding
 glosses over, while the vector arm recovers paraphrase. Fused, they cover each
 other's blind spots — a robust default before reaching for a trained reranker.
