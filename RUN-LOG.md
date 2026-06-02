@@ -54,3 +54,8 @@ src/lib/env.ts  29:25 & 44:25  error  'process' is not defined  no-undef
 **Fix** (durable; survives a task-4 re-run since task 4 doesn't own this file): added `...globals.node` to the `**/*.ts` block in `eslint.config.js`. Verified: `pnpm exec eslint src/lib/env.ts` → exit 0.
 
 **Concurrency discipline applied**: did NOT run any cpe subcommand (incl. `--reset`) while the loop is live — that would be a 2nd process writing `state.json` (corruption risk). Only a file edit + explicit-add commit in a no-`index.lock` window. **Task 4 is still `blocked` in state**; its deliverables are committed and now lint-clean. Deferred action: when the loop drains/exits, `--reset 4` + run task 4 solo to flip it to `done`.
+
+**Second latent blocker found in the same pass** (commit `92e1b00` fixed eslint, then the `&&` chain finally reached prettier): `lint` = `astro check && eslint . && prettier --check .` — with eslint failing, prettier had never run, so two files were latently mis-formatted and would have cascaded the moment eslint passed:
+- `tests/env.test.ts` (task-4 committed file, no future task owns it) → `prettier --write` it.
+- `RUN-LOG.md` (my operator log) → added to `.prettierignore` (+ `LAUNCH.md` preemptively, since task 30 emits it and it's the same operator-doc category).
+Verified: full `pnpm -s lint` → astro check 0 errors, eslint clean, **"All matched files use Prettier code style!"**. Going forward each task's own lint gate reaches prettier, so new files self-enforce; only the eslint-masked backlog needed manual clearing.

@@ -6,3 +6,5 @@ docs/
 inventory/
 plans/
 pnpm-lock.yaml
+RUN-LOG.md
+LAUNCH.md
