@@ -39,6 +39,11 @@ from .fakes import (
     FakeTopicMemory,
     tokenize,
 )
+from .prompts import (
+    build_research_prompt,
+    build_select_prompt,
+    editorial_stage_descriptions,
+)
 from .runner import (
     AssembledSlate,
     CpeLoopDriver,
@@ -83,4 +88,8 @@ __all__ = [
     "FakeEmbedder",
     "FakeTopicMemory",
     "tokenize",
+    # prompt builders (task 24)
+    "build_research_prompt",
+    "build_select_prompt",
+    "editorial_stage_descriptions",
 ]
