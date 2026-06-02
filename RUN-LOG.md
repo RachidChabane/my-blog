@@ -179,3 +179,7 @@ Only 1 blocked (task 16) < tripwire(3) → did NOT relaunch; rode the productive
 Effective stuck count = 2 (task 16 blocked + task 10 stuck-planning-errored), still < tripwire(3), and task 13 is productive → RIDE. Both task 10 + task 16 get `--reset` + rerun at the next drain/relaunch (a fresh scheduler clears `_attempted`, so task 10 retries; the socket error is most likely transient — a retry at different timing should clear it).
 - **Watch**: if task 10's plan socket-errors AGAIN on retry, it's the over-long-plan fragility → consider lowering plan effort (max→high) for that task or splitting it. Also now count stuck-`planning`-with-error-output toward the tripwire, not just status=blocked.
 - Deferred-reset ledger: **task 10, task 16**.
+
+## 2026-06-02 21:08 — heartbeat: task 13 DONE, task 20 reviewing (ride)
+
+18/30 done [+13]. Task 13 (project detail S7) landed (`94834a1`, pushed). **Task 20 (avatar UI) advanced plan→reviewing** — fresh `plans/task-20/plan.md` + live tmux `cpe-47f97064` (21:04). Owner asked re the dashboard showing 10+20 "planning": clarified it's not concurrent (cpe serial) — task 20 was the live plan, task 10 a stale `planning` label (socket-error zombie: error-output.txt, no plan.md, not re-claimed this run). Now task 20 = reviewing, task 10 still zombie. Effective-stuck = 2 (task 10 + task 16) < tripwire(3), loop productive → RIDE. Deferred-reset ledger unchanged: task 10 + task 16 (reset+relaunch at next drain). 0 unpushed.
