@@ -1,0 +1,20 @@
+# Python tooling for the `pipeline/` content engine (task 23+).
+#
+# This block is Python-only and does NOT disturb the Astro/pnpm JS toolchain.
+# There is intentionally no [project] table: my-blog is not packaged as a wheel.
+# `claude-plan-execute` (cpe) is reached at runtime via discovery
+# (pipeline/config.py) + the pytest conftest bootstrap (pipeline/conftest.py),
+# so the `pytest -q pipeline` gate is green without an editable install.
+# Humans who want the editable install: `uv pip install -e <cpe checkout>`.
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]          # make `import pipeline.*` resolve from repo root
+testpaths = ["pipeline/tests"]
+addopts = "-q"

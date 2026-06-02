@@ -30,3 +30,11 @@ coverage/
 
 # Claude Code session data (auto-generated, not source)
 .claude/
+
+# Content-engine per-run working dirs (assembled slate + cpe state + artifacts)
+pipeline/runs/
+
+# Python tooling caches
+__pycache__/
+.pytest_cache/
+.ruff_cache/
