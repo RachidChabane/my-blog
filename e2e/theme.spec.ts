@@ -12,13 +12,13 @@ test.describe('theme toggle', () => {
     const html = page.locator('html');
     await expect(html).toHaveAttribute('data-theme', 'light');
 
-    await page.getByRole('button', { name: /theme/i }).click();
+    await page.locator('header').getByRole('button', { name: /theme/i }).click();
     await expect(html).toHaveAttribute('data-theme', 'dark');
   });
 
   test('persists the choice across reloads', async ({ page }) => {
     await page.goto('/en/');
-    await page.getByRole('button', { name: /theme/i }).click();
+    await page.locator('header').getByRole('button', { name: /theme/i }).click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
     await page.reload();
@@ -37,6 +37,6 @@ test.describe('theme toggle', () => {
 
   test('toggle exposes an accessible name', async ({ page }) => {
     await page.goto('/en/');
-    await expect(page.getByRole('button', { name: /theme/i })).toBeVisible();
+    await expect(page.locator('header').getByRole('button', { name: /theme/i })).toBeVisible();
   });
 });
