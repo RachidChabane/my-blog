@@ -41,7 +41,7 @@ This is the part bayan does *not* solve out of the box (its reindex is whole-doc
 
 The runtime stack:
 
-- **LLM + vector store** ([OQ-4], resolved): **managed API + lightweight store** — a light hosted model (Claude Haiku-tier / OpenRouter) + sqlite-vss or a managed vector DB. Cheapest to run, least ops, fits the ≤ €25/mo budget. The specific provider/model settles at `M-10` build.
+- **LLM + vector store** ([OQ-4], resolved; provider concretized 02-06-2026): **managed API + lightweight store** — a light hosted model **via OpenRouter** (`https://openrouter.ai/api/v1`, behind the `LLMProvider` seam; **not** the Anthropic API) + a build-time static in-memory index (no vector DB at MVP; the corpus is small). Cheapest to run, least ops, fits the ≤ €25/mo budget. The specific model stays swappable at the seam.
 - **Embedding model** ([OQ-5]): must be **multilingual** (bilingual FR/EN content, `D-004`); settles at `M-10` build.
 - **Prompt-injection hardening** ([OQ-12], resolved): a **full red-team pass is required before launch** (`M-12`, `NFR-7`) — input sanitization + system-prompt isolation + grounded-retrieval-only, validated by adversarial tests for config exfiltration and instruction-override. Launch is blocked until it passes.
 

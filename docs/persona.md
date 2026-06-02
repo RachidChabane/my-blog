@@ -24,7 +24,7 @@ An autonomously AI-maintained personal site for Rachid Chabane: a bilingual (FR/
 - **Avatar backend:** a **Cloudflare Pages Function** (`functions/api/avatar/query.ts`, TypeScript) — keeps everything on Cloudflare, no separate hosted service, fits ≤ €25/mo (`NFR-9`). This **concretizes [OQ-4]** (managed API + lightweight store) and **[OQ-5]** (managed multilingual embedder):
   - **Index:** built at deploy time — embed all post/portfolio chunks (markdown-section-aware) → emit a **static index artifact** the Function loads. The corpus is a single-author blog (hundreds of chunks), so in-memory **lexical + vector + RRF** is enough; no vector DB needed at MVP.
   - **Retrieval:** lift the *shape* from `bayan` (`rag-avatar.md` §2) — hybrid lexical+vector, **Reciprocal Rank Fusion**, **threshold "I don't know" gate** — reimplemented in TS behind **Protocol-style interfaces** `Embedder` / `VectorStore` / `Reranker` / `LLMProvider` (so a managed vector DB / different model swaps in without touching callers).
-  - **Synthesis:** a light managed LLM (Haiku-tier) via API, citations-precede-prose, streamed.
+  - **Synthesis:** a light managed LLM via **OpenRouter** (a Haiku-tier or comparable small model), citations-precede-prose, streamed. Reached through the `LLMProvider` seam (base URL `https://openrouter.ai/api/v1`), so the model is swappable without touching callers.
   - **Reindex:** event-driven on publish (incremental, content-hash-keyed) + nightly full reindex safety net (`FR-E3`).
 - **Content pipeline (the writing engine, `M-3`/`M-4`):** **Python**, built on **`claude-plan-execute`** as the orchestration substrate (`writing-flow.md`, `inventory/02-claude-plan-execute.md`). It runs as a **scheduled Claude Code routine** on the **interactive/tmux backend** (subscription pool, `M-6`/`NFR-10`) with exit-code-75 auto-resume (`NFR-8`). It is tooling that commits markdown to the repo; it is **not** a hosted service. Lives under `pipeline/`.
 
@@ -78,9 +78,9 @@ e2e/                               @playwright/test specs
 The build + tests complete without these (fakes/fixtures). They are needed only for live deploy and live AI calls:
 
 1. **Cloudflare:** account, a Pages project, and `CLOUDFLARE_API_TOKEN` + account id (deploy).
-2. **Anthropic API key** (`ANTHROPIC_API_KEY`) — avatar synthesis LLM + (if used) embeddings.
-3. **Embedding provider key** — only if the multilingual embedder ([OQ-5]) is a separate managed provider rather than Anthropic.
+2. **OpenRouter API key** (`OPENROUTER_API_KEY`) — the avatar's synthesis LLM (via the `LLMProvider` seam → `https://openrouter.ai/api/v1`). **We use OpenRouter, not the Anthropic API.**
+3. **Embedding provider key** (`EMBEDDINGS_API_KEY`) — the multilingual embedder ([OQ-5]): via OpenRouter if it serves a suitable multilingual embedding model, else a dedicated embeddings provider. Behind the `Embedder` seam.
 4. **Domain:** register a `rachidchabane.*` domain and point DNS at Cloudflare Pages.
-5. **Pipeline auth:** the scheduled content engine runs under the owner's Claude subscription via the tmux backend — a one-time interactive login on the runner.
+5. **Pipeline auth:** the scheduled content engine runs under the owner's Claude **subscription** via the tmux backend — a one-time interactive login on the runner. This is **not** an API key (it's the subscription pool, `M-6`/`NFR-10`); OpenRouter is only for the avatar.
 
 All of the above go in env / Cloudflare secrets; `.env.example` documents the names. Nothing secret is committed.

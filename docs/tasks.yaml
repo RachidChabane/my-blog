@@ -134,7 +134,8 @@ tasks:
       Establish secret hygiene (M-7, NFR-5). Confirm .gitignore covers .env and
       all secret-bearing files. Author .env.example documenting every required
       key NAME with placeholder-only values (Cloudflare token + account id,
-      ANTHROPIC_API_KEY, embedding provider key if separate) — see persona.md
+      OPENROUTER_API_KEY for the avatar LLM, EMBEDDINGS_API_KEY for the
+      embedder — we use OpenRouter, NOT the Anthropic API) — see persona.md
       "Manual steps". Add src/lib/env.ts: a typed, validated accessor that reads
       from env and fails loudly with a helpful message when a key is missing
       (so the site degrades gracefully without secrets rather than leaking).
@@ -418,7 +419,9 @@ tasks:
       threshold return "I don't know" WITHOUT invoking the LLM (NFR-4) — else
       stream a synthesized answer with CITATIONS PRECEDING PROSE. Harden:
       input sanitization, system-prompt isolation from user input, grounded-only
-      (no exfiltration). Use the LLMProvider seam; tests run on the FAKE provider
+      (no exfiltration). Synthesis goes through the LLMProvider seam whose real
+      implementation targets OpenRouter (base URL https://openrouter.ai/api/v1,
+      OPENROUTER_API_KEY) — NOT the Anthropic API. Tests run on the FAKE provider
       (no secrets). Unit-test the grounded path, the refusal path, and that the
       LLM is never called below threshold.
     key_files:
@@ -659,8 +662,8 @@ tasks:
       Cloudflare Pages deploy config is valid (build command, output dir, env
       var NAMES present — values supplied by the owner per persona.md). Produce
       LAUNCH.md: a readiness report + the consolidated owner manual-steps
-      checklist (Cloudflare token, ANTHROPIC_API_KEY, embedder key, domain, tmux
-      login). Do NOT auto-deploy to production — leave go-live to the owner once
+      checklist (Cloudflare token, OPENROUTER_API_KEY, embeddings key, domain,
+      tmux login). Do NOT auto-deploy to production — leave go-live to the owner once
       secrets are in.
     key_files:
       - scripts/launch-check.ts

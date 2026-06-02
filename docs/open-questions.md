@@ -27,7 +27,7 @@ Each entry follows: **question/risk → why it matters → options → resolutio
 
 **[OQ-1] 01-06-2026** — *Is the RAG avatar in the MVP, or deferred to `S-1`?* — **In the MVP** (`M-10`). Owner chose to ship the avatar with v1; `S-1` retired, MVP estimate grew to ~10–14 weeks.
 
-**[OQ-4] 01-06-2026** — *Avatar LLM + vector store?* — **Managed API + lightweight store** (light hosted model + sqlite-vss / managed vector DB, multilingual embedder). Provider/model settles at `M-10` build.
+**[OQ-4] 01-06-2026** (provider concretized 02-06-2026) — *Avatar LLM + vector store?* — **Managed API + lightweight store.** LLM via **OpenRouter** (`https://openrouter.ai/api/v1`, `OPENROUTER_API_KEY`, behind the `LLMProvider` seam — **not** the Anthropic API); store = a build-time static in-memory index (no vector DB at MVP). Model stays swappable at the seam.
 
 **[OQ-6] 01-06-2026** — *What schedules the pipeline?* — **A scheduled Claude Code routine**, composing with the interactive/tmux backend (`M-6`) and native web-search sourcing.
 
