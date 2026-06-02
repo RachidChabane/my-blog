@@ -59,3 +59,19 @@ src/lib/env.ts  29:25 & 44:25  error  'process' is not defined  no-undef
 - `tests/env.test.ts` (task-4 committed file, no future task owns it) → `prettier --write` it.
 - `RUN-LOG.md` (my operator log) → added to `.prettierignore` (+ `LAUNCH.md` preemptively, since task 30 emits it and it's the same operator-doc category).
 Verified: full `pnpm -s lint` → astro check 0 errors, eslint clean, **"All matched files use Prettier code style!"**. Going forward each task's own lint gate reaches prettier, so new files self-enforce; only the eslint-masked backlog needed manual clearing.
+
+---
+
+## 2026-06-02 05:37 — Observed: task 6 plan errored (transient); decided NOT to interrupt
+
+- Tasks 1,2,3,**5** done (cascade fix confirmed — task 5 passed its lint gate). Commits pushed through `bdb6d62`.
+- **Task 6 (nav shell) plan agent exited 1** at 05:28 — `error-output.txt` = "Exit code: 1", **no `plan.md`, empty `attempts[]`** → a transient process-level failure, not a content/review problem. Serial scheduler added it to in-memory `_attempted`, left status at **`planning`** (not `blocked`), and moved on to **task 11** (now planning healthily, 41KB plan.md). claude/tmux are healthy (task 11 fine right after).
+- **Impact**: task 6 is a dependency for the whole UI branch (7,8,9,10,12,13,14,15,20 + downstream). Within the *current* run they stay pending (task 6 in `_attempted`). The loop will keep progressing on the task-6-independent backend/pipeline branch (11,17,19,23,24,25,26,28).
+- **Key scheduler fact**: status `planning` (≠ `blocked`) ⇒ a **fresh loop relaunch auto-re-claims task 6** (eligible: deps [2,3] done) — no `--reset` needed. The next usage-limit auto-resume (exit 75 → wrapper relaunch) or my post-drain relaunch will retry it automatically. (`blocked` task 4 still needs `--reset 4` at the end.)
+- **Decision**: do NOT interrupt the healthy loop to force an early task-6 retry. Total wall-clock is identical (serial); riding keeps momentum and gets the retry free at the next relaunch. My session PID = 18424 (never kill).
+- **Manual-stop is a CLEAN fallback** (verified `_record_manual_stop_and_kill`): on SIGINT/SIGTERM it records a `manual_stop` failure record but does NOT change status — in-flight tasks stay at their phase status (`planning`/`reviewing`/…), which is eligible on relaunch → they auto-retry. So interrupting never strands a task as `blocked`. Available if ever needed; not used now.
+
+### Operating rules locked in (advisor-reviewed)
+1. **Relaunch trigger** — on ANY loop exit where state ≠ all-30-done (the loop will drain & exit 0 with the *whole UI branch* pending, not "only task 4", because task 6 is stuck): (a) `claude-plan-execute --reset N` for every `blocked` task (task 4 today), (b) relaunch the loop. The fresh scheduler then retries task 6 (`planning`→eligible) and flows into the UI branch (those are `pending`, need no reset). One clean relaunch; only in the exited-loop window (no concurrent state.json writer).
+2. **Retry CAP (prevents quota-burn tight-loop)** — track task 6's retries here. If task 6 comes back `planning`-stuck with NO `plan.md` a **2nd time**, STOP relaunching and root-cause it (it's systematic, not transient). Retry ledger: attempt #1 errored 05:28 (exit 1). [next retry result → record here]
+3. **Capture on recurrence** — if task 6 (or any task) errors again at the process level, capture the live tmux pane + claude session output immediately (build log is buffer-lagged and only shows "exit 1"); don't root-cause from the exit code alone.
