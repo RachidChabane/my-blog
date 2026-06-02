@@ -52,7 +52,7 @@ Auto-publish means defects *will* occasionally reach production. The owner's rec
 
 ## §7 The writing flow — agent roster (first sketch, [OQ-14])
 
-The six stages in §2 are *what* happens; they don't yet specify *which specialized agents* carry each stage. The writing flow will be a multi-agent crew (modeled on `claude-plan-execute`'s role separation), not a single prompt. **This is a first sketch — the full roster, hand-offs, prompts, and round caps are deferred to a dedicated design pass ([OQ-14]).** First-cut roles and where they map onto the stages:
+The six stages in §2 are *what* happens; the *agents* that carry them — their hand-off artifacts, round caps, and failure behavior — are now designed in detail in **`writing-flow.md`** (which resolves the core of [OQ-14]). The crew is a multi-agent slate modeled on `claude-plan-execute`'s role separation: the same `claude` agent with role-specific prompt builders, chained by `depends_on`. The roles and their stage mapping (full design in `writing-flow.md`):
 
 | Role (sketch) | Stage (§2) | Notes |
 |---|---|---|
@@ -63,7 +63,7 @@ The six stages in §2 are *what* happens; they don't yet specify *which speciali
 | **Fact-checking** | Gate | Verifies every load-bearing claim against sources; blocking (`FR-C1`). |
 | **Humanizing / style** | Draft↔Gate | De-AI-tells the prose, enforces voice + the no-emoji rule (`FR-C2`, `D-007`). **Reuse candidate:** the global **`style-auditor`** agent already available in this environment (audits prose for AI-generation tells) — prefer reusing it over building one from scratch. (Reconciles the earlier "ijtihad style-auditor" reference in §3 — `style-auditor` is the concrete global agent to use.) |
 
-Open design questions for the later pass ([OQ-14]): exact roster + whether humanizing is its own stage or folded into Draft/Gate; per-role prompts and hand-off artifacts; round caps; how roles share the run's memory; FR-vs-EN parallelization. Until then, §2's six stages remain the contract.
+`writing-flow.md` details the hand-off artifacts, the **fact-check provenance chain** (research captures source excerpts → draft carries an explicit claim→source map → gate verifies each claim against the captured text), the `style-auditor`-as-auditor humanizing loop (flag → revise → re-check), FR/EN parallelization, and the terminal-failure fallback-to-next-topic policy. Residual build-time sub-questions remain (OQ-14a/b/c + the shared [OQ-5] embedder).
 
 ## Where this surfaces
 

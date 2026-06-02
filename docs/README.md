@@ -15,11 +15,12 @@ All dates: **DD-MM-YYYY** (decision records use ISO `YYYY-MM-DD` in their status
 |---|---|---|
 | 1 | [`vision.md`](vision.md) | What "good" looks like at MVP, 6 months (01-12-2026), 18 months (01-06-2028) — measurable signals. |
 | 2 | [`content-pipeline.md`](content-pipeline.md) | The autonomous editorial engine: source → select → draft → review → **gate** → auto-publish. The core of the project; read second. |
-| 3 | [`rag-avatar.md`](rag-avatar.md) | The RAG chatbot avatar (MVP, `M-10`): grounded answers + event-driven incremental reindex. |
-| 4 | [`user-requirements.md`](user-requirements.md) | Personas (P1–P3) + numbered FRs (groups A–G) with acceptance criteria + NFRs. |
-| 5 | [`roadmap.md`](roadmap.md) | MoSCoW with the explicit MVP cut, named Won't list, and risk-to-feature mapping. |
-| 6 | [`open-questions.md`](open-questions.md) | Live log of unresolved decisions (`OQ-N`) and the proposed defaults. |
-| 7 | [`decisions/`](decisions/) | One file per accepted decision: `D-001` (static-first), `D-002` (auto-publish + gates), `D-003` (hybrid build), `D-004` (bilingual FR/EN), `D-005` (Astro + Cloudflare Pages), `D-006` (editorial scope), `D-007` (brand + avatar constraint). |
+| 3 | [`writing-flow.md`](writing-flow.md) | The writing engine's **agent design**: the slate of `claude-plan-execute` roles, hand-off artifacts, the fact-check provenance chain, the `style-auditor` humanizing loop, and terminal-failure policy. Resolves the core of `OQ-14`. |
+| 4 | [`rag-avatar.md`](rag-avatar.md) | The RAG chatbot avatar (MVP, `M-10`): grounded answers + event-driven incremental reindex. |
+| 5 | [`user-requirements.md`](user-requirements.md) | Personas (P1–P3) + numbered FRs (groups A–G) with acceptance criteria + NFRs. |
+| 6 | [`roadmap.md`](roadmap.md) | MoSCoW with the explicit MVP cut, named Won't list, and risk-to-feature mapping. |
+| 7 | [`open-questions.md`](open-questions.md) | Live log of unresolved decisions (`OQ-N`) and the proposed defaults. |
+| 8 | [`decisions/`](decisions/) | One file per accepted decision: `D-001` (static-first), `D-002` (auto-publish + gates), `D-003` (hybrid build), `D-004` (bilingual FR/EN), `D-005` (Astro + Cloudflare Pages), `D-006` (editorial scope), `D-007` (brand + avatar constraint). |
 
 `architecture-options.md` is intentionally **not** written — the high-level fork (static vs dynamic) is settled in `D-001`, and the build-approach fork resolved to hybrid in `D-003` ([OQ-3]). No real architectural fork remains open.
 
@@ -52,7 +53,7 @@ Stage-1 scope is effectively fully decided. Non-blocking items remain in `open-q
 
 1. **[OQ-5]** Multilingual embedding model for the avatar index — a build-time pick (default: managed multilingual).
 2. **[OQ-10]** The 18-month readership target — set later when analytics (`S-4`) lands.
-3. **[OQ-14]** The writing-flow agent roster (`content-pipeline.md` §7) — a dedicated design pass before/within the `M-3`/`M-4` build; deferred by the owner.
+3. **[OQ-14a/b/c]** Residual writing-engine build-time choices (terminal-failure default, round caps, humanize placement) — tracked in `writing-flow.md` §9; the roster/flow itself is now designed (OQ-14 core resolved).
 
 The exact palette + avatar concept + domain TLD ([OQ-11b]) are delegated to Claude Design (Stage 2).
 
