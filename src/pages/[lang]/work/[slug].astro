@@ -1,0 +1,472 @@
+---
+/**
+ * S7 — Project detail. `/[lang]/work/[slug]/`, one page per PUBLISHED project per
+ * locale (FR/EN). The portfolio analog of the S3 article surface: a ~68ch reading
+ * column rendering the already-generated, public-safe `projects` collection
+ * (task 11/12). Authors no prose (W-1 / INV-5); renders generated fields only.
+ *
+ * Content → section mapping (the content model has only two prose fields):
+ *   01 "Ce que c'est"/"What it is"  ← entry.data.summary  (plain <p>, NOT <Prose>)
+ *   02 "Ingenierie"/"Engineering"   ← body via render()    (<Prose><Content/></Prose>)
+ *   03 Stack ← entry.data.stack · 04 Status ← entry.data.status (pill only)
+ *   05 Links ← entry.data.links[] (omit if empty) · 06 Related ← relatedArticles
+ * View-data is precomputed in getStaticPaths from the pure helpers in
+ * src/lib/content.ts; the body only calls render(entry) for the markdown <Content/>.
+ *
+ * Deltas vs the design project-detail.jsx (which is a scaffold of owner-fill
+ * placeholders) and vs the mockup layout:
+ *  1. Links are real <a target="_blank" rel="noopener noreferrer"> (label + arrow),
+ *     not the mockup's placeholder <span> with a "[public url]" value. This is what
+ *     the "links resolve" acceptance tests.
+ *  2. Related rows are <a href>, not the mockup's <button> (real navigation; INV-3).
+ *  3. No owner-fill .rc-ph placeholder blocks / figures / engBlocks / statusLine —
+ *     those were scaffold stand-ins; we render real generated content only. The
+ *     status section is the pill alone.
+ *  4. Linkchip border is solid var(--border-subtle), not the mockup's dashed
+ *     (dashed reads as unfinished/placeholder; this is a live link).
+ *  5. No standalone summary line above the numbered sections: summary IS section 01
+ *     ("Ce que c'est"); the mockup's separate summary line + placeholder "what it
+ *     is" block are collapsed into one real region (no duplication, no placeholder).
+ *
+ * Language switch: NO slugMap is passed (D2). The pinned switcherHref hardcodes the
+ * `blog/` segment, so a slugMap would yield a wrong /<lang>/blog/<slug>/ URL; the
+ * switcher falls back to the localized home (NFR-11 net — never a dead end). The
+ * slug-preserving switch for projects is a deferred i18n-generalization task.
+ *
+ * No data-pagefind-body: Pagefind search is articles-only (task 15) — projects must
+ * not pollute the article search corpus. Coexists with work/index.astro (the S6
+ * index): disjoint path sets (no project slug is the bare index).
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { projectDetailStrings } from '@/i18n/ui';
+import {
+  getPublishedProjects,
+  isLiveStatus,
+  getRelatedArticles,
+} from '@/lib/content';
+import type { RelatedArticleVM } from '@/lib/content';
+import Base from '@/layouts/Base.astro';
+import Prose from '@/components/Prose.astro';
+
+export const getStaticPaths = (async () => {
+  const [projects, articles] = await Promise.all([
+    getCollection('projects'),
+    getCollection('articles'),
+  ]);
+  return LOCALES.flatMap((lang) => {
+    const published = getPublishedProjects(projects, lang); // curated order
+    return published.map((entry, idx) => {
+      const tk = entry.data.translationKey;
+      // both-langs-published => show the "FR / EN" note (parity check; not a slugMap, D2)
+      const hasBoth = LOCALES.every((l) =>
+        projects.some(
+          (p: CollectionEntry<'projects'>) =>
+            p.data.translationKey === tk &&
+            p.data.lang === l &&
+            p.data.publishState === 'published'
+        )
+      );
+      return {
+        params: { lang, slug: entry.data.slug },
+        props: {
+          lang,
+          entry,
+          ordinal: String(idx + 1).padStart(2, '0'),
+          related: getRelatedArticles(
+            articles,
+            entry.data.relatedArticles,
+            lang
+          ),
+          hasBoth,
+        },
+      };
+    });
+  });
+}) satisfies GetStaticPaths;
+
+const { lang, entry, ordinal, related, hasBoth } = Astro.props as {
+  lang: Locale;
+  entry: CollectionEntry<'projects'>;
+  ordinal: string;
+  related: RelatedArticleVM[];
+  hasBoth: boolean;
+};
+
+const s = projectDetailStrings(lang);
+const { Content } = await render(entry); // load-bearing: renders the body depth
+const isLive = isLiveStatus(entry.data.status);
+const stackHead = entry.data.stack.slice(0, 3).join(' · ');
+const eyebrow = `${s.ordinalWord} · ${ordinal} · ${s.maintained}`;
+const title = `${entry.data.name} — rachid chabane`;
+
+// Running ordinals for the conditional sections 05/06 (sections 01-04 are
+// unconditional). No gaps when one is omitted: if links are absent, related
+// takes 05. Decorative only (not e2e-pinned).
+const hasLinks = entry.data.links.length > 0;
+const hasRelated = related.length > 0;
+const linksNo = hasLinks ? '05' : null;
+const relatedNo = hasRelated ? (hasLinks ? '06' : '05') : null;
+---
+
+<Base title={title} description={entry.data.summary} lang={lang}>
+  <article class="rc-projd rc-enter">
+    <a class="rc-back" href={localePath(lang, 'work')}>← {s.back}</a>
+    <span class="rc-eyebrow">{eyebrow}</span>
+    <h1 class="rc-projd__title">{entry.data.name}</h1>
+
+    <div class="rc-projd__meta">
+      <span class:list={['rc-pstatus', { 'is-live': isLive }]}>
+        <span class="rc-pstatus__dot"></span>{entry.data.status}
+      </span>
+      <span class="rc-meta__dot"></span>
+      <span class="rc-projd__stackmeta">{stackHead}</span>
+      {
+        hasBoth && (
+          <>
+            <span class="rc-meta__dot" />
+            <span class="rc-projd__bi">{s.bilingualNote}</span>
+          </>
+        )
+      }
+    </div>
+
+    {
+      /* 01 — the plain summary (the shallow what-it-is), NOT wrapped in Prose */
+    }
+    <section class="rc-sec">
+      <h2 class="rc-sec__h"><span class="rc-sec__n">01</span>{s.hWhat}</h2>
+      <p class="rc-projd__what">{entry.data.summary}</p>
+    </section>
+
+    {/* 02 — the body depth (the substance) */}
+    <section class="rc-sec">
+      <h2 class="rc-sec__h"><span class="rc-sec__n">02</span>{s.hEng}</h2>
+      <Prose><Content /></Prose>
+    </section>
+
+    {/* 03 — Stack */}
+    <section class="rc-sec">
+      <h2 class="rc-sec__h"><span class="rc-sec__n">03</span>{s.hStack}</h2>
+      <div class="rc-stack">
+        {
+          entry.data.stack.map((tech: string) => (
+            <span class="rc-tag">{tech}</span>
+          ))
+        }
+      </div>
+    </section>
+
+    {/* 04 — Status: the pill only (no invented status line) */}
+    <section class="rc-sec">
+      <h2 class="rc-sec__h"><span class="rc-sec__n">04</span>{s.hStatus}</h2>
+      <p class="rc-statusline">
+        <span class:list={['rc-pstatus', { 'is-live': isLive }]}>
+          <span class="rc-pstatus__dot"></span>{entry.data.status}
+        </span>
+      </p>
+    </section>
+
+    {/* 05 — Links: real resolving out-links; omit when none */}
+    {
+      linksNo && (
+        <section class="rc-sec">
+          <h2 class="rc-sec__h">
+            <span class="rc-sec__n">{linksNo}</span>
+            {s.hLinks}
+          </h2>
+          <div class="rc-links">
+            {entry.data.links.map((l: { label: string; url: string }) => (
+              <a
+                class="rc-linkchip"
+                href={l.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span class="rc-linkchip__key">{l.label}</span>
+                <span class="rc-linkchip__ext" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    {/* 06 — Related articles: resolved relatedArticles; omit when none */}
+    {
+      relatedNo && (
+        <section class="rc-sec">
+          <h2 class="rc-sec__h">
+            <span class="rc-sec__n">{relatedNo}</span>
+            {s.hRelated}
+          </h2>
+          <div class="rc-rel">
+            {related.map((r) => (
+              <a class="rc-rel__row" href={r.href}>
+                <span class="rc-rel__title">{r.title}</span>
+                <span class="rc-rel__meta">
+                  {r.dateDisplay} · {r.readingLabel}
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </article>
+</Base>
+
+<style>
+  /* Reading column. max-width: var(--measure) = 68ch (matches the article surface).
+     Base provides <main>; this is the inner column. Re-ports blog/[slug].astro's
+     .rc-article / .rc-back / .rc-eyebrow / .rc-enter and screens.css's project-detail
+     rules (.rc-sec*, .rc-stack, .rc-statusline, .rc-links, .rc-linkchip*, .rc-rel*),
+     ProjectCard's .rc-pstatus* / .rc-tag, plus .rc-projd__what / __stackmeta. Astro
+     scoped styles do not cross files, so each surface re-ports what it needs. Tokens
+     only — no hard-coded colors/fonts/spacing. */
+  .rc-projd {
+    width: 100%;
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: 52px 40px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 720px) {
+    .rc-projd {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+  .rc-back {
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg-muted);
+    padding: 0 0 28px;
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-back:hover {
+    color: var(--accent);
+  }
+  .rc-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-meta);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rc-projd__title {
+    margin: 12px 0 16px;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-head);
+    font-size: var(--text-h1);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    max-width: 26ch;
+  }
+
+  /* meta row (status pill, first-3 stack, optional FR / EN note) */
+  .rc-projd__meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .rc-meta__dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--fg-subtle);
+    display: inline-block;
+  }
+  .rc-projd__stackmeta,
+  .rc-projd__bi {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-subtle);
+  }
+
+  /* status pill (ported from ProjectCard) — accent dot reserved for production-live */
+  .rc-pstatus {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--fg-muted);
+  }
+  .rc-pstatus__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--fg-subtle);
+    flex: none;
+  }
+  .rc-pstatus.is-live .rc-pstatus__dot {
+    background: var(--accent);
+  }
+
+  /* numbered sections */
+  .rc-sec {
+    margin-top: 46px;
+  }
+  .rc-sec__h {
+    margin: 0 0 18px;
+    font-family: var(--font-display);
+    font-variation-settings:
+      'opsz' 32,
+      'wght' 480;
+    font-size: 23px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .rc-sec__n {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+  }
+
+  /* 01 — the plain summary (what-it-is) */
+  .rc-projd__what {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--text-body-lg);
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+
+  /* 03 — stack chips (ported from ProjectCard .rc-tag; static spans, no hover) */
+  .rc-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .rc-tag {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 4px 11px;
+    border-radius: var(--radius-pill);
+    background: var(--fill-subtle);
+    color: var(--fg-muted);
+    border: 1px solid var(--border-subtle);
+  }
+
+  /* 04 — status line (pill only) */
+  .rc-statusline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--fg);
+  }
+  .rc-statusline .rc-pstatus {
+    font-size: 12px;
+  }
+
+  /* 05 — public links (real out-links; solid border per delta 4) */
+  .rc-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .rc-linkchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface);
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    text-decoration: none;
+    transition:
+      border-color var(--dur-hover) var(--ease-soft),
+      color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-linkchip:hover {
+    border-color: var(--accent);
+    color: var(--fg);
+  }
+  .rc-linkchip__key {
+    color: var(--fg);
+  }
+  .rc-linkchip__ext {
+    color: var(--accent);
+  }
+
+  /* 06 — related rows (anchors, not buttons per delta 2) */
+  .rc-rel {
+    display: flex;
+    flex-direction: column;
+  }
+  .rc-rel__row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 2px;
+    border-bottom: 1px solid var(--hairline);
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+    text-decoration: none;
+    color: inherit;
+    transition: padding var(--dur-hover) var(--ease-soft);
+  }
+  .rc-rel__row:hover {
+    padding-left: 8px;
+  }
+  .rc-rel__title {
+    flex: 1;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: 17px;
+    line-height: 1.32;
+    color: var(--fg);
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-rel__row:hover .rc-rel__title {
+    color: var(--accent);
+  }
+  .rc-rel__meta {
+    flex: none;
+    padding-top: 4px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-subtle);
+    white-space: nowrap;
+  }
+
+  /* translate-only entrance (reduced-motion neutralized via tokens.css) */
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>

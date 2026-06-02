@@ -964,13 +964,23 @@ describe('getRelatedArticles — resolve project relatedArticles', () => {
 
   it('drops a draft key, an other-lang-only key, and a missing key', () => {
     const articles = [
-      entry({ translationKey: 'kd', slug: 'sd', lang: 'fr', publishState: 'draft' }),
-      entry({ translationKey: 'ko', slug: 'so', lang: 'en', publishState: 'published' }),
+      entry({
+        translationKey: 'kd',
+        slug: 'sd',
+        lang: 'fr',
+        publishState: 'draft',
+      }),
+      entry({
+        translationKey: 'ko',
+        slug: 'so',
+        lang: 'en',
+        publishState: 'published',
+      }),
     ];
     // kd = draft, ko = wrong lang for 'fr', kmissing = absent → all dropped
-    expect(getRelatedArticles(articles, ['kd', 'ko', 'kmissing'], 'fr')).toEqual(
-      []
-    );
+    expect(
+      getRelatedArticles(articles, ['kd', 'ko', 'kmissing'], 'fr')
+    ).toEqual([]);
   });
 
   it('resolves the same key to the per-locale published article', () => {
@@ -978,11 +988,11 @@ describe('getRelatedArticles — resolve project relatedArticles', () => {
       entry({ translationKey: 'kx', slug: 'en-x', lang: 'en' }),
       entry({ translationKey: 'kx', slug: 'fr-x', lang: 'fr' }),
     ];
-    expect(getRelatedArticles(articles, ['kx'], 'en').map((r) => r.href)).toEqual(
-      ['/en/blog/en-x/']
-    );
-    expect(getRelatedArticles(articles, ['kx'], 'fr').map((r) => r.href)).toEqual(
-      ['/fr/blog/fr-x/']
-    );
+    expect(
+      getRelatedArticles(articles, ['kx'], 'en').map((r) => r.href)
+    ).toEqual(['/en/blog/en-x/']);
+    expect(
+      getRelatedArticles(articles, ['kx'], 'fr').map((r) => r.href)
+    ).toEqual(['/fr/blog/fr-x/']);
   });
 });
