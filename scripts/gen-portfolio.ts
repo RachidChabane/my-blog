@@ -63,7 +63,7 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     ],
     status: { en: 'pre-launch', fr: 'pré-lancement' },
     links: [],
-    publishState: 'draft',
+    publishState: 'published',
     en: {
       slug: 'sterna-ai-platform',
       name: 'Sterna — Multi-Model AI Platform',
@@ -114,7 +114,7 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     ],
     status: { en: 'active (paused)', fr: 'actif (en pause)' },
     links: [],
-    publishState: 'draft',
+    publishState: 'published',
     en: {
       slug: 'ijtihad-engine',
       name: 'Ijtihad Engine — Autonomous Research System',
@@ -165,7 +165,7 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     ],
     status: { en: 'MVP ready', fr: 'MVP prêt' },
     links: [],
-    publishState: 'draft',
+    publishState: 'published',
     en: {
       slug: 'bayan-rag-platform',
       name: 'Bayan — Arabic Scholarship RAG Platform',
@@ -211,7 +211,7 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     stack: ['Python', 'Claude Code', 'tmux', 'YAML', 'pytest', 'FastAPI'],
     status: { en: 'active', fr: 'actif' },
     links: [],
-    publishState: 'draft',
+    publishState: 'published',
     en: {
       slug: 'claude-plan-execute',
       name: 'Claude Plan Execute — Autonomous Task Orchestrator',
@@ -264,7 +264,7 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     ],
     status: { en: 'active', fr: 'actif' },
     links: [],
-    publishState: 'draft',
+    publishState: 'published',
     en: {
       slug: 'athletic-tracker',
       name: 'Athletic Tracker — Autonomous Strength Program Manager',
@@ -315,7 +315,7 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     links: [
       { label: 'npm', url: 'https://www.npmjs.com/package/mcp-secrets-vault' },
     ],
-    publishState: 'draft',
+    publishState: 'published',
     en: {
       slug: 'mcp-secrets-vault',
       name: 'MCP Secrets Vault — AI-Safe Secret Management',
@@ -359,7 +359,7 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     links: [
       { label: 'GitHub', url: 'https://github.com/RachidChabane/atelier' },
     ],
-    publishState: 'draft',
+    publishState: 'published',
     en: {
       slug: 'atelier-plugin-marketplace',
       name: 'Atelier — Claude Code Plugin Marketplace',

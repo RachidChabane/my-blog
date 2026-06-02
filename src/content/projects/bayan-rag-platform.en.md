@@ -14,7 +14,7 @@ stack:
   - 'Docker'
 status: 'MVP ready'
 links: []
-publishState: 'draft'
+publishState: 'published'
 ---
 
 Bayan delivers citation-exact answers (page, line, hadith number, bayt number, folio) from private or shared classical Arabic knowledge bases. Its retrieval stack runs two parallel legs — lexical GIN tsvector and pgvector cosine HNSW — fused with Reciprocal Rank Fusion, then reranked by a cross-encoder. A threshold gate refuses synthesis when top cosine similarity falls below the knowledge-base threshold, returning near-misses rather than hallucinating. A verifier recursion loop (depth-capped, SSE-streamed) iterates sub-queries until the retrieval is judged sufficient. The stack was built autonomously and passes a seven-gate MVP scorecard including 100% citation recall.

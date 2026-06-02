@@ -14,7 +14,7 @@ stack:
   - 'Cloudflare'
 status: 'pre-launch'
 links: []
-publishState: 'draft'
+publishState: 'published'
 ---
 
 Sterna is a full-stack AI product: a Django/DRF backend hosting eleven domain apps (multi-LLM via OpenRouter, coding assistant, sandboxed code execution, pgvector RAG, MCP connectors, AI voice rooms, Stripe billing, GDPR/rate-limiting hardening) paired with a React 19 + TypeScript frontend. The entire codebase was driven by an autonomous Claude Code task-runner that enforced per-task quality gates, gate-repair loops, and structured failure records — making the development process itself a case study in agentic software engineering.
