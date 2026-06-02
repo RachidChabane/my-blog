@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "candidates": [
+    {
+      "topic_id": "agentic-coding-harness",
+      "dedup_key": "agentic coding harness evaluation",
+      "title": "Evaluating agentic coding harnesses",
+      "summary": "How agentic coding loops are benchmarked end to end.",
+      "why_relevant": "A deep look at agent eval harness design for AI-assisted coding.",
+      "tags": ["agentic", "evaluation"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Harness paper",
+          "url": "https://arxiv.example/abs/agentic",
+          "retrieved_at": "2026-02-01",
+          "excerpt": "Agentic coding harnesses run tool-use loops over a task suite.",
+          "source_date": "2026-01-20"
+        },
+        {
+          "source_id": "s2",
+          "label": "Eval blog",
+          "url": "https://blog.example/agent-eval",
+          "retrieved_at": "2026-02-02",
+          "excerpt": "Benchmarks measure pass rate across multi-step coding tasks."
+        }
+      ]
+    },
+    {
+      "topic_id": "rrf-hybrid-retrieval",
+      "dedup_key": "reciprocal rank fusion hybrid retrieval",
+      "title": "Reciprocal rank fusion for hybrid retrieval",
+      "summary": "Combining lexical and vector retrieval with reciprocal rank fusion.",
+      "why_relevant": "Engineering tradeoffs of fusing BM25 and dense vector legs.",
+      "tags": ["rag", "retrieval"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "RRF paper",
+          "url": "https://arxiv.example/abs/rrf",
+          "retrieved_at": "2026-02-03",
+          "excerpt": "RRF assigns each document a score from its rank in every list."
+        },
+        {
+          "source_id": "s2",
+          "label": "Hybrid note",
+          "url": "https://blog.example/hybrid",
+          "retrieved_at": "2026-02-04",
+          "excerpt": "Dense embeddings capture semantics that keyword search misses."
+        }
+      ]
+    },
+    {
+      "topic_id": "oss-llm-finetuning",
+      "dedup_key": "open source llm fine tuning lora",
+      "title": "Fine-tuning open-source LLMs with LoRA",
+      "summary": "Practical LoRA fine-tuning on open-source frontier models.",
+      "why_relevant": "Covers the engineering of parameter-efficient fine-tuning.",
+      "tags": ["llm", "finetuning"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "LoRA paper",
+          "url": "https://arxiv.example/abs/lora",
+          "retrieved_at": "2026-02-05",
+          "excerpt": "LoRA injects low-rank adapters into otherwise frozen weights."
+        },
+        {
+          "source_id": "s2",
+          "label": "OSS guide",
+          "url": "https://blog.example/oss-ft",
+          "retrieved_at": "2026-02-06",
+          "excerpt": "Open weights let teams fine-tune without vendor lock-in."
+        }
+      ]
+    }
+  ]
+}

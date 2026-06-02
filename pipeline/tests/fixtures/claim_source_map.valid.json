@@ -1,0 +1,32 @@
+{
+  "claims": [
+    {
+      "lang": "en",
+      "claim": "Hybrid retrieval combines a lexical leg with dense vectors.",
+      "source_id": "s1",
+      "excerpt_span": { "start": 0, "end": 17 }
+    },
+    {
+      "lang": "fr",
+      "claim": "La recuperation hybride combine une voie lexicale et des vecteurs.",
+      "source_id": "s2"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "s1",
+      "label": "Hybrid RAG paper",
+      "url": "https://arxiv.example/abs/hybrid",
+      "retrieved_at": "2026-01-15",
+      "excerpt": "Hybrid retrieval combines a lexical BM25 leg with dense vectors.",
+      "source_date": "2025-12-01"
+    },
+    {
+      "source_id": "s2",
+      "label": "RRF note",
+      "url": "https://blog.example/rrf",
+      "retrieved_at": "2026-01-16",
+      "excerpt": "Reciprocal rank fusion merges several ranked lists into one."
+    }
+  ]
+}
