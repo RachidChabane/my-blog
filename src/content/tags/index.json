@@ -1,1 +1,29 @@
-[]
+[
+  { "id": "agents", "slug": "agents", "label": { "fr": "agents", "en": "agents" } },
+  { "id": "rag", "slug": "rag", "label": { "fr": "RAG", "en": "RAG" } },
+  {
+    "id": "agentic-coding",
+    "slug": "agentic-coding",
+    "label": { "fr": "agentic coding", "en": "agentic coding" }
+  },
+  {
+    "id": "evaluation",
+    "slug": "evaluation",
+    "label": { "fr": "évaluation", "en": "evaluation" }
+  },
+  {
+    "id": "llm-oss",
+    "slug": "llm-oss",
+    "label": { "fr": "LLM open-source", "en": "open-source LLM" }
+  },
+  {
+    "id": "retrieval",
+    "slug": "retrieval",
+    "label": { "fr": "retrieval", "en": "retrieval" }
+  },
+  {
+    "id": "qualite",
+    "slug": "qualite",
+    "label": { "fr": "qualité", "en": "quality" }
+  }
+]
