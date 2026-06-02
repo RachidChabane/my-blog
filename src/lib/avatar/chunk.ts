@@ -10,6 +10,11 @@
 // slugger per document (its dedup counters reset per page) — so the citation
 // fragment matches the rendered <h_ id="…">. A mismatch only degrades a citation
 // to a page-level link (graceful), never a build break.
+//
+// Parity VERIFIED (task 18 §8) against `astro build` output: headings
+// "Hybrid Retrieval" / "Récupération du modèle" / "Code & Config" / "Test" /
+// "Test" rendered ids hybrid-retrieval / récupération-du-modèle / code--config /
+// test / test-1 — identical to new GithubSlugger().slug(text) in document order.
 
 import GithubSlugger from 'github-slugger';
 import type { IndexChunk } from './contracts';
