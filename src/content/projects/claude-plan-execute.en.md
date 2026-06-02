@@ -12,7 +12,7 @@ stack:
   - 'pytest'
   - 'FastAPI'
 status: 'active'
-links:[]
+links: []
 publishState: 'draft'
 ---
 

@@ -48,12 +48,19 @@ export interface PortfolioEntry {
 }
 
 export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
-
   // ── 1. Sterna ─────────────────────────────────────────────────────────────
   // Public brand: "Sterna" (a tern seabird). Directory name (quality-gate-AI) never exposed.
   {
     translationKey: 'sterna-ai-platform',
-    stack: ['Python', 'Django', 'React', 'OpenRouter', 'pgvector', 'Kubernetes', 'Cloudflare'],
+    stack: [
+      'Python',
+      'Django',
+      'React',
+      'OpenRouter',
+      'pgvector',
+      'Kubernetes',
+      'Cloudflare',
+    ],
     status: { en: 'pre-launch', fr: 'pré-lancement' },
     links: [],
     publishState: 'draft',
@@ -77,16 +84,16 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
       slug: 'plateforme-ia-sterna',
       name: 'Sterna — Plateforme IA Multi-Modèles',
       summary:
-        'Une plateforme de chat et d\'agents IA multi-modèles de niveau production, avec exécution ' +
+        "Une plateforme de chat et d'agents IA multi-modèles de niveau production, avec exécution " +
         'de code en sandbox, base de connaissances RAG, intégrations MCP et facturation Stripe — ' +
         'construite de manière autonome par un orchestrateur Claude Code maison.',
       body:
         'Sterna est un produit IA full-stack : un backend Django/DRF hébergeant onze applications ' +
         'métier (multi-LLM via OpenRouter, assistant de codage, exécution de code en sandbox, ' +
         'RAG pgvector, connecteurs MCP, salles vocales IA, facturation Stripe, durcissement ' +
-        'RGPD/limitation de débit) couplé à un frontend React 19 + TypeScript. L\'ensemble du ' +
+        "RGPD/limitation de débit) couplé à un frontend React 19 + TypeScript. L'ensemble du " +
         'code a été piloté par un task-runner Claude Code autonome appliquant des portes de ' +
-        'qualité par tâche, des boucles de réparation de portes et des enregistrements d\'échecs ' +
+        "qualité par tâche, des boucles de réparation de portes et des enregistrements d'échecs " +
         'structurés — faisant du processus de développement lui-même une étude de cas en ' +
         'ingénierie logicielle agentique.',
     },
@@ -96,7 +103,15 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
   // Codename IS the public product name. Dir (math-monster/ijtihad-engine) never exposed.
   {
     translationKey: 'ijtihad-engine',
-    stack: ['Python', 'Claude Code', 'LaTeX', 'aiosqlite', 'SymPy', 'Z3', 'FastAPI'],
+    stack: [
+      'Python',
+      'Claude Code',
+      'LaTeX',
+      'aiosqlite',
+      'SymPy',
+      'Z3',
+      'FastAPI',
+    ],
     status: { en: 'active (paused)', fr: 'actif (en pause)' },
     links: [],
     publishState: 'draft',
@@ -120,11 +135,11 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
       slug: 'moteur-ijtihad',
       name: 'Ijtihad Engine — Système de Recherche Autonome',
       summary:
-        'Un système d\'orchestration multi-agents LLM auto-améliorant qui attaque de manière ' +
+        "Un système d'orchestration multi-agents LLM auto-améliorant qui attaque de manière " +
         'autonome des problèmes ouverts en mathématiques et en science, vérifiant les affirmations ' +
         'formellement et produisant des articles de recherche prêts à soumettre.',
       body:
-        'L\'Ijtihad Engine fait tourner ~16 sous-agents Claude Code spécialisés sur 8 phases ' +
+        "L'Ijtihad Engine fait tourner ~16 sous-agents Claude Code spécialisés sur 8 phases " +
         'cycliques : divergence, extraction de claims, friction, audit de qualité des preuves, ' +
         'porte de suffisance des preuves, synthèse, méta-évolution et construction formelle. ' +
         'Son cœur est un graphe de claims épistémiques sur SQLite qui suit des claims atomiques ' +
@@ -139,7 +154,15 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
   // Codename IS the public product name. Dir (knowledge-master) never exposed.
   {
     translationKey: 'bayan-rag-platform',
-    stack: ['Python', 'FastAPI', 'pgvector', 'OpenRouter', 'React', 'PostgreSQL', 'Docker'],
+    stack: [
+      'Python',
+      'FastAPI',
+      'pgvector',
+      'OpenRouter',
+      'React',
+      'PostgreSQL',
+      'Docker',
+    ],
     status: { en: 'MVP ready', fr: 'MVP prêt' },
     links: [],
     publishState: 'draft',
@@ -162,7 +185,7 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     },
     fr: {
       slug: 'bayan-plateforme-rag',
-      name: 'Bayan — Plateforme RAG pour l\'Érudition Arabe',
+      name: "Bayan — Plateforme RAG pour l'Érudition Arabe",
       summary:
         'Une plateforme multi-utilisateurs pour des réponses à citations exactes sur des livres ' +
         'arabes classiques, alimentée par un pipeline de récupération hybride BM25 + pgvector avec ' +
@@ -175,8 +198,8 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
         'cosinus pgvector HNSW — fusionnées par Reciprocal Rank Fusion, puis reclassées par un ' +
         'cross-encoder. Une porte de seuil refuse la synthèse si la similarité cosinus maximale ' +
         'est inférieure au seuil de la base de connaissances, retournant des quasi-correspondances ' +
-        'plutôt qu\'halluciner. Une boucle de récursion vérificateur (profondeur plafonnée, ' +
-        'diffusée en SSE) itère des sous-requêtes jusqu\'à juger la récupération suffisante. ' +
+        "plutôt qu'halluciner. Une boucle de récursion vérificateur (profondeur plafonnée, " +
+        "diffusée en SSE) itère des sous-requêtes jusqu'à juger la récupération suffisante. " +
         'Le stack a été construit de manière autonome et passe un scorecard MVP à sept portes, ' +
         'dont 100 % de rappel de citations.',
     },
@@ -213,24 +236,32 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
         'Un orchestrateur plan→révision→implémentation qui pilote le CLI Claude Code à travers un ' +
         'workflow multi-phases et multi-agents sur un slate de tâches déclaratif, avec des portes ' +
         'de qualité, une branche par tâche, une mémoire inter-tâches et un backend tmux préservant ' +
-        'le pool d\'abonnement.',
+        "le pool d'abonnement.",
       body:
-        'Claude Plan Execute exécute un cycle fixe pour chaque tâche : l\'agent Plan écrit un plan ' +
+        "Claude Plan Execute exécute un cycle fixe pour chaque tâche : l'agent Plan écrit un plan " +
         'structuré ; une boucle de révision le contrôle (APPROVED / NEEDS_REVISION) et itère un ' +
-        'agent de révision jusqu\'au plafond configuré de rounds ; seul un plan approuvé atteint ' +
-        'l\'agent Implement, qui travaille par commits avec une checklist de progression reprise. ' +
+        "agent de révision jusqu'au plafond configuré de rounds ; seul un plan approuvé atteint " +
+        "l'agent Implement, qui travaille par commits avec une checklist de progression reprise. " +
         'La spécialisation de rôle est du swap de prompt, non des binaires séparés. Un pilote ' +
-        'double backend permet au même code d\'utiliser soit le backend print `claude -p`, soit ' +
-        'un vrai TUI Claude interactif dans tmux — ce dernier maintient l\'usage sur le pool ' +
-        'd\'abonnement Claude plutôt que l\'API facturée. Le projet se dogfoode lui-même : ' +
-        'sa propre roadmap est le tasks.yaml qu\'il exécute.',
+        "double backend permet au même code d'utiliser soit le backend print `claude -p`, soit " +
+        "un vrai TUI Claude interactif dans tmux — ce dernier maintient l'usage sur le pool " +
+        "d'abonnement Claude plutôt que l'API facturée. Le projet se dogfoode lui-même : " +
+        "sa propre roadmap est le tasks.yaml qu'il exécute.",
     },
   },
 
   // ── 5. Athletic Tracker ───────────────────────────────────────────────────
   {
     translationKey: 'athletic-tracker',
-    stack: ['Python', 'Claude Code', 'Pydantic', 'openpyxl', 'Hevy API', 'uv', 'pytest'],
+    stack: [
+      'Python',
+      'Claude Code',
+      'Pydantic',
+      'openpyxl',
+      'Hevy API',
+      'uv',
+      'pytest',
+    ],
     status: { en: 'active', fr: 'actif' },
     links: [],
     publishState: 'draft',
@@ -257,20 +288,20 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
       name: 'Athletic Tracker — Gestionnaire Autonome de Programme de Force',
       summary:
         'Un gestionnaire autonome opéré par Claude Code pour un programme de force pluriannuel, ' +
-        'connectant un moteur de prescriptions Excel et l\'application Hevy avec une couche ' +
-        'd\'overrides LLM contrainte, un mode shadow et une détection de collision idempotente.',
+        "connectant un moteur de prescriptions Excel et l'application Hevy avec une couche " +
+        "d'overrides LLM contrainte, un mode shadow et une détection de collision idempotente.",
       body:
         'Athletic Tracker exécute trois tâches cron à portes. Le sync hebdomadaire récupère les ' +
         'entraînements depuis Hevy et les ajoute à un journal Excel. La tâche mid-block réécrit ' +
         'les routines de la semaine suivante (appliquant la progression en % et les ajustements ' +
-        'd\'auto-régulation), puis superpose un jugement LLM contraint : un agent Claude cloud ' +
-        'reçoit un brief d\'observations et doit retourner des overrides JSON typés et validés ' +
+        "d'auto-régulation), puis superpose un jugement LLM contraint : un agent Claude cloud " +
+        "reçoit un brief d'observations et doit retourner des overrides JSON typés et validés " +
         'par schéma — il peut réagir aux signaux de blessure ou de fatigue, mais ne peut pas ' +
         'toucher au programme en dehors de cette surface. Deux propriétés de sécurité définissent ' +
         'la conception : un mode shadow qui émet des propositions dans des fichiers pendant les ' +
-        'deux premiers blocs avant d\'écrire sur l\'API (l\'autonomie se mérite, elle n\'est pas ' +
+        "deux premiers blocs avant d'écrire sur l'API (l'autonomie se mérite, elle n'est pas " +
         'supposée), et une détection de collision qui compare chaque écriture planifiée au dernier ' +
-        'snapshot commité et s\'arrête en cas de modifications inattendues — aucun écrasement ' +
+        "snapshot commité et s'arrête en cas de modifications inattendues — aucun écrasement " +
         'aveugle.',
     },
   },
@@ -281,7 +312,9 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     translationKey: 'mcp-secrets-vault',
     stack: ['TypeScript', 'MCP SDK', 'Zod', 'Vitest', 'GitHub Actions'],
     status: { en: 'shipped', fr: 'publié' },
-    links: [{ label: 'npm', url: 'https://www.npmjs.com/package/mcp-secrets-vault' }],
+    links: [
+      { label: 'npm', url: 'https://www.npmjs.com/package/mcp-secrets-vault' },
+    ],
     publishState: 'draft',
     en: {
       slug: 'mcp-secrets-vault',
@@ -300,19 +333,19 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     },
     fr: {
       slug: 'coffre-secrets-mcp',
-      name: 'MCP Secrets Vault — Gestion de Secrets pour l\'IA',
+      name: "MCP Secrets Vault — Gestion de Secrets pour l'IA",
       summary:
-        'Un serveur MCP publié sur npm qui permet aux assistants IA d\'utiliser des secrets — ' +
-        'clés d\'API, tokens, identifiants — pour réaliser des actions autorisées sans jamais ' +
+        "Un serveur MCP publié sur npm qui permet aux assistants IA d'utiliser des secrets — " +
+        "clés d'API, tokens, identifiants — pour réaliser des actions autorisées sans jamais " +
         'exposer les valeurs secrètes.',
       body:
         'MCP Secrets Vault se place entre un assistant IA (Claude Desktop ou tout client ' +
-        'compatible MCP) et le dépôt de secrets. Quand l\'assistant doit appeler une API, il ' +
+        "compatible MCP) et le dépôt de secrets. Quand l'assistant doit appeler une API, il " +
         'invoque un outil vault par son nom ; le serveur résout le secret depuis les variables ' +
-        'd\'environnement, l\'injecte dans la requête et retourne uniquement la réponse assainie ' +
-        '— la valeur brute du secret n\'apparaît jamais dans le contexte du modèle. Le contrôle ' +
-        'd\'accès basé sur les politiques, la limitation de débit configurable et un journal ' +
-        'd\'audit sont intégrés. Le package est sous licence MIT, publié sur npm, et inclut ' +
+        "d'environnement, l'injecte dans la requête et retourne uniquement la réponse assainie " +
+        "— la valeur brute du secret n'apparaît jamais dans le contexte du modèle. Le contrôle " +
+        "d'accès basé sur les politiques, la limitation de débit configurable et un journal " +
+        "d'audit sont intégrés. Le package est sous licence MIT, publié sur npm, et inclut " +
         'des badges CI de couverture et une démonstration détaillée.',
     },
   },
@@ -323,7 +356,9 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     translationKey: 'atelier',
     stack: ['JSON', 'Markdown', 'Claude Code', 'Python', 'TypeScript'],
     status: { en: 'active', fr: 'actif' },
-    links: [{ label: 'GitHub', url: 'https://github.com/RachidChabane/atelier' }],
+    links: [
+      { label: 'GitHub', url: 'https://github.com/RachidChabane/atelier' },
+    ],
     publishState: 'draft',
     en: {
       slug: 'atelier-plugin-marketplace',
@@ -340,7 +375,7 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
         'cross-referenced docs/ slate, resume-aware so it continues rather than restarts) and ' +
         'migrate-to-interactive-claude (migrates a project off the metered claude -p API onto ' +
         'the tmux interactive backend to preserve subscription-pool usage after the 2026 ' +
-        'billing split). Install via Claude Code\'s native /plugin system.',
+        "billing split). Install via Claude Code's native /plugin system.",
     },
     fr: {
       slug: 'atelier-marketplace-plugins',
@@ -357,12 +392,11 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
         'Deux plugins sont livrés en v0.1.0 : project-bootstrap (pilote un dépôt à travers un ' +
         'workflow de planification en 5 étapes produisant un slate docs/ complet et ' +
         'inter-référencé, conscient de la reprise pour continuer plutôt que redémarrer) et ' +
-        'migrate-to-interactive-claude (migre un projet hors de l\'API claude -p facturée vers ' +
-        'le backend interactif tmux pour préserver l\'usage du pool d\'abonnement après la ' +
+        "migrate-to-interactive-claude (migre un projet hors de l'API claude -p facturée vers " +
+        "le backend interactif tmux pour préserver l'usage du pool d'abonnement après la " +
         'scission de facturation 2026). Installation via le système natif /plugin de Claude Code.',
     },
   },
-
 ];
 
 function yamlStr(s: string): string {
@@ -370,14 +404,15 @@ function yamlStr(s: string): string {
 }
 
 function yamlStrArr(arr: string[]): string {
-  if (arr.length === 0) return '[]';
-  return arr.map(v => `\n  - ${yamlStr(v)}`).join('');
+  // Leading space so the caller's `key:${...}` yields valid `key: []` (not `key:[]`).
+  if (arr.length === 0) return ' []';
+  return arr.map((v) => `\n  - ${yamlStr(v)}`).join('');
 }
 
 function yamlLinkArr(links: Array<{ label: string; url: string }>): string {
-  if (links.length === 0) return '[]';
+  if (links.length === 0) return ' []';
   return links
-    .map(l => `\n  - label: ${yamlStr(l.label)}\n    url: ${yamlStr(l.url)}`)
+    .map((l) => `\n  - label: ${yamlStr(l.label)}\n    url: ${yamlStr(l.url)}`)
     .join('');
 }
 
@@ -395,7 +430,9 @@ export function buildFrontmatter(
     stack: entry.stack,
     status: entry.status[lang],
     links: entry.links,
-    ...(entry.relatedArticles ? { relatedArticles: entry.relatedArticles } : {}),
+    ...(entry.relatedArticles
+      ? { relatedArticles: entry.relatedArticles }
+      : {}),
     ...(entry.derivedFrom ? { derivedFrom: entry.derivedFrom } : {}),
     publishState: entry.publishState,
   };
@@ -456,7 +493,7 @@ export function generateAll(): GeneratedFile[] {
 }
 
 export function safetyCheck(content: string): string[] {
-  return FLAGGED_TERMS.filter(term => content.includes(term));
+  return FLAGGED_TERMS.filter((term) => content.includes(term));
 }
 
 function main(): void {
@@ -467,7 +504,9 @@ function main(): void {
   for (const file of files) {
     const violations = safetyCheck(file.content);
     if (violations.length > 0) {
-      console.error(`SAFETY VIOLATION in ${file.filename}: ${violations.join(', ')}`);
+      console.error(
+        `SAFETY VIOLATION in ${file.filename}: ${violations.join(', ')}`
+      );
       process.exit(1);
     }
     writeFileSync(join(WORK_DIR, file.filename), file.content, 'utf-8');

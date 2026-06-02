@@ -13,7 +13,7 @@ stack:
   - 'Kubernetes'
   - 'Cloudflare'
 status: 'pré-lancement'
-links:[]
+links: []
 publishState: 'draft'
 ---
 

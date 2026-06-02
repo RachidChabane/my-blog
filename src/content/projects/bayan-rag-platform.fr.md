@@ -13,7 +13,7 @@ stack:
   - 'PostgreSQL'
   - 'Docker'
 status: 'MVP prêt'
-links:[]
+links: []
 publishState: 'draft'
 ---
 

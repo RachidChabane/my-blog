@@ -18,14 +18,18 @@ describe('generateAll()', () => {
   });
 
   it('all filenames are unique', () => {
-    const names = files.map(f => f.filename);
+    const names = files.map((f) => f.filename);
     expect(new Set(names).size).toBe(names.length);
   });
 
   it('each project has exactly one FR and one EN entry', () => {
     for (const entry of PORTFOLIO_PROJECTS) {
-      const fr = files.filter(f => f.translationKey === entry.translationKey && f.lang === 'fr');
-      const en = files.filter(f => f.translationKey === entry.translationKey && f.lang === 'en');
+      const fr = files.filter(
+        (f) => f.translationKey === entry.translationKey && f.lang === 'fr'
+      );
+      const en = files.filter(
+        (f) => f.translationKey === entry.translationKey && f.lang === 'en'
+      );
       expect(fr).toHaveLength(1);
       expect(en).toHaveLength(1);
     }
@@ -43,7 +47,10 @@ describe('buildFrontmatter() schema validation', () => {
     for (const entry of PORTFOLIO_PROJECTS) {
       const fm = buildFrontmatter(entry, 'fr');
       const result = projectFrontmatterSchema.safeParse(fm);
-      expect(result.success, `FR entry ${entry.translationKey} failed: ${JSON.stringify(result)}`).toBe(true);
+      expect(
+        result.success,
+        `FR entry ${entry.translationKey} failed: ${JSON.stringify(result)}`
+      ).toBe(true);
     }
   });
 
@@ -51,7 +58,10 @@ describe('buildFrontmatter() schema validation', () => {
     for (const entry of PORTFOLIO_PROJECTS) {
       const fm = buildFrontmatter(entry, 'en');
       const result = projectFrontmatterSchema.safeParse(fm);
-      expect(result.success, `EN entry ${entry.translationKey} failed: ${JSON.stringify(result)}`).toBe(true);
+      expect(
+        result.success,
+        `EN entry ${entry.translationKey} failed: ${JSON.stringify(result)}`
+      ).toBe(true);
     }
   });
 
@@ -104,7 +114,9 @@ describe('safetyCheck()', () => {
   });
 
   it('detects a raw directory name (quality-gate-AI)', () => {
-    const violations = safetyCheck('This project lives in quality-gate-AI directory.');
+    const violations = safetyCheck(
+      'This project lives in quality-gate-AI directory.'
+    );
     expect(violations).toContain('quality-gate-AI');
   });
 
@@ -114,7 +126,9 @@ describe('safetyCheck()', () => {
   });
 
   it('detects secret-related file names (SCALEWAY_SECRETS_BACKUP)', () => {
-    const violations = safetyCheck('See SCALEWAY_SECRETS_BACKUP.txt for credentials.');
+    const violations = safetyCheck(
+      'See SCALEWAY_SECRETS_BACKUP.txt for credentials.'
+    );
     expect(violations).toContain('SCALEWAY_SECRETS_BACKUP');
   });
 
@@ -125,8 +139,12 @@ describe('safetyCheck()', () => {
 
   it('FLAGGED_TERMS covers at least the key private directory names', () => {
     const required = [
-      'quality-gate-AI', 'knowledge-master', 'math-monster',
-      'Rose Torres', 'Ikram Mameche', 'SCALEWAY_SECRETS_BACKUP',
+      'quality-gate-AI',
+      'knowledge-master',
+      'math-monster',
+      'Rose Torres',
+      'Ikram Mameche',
+      'SCALEWAY_SECRETS_BACKUP',
     ];
     for (const term of required) {
       expect(FLAGGED_TERMS).toContain(term);

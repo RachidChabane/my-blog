@@ -13,7 +13,7 @@ stack:
   - 'uv'
   - 'pytest'
 status: 'actif'
-links:[]
+links: []
 publishState: 'draft'
 ---
 

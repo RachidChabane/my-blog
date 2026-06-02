@@ -13,7 +13,7 @@ stack:
   - 'Z3'
   - 'FastAPI'
 status: 'active (paused)'
-links:[]
+links: []
 publishState: 'draft'
 ---
 
