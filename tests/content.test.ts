@@ -278,9 +278,9 @@ describe('constants', () => {
 /* ------------------------------------------ 9. sourceHost / toSourceViews */
 describe('sourceHost', () => {
   it('returns the hostname without a leading "www."', () => {
-    expect(sourceHost('https://www.pinecone.io/learn/hybrid-search-intro/')).toBe(
-      'pinecone.io'
-    );
+    expect(
+      sourceHost('https://www.pinecone.io/learn/hybrid-search-intro/')
+    ).toBe('pinecone.io');
     expect(sourceHost('https://arxiv.org/abs/2210.03629')).toBe('arxiv.org');
   });
 
@@ -339,7 +339,10 @@ describe('buildSlugMap', () => {
       entry({ translationKey: 'k', lang: 'en', slug: 'en-slug' }),
       entry({ translationKey: 'other', lang: 'fr', slug: 'nope' }),
     ];
-    expect(buildSlugMap(entries, 'k')).toEqual({ fr: 'fr-slug', en: 'en-slug' });
+    expect(buildSlugMap(entries, 'k')).toEqual({
+      fr: 'fr-slug',
+      en: 'en-slug',
+    });
   });
 
   it('omits a draft counterpart (never links to an unbuilt page)', () => {
@@ -371,7 +374,11 @@ describe('getPrevNextByTag', () => {
     entry({ slug: 'b', publishDate: '09-05-2026', tags: ['agents'] }),
     entry({ slug: 'c', publishDate: '08-05-2026', tags: ['rag'] }),
     entry({ slug: 'd', publishDate: '07-05-2026', tags: ['llm-oss'] }),
-    entry({ slug: 'e', publishDate: '06-05-2026', tags: ['rag', 'evaluation'] }),
+    entry({
+      slug: 'e',
+      publishDate: '06-05-2026',
+      tags: ['rag', 'evaluation'],
+    }),
   ];
   const bySlug = (s: string) => cluster.find((e) => e.data.slug === s)!;
 
@@ -412,12 +419,32 @@ describe('getPrevNextByTag', () => {
     // current shares 'evaluation' with an older neighbour; lang-matched fixtures
     // (the helper filters by lang, so fr/en need their own same-lang neighbours).
     const frEvals = [
-      entry({ slug: 'eval-a', publishDate: '10-05-2026', tags: ['evaluation'], lang: 'fr' }), // prettier-ignore
-      entry({ slug: 'eval-b', publishDate: '09-05-2026', tags: ['evaluation'], lang: 'fr' }), // prettier-ignore
+      entry({
+        slug: 'eval-a',
+        publishDate: '10-05-2026',
+        tags: ['evaluation'],
+        lang: 'fr',
+      }),
+      entry({
+        slug: 'eval-b',
+        publishDate: '09-05-2026',
+        tags: ['evaluation'],
+        lang: 'fr',
+      }),
     ];
     const enEvals = [
-      entry({ slug: 'eval-a', publishDate: '10-05-2026', tags: ['evaluation'], lang: 'en' }), // prettier-ignore
-      entry({ slug: 'eval-b', publishDate: '09-05-2026', tags: ['evaluation'], lang: 'en' }), // prettier-ignore
+      entry({
+        slug: 'eval-a',
+        publishDate: '10-05-2026',
+        tags: ['evaluation'],
+        lang: 'en',
+      }),
+      entry({
+        slug: 'eval-b',
+        publishDate: '09-05-2026',
+        tags: ['evaluation'],
+        lang: 'en',
+      }),
     ];
     expect(getPrevNextByTag(frEvals, frEvals[0], 'fr', TAGS).prev?.topic).toBe(
       'évaluation'
@@ -429,7 +456,12 @@ describe('getPrevNextByTag', () => {
 
   it('ignores drafts and other-locale neighbours (published + same-lang only)', () => {
     const mixed = [
-      entry({ slug: 'p', publishDate: '10-05-2026', tags: ['rag'], lang: 'fr' }),
+      entry({
+        slug: 'p',
+        publishDate: '10-05-2026',
+        tags: ['rag'],
+        lang: 'fr',
+      }),
       entry({
         slug: 'q',
         publishDate: '09-05-2026',
@@ -437,8 +469,18 @@ describe('getPrevNextByTag', () => {
         lang: 'fr',
         publishState: 'draft',
       }),
-      entry({ slug: 'r', publishDate: '09-05-2026', tags: ['rag'], lang: 'en' }),
-      entry({ slug: 's', publishDate: '08-05-2026', tags: ['rag'], lang: 'fr' }),
+      entry({
+        slug: 'r',
+        publishDate: '09-05-2026',
+        tags: ['rag'],
+        lang: 'en',
+      }),
+      entry({
+        slug: 's',
+        publishDate: '08-05-2026',
+        tags: ['rag'],
+        lang: 'fr',
+      }),
     ];
     const nav = getPrevNextByTag(mixed, mixed[3], 'fr', TAGS); // current = 's'
     expect(nav.prev).toBeNull();
