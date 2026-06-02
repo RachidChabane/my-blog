@@ -18,8 +18,17 @@ import {
   isLiveStatus,
   getPublishedProjects,
   toProjectCard,
+  formatCount,
+  tagCounts,
+  getArticlesByTag,
+  tagDirectory,
+  unknownArticleTags,
 } from '@/lib/content';
-import type { ArticleEntryLike, ProjectEntryLike } from '@/lib/content';
+import type {
+  ArticleEntryLike,
+  ProjectEntryLike,
+  TagDirEntry,
+} from '@/lib/content';
 import type {
   ArticleFrontmatter,
   ProjectFrontmatter,
@@ -273,6 +282,211 @@ describe('tagRail', () => {
       'agents',
       'rag',
     ]);
+  });
+});
+
+/* ------------------------------------------- 8b. formatCount (S4/S5) */
+describe('formatCount', () => {
+  it('uses the singular template at n === 1, the plural otherwise', () => {
+    expect(formatCount(1, '{n} post', '{n} posts')).toBe('1 post');
+    expect(formatCount(3, '{n} écrit', '{n} écrits')).toBe('3 écrits');
+  });
+
+  it('uses the *many* form for 0 (matches the S2 digit-pluralization rule)', () => {
+    expect(formatCount(0, '{n} post', '{n} posts')).toBe('0 posts');
+  });
+
+  it('always substitutes the {n} placeholder (none remains)', () => {
+    expect(formatCount(5, '{n} x', '{n} y')).not.toContain('{n}');
+    expect(formatCount(1, '{n} x', '{n} y')).not.toContain('{n}');
+  });
+});
+
+/* ------------------------------------------------ 8c. tagCounts (S4/S5) */
+describe('tagCounts', () => {
+  const mixed = [
+    entry({ slug: 'a', tags: ['agents', 'rag'] }), // fr published
+    entry({ slug: 'b', tags: ['agents'] }), // fr published
+    entry({ slug: 'c', tags: ['rag'], publishState: 'draft' }), // excluded
+    entry({ slug: 'd', tags: ['agents'], lang: 'en' }), // other-lang
+  ];
+
+  it('counts published same-lang occurrences, incrementing each tag of a multi-tag article', () => {
+    const c = tagCounts(mixed, 'fr');
+    expect(c.get('agents')).toBe(2); // a + b
+    expect(c.get('rag')).toBe(1); // a only (draft c excluded)
+  });
+
+  it('a tag carried by no published article is ABSENT from the map (not 0)', () => {
+    const c = tagCounts(mixed, 'fr');
+    expect(c.has('qualite')).toBe(false);
+  });
+
+  it('is per-locale (the en entry counts only under en)', () => {
+    expect(tagCounts(mixed, 'en').get('agents')).toBe(1); // d only
+    expect(tagCounts(mixed, 'en').has('rag')).toBe(false);
+  });
+});
+
+/* ------------------------------------------- 8d. getArticlesByTag (S4/S5) */
+describe('getArticlesByTag', () => {
+  const fixture = [
+    entry({ slug: 'old', publishDate: '01-01-2026', tags: ['rag'] }),
+    entry({ slug: 'mid', publishDate: '02-01-2026', tags: ['rag'] }),
+    entry({ slug: 'new', publishDate: '03-01-2026', tags: ['rag'] }),
+    entry({
+      slug: 'draft-rag',
+      publishDate: '04-01-2026',
+      tags: ['rag'],
+      publishState: 'draft',
+    }),
+    entry({
+      slug: 'en-rag',
+      publishDate: '05-01-2026',
+      tags: ['rag'],
+      lang: 'en',
+    }),
+    entry({ slug: 'other', publishDate: '06-01-2026', tags: ['agents'] }),
+  ];
+
+  it('returns only published same-lang carriers, newest-first', () => {
+    expect(getArticlesByTag(fixture, 'fr', 'rag').map((e) => e.data.slug)).toEqual(
+      ['new', 'mid', 'old']
+    );
+  });
+
+  it('excludes a draft / other-lang carrier and a non-carrier', () => {
+    const slugs = getArticlesByTag(fixture, 'fr', 'rag').map((e) => e.data.slug);
+    expect(slugs).not.toContain('draft-rag');
+    expect(slugs).not.toContain('en-rag');
+    expect(slugs).not.toContain('other');
+  });
+
+  it('an absent slug → []', () => {
+    expect(getArticlesByTag(fixture, 'fr', 'no-such-tag')).toEqual([]);
+  });
+});
+
+/* --------------------------------------------- 8e. tagDirectory (S4) */
+describe('tagDirectory', () => {
+  // agents=2, rag=1, qualite=1; evaluation has only a draft (→ 0); the rest 0.
+  const dirArticles = [
+    entry({ slug: 'a1', tags: ['agents'] }),
+    entry({ slug: 'a2', tags: ['agents'] }),
+    entry({ slug: 'r1', tags: ['rag'] }),
+    entry({ slug: 'q1', tags: ['qualite'] }),
+    entry({ slug: 'd1', tags: ['evaluation'], publishState: 'draft' }),
+  ];
+
+  it('imposes TAG_RAIL_ORDER regardless of input tags[] order, omitting count-0 tags', () => {
+    const shuffled: Tag[] = [...TAGS].reverse();
+    const dir = tagDirectory(dirArticles, shuffled, 'fr');
+    expect(dir.map((e) => e.slug)).toEqual(['agents', 'rag', 'qualite']);
+    expect(dir.map((e) => e.count)).toEqual([2, 1, 1]);
+  });
+
+  it('emits localized labels + /<lang>/tags/<slug>/ hrefs (fr)', () => {
+    const dir = tagDirectory(dirArticles, TAGS, 'fr');
+    expect(dir.map((e) => e.label)).toEqual(['agents', 'RAG', 'qualité']);
+    expect(dir.map((e) => e.href)).toEqual([
+      '/fr/tags/agents/',
+      '/fr/tags/rag/',
+      '/fr/tags/qualite/',
+    ]);
+  });
+
+  it('localizes per the requested locale (en)', () => {
+    const enDir: TagDirEntry[] = tagDirectory(
+      [entry({ slug: 'q-en', tags: ['qualite'], lang: 'en' })],
+      TAGS,
+      'en'
+    );
+    expect(enDir).toEqual([
+      {
+        slug: 'qualite',
+        label: 'quality',
+        href: '/en/tags/qualite/',
+        count: 1,
+      },
+    ]);
+  });
+
+  it('appends a vocabulary tag absent from TAG_RAIL_ORDER (alpha, after ordered) when count>0', () => {
+    const withExtra: Tag[] = [
+      { slug: 'rag', label: { fr: 'RAG', en: 'RAG' } },
+      { slug: 'zeta-extra', label: { fr: 'zeta', en: 'zeta' } },
+      { slug: 'agents', label: { fr: 'agents', en: 'agents' } },
+    ];
+    const articles = [
+      entry({ slug: 'x1', tags: ['agents'] }),
+      entry({ slug: 'x2', tags: ['rag'] }),
+      entry({ slug: 'x3', tags: ['zeta-extra'] }),
+    ];
+    expect(tagDirectory(articles, withExtra, 'fr').map((e) => e.slug)).toEqual([
+      'agents',
+      'rag',
+      'zeta-extra',
+    ]);
+  });
+
+  it('omits an extra (non-ordered) vocabulary tag with count==0', () => {
+    const withExtra: Tag[] = [
+      { slug: 'agents', label: { fr: 'agents', en: 'agents' } },
+      { slug: 'zeta-extra', label: { fr: 'zeta', en: 'zeta' } },
+    ];
+    expect(
+      tagDirectory([entry({ slug: 'x1', tags: ['agents'] })], withExtra, 'fr').map(
+        (e) => e.slug
+      )
+    ).toEqual(['agents']);
+  });
+
+  it('skips orphan ordered slugs absent from the passed vocabulary (no crash, no empty entries)', () => {
+    const partial: Tag[] = [
+      { slug: 'agents', label: { fr: 'agents', en: 'agents' } },
+      { slug: 'rag', label: { fr: 'RAG', en: 'RAG' } },
+    ];
+    const articles = [
+      entry({ slug: 'p1', tags: ['agents'] }),
+      entry({ slug: 'p2', tags: ['rag'] }),
+    ];
+    expect(tagDirectory(articles, partial, 'fr').map((e) => e.slug)).toEqual([
+      'agents',
+      'rag',
+    ]);
+  });
+});
+
+/* ------------------------------------------ 8f. unknownArticleTags (S5 guard) */
+describe('unknownArticleTags', () => {
+  it('a clean corpus (every tag curated) → []', () => {
+    expect(
+      unknownArticleTags([entry({ slug: 'c1', tags: ['agents', 'rag'] })], TAGS, 'fr')
+    ).toEqual([]);
+  });
+
+  it('surfaces a published tag absent from the vocabulary', () => {
+    expect(
+      unknownArticleTags([entry({ slug: 'r1', tags: ['agents', 'rogue'] })], TAGS, 'fr')
+    ).toEqual(['rogue']);
+  });
+
+  it('ignores a draft carrying a rogue tag (published-only)', () => {
+    expect(
+      unknownArticleTags(
+        [entry({ slug: 'dr', tags: ['rogue'], publishState: 'draft' })],
+        TAGS,
+        'fr'
+      )
+    ).toEqual([]);
+  });
+
+  it('returns a sorted, deduped set', () => {
+    const many = [
+      entry({ slug: 'm1', tags: ['zzz', 'aaa'] }),
+      entry({ slug: 'm2', tags: ['aaa'] }), // duplicate aaa
+    ];
+    expect(unknownArticleTags(many, TAGS, 'fr')).toEqual(['aaa', 'zzz']);
   });
 });
 

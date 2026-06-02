@@ -325,6 +325,114 @@ export function getPrevNextByTag(
   return { prev, next };
 }
 
+/* ------------------------------------------------------ Tag surfaces (S4 / S5) */
+
+/** A topic row in the S4 directory: localized label + S5 href + published-article count. */
+export interface TagDirEntry {
+  slug: string;
+  label: string;
+  href: string; // /<lang>/tags/<slug>/
+  count: number; // published articles in `lang` carrying this tag
+}
+
+/**
+ * Compose a localized count label from singular/plural templates carrying a `{n}`
+ * placeholder. Pluralization is the caller's data, not locale logic here.
+ *   formatCount(1, '{n} post', '{n} posts')  → '1 post'
+ *   formatCount(3, '{n} écrit', '{n} écrits') → '3 écrits'
+ */
+export function formatCount(n: number, one: string, many: string): string {
+  return (n === 1 ? one : many).replace('{n}', String(n));
+}
+
+/** Published-article count per tag slug for `lang` (drafts/other-lang excluded). */
+export function tagCounts(
+  entries: ArticleEntryLike[],
+  lang: Locale
+): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const e of getPublishedArticles(entries, lang)) {
+    for (const slug of e.data.tags) {
+      counts.set(slug, (counts.get(slug) ?? 0) + 1);
+    }
+  }
+  return counts;
+}
+
+/**
+ * Published articles for `lang` carrying `slug`, newest-first. Reuses
+ * getPublishedArticles' filter+ordering (date desc, slug tiebreak) → deterministic.
+ */
+export function getArticlesByTag(
+  entries: ArticleEntryLike[],
+  lang: Locale,
+  slug: string
+): ArticleEntryLike[] {
+  return getPublishedArticles(entries, lang).filter((e) =>
+    e.data.tags.includes(slug)
+  );
+}
+
+/**
+ * S4 directory: curated-vocabulary topics with ≥1 published article in `lang`, in
+ * TAG_RAIL_ORDER (extras — vocabulary tags absent from the order — appended alpha),
+ * each with its count. Mirrors tagRail's ordering so the directory and the S2 chip
+ * rail agree. Tags with 0 articles are omitted (a directory of populated topics);
+ * their S5 page still exists (generated from the full vocabulary) so the chip rail
+ * never dead-ends. Orphan ordered slugs (in the order, absent from vocab) skip.
+ */
+export function tagDirectory(
+  entries: ArticleEntryLike[],
+  tags: Tag[],
+  lang: Locale
+): TagDirEntry[] {
+  const counts = tagCounts(entries, lang);
+  const bySlug = new Map(tags.map((t) => [t.slug, t]));
+  const seen = new Set<string>();
+  const out: TagDirEntry[] = [];
+  const push = (t: Tag) => {
+    const count = counts.get(t.slug) ?? 0;
+    if (count > 0) {
+      out.push({
+        slug: t.slug,
+        label: t.label[lang],
+        href: localePath(lang, `tags/${t.slug}`),
+        count,
+      });
+    }
+  };
+  for (const slug of TAG_RAIL_ORDER) {
+    const t = bySlug.get(slug);
+    if (!t) continue; // orphan in the order list — skip
+    seen.add(slug);
+    push(t);
+  }
+  const extras = tags
+    .filter((t) => !seen.has(t.slug))
+    .sort((a, b) => (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0));
+  for (const t of extras) push(t);
+  return out;
+}
+
+/**
+ * Published-article tag slugs NOT present in the vocabulary `tags`, for `lang`
+ * (sorted, deduped). Empty ⇒ every article tag is curated. The S5 route throws on
+ * a non-empty result so a rogue tag fails the build loudly instead of emitting an
+ * orphan page / a dangling tag-link from ArticleListItem.
+ */
+export function unknownArticleTags(
+  entries: ArticleEntryLike[],
+  tags: Tag[],
+  lang: Locale
+): string[] {
+  const vocab = new Set(tags.map((t) => t.slug));
+  const unknown = new Set<string>();
+  for (const e of getPublishedArticles(entries, lang)) {
+    for (const slug of e.data.tags) if (!vocab.has(slug)) unknown.add(slug);
+  }
+  return [...unknown].sort();
+}
+
 /* ============================================================ Portfolio (S6) */
 /**
  * Pure project query + view-model helpers — the portfolio analog of the article
