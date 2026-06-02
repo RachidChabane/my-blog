@@ -1,0 +1,416 @@
+/* ============================================================================
+   src/styles/avatar.css — S10 avatar overlay (task 20). GLOBAL stylesheet (not
+   Astro-scoped) because the conversation bubbles/answers are injected by the
+   island's <script> at runtime and would not inherit a scoped component's hashed
+   classes (same reasoning as Search.astro's <style is:global>). Every selector
+   is namespaced under .rc-dock so nothing leaks. Ported from the design's AVATAR
+   OVERLAY block; TOKENS ONLY — no hard-coded colors/fonts/spacing.
+
+   The mark is the non-figurative 4x4 lattice ("maillage"): an abstract mesh, no
+   human likeness, figure, or living being (D-007).
+   ============================================================================ */
+
+/* ---- dock: fixed corner, panel above + launcher below --------------------- */
+.rc-dock {
+  position: fixed;
+  right: var(--sp-5);
+  bottom: var(--sp-5);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-4);
+}
+
+/* ---- launcher (the FAB) --------------------------------------------------- */
+.rc-dock .rc-fab {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+  transition:
+    transform var(--dur-hover) var(--ease-soft),
+    border-color var(--dur-hover) var(--ease-soft);
+}
+.rc-dock .rc-fab:hover {
+  transform: translateY(-2px);
+}
+.rc-dock .rc-fab:focus-visible {
+  outline: none;
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 3px var(--accent-ring);
+}
+/* accent on the active state: the open launcher reads as active (task req.) */
+.rc-dock .rc-fab[aria-expanded='true'] {
+  border-color: var(--accent);
+}
+
+/* ---- the lattice mark ----------------------------------------------------- */
+/* Base static look lives on the node itself, UNCONDITIONALLY, so the default
+   idle mark and the reduced-motion fallback both still show the lattice. State
+   classes layer ONLY animation on top. */
+.rc-dock .rc-mark {
+  display: inline-grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  place-items: center;
+  gap: 2px;
+  padding: 14%;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+}
+.rc-dock .rc-mark__node {
+  width: 11%;
+  height: 11%;
+  min-width: 3px;
+  min-height: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.62;
+}
+.rc-dock .rc-mark__node:nth-child(6),
+.rc-dock .rc-mark__node:nth-child(11) {
+  opacity: 1;
+}
+/* sizes by context (no per-node sizing JS — pure CSS) */
+.rc-dock .rc-fab .rc-mark {
+  width: 40px;
+  height: 40px;
+}
+.rc-dock .rc-ava__head .rc-mark {
+  width: 30px;
+  height: 30px;
+}
+.rc-dock .rc-think-row .rc-mark {
+  width: 22px;
+  height: 22px;
+}
+/* state animations (idle breathe/drift; thinking shimmer = accent "active") */
+.rc-dock .rc-mark.is-idle {
+  animation: rc-breathe 5.2s var(--ease-soft) infinite;
+}
+.rc-dock .rc-mark.is-idle .rc-mark__node {
+  animation: rc-drift 4.6s ease-in-out infinite;
+}
+.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(4n + 2) {
+  animation-delay: -0.9s;
+}
+.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(4n + 3) {
+  animation-delay: -1.8s;
+}
+.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(4n) {
+  animation-delay: -2.7s;
+}
+.rc-dock .rc-mark.is-thinking .rc-mark__node {
+  animation: rc-shimmer 1.15s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(2n) {
+  animation-delay: 0.12s;
+}
+/* .is-static layers nothing — the base node rule already supplies the look. */
+
+@keyframes rc-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.045);
+  }
+}
+@keyframes rc-drift {
+  0%,
+  100% {
+    opacity: 0.42;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+@keyframes rc-shimmer {
+  0% {
+    opacity: 0.4;
+    transform: scale(0.82);
+  }
+  38% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+  70% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.4;
+    transform: scale(0.82);
+  }
+}
+
+/* ---- the expanded panel --------------------------------------------------- */
+.rc-dock .rc-ava {
+  width: min(412px, calc(100vw - 2 * var(--sp-5)));
+  height: min(580px, calc(100vh - 140px));
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform-origin: bottom right;
+  /* translate-only entrance — base style is fully visible so a paused timeline
+     never shows a blank (opacity:0) panel. */
+  animation: rc-ava-rise var(--dur-enter) var(--ease-out);
+}
+/* the [hidden] attribute must hard-hide despite display:flex above */
+.rc-dock .rc-ava[hidden] {
+  display: none;
+}
+@keyframes rc-ava-rise {
+  from {
+    transform: translateY(12px) scale(0.985);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.rc-dock .rc-ava__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 15px 14px 15px 16px;
+  border-bottom: 1px solid var(--hairline);
+}
+.rc-dock .rc-ava__titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.rc-dock .rc-ava__title {
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 28, 'wght' 500;
+  font-size: 16px;
+  color: var(--fg);
+}
+.rc-dock .rc-ava__sub {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--fg-subtle);
+}
+
+/* quiet icon button (close) */
+.rc-dock .rc-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--fg-muted);
+  transition:
+    background var(--dur-hover) var(--ease-soft),
+    color var(--dur-hover) var(--ease-soft);
+}
+.rc-dock .rc-icon-btn:hover {
+  background: var(--fill-subtle);
+  color: var(--fg);
+}
+.rc-dock .rc-icon-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.rc-dock .rc-ava__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* user bubble */
+.rc-dock .rc-bub {
+  max-width: 80%;
+  padding: 10px 13px;
+  border-radius: 13px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.rc-dock .rc-bub--me {
+  align-self: flex-end;
+  background: var(--accent-soft);
+  color: var(--fg);
+  border-bottom-right-radius: 4px;
+}
+
+/* answer = citation FIRST, then prose */
+.rc-dock .rc-ans {
+  align-self: flex-start;
+  max-width: 94%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rc-dock .rc-cite {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 11px 13px;
+  border-radius: 11px;
+  background: var(--accent-soft);
+  border-left: 2px solid var(--accent);
+}
+.rc-dock .rc-cite__row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: inherit;
+}
+.rc-dock .rc-cite__lbl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+.rc-dock .rc-cite__lbl svg {
+  width: 12px;
+  height: 12px;
+}
+.rc-dock .rc-cite__title {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--fg);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-hover) var(--ease-soft);
+}
+.rc-dock a.rc-cite__row:hover .rc-cite__title {
+  border-bottom-color: var(--accent);
+  color: var(--accent-deep);
+}
+.rc-dock .rc-ans__prose {
+  background: var(--fill-subtle);
+  color: var(--fg);
+  padding: 11px 14px;
+  border-radius: 13px;
+  border-bottom-left-radius: 4px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* refusal: no citation, a quiet out-of-scope tag */
+.rc-dock .rc-ans--refuse .rc-refuse-tag {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+}
+.rc-dock .rc-ans--refuse .rc-ans__prose {
+  background: var(--fill-subtle);
+  color: var(--fg-muted);
+}
+
+/* thinking row with accent shimmer */
+.rc-dock .rc-think-row {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 13px 8px 10px;
+  background: var(--accent-soft);
+  border-radius: 13px;
+}
+.rc-dock .rc-think-lbl {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--accent-deep);
+}
+
+/* composer */
+.rc-dock .rc-ava__input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--hairline);
+}
+.rc-dock .rc-ava__input input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color var(--dur-hover) var(--ease-soft),
+    box-shadow var(--dur-hover) var(--ease-soft);
+}
+.rc-dock .rc-ava__input input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+.rc-dock .rc-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--fg-on-accent);
+  transition: opacity var(--dur-hover) var(--ease-soft);
+}
+.rc-dock .rc-send svg {
+  width: 17px;
+  height: 17px;
+}
+.rc-dock .rc-ava__input input:disabled,
+.rc-dock .rc-send:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* reduced motion: mark animations off, keep the static emphasized-node look
+   (mirrors the design's avatar.js reduced-motion block). */
+@media (prefers-reduced-motion: reduce) {
+  .rc-dock .rc-mark,
+  .rc-dock .rc-mark__node {
+    animation: none !important;
+  }
+  .rc-dock .rc-mark__node {
+    opacity: 0.62;
+  }
+  .rc-dock .rc-mark__node:nth-child(6),
+  .rc-dock .rc-mark__node:nth-child(11) {
+    opacity: 1;
+  }
+}
