@@ -1,0 +1,229 @@
+/* ============================================================================
+   rachidchabane — Design tokens (PINNED CONTRACT)
+   src/styles/tokens.css · ported from design/.../colors_and_type.css
+   Cool-gray neutral base, a single electric-violet accent ("Iris").
+   Light ("paper") is the default; [data-theme="dark"] overrides.
+   Do NOT hard-code colors/fonts/spacing in components — reference these vars.
+   ============================================================================ */
+
+/* ---- Self-hosted variable fonts (served from public/fonts/) -------------- */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/Fraunces-Variable.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-stretch: 100%;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/Fraunces-Italic-Variable.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-stretch: 100%;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Variable.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Italic-Variable.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Variable.ttf') format('truetype-variations');
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 1. PRIMITIVES — raw values. Reference the semantic tokens below, not these. */
+:root {
+  /* Cool-gray neutrals — LIGHT ("paper") */
+  --paper-0: #ffffff;
+  --paper-50: #fafafb;
+  --paper-100: #f1f1f4;
+  --paper-200: #e6e7ec;
+  --paper-300: #d5d6de;
+
+  /* Cool charcoal neutrals — DARK */
+  --graphite-900: #090a0d;
+  --graphite-850: #0e0f13;
+  --graphite-800: #16181f;
+  --graphite-700: #1c1e27;
+  --graphite-600: #232530;
+  --graphite-400: #6a6d7c;
+
+  /* Cool ink (text) */
+  --ink-900: #16171c;
+  --ink-600: #5b5d6a;
+  --ink-400: #8b8d9a;
+  --cream-100: #e8e8ec;
+  --cream-300: #9a9ca8;
+
+  /* Iris accent scale (electric indigo-violet) — the SINGLE accent.
+     Renamed from the vestigial warm-amber autogen scale; values unchanged. */
+  --iris-700: #3e2fb8;
+  --iris-600: #5b4be0;
+  --iris-500: #6b5bee;
+  --iris-400: #7c6bff;
+  --iris-300: #9484ff;
+  --iris-200: #b3a9ff;
+  --iris-tint-l: #eceafd;
+
+  /* Muted functional states — secondary to the accent */
+  --success-l: #2e9e6a;
+  --success-d: #46be87;
+  --warning-l: #b08527;
+  --warning-d: #d2a53c;
+  --error-l: #c2473d;
+  --error-d: #e4685c;
+}
+
+/* 2. SEMANTIC TOKENS — reference these in components. Light is default. */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: var(--paper-50);
+  --bg-sunken: var(--paper-100);
+  --surface: var(--paper-0);
+  --surface-2: #ffffff;
+  --fill-subtle: var(--paper-100);
+
+  --fg: var(--ink-900);
+  --fg-muted: var(--ink-600);
+  --fg-subtle: var(--ink-400);
+  --fg-on-accent: #ffffff;
+
+  --border: var(--paper-300);
+  --border-subtle: var(--paper-200);
+  --hairline: #ecedf1;
+
+  --accent: var(--iris-600);
+  --accent-strong: var(--iris-700);
+  --accent-deep: var(--iris-700);
+  --accent-soft: var(--iris-tint-l);
+  --accent-ring: rgba(91, 75, 224, 0.3);
+
+  --success: var(--success-l);
+  --warning: var(--warning-l);
+  --error: var(--error-l);
+
+  --shadow-xs: 0 1px 1px rgba(18, 19, 34, 0.05);
+  --shadow-sm: 0 1px 2px rgba(18, 19, 34, 0.06), 0 1px 3px rgba(18, 19, 34, 0.06);
+  --shadow-md: 0 2px 4px rgba(18, 19, 34, 0.05), 0 6px 16px rgba(18, 19, 34, 0.08);
+  --shadow-lg: 0 12px 32px rgba(18, 19, 34, 0.12), 0 4px 8px rgba(18, 19, 34, 0.06);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: var(--graphite-850);
+  --bg-sunken: var(--graphite-900);
+  --surface: var(--graphite-800);
+  --surface-2: #1b1d26;
+  --fill-subtle: var(--graphite-700);
+
+  --fg: var(--cream-100);
+  --fg-muted: var(--cream-300);
+  --fg-subtle: var(--graphite-400);
+  --fg-on-accent: #ffffff;
+
+  --border: var(--graphite-600);
+  --border-subtle: var(--graphite-700);
+  --hairline: #1a1c24;
+
+  --accent: var(--iris-400);
+  --accent-strong: var(--iris-300);
+  --accent-deep: var(--iris-500);
+  --accent-soft: rgba(124, 107, 255, 0.15);
+  --accent-ring: rgba(124, 107, 255, 0.36);
+
+  --success: var(--success-d);
+  --warning: var(--warning-d);
+  --error: var(--error-d);
+
+  --shadow-xs: 0 1px 1px rgba(0, 0, 0, 0.34);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.38), 0 1px 3px rgba(0, 0, 0, 0.34);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.44);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.54), 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* 3. TYPE — families, fluid scale, variation presets.
+   (The .t-* role classes that consume these live in global.css.) */
+:root {
+  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace;
+
+  --fraunces-display: 'opsz' 132, 'wght' 460, 'SOFT' 0, 'WONK' 0;
+  --fraunces-head: 'opsz' 72, 'wght' 480, 'SOFT' 0, 'WONK' 0;
+  --fraunces-sub: 'opsz' 36, 'wght' 460;
+
+  --text-display: clamp(2.75rem, 1.6rem + 4.6vw, 4.5rem);
+  --text-h1: clamp(2.1rem, 1.5rem + 2.4vw, 3rem);
+  --text-h2: clamp(1.6rem, 1.25rem + 1.4vw, 2.1rem);
+  --text-h3: 1.375rem;
+  --text-h4: 1.125rem;
+  --text-body-lg: 1.1875rem;
+  --text-body: 1rem;
+  --text-sm: 0.875rem;
+  --text-meta: 0.8125rem;
+  --text-code: 0.92em;
+
+  --leading-tight: 1.12;
+  --leading-snug: 1.3;
+  --leading-body: 1.65;
+  --leading-loose: 1.78;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-eyebrow: 0.12em;
+}
+
+/* 4. SPACE · RADIUS · MOTION */
+:root {
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 96px;
+  --sp-10: 128px;
+
+  --radius-sm: 5px;
+  --radius: 8px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  --measure: 68ch;
+  --measure-wide: 100ch;
+
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-hover: 160ms;
+  --dur-enter: 280ms;
+  --dur-section: 440ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
