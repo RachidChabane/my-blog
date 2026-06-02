@@ -14,7 +14,10 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildIndex, loadPublishedSources } from '../src/lib/avatar/index-build';
+import {
+  buildIndex,
+  loadPublishedSources,
+} from '../src/lib/avatar/index-build';
 import { FakeEmbedder } from '../src/lib/avatar/fakes';
 import type { Embedder, IndexArtifact } from '../src/lib/avatar/contracts';
 
@@ -41,7 +44,7 @@ function parseArgs(argv: string[]): CliArgs {
  * message shape as functions/api/avatar/query.ts#createEmbedder. The real impl
  * (reading EMBEDDINGS_API_KEY) lands as the post-secret step.
  */
-function createRealEmbedder(env: NodeJS.ProcessEnv): Embedder {
+function createRealEmbedder(env: Record<string, string | undefined>): Embedder {
   const hasKey = Boolean(env.EMBEDDINGS_API_KEY);
   throw new Error(
     `Avatar embedder not configured (OQ-5 pending — see docs/persona.md; ` +
