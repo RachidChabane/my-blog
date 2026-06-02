@@ -3,7 +3,7 @@ import '@/styles/tokens.css';
 import '@/styles/global.css';
 import Masthead from '@/components/Masthead.astro';
 import Footer from '@/components/Footer.astro';
-import AvatarLauncher from '@/components/AvatarLauncher.astro';
+import Avatar from '@/components/Avatar.astro';
 import { themeInitScript } from '@/lib/theme';
 import { chrome } from '@/i18n/ui';
 import type { Locale } from '@/i18n/index';
@@ -46,6 +46,6 @@ const c = chrome(lang);
     <Masthead lang={lang} slugMap={slugMap} />
     <main id="main"><slot /></main>
     <Footer lang={lang} slugMap={slugMap} />
-    <AvatarLauncher />
+    <Avatar lang={lang} />
   </body>
 </html>

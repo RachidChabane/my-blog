@@ -195,7 +195,9 @@
 }
 .rc-dock .rc-ava__title {
   font-family: var(--font-display);
-  font-variation-settings: 'opsz' 28, 'wght' 500;
+  font-variation-settings:
+    'opsz' 28,
+    'wght' 500;
   font-size: 16px;
   color: var(--fg);
 }

@@ -12,7 +12,6 @@ const CHROME_COMPONENTS = [
   'src/components/Footer.astro',
   'src/components/LanguageSwitcher.astro',
   'src/components/SearchTrigger.astro',
-  'src/components/AvatarLauncher.astro',
 ];
 
 // See ui.test.ts for why Emoji_Presentation (not Extended_Pictographic).
@@ -84,30 +83,16 @@ describe('Footer.astro — RSS href avoids the localePath trailing-slash trap', 
   });
 });
 
-describe('AvatarLauncher.astro — non-figurative inert slot (D-007)', () => {
-  const src = read('src/components/AvatarLauncher.astro');
-
-  it('is a labelled, inert lattice slot', () => {
-    expect(src).toContain('data-avatar-slot');
-    expect(src).toContain('aria-hidden');
-    expect(src).toContain('avatar-mark__node');
-  });
-
-  it('renders no figure (no <img>, no "face", no rc-avatar element)', () => {
-    expect(src).not.toMatch(/<img/);
-    // Word-boundary: the figurative word "face", NOT the --surface token.
-    expect(src).not.toMatch(/\bface\b/i);
-    expect(src).not.toContain('rc-avatar');
-  });
-});
-
 describe('Base.astro — composes the shell', () => {
   const src = read('src/layouts/Base.astro');
 
-  it('imports Masthead, Footer and AvatarLauncher', () => {
+  it('imports Masthead, Footer and the interactive Avatar (task 20)', () => {
     expect(src).toContain('Masthead');
     expect(src).toContain('Footer');
-    expect(src).toContain('AvatarLauncher');
+    // The inert AvatarLauncher slot is replaced by the interactive Avatar island;
+    // its D-007/INV-9 guards migrate to avatar-ui.test.ts.
+    expect(src).toContain('@/components/Avatar.astro');
+    expect(src).toContain('<Avatar lang={lang}');
   });
 
   it('renders <main id="main"> reached by a skip-link', () => {
