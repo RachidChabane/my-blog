@@ -14,7 +14,10 @@ const s = notFoundStrings(lang);
     <p class="not-found__body">{s.body}</p>
     <nav class="not-found__nav" aria-label="Récupération">
       <a href={localePath(lang)} class="not-found__cta">{s.ctaHome}</a>
-      <a href={localePath(lang, 'blog')} class="not-found__cta not-found__cta--secondary">
+      <a
+        href={localePath(lang, 'blog')}
+        class="not-found__cta not-found__cta--secondary"
+      >
         {s.ctaBlog}
       </a>
     </nav>

@@ -17,9 +17,15 @@ const s = notFoundStrings(lang);
     <p class="not-found__code t-eyebrow">{s.eyebrow}</p>
     <h1 class="not-found__headline">{s.title}</h1>
     <p class="not-found__body">{s.body}</p>
-    <nav class="not-found__nav" aria-label={lang === 'fr' ? 'Récupération' : 'Recovery'}>
+    <nav
+      class="not-found__nav"
+      aria-label={lang === 'fr' ? 'Récupération' : 'Recovery'}
+    >
       <a href={localePath(lang)} class="not-found__cta">{s.ctaHome}</a>
-      <a href={localePath(lang, 'blog')} class="not-found__cta not-found__cta--secondary">
+      <a
+        href={localePath(lang, 'blog')}
+        class="not-found__cta not-found__cta--secondary"
+      >
         {s.ctaBlog}
       </a>
       {/* TODO: add search link once S9 (task-search) is built */}

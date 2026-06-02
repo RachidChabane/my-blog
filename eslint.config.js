@@ -22,7 +22,9 @@ export default [
     },
   },
   {
-    files: ['*.config.ts', '*.config.js'],
+    // Config files run under Node — include .mjs/.cjs (e.g. astro.config.mjs
+    // uses process.env for the sitemap site URL).
+    files: ['*.config.ts', '*.config.js', '*.config.mjs', '*.config.cjs'],
     languageOptions: {
       globals: { ...globals.node },
     },

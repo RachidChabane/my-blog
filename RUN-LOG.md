@@ -143,3 +143,17 @@ Build reached 12/30 done [1,2,3,4,5,6,7,8,11,17,19,23] smoothly. **Task 14 (abou
 **Decision**: did NOT interrupt the healthy productive loop (task 12 reviewing, ~15 tasks still to do) to apply this sooner — total wall-clock is serial either way (advisor principle), and review-blocked tasks auto-retry on relaunch. Accept that ~1–2 more reviews may hit the old 720s under the current run and block; they join the ledger. If review-blocks accumulate badly (≥3–4 fast), reconsider a proactive relaunch.
 
 **Deferred-reset ledger (blocked, `--reset` on next relaunch): task 14** (+ any further review/gate blocks). plan/review timeouts now 45/30 for the relaunch.
+
+---
+
+## 2026-06-02 17:26 — TRIPWIRE RELAUNCH (3 blocked): eslint .mjs gap + task-16 prettier + apply review_timeout=30
+
+Build at 15/30 done [1-9,11,12,17,19,23,24]. **3 tasks blocked → tripwire**:
+- task 14, task 15 — `review_missing` (the 720s review idle-fallback recurred under the current run's review_timeout=15). Fix already committed (review_timeout=30, d844976); just needed the relaunch to take effect.
+- task 16 — `gate_failed` (lint): **`astro.config.mjs:5 'process' is not defined'`**. Root cause: task 16 added `process.env` to `astro.config.mjs` for the sitemap site URL, but my earlier eslint Node-globals fix covered `**/*.ts` + `*.config.{ts,js}` — **NOT `.mjs`**. Committed (`f9dfac4`) → would cascade every task's `eslint .`.
+
+Fixes applied (root-cause, while loop stopped):
+1. `eslint.config.js`: config-files block now `*.config.{ts,js,mjs,cjs}` → astro.config.mjs gets Node globals. Verified `eslint astro.config.mjs` exit 0.
+2. With eslint passing, prettier then flagged 3 more task-16 committed files (masked by the && chain): `src/pages/[lang]/404.astro`, `src/pages/404.astro`, `tests/rss.test.ts` → `prettier --write`. Full `pnpm -s lint` now exit 0 (astro check 0 err, eslint clean, prettier all clean).
+
+Controlled relaunch: SIGTERM'd wrapper+runner (clean — manual-stop preserves status), verified zero cpe procs + tmux gone + state.json valid, committed the fixes, `--reset 14 15 16`, relaunched with plan=45/review=30. The review_missing tasks (14,15) now retry with the 24m review idle-fallback; task 16 re-runs with eslint passing.

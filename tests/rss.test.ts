@@ -24,7 +24,9 @@ function entry(
       title: 'Test Title',
       publishDate: '15-05-2026',
       tags: ['agents'],
-      sources: [{ label: 'src', url: 'https://example.com', date: '01-01-2024' }],
+      sources: [
+        { label: 'src', url: 'https://example.com', date: '01-01-2024' },
+      ],
       contentHash: 'h',
       publishState: 'published',
       ...data,
@@ -236,9 +238,9 @@ describe('Feed XML validity (@astrojs/rss)', () => {
     });
     const xml = await response.text();
 
-    const pubDateMatches = [...xml.matchAll(/<pubDate>([^<]+)<\/pubDate>/g)].map(
-      (m) => new Date(m[1]).getTime()
-    );
+    const pubDateMatches = [
+      ...xml.matchAll(/<pubDate>([^<]+)<\/pubDate>/g),
+    ].map((m) => new Date(m[1]).getTime());
     expect(pubDateMatches.length).toBeGreaterThan(1);
     for (let i = 1; i < pubDateMatches.length; i++) {
       expect(pubDateMatches[i - 1]).toBeGreaterThanOrEqual(pubDateMatches[i]);
