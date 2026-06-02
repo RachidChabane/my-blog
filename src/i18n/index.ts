@@ -41,7 +41,7 @@ export function localePath(locale: Locale, subPath?: string): string {
  */
 export function switcherHref(
   targetLocale: Locale,
-  slugMap?: Partial<Record<Locale, string>>,
+  slugMap?: Partial<Record<Locale, string>>
 ): string {
   if (slugMap) {
     const slug = slugMap[targetLocale];

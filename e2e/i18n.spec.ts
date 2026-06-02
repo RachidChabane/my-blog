@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('root locale redirect', () => {
   test('/ redirects to a supported locale path', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveURL(/^\/(fr|en)\//);
+    await expect(page).toHaveURL(/\/(fr|en)\//);
   });
 });
 
@@ -51,7 +51,12 @@ test.describe('language switcher links', () => {
 
   test('active locale link has aria-current', async ({ page }) => {
     await page.goto('/fr/');
-    await expect(page.locator('a[lang="fr"]')).toHaveAttribute('aria-current', 'true');
-    await expect(page.locator('a[lang="en"]')).not.toHaveAttribute('aria-current');
+    await expect(page.locator('a[lang="fr"]')).toHaveAttribute(
+      'aria-current',
+      'true'
+    );
+    await expect(page.locator('a[lang="en"]')).not.toHaveAttribute(
+      'aria-current'
+    );
   });
 });

@@ -11,7 +11,10 @@ const defaultHref = localePath(DEFAULT_LOCALE);
     <script is:inline>
       (function () {
         var locales = ['fr', 'en'];
-        var lang = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+        var lang =
+          (navigator.languages && navigator.languages[0]) ||
+          navigator.language ||
+          '';
         lang = lang.toLowerCase();
         for (var i = 0; i < locales.length; i++) {
           if (lang === locales[i] || lang.startsWith(locales[i] + '-')) {
