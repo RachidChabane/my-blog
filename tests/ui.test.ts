@@ -5,6 +5,8 @@ import {
   chrome,
   ARTICLE_DETAIL,
   articleDetailStrings,
+  PROJECT_DETAIL,
+  projectDetailStrings,
   PORTFOLIO_INDEX,
   portfolioIndexStrings,
   TAGS,
@@ -100,6 +102,43 @@ describe('article-detail string table (ARTICLE_DETAIL)', () => {
   it('articleDetailStrings(lang) returns the locale record', () => {
     expect(articleDetailStrings('fr')).toBe(ARTICLE_DETAIL.fr);
     expect(articleDetailStrings('en')).toBe(ARTICLE_DETAIL.en);
+  });
+});
+
+describe('project-detail string table (PROJECT_DETAIL)', () => {
+  it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
+    expect(Object.keys(PROJECT_DETAIL.fr).sort()).toEqual(
+      Object.keys(PROJECT_DETAIL.en).sort()
+    );
+  });
+
+  it('every detail string is a non-empty string in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(PROJECT_DETAIL[locale])) {
+        expect(typeof value, `${locale}.${key}`).toBe('string');
+        expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('contains no emoji in any string (INV-9)', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(PROJECT_DETAIL[locale])) {
+        expect(EMOJI.test(value), `${locale}.${key} = "${value}"`).toBe(false);
+      }
+    }
+  });
+
+  it('localizes the two named depth-section headings (U+2019 in FR)', () => {
+    expect(PROJECT_DETAIL.fr.hWhat).toBe('Ce que c’est');
+    expect(PROJECT_DETAIL.fr.hEng).toBe('Ingénierie');
+    expect(PROJECT_DETAIL.en.hWhat).toBe('What it is');
+    expect(PROJECT_DETAIL.en.hEng).toBe('Engineering');
+  });
+
+  it('projectDetailStrings(lang) returns the locale record', () => {
+    expect(projectDetailStrings('fr')).toBe(PROJECT_DETAIL.fr);
+    expect(projectDetailStrings('en')).toBe(PROJECT_DETAIL.en);
   });
 });
 

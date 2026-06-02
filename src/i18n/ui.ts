@@ -173,6 +173,59 @@ export function articleDetailStrings(lang: Locale): ArticleDetailStrings {
 }
 
 /**
+ * Project detail (S7) copy. Dedicated, self-contained table — sibling to
+ * ARTICLE_DETAIL, kept out of ChromeStrings per this file's header. Copy lifted
+ * verbatim from the design `T` (project-detail.jsx): back-link, the eyebrow word
+ * ("Projet"/"Project", CSS-uppercased), the `agent-maintained` tail, the `FR / EN`
+ * bilingual note, and the six section headings (`h.{what,eng,stack,status,links,
+ * related}`). French apostrophes use U+2019 `’` (file convention; Prettier-stable,
+ * INV-9 safe). `maintained` intentionally matches ARTICLE_DETAIL.maintained.
+ */
+export interface ProjectDetailStrings {
+  back: string; // "Tous les projets" / "All projects"
+  ordinalWord: string; // "Projet" / "Project" (eyebrow; CSS uppercases it)
+  maintained: string; // "maintenu par l’agent" / "agent-maintained"
+  bilingualNote: string; // "FR / EN"
+  hWhat: string; // "Ce que c’est" / "What it is"
+  hEng: string; // "Ingénierie" / "Engineering"
+  hStack: string; // "Stack" / "Stack"
+  hStatus: string; // "Statut" / "Status"
+  hLinks: string; // "Liens" / "Links"
+  hRelated: string; // "Articles liés" / "Related articles"
+}
+
+export const PROJECT_DETAIL: Record<Locale, ProjectDetailStrings> = {
+  fr: {
+    back: 'Tous les projets',
+    ordinalWord: 'Projet',
+    maintained: 'maintenu par l’agent',
+    bilingualNote: 'FR / EN',
+    hWhat: 'Ce que c’est',
+    hEng: 'Ingénierie',
+    hStack: 'Stack',
+    hStatus: 'Statut',
+    hLinks: 'Liens',
+    hRelated: 'Articles liés',
+  },
+  en: {
+    back: 'All projects',
+    ordinalWord: 'Project',
+    maintained: 'agent-maintained',
+    bilingualNote: 'FR / EN',
+    hWhat: 'What it is',
+    hEng: 'Engineering',
+    hStack: 'Stack',
+    hStatus: 'Status',
+    hLinks: 'Links',
+    hRelated: 'Related articles',
+  },
+};
+
+export function projectDetailStrings(lang: Locale): ProjectDetailStrings {
+  return PROJECT_DETAIL[lang];
+}
+
+/**
  * Portfolio index (S6) copy. Dedicated table — sibling to ARTICLE_INDEX, kept out
  * of ChromeStrings per this file's header. Copy lifted verbatim from the design `T`
  * (projects.jsx). `ordinalWord` is rendered uppercased via CSS ("PROJET · 01") and
