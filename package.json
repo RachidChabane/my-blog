@@ -15,7 +15,8 @@
     "test:e2e": "playwright test",
     "lint": "astro check && eslint . && prettier --check .",
     "lint:fix": "eslint . --fix && prettier --write .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "gen-portfolio": "tsx scripts/gen-portfolio.ts"
   },
   "keywords": [],
   "author": "Rachid Chabane",
@@ -38,6 +39,7 @@
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3",
+    "tsx": "^4.19.4",
     "vitest": "^4.1.8"
   }
 }
