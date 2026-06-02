@@ -9,6 +9,8 @@ import {
   portfolioIndexStrings,
   TAGS,
   tagStrings,
+  NOT_FOUND,
+  notFoundStrings,
 } from '@/i18n/ui';
 import { LOCALES } from '@/i18n/index';
 
@@ -184,5 +186,40 @@ describe('tag string table (TAGS)', () => {
   it('tagStrings(lang) returns the locale record', () => {
     expect(tagStrings('fr')).toBe(TAGS.fr);
     expect(tagStrings('en')).toBe(TAGS.en);
+  });
+});
+
+describe('not-found string table (NOT_FOUND)', () => {
+  it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
+    expect(Object.keys(NOT_FOUND.fr).sort()).toEqual(
+      Object.keys(NOT_FOUND.en).sort()
+    );
+  });
+
+  it('every not-found string is a non-empty string in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(NOT_FOUND[locale])) {
+        expect(typeof value, `${locale}.${key}`).toBe('string');
+        expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('contains no emoji in any string (INV-9)', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(NOT_FOUND[locale])) {
+        expect(EMOJI.test(value), `${locale}.${key} = "${value}"`).toBe(false);
+      }
+    }
+  });
+
+  it('carries the 404 eyebrow verbatim', () => {
+    expect(NOT_FOUND.fr.eyebrow).toBe('404');
+    expect(NOT_FOUND.en.eyebrow).toBe('404');
+  });
+
+  it('notFoundStrings(lang) returns the locale record', () => {
+    expect(notFoundStrings('fr')).toBe(NOT_FOUND.fr);
+    expect(notFoundStrings('en')).toBe(NOT_FOUND.en);
   });
 });
