@@ -40,7 +40,9 @@ from .fakes import (
     tokenize,
 )
 from .prompts import (
+    build_draft_prompt,
     build_research_prompt,
+    build_revise_prompt,
     build_select_prompt,
     editorial_stage_descriptions,
 )
@@ -88,8 +90,15 @@ __all__ = [
     "FakeEmbedder",
     "FakeTopicMemory",
     "tokenize",
-    # prompt builders (task 24)
+    # prompt builders (task 24 + task 25 draft/revise)
     "build_research_prompt",
     "build_select_prompt",
+    "build_draft_prompt",
+    "build_revise_prompt",
     "editorial_stage_descriptions",
 ]
+# Stage symbols (DraftDoc / ReviewReport / StyleReport, ...) are intentionally NOT
+# re-exported here: importing them would pull pipeline.stages.{draft,review,humanize}
+# into sys.modules during `import pipeline`, reintroducing the runpy double-import
+# RuntimeWarning the import-light stages package avoids (review-1.md I1). Import them
+# directly from pipeline.stages.<name>, as the tests do.
