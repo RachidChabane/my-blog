@@ -31,3 +31,10 @@ All times CEST. Build driven by `claude-plan-execute-loop` (interactive/tmux bac
 
 **Launch command** (cwd = repo root so cpe + loop wrapper share `plans/`):
 `claude-plan-execute-loop --tasks docs/tasks.yaml --interactive --skip-permissions --skip-preflight`
+
+---
+
+## 2026-06-02 03:34 — Heartbeat: task 1 done
+
+- **Task 1 done** (attempt 1, commit `b356094`) — Astro+CF scaffold, vitest, playwright, CI. Passed all gates **including the now-active `e2e` block-gate** → confirms the gate-wiring fix + Playwright pre-install were correct. No intervention needed.
+- Task 2 (design tokens) now `planning`. Process healthy (loop+runner PIDs alive). Pushed `b356094` to origin. Re-armed heartbeat.
