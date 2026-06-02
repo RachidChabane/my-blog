@@ -129,3 +129,45 @@ export const ARTICLE_INDEX: Record<Locale, ArticleIndexStrings> = {
 export function articleIndexStrings(lang: Locale): ArticleIndexStrings {
   return ARTICLE_INDEX[lang];
 }
+
+/**
+ * Article detail (S3) copy. Dedicated table — sibling to ARTICLE_INDEX, kept out
+ * of ChromeStrings per this file's header. Copy lifted from the design `T`
+ * (article.jsx): back-link, the `agent-maintained` eyebrow tail, the Sources
+ * heading, prev/next direction labels, and the `FR / EN` bilingual meta note.
+ * `·` is typographic punctuation, not emoji (INV-9 safe).
+ */
+export interface ArticleDetailStrings {
+  back: string; // index back-link text ("All articles" / "Tous les articles")
+  maintained: string; // eyebrow tail ("agent-maintained" / "maintenu par l’agent")
+  sourcesH: string; // "Sources"
+  prevDir: string; // "Previous" / "Précédent"
+  nextDir: string; // "Next" / "Suivant"
+  prevNextAria: string; // related-nav aria-label
+  bilingualNote: string; // meta tail "FR / EN"
+}
+
+export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
+  fr: {
+    back: 'Tous les articles',
+    maintained: 'maintenu par l’agent',
+    sourcesH: 'Sources',
+    prevDir: 'Précédent',
+    nextDir: 'Suivant',
+    prevNextAria: 'Articles liés',
+    bilingualNote: 'FR / EN',
+  },
+  en: {
+    back: 'All articles',
+    maintained: 'agent-maintained',
+    sourcesH: 'Sources',
+    prevDir: 'Previous',
+    nextDir: 'Next',
+    prevNextAria: 'Related articles',
+    bilingualNote: 'FR / EN',
+  },
+};
+
+export function articleDetailStrings(lang: Locale): ArticleDetailStrings {
+  return ARTICLE_DETAIL[lang];
+}

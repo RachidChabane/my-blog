@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { CHROME, NAV_ITEMS, chrome } from '@/i18n/ui';
+import {
+  CHROME,
+  NAV_ITEMS,
+  chrome,
+  ARTICLE_DETAIL,
+  articleDetailStrings,
+} from '@/i18n/ui';
 import { LOCALES } from '@/i18n/index';
 
 // Property escape + `u` flag — NOT a control-char range, so this satisfies
@@ -53,6 +59,36 @@ describe('chrome string table (CHROME)', () => {
   it('chrome(lang) returns the locale record', () => {
     expect(chrome('fr')).toBe(CHROME.fr);
     expect(chrome('en')).toBe(CHROME.en);
+  });
+});
+
+describe('article-detail string table (ARTICLE_DETAIL)', () => {
+  it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
+    expect(Object.keys(ARTICLE_DETAIL.fr).sort()).toEqual(
+      Object.keys(ARTICLE_DETAIL.en).sort()
+    );
+  });
+
+  it('every detail string is a non-empty string in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(ARTICLE_DETAIL[locale])) {
+        expect(typeof value, `${locale}.${key}`).toBe('string');
+        expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('contains no emoji in any string (INV-9)', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(ARTICLE_DETAIL[locale])) {
+        expect(EMOJI.test(value), `${locale}.${key} = "${value}"`).toBe(false);
+      }
+    }
+  });
+
+  it('articleDetailStrings(lang) returns the locale record', () => {
+    expect(articleDetailStrings('fr')).toBe(ARTICLE_DETAIL.fr);
+    expect(articleDetailStrings('en')).toBe(ARTICLE_DETAIL.en);
   });
 });
 
