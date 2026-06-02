@@ -7,6 +7,8 @@
 *.swp
 
 # Env / secrets (never commit)
+# .env and all variants are excluded; only .env.example (documentation, no real values) is tracked.
+# secrets/ is a local-only directory for any scratch key material.
 .env
 .env.*
 !.env.example
