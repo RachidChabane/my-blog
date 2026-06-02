@@ -215,3 +215,8 @@ Triggered by task 20 (avatar UI) landing. `pnpm build` (exit 0) → `astro previ
 - **Emoji scan**: 0 hits across 62 built HTML files (arrows ←/→/↗ are typographic glyphs). ✓
 **Pending, NOT a regression**: home hero `/[lang]/` shows placeholder "Bientôt disponible" — the designed hero (écran 01) is **task 18 "feat: home/hub (S1)"**, still pending. Will build when task 18 runs; did NOT touch its files. No fixes required from this pass.
 Hygiene: gitignored `.playwright-mcp/` (visual-check scratch) so it can't be swept into a cpe commit. cpe state during check: 19/30 done, task 25 (pipeline) planning, effective-stuck=2. Screenshots saved under .playwright-mcp/ (light+dark, FR home/blog/about/work + avatar overlay). Will re-run a full pass once task 18 (home) + remaining UI land.
+
+## 2026-06-03 00:13 — task 25 (pipeline writing-flow) DONE; task 18 (home) now planning
+
+**Task 25 DONE** — `ea98ad7 feat: draft + review + humanize (style-auditor as auditor)` (+ WIP 268c755/d6e89e3/4399bf1/3bf4e57: house_style.md, draft prompt builders, fixtures, offline test suite). The content-engine draft→review→humanize stages with the style-auditor as quality auditor, offline-tested (fakes). Passed its one-shot pipeline gate (pytest -q + ruff) first try. **20/30 done** [+25].
+Scheduler advanced to **task 18 "feat: home/hub (S1)" — planning** (tmux `cpe-4b67b155`, 23:58) → the pending HOME hero. Home visual re-check is armed for when task 18 lands. Task 10 still zombie, task 16 still blocked. Effective-stuck = 2 < tripwire(3), cpe healthy (2 procs) → RIDE. Pushed task-25 commits.
