@@ -227,6 +227,11 @@ describe('not-found string table (NOT_FOUND)', () => {
     expect(notFoundStrings('fr')).toBe(NOT_FOUND.fr);
     expect(notFoundStrings('en')).toBe(NOT_FOUND.en);
   });
+
+  it('ctaSearch is non-empty in both locales', () => {
+    expect(NOT_FOUND.fr.ctaSearch.length).toBeGreaterThan(0);
+    expect(NOT_FOUND.en.ctaSearch.length).toBeGreaterThan(0);
+  });
 });
 
 describe('about string table (ABOUT)', () => {

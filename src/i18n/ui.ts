@@ -268,6 +268,7 @@ export interface NotFoundStrings {
   body: string;
   ctaHome: string;
   ctaBlog: string;
+  ctaSearch: string;
 }
 
 export const NOT_FOUND: Record<Locale, NotFoundStrings> = {
@@ -277,6 +278,7 @@ export const NOT_FOUND: Record<Locale, NotFoundStrings> = {
     body: 'La page que vous cherchez n’existe pas ou a été déplacée.',
     ctaHome: 'Retour à l’accueil',
     ctaBlog: 'Tous les articles',
+    ctaSearch: 'Rechercher',
   },
   en: {
     title: 'Page not found',
@@ -284,6 +286,7 @@ export const NOT_FOUND: Record<Locale, NotFoundStrings> = {
     body: 'The page you’re looking for doesn’t exist or has been moved.',
     ctaHome: 'Back to home',
     ctaBlog: 'All articles',
+    ctaSearch: 'Search',
   },
 };
 
