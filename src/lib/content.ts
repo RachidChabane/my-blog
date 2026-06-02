@@ -210,3 +210,113 @@ export function tagRail(tags: Tag[], lang: Locale): RailTag[] {
   }
   return rail;
 }
+
+/* ----------------------------------------------------- Source view-model (S3) */
+export interface SourceView {
+  n: string; // zero-padded ordinal: "01", "02", …
+  label: string;
+  url: string;
+  host: string; // hostname without leading "www."; "" if unparseable
+  date: string; // DD-MM-YYYY (as stored)
+}
+
+/** Hostname without a leading "www.", or "" if the URL can't be parsed. */
+export function sourceHost(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return '';
+  }
+}
+
+/** Numbered, host-resolved source view-models; preserves schema (source) order. */
+export function toSourceViews(
+  sources: ArticleFrontmatter['sources']
+): SourceView[] {
+  return sources.map((s, i) => ({
+    n: String(i + 1).padStart(2, '0'),
+    label: s.label,
+    url: s.url,
+    host: sourceHost(s.url),
+    date: s.date,
+  }));
+}
+
+/* ------------------------------------------- Translation slug map (lang switch) */
+/**
+ * locale → published slug for a translationKey, across both languages. ONLY
+ * published counterparts are included, so the switcher never links to a page that
+ * wasn't built; a missing/draft counterpart → that locale is omitted →
+ * switcherHref falls back to the localized home (NFR-11 net). INV-1 FR/EN parity
+ * is a content guarantee (pipeline), not enforced here.
+ */
+export function buildSlugMap(
+  entries: ArticleEntryLike[],
+  translationKey: string
+): Partial<Record<Locale, string>> {
+  const map: Partial<Record<Locale, string>> = {};
+  for (const e of entries) {
+    if (
+      e.data.translationKey === translationKey &&
+      e.data.publishState === 'published'
+    ) {
+      map[e.data.lang] = e.data.slug;
+    }
+  }
+  return map;
+}
+
+/* ------------------------------------------------- prev / next by shared tag (S3) */
+export interface PrevNextCard {
+  href: string; // /<lang>/blog/<slug>/
+  title: string;
+  topic: string; // localized label of the shared tag
+}
+export interface PrevNextNav {
+  prev: PrevNextCard | null; // nearest OLDER post sharing ≥1 tag
+  next: PrevNextCard | null; // nearest NEWER post sharing ≥1 tag
+}
+
+/** First tag in `a`'s order that `b` also carries, else null. */
+function sharedTag(a: ArticleEntryLike, b: ArticleEntryLike): string | null {
+  for (const t of a.data.tags) if (b.data.tags.includes(t)) return t;
+  return null;
+}
+
+/**
+ * Nearest published same-lang neighbours sharing ≥1 tag with `current`, over the
+ * index ordering (newest-first). prev = nearest OLDER, next = nearest NEWER. Ends
+ * → that side null; no tag-mates → both null (route omits the nav).
+ */
+export function getPrevNextByTag(
+  entries: ArticleEntryLike[],
+  current: ArticleEntryLike,
+  lang: Locale,
+  tags: Tag[]
+): PrevNextNav {
+  const published = getPublishedArticles(entries, lang); // newest-first, filtered
+  const ci = published.findIndex((e) => e.data.slug === current.data.slug);
+  if (ci === -1) return { prev: null, next: null };
+
+  const toCard = (e: ArticleEntryLike): PrevNextCard => ({
+    href: localePath(lang, `blog/${e.data.slug}`),
+    title: e.data.title,
+    topic: tagLabel(sharedTag(current, e)!, lang, tags), // finder guarantees non-null
+  });
+
+  let next: PrevNextCard | null = null;
+  for (let i = ci - 1; i >= 0; i--) {
+    if (sharedTag(current, published[i])) {
+      next = toCard(published[i]);
+      break;
+    }
+  }
+  let prev: PrevNextCard | null = null;
+  for (let i = ci + 1; i < published.length; i++) {
+    if (sharedTag(current, published[i])) {
+      prev = toCard(published[i]);
+      break;
+    }
+  }
+  return { prev, next };
+}

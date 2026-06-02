@@ -10,6 +10,10 @@ import {
   tagLabel,
   toArticleCard,
   tagRail,
+  sourceHost,
+  toSourceViews,
+  buildSlugMap,
+  getPrevNextByTag,
 } from '@/lib/content';
 import type { ArticleEntryLike } from '@/lib/content';
 import type { ArticleFrontmatter, Tag } from '@/content/schemas';
@@ -268,5 +272,188 @@ describe('constants', () => {
   it('ARTICLES_PER_PAGE is a positive integer', () => {
     expect(Number.isInteger(ARTICLES_PER_PAGE)).toBe(true);
     expect(ARTICLES_PER_PAGE).toBeGreaterThan(0);
+  });
+});
+
+/* ------------------------------------------ 9. sourceHost / toSourceViews */
+describe('sourceHost', () => {
+  it('returns the hostname without a leading "www."', () => {
+    expect(sourceHost('https://www.pinecone.io/learn/hybrid-search-intro/')).toBe(
+      'pinecone.io'
+    );
+    expect(sourceHost('https://arxiv.org/abs/2210.03629')).toBe('arxiv.org');
+  });
+
+  it('keeps a non-www subdomain intact', () => {
+    expect(sourceHost('https://docs.astro.build/en/guides/')).toBe(
+      'docs.astro.build'
+    );
+  });
+
+  it('returns "" for an unparseable URL', () => {
+    expect(sourceHost('not a url')).toBe('');
+    expect(sourceHost('')).toBe('');
+  });
+});
+
+describe('toSourceViews', () => {
+  it('numbers sources (zero-padded), resolves host, preserves order + fields', () => {
+    const views = toSourceViews([
+      {
+        label: 'Pinecone — Hybrid search intro',
+        url: 'https://www.pinecone.io/learn/hybrid-search-intro/',
+        date: '01-03-2024',
+      },
+      {
+        label: 'arXiv — ReAct',
+        url: 'https://arxiv.org/abs/2210.03629',
+        date: '06-10-2022',
+      },
+    ]);
+    expect(views.map((v) => v.n)).toEqual(['01', '02']);
+    expect(views[0]).toEqual({
+      n: '01',
+      label: 'Pinecone — Hybrid search intro',
+      url: 'https://www.pinecone.io/learn/hybrid-search-intro/',
+      host: 'pinecone.io',
+      date: '01-03-2024',
+    });
+    expect(views[1].host).toBe('arxiv.org');
+    expect(views[1].label).toBe('arXiv — ReAct');
+  });
+
+  it('empty host when a source URL is unparseable (never throws)', () => {
+    const views = toSourceViews([
+      { label: 'broken', url: 'http://', date: '01-01-2024' },
+    ]);
+    expect(views[0].host).toBe('');
+    expect(views[0].n).toBe('01');
+  });
+});
+
+/* ------------------------------------------------------- 10. buildSlugMap */
+describe('buildSlugMap', () => {
+  it('maps each published locale of a translationKey to its slug', () => {
+    const entries = [
+      entry({ translationKey: 'k', lang: 'fr', slug: 'fr-slug' }),
+      entry({ translationKey: 'k', lang: 'en', slug: 'en-slug' }),
+      entry({ translationKey: 'other', lang: 'fr', slug: 'nope' }),
+    ];
+    expect(buildSlugMap(entries, 'k')).toEqual({ fr: 'fr-slug', en: 'en-slug' });
+  });
+
+  it('omits a draft counterpart (never links to an unbuilt page)', () => {
+    const entries = [
+      entry({ translationKey: 'k', lang: 'fr', slug: 'fr-slug' }),
+      entry({
+        translationKey: 'k',
+        lang: 'en',
+        slug: 'en-draft',
+        publishState: 'draft',
+      }),
+    ];
+    expect(buildSlugMap(entries, 'k')).toEqual({ fr: 'fr-slug' });
+  });
+
+  it('unknown translationKey → empty map', () => {
+    const entries = [entry({ translationKey: 'k', lang: 'fr', slug: 's' })];
+    expect(buildSlugMap(entries, 'absent')).toEqual({});
+  });
+});
+
+/* -------------------------------------------- 11. getPrevNextByTag */
+describe('getPrevNextByTag', () => {
+  // Newest-first after sorting: A(10) B(09) C(08) D(07) E(06), all fr/published.
+  //   A ['rag','retrieval']  B ['agents']  C ['rag']  D ['llm-oss']  E ['rag','evaluation']
+  // B and D are non-sharers, sitting BETWEEN rag-mates → exercise the skip.
+  const cluster = [
+    entry({ slug: 'a', publishDate: '10-05-2026', tags: ['rag', 'retrieval'] }),
+    entry({ slug: 'b', publishDate: '09-05-2026', tags: ['agents'] }),
+    entry({ slug: 'c', publishDate: '08-05-2026', tags: ['rag'] }),
+    entry({ slug: 'd', publishDate: '07-05-2026', tags: ['llm-oss'] }),
+    entry({ slug: 'e', publishDate: '06-05-2026', tags: ['rag', 'evaluation'] }),
+  ];
+  const bySlug = (s: string) => cluster.find((e) => e.data.slug === s)!;
+
+  it('middle of a cluster → both neighbours, skipping non-sharers in BOTH directions', () => {
+    const nav = getPrevNextByTag(cluster, bySlug('c'), 'fr', TAGS);
+    // next = nearest NEWER sharing a tag: skips B(agents) → A(rag)
+    expect(nav.next).toEqual({
+      href: '/fr/blog/a/',
+      title: 'T',
+      topic: 'RAG',
+    });
+    // prev = nearest OLDER sharing a tag: skips D(llm-oss) → E(rag)
+    expect(nav.prev).toEqual({
+      href: '/fr/blog/e/',
+      title: 'T',
+      topic: 'RAG',
+    });
+  });
+
+  it('newest in its cluster → prev only (no newer neighbour)', () => {
+    const nav = getPrevNextByTag(cluster, bySlug('a'), 'fr', TAGS);
+    expect(nav.next).toBeNull();
+    expect(nav.prev?.href).toBe('/fr/blog/c/'); // skips B(agents) → C(rag)
+  });
+
+  it('oldest in its cluster → next only (no older neighbour)', () => {
+    const nav = getPrevNextByTag(cluster, bySlug('e'), 'fr', TAGS);
+    expect(nav.prev).toBeNull();
+    expect(nav.next?.href).toBe('/fr/blog/c/'); // skips D(llm-oss) → C(rag)
+  });
+
+  it('no tag-mate anywhere → both null (route omits the nav)', () => {
+    const nav = getPrevNextByTag(cluster, bySlug('d'), 'fr', TAGS); // llm-oss alone
+    expect(nav).toEqual({ prev: null, next: null });
+  });
+
+  it('localizes the shared-tag topic label', () => {
+    // current shares 'evaluation' with an older neighbour; lang-matched fixtures
+    // (the helper filters by lang, so fr/en need their own same-lang neighbours).
+    const frEvals = [
+      entry({ slug: 'eval-a', publishDate: '10-05-2026', tags: ['evaluation'], lang: 'fr' }), // prettier-ignore
+      entry({ slug: 'eval-b', publishDate: '09-05-2026', tags: ['evaluation'], lang: 'fr' }), // prettier-ignore
+    ];
+    const enEvals = [
+      entry({ slug: 'eval-a', publishDate: '10-05-2026', tags: ['evaluation'], lang: 'en' }), // prettier-ignore
+      entry({ slug: 'eval-b', publishDate: '09-05-2026', tags: ['evaluation'], lang: 'en' }), // prettier-ignore
+    ];
+    expect(getPrevNextByTag(frEvals, frEvals[0], 'fr', TAGS).prev?.topic).toBe(
+      'évaluation'
+    );
+    expect(getPrevNextByTag(enEvals, enEvals[0], 'en', TAGS).prev?.topic).toBe(
+      'evaluation'
+    );
+  });
+
+  it('ignores drafts and other-locale neighbours (published + same-lang only)', () => {
+    const mixed = [
+      entry({ slug: 'p', publishDate: '10-05-2026', tags: ['rag'], lang: 'fr' }),
+      entry({
+        slug: 'q',
+        publishDate: '09-05-2026',
+        tags: ['rag'],
+        lang: 'fr',
+        publishState: 'draft',
+      }),
+      entry({ slug: 'r', publishDate: '09-05-2026', tags: ['rag'], lang: 'en' }),
+      entry({ slug: 's', publishDate: '08-05-2026', tags: ['rag'], lang: 'fr' }),
+    ];
+    const nav = getPrevNextByTag(mixed, mixed[3], 'fr', TAGS); // current = 's'
+    expect(nav.prev).toBeNull();
+    expect(nav.next?.href).toBe('/fr/blog/p/'); // draft 'q' + en 'r' skipped → 'p'
+  });
+
+  it('current absent from the published set → both null', () => {
+    const draftCurrent = entry({
+      slug: 'ghost',
+      tags: ['rag'],
+      publishState: 'draft',
+    });
+    expect(getPrevNextByTag(cluster, draftCurrent, 'fr', TAGS)).toEqual({
+      prev: null,
+      next: null,
+    });
   });
 });
