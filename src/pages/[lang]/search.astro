@@ -1,0 +1,82 @@
+---
+/**
+ * S9 — Client-side article search (FR-A5). `/[lang]/search/`: a leaf route under
+ * [lang]/ (sibling of about.astro). Reuses the S2/S5 824px column + .rc-pagehd
+ * header and composes the Search island. Language scoping is automatic (Pagefind
+ * reads <html lang> set by Base); this page itself carries NO data-pagefind-body
+ * so it is excluded from the index. No slugMap → switcher falls back to the
+ * localized home (both /fr/search/ and /en/search/ exist, so NFR-11 holds).
+ */
+import type { GetStaticPaths } from 'astro';
+import { LOCALES } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { searchStrings } from '@/i18n/ui';
+import Base from '@/layouts/Base.astro';
+import Search from '@/components/Search.astro';
+
+export const getStaticPaths = (() =>
+  LOCALES.map((lang) => ({
+    params: { lang },
+    props: { lang },
+  }))) satisfies GetStaticPaths;
+
+const { lang } = Astro.props as { lang: Locale };
+const s = searchStrings(lang);
+const title = `${s.title} — rachid chabane`;
+---
+
+<Base title={title} description={s.title} lang={lang}>
+  <div class="rc-index rc-enter">
+    <header class="rc-pagehd">
+      <span class="t-eyebrow">{s.eyebrow}</span>
+      <h1 class="rc-pagehd__title">{s.title}</h1>
+    </header>
+    <Search strings={s} />
+  </div>
+</Base>
+
+<style>
+  /* Reuse the S2/S5 column + header (tokens only). Base provides <main>; this is
+     the inner column. */
+  .rc-index {
+    width: 100%;
+    max-width: 824px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+  }
+  @media (max-width: 720px) {
+    .rc-index {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+  .rc-pagehd {
+    padding-top: 52px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rc-pagehd__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-head);
+    font-size: var(--text-h1);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
+    color: var(--fg);
+  }
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>

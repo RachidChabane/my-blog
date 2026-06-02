@@ -1,11 +1,12 @@
 ---
 /**
- * SearchTrigger — search affordance in the masthead. INERT in task 6: a
- * <button data-search-trigger> with no behavior. Task 15 wires it to open S9
- * (/[lang]/search/) or an inline overlay. The design's ⌘K hint is intentionally
- * omitted (mac-specific glyph; a shortcut that does nothing until task 15 would
- * mislead). Lucide search glyph inline as SVG (INV-9). Ports design .rc-search.
+ * SearchTrigger — search affordance in the masthead. Wired in task 15: an
+ * <a data-search-trigger> navigating to S9 (/[lang]/search/); was an inert
+ * <button> in task 6. The design's ⌘K hint is intentionally omitted (mac-specific
+ * glyph; a shortcut that does nothing would mislead). Lucide search glyph inline
+ * as SVG (INV-9). Ports design .rc-search.
  */
+import { localePath } from '@/i18n/index';
 import type { Locale } from '@/i18n/index';
 import { chrome } from '@/i18n/ui';
 
@@ -17,8 +18,8 @@ const { lang } = Astro.props;
 const c = chrome(lang);
 ---
 
-<button
-  type="button"
+<a
+  href={localePath(lang, 'search')}
   class="search-trigger"
   data-search-trigger
   aria-label={c.searchLabel}
@@ -39,7 +40,7 @@ const c = chrome(lang);
     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
   </svg>
   <span class="search-trigger__label">{c.searchLabel}</span>
-</button>
+</a>
 
 <style>
   /* Ported from design .rc-search (screens.css) — tokens only. */

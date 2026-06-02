@@ -1,0 +1,307 @@
+---
+/**
+ * Search island (S9, FR-A5). Server-renders the form + the three named state
+ * regions (idle / results / empty) with copy from `strings`; the <script> only
+ * toggles [data-search-*] regions and injects result rows — COPY NEVER LIVES IN
+ * JS. Distinct from the avatar: this returns ARTICLES (links), not answers.
+ *
+ * Pagefind language-scopes automatically from <html lang> (Base sets it), so
+ * /fr/search/ searches FR, /en/search/ searches EN — no filter code. The runtime
+ * bundle is loaded via a VARIABLE-specifier dynamic import so Vite leaves it for
+ * runtime (the file only exists after `pagefind --site dist`); dev has no index,
+ * so the import throws and the island degrades to the idle state.
+ */
+import type { SearchStrings } from '@/i18n/ui';
+
+interface Props {
+  strings: SearchStrings;
+}
+
+const { strings } = Astro.props;
+---
+
+<div class="rc-search">
+  <form class="rc-search__form" role="search" data-search-form>
+    <svg
+      class="rc-search__icon"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="11" cy="11" r="7"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <input
+      class="rc-search__input"
+      type="search"
+      name="q"
+      data-search-input
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      autofocus
+      aria-label={strings.inputLabel}
+      placeholder={strings.placeholder}
+    />
+  </form>
+  <p
+    class="visually-hidden"
+    data-search-status
+    role="status"
+    aria-live="polite"
+    data-one={strings.countOne}
+    data-many={strings.countMany}
+  >
+  </p>
+  <p class="rc-search__note" data-search-idle>{strings.idleHint}</p>
+  <div class="rc-arows" data-search-results hidden></div>
+  <p class="rc-search__note" data-search-empty hidden>{strings.empty}</p>
+</div>
+
+<style>
+  /* Form + input + quiet note. Tokens only (no hard-coded colors). The leading
+     icon sits inside the input via left padding; the focus ring mirrors
+     SearchTrigger.astro (accent + accent-ring). */
+  .rc-search__form {
+    position: relative;
+    display: flex;
+  }
+  .rc-search__input {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px 0 42px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: 15px;
+  }
+  .rc-search__input:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-ring);
+  }
+  .rc-search__icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--fg-subtle);
+    pointer-events: none;
+  }
+  .rc-search__note {
+    margin: 0;
+    padding: 48px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+</style>
+
+<style is:global>
+  /* Result-row visual for runtime-injected rows. Duplicated from
+     ArticleListItem.astro because Astro SCOPES that component's styles (hashed
+     class attrs) and these rows are created in the browser, so they would not
+     inherit them. Scoped under .rc-search so it cannot leak. Tokens only. */
+  .rc-search .rc-arows {
+    display: flex;
+    flex-direction: column;
+  }
+  .rc-search .rc-arow {
+    border-bottom: 1px solid var(--hairline);
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .rc-search .rc-meta {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-subtle);
+  }
+  .rc-search .rc-meta__dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--fg-subtle);
+  }
+  .rc-search .rc-arow__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: var(--text-h3);
+    line-height: 1.25;
+    color: var(--fg);
+  }
+  .rc-search .rc-arow__title a {
+    color: inherit;
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-search .rc-arow__title a:hover {
+    color: var(--accent);
+  }
+  .rc-search .rc-arow__dek {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+    max-width: 64ch;
+  }
+  .rc-search .rc-arow__dek mark {
+    background: var(--accent-soft);
+    color: var(--fg);
+    border-radius: 3px;
+    padding: 0 2px;
+  }
+</style>
+
+<script>
+  // Minimal local Pagefind types (the runtime bundle is untyped at build time).
+  interface PagefindDoc {
+    url: string;
+    meta: Record<string, string>;
+    excerpt: string;
+  }
+  interface PagefindResult {
+    id: string;
+    data(): Promise<PagefindDoc>;
+  }
+  interface PagefindSearch {
+    results: PagefindResult[];
+  }
+  interface PagefindApi {
+    search(q: string): Promise<PagefindSearch>;
+  }
+
+  const MAX_RESULTS = 20;
+  const DEBOUNCE_MS = 160;
+
+  const root = document.querySelector<HTMLElement>('.rc-search');
+  const input = root?.querySelector<HTMLInputElement>('[data-search-input]');
+  const form = root?.querySelector<HTMLFormElement>('[data-search-form]');
+  const results = root?.querySelector<HTMLElement>('[data-search-results]');
+  const idle = root?.querySelector<HTMLElement>('[data-search-idle]');
+  const empty = root?.querySelector<HTMLElement>('[data-search-empty]');
+  const status = root?.querySelector<HTMLElement>('[data-search-status]');
+
+  if (input && form && results && idle && empty && status) {
+    // Enter must not reload the page (no server to post to).
+    form.addEventListener('submit', (e) => e.preventDefault());
+
+    let pf: PagefindApi | null = null;
+    let failed = false;
+    async function load(): Promise<PagefindApi | null> {
+      if (pf || failed) return pf;
+      try {
+        // Variable specifier → Vite leaves it for runtime (file exists only after
+        // `pagefind --site dist`); @vite-ignore silences the analyzer warning.
+        const path = import.meta.env.BASE_URL + 'pagefind/pagefind.js';
+        pf = (await import(/* @vite-ignore */ path)) as unknown as PagefindApi;
+      } catch {
+        failed = true; // dev / no-index build → stay in the idle state
+      }
+      return pf;
+    }
+
+    const show = (state: 'idle' | 'results' | 'empty') => {
+      idle.hidden = state !== 'idle';
+      results.hidden = state !== 'results';
+      empty.hidden = state !== 'empty';
+    };
+
+    function setUrl(q: string) {
+      const u = new URL(window.location.href);
+      if (q) u.searchParams.set('q', q);
+      else u.searchParams.delete('q');
+      window.history.replaceState({}, '', u);
+    }
+
+    // Arrow consts (not hoisted `function` declarations) so TypeScript preserves
+    // the non-null narrowing of the captured DOM nodes from the guard above.
+    const render = (docs: PagefindDoc[]) => {
+      results.replaceChildren();
+      for (const d of docs) {
+        const row = document.createElement('article');
+        row.className = 'rc-arow';
+        // Graceful meta line: only when BOTH best-effort values are present.
+        if (d.meta.date && d.meta.reading) {
+          const m = document.createElement('div');
+          m.className = 'rc-meta';
+          const a = document.createElement('span');
+          a.textContent = d.meta.date;
+          const dot = document.createElement('span');
+          dot.className = 'rc-meta__dot';
+          const b = document.createElement('span');
+          b.textContent = d.meta.reading;
+          m.append(a, dot, b);
+          row.append(m);
+        }
+        const h = document.createElement('h3');
+        h.className = 'rc-arow__title';
+        const link = document.createElement('a');
+        link.href = d.url;
+        link.textContent = d.meta.title ?? d.url;
+        h.append(link);
+        const p = document.createElement('p');
+        p.className = 'rc-arow__dek';
+        p.innerHTML = d.excerpt; // trusted (our content); the query is never innerHTML'd
+        row.append(h, p);
+        results.append(row);
+      }
+    };
+
+    let seq = 0;
+    const run = async (raw: string) => {
+      const q = raw.trim();
+      if (!q) {
+        show('idle');
+        status.textContent = '';
+        results.replaceChildren();
+        setUrl('');
+        return;
+      }
+      const api = await load();
+      if (!api) {
+        show('idle'); // index unavailable (dev)
+        return;
+      }
+      const mine = ++seq;
+      const found = (await api.search(q)).results.slice(0, MAX_RESULTS);
+      const docs = await Promise.all(found.map((r) => r.data()));
+      if (mine !== seq) return; // drop a stale response
+      setUrl(q);
+      if (docs.length === 0) {
+        show('empty');
+        status.textContent = empty.textContent;
+        return;
+      }
+      render(docs);
+      show('results');
+      const tpl = docs.length === 1 ? status.dataset.one : status.dataset.many;
+      status.textContent = (tpl ?? '{n}').replace('{n}', String(docs.length));
+    };
+
+    let timer: number | undefined;
+    input.addEventListener('input', () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => run(input.value), DEBOUNCE_MS);
+    });
+
+    // Deep-link hydrate: /[lang]/search/?q=… runs immediately (sidesteps debounce).
+    const q0 = new URLSearchParams(window.location.search).get('q') ?? '';
+    if (q0) {
+      input.value = q0;
+      run(q0);
+    }
+  }
+</script>

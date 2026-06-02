@@ -299,7 +299,9 @@ describe('contact links (CONTACTS)', () => {
 
 describe('search string table (SEARCH)', () => {
   it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
-    expect(Object.keys(SEARCH.fr).sort()).toEqual(Object.keys(SEARCH.en).sort());
+    expect(Object.keys(SEARCH.fr).sort()).toEqual(
+      Object.keys(SEARCH.en).sort()
+    );
   });
 
   it('every search string is a non-empty string in both locales', () => {

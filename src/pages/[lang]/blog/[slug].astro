@@ -81,9 +81,11 @@ const title = `${entry.data.title} — rachid chabane`;
 <Base title={title} description={dek} lang={lang} slugMap={slugMap}>
   <article class="rc-article rc-enter">
     <a class="rc-back" href={localePath(lang, 'blog')}>← {s.back}</a>
-    {/* S9 search corpus (task 15): data-pagefind-body restricts Pagefind to the
+    {
+      /* S9 search corpus (task 15): data-pagefind-body restricts Pagefind to the
         article reading column. The wrapper EXCLUDES the back-link, SourceList and
-        PrevNext (below) so neighbour titles never pollute search results. */}
+        PrevNext (below) so neighbour titles never pollute search results. */
+    }
     <div
       class="rc-pf-body"
       data-pagefind-body
