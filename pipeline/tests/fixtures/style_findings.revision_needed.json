@@ -1,0 +1,20 @@
+{
+  "verdict": "revision_needed",
+  "context": "personal practitioner AI-engineering blog post; no emoji; voice per pipeline/house_style.md",
+  "confidence": "high",
+  "issues": [
+    {
+      "phrase": "It is worth noting that",
+      "pattern": "stock_phrase",
+      "why_ai": "A classic LLM lead-in; deleting it leaves the sentence intact.",
+      "suggested_fix": "Delete the lead-in."
+    },
+    {
+      "phrase": "leveraging the harness -- which runs the tools -- to unlock results",
+      "pattern": "em_dash",
+      "why_ai": "Stacked em-dash clauses plus corporate verbs read as machine output.",
+      "suggested_fix": "Rephrase to 'using the harness to run the tools'."
+    }
+  ],
+  "summary": "Two AI-tells: a stock lead-in and an em-dash cluster with corporate verbs."
+}

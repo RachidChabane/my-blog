@@ -1,0 +1,7 @@
+{
+  "verdict": "clean",
+  "context": "personal practitioner AI-engineering blog post; no emoji; voice per pipeline/house_style.md",
+  "confidence": "high",
+  "issues": [],
+  "summary": "No AI-generation tells detected; the voice matches the house style."
+}
