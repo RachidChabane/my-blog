@@ -23,13 +23,13 @@ project inventory + groundwork (this stage)
 
 ## What's here now
 
-| File | Purpose |
-|------|---------|
-| [`docs/`](./docs/) | **Stage-1 planning foundation** (produced by `project-bootstrap`): vision, content-pipeline, rag-avatar, user-requirements, roadmap, open-questions, decisions. **Start at [`docs/README.md`](./docs/README.md).** Currently `draft` — awaiting owner review. |
-| [`PROJECT-INVENTORY.md`](./PROJECT-INVENTORY.md) | Master inventory of every project in `~/dev-env/0-git/` — what's AI-related, what's portfolio-worthy, and what feeds the blog system. |
-| [`inventory/`](./inventory/) | Per-project deep-dive notes (one file per flagship; grouped files for the rest). |
+| File                                             | Purpose                                                                                                                                                                                                                                                       |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`docs/`](./docs/)                               | **Stage-1 planning foundation** (produced by `project-bootstrap`): vision, content-pipeline, rag-avatar, user-requirements, roadmap, open-questions, decisions. **Start at [`docs/README.md`](./docs/README.md).** Currently `draft` — awaiting owner review. |
+| [`PROJECT-INVENTORY.md`](./PROJECT-INVENTORY.md) | Master inventory of every project in `~/dev-env/0-git/` — what's AI-related, what's portfolio-worthy, and what feeds the blog system.                                                                                                                         |
+| [`inventory/`](./inventory/)                     | Per-project deep-dive notes (one file per flagship; grouped files for the rest).                                                                                                                                                                              |
 
-> Inventory notes live *outside* `docs/` (at the repo root) so they don't collide with `project-bootstrap`'s resume detection over the `docs/` slate.
+> Inventory notes live _outside_ `docs/` (at the repo root) so they don't collide with `project-bootstrap`'s resume detection over the `docs/` slate.
 
 ## Repo
 
