@@ -1,0 +1,121 @@
+---
+/**
+ * Masthead — sticky top bar. Typographic wordmark→home (an <a>, NOT an <h1>, so
+ * the single page-content h1 contract holds), primary nav, inert search
+ * affordance, language switcher, theme toggle. Ports the design's .rc-nav
+ * (tokens only). Primary nav links are LIVE anchors to canonical routes
+ * (/[lang]/blog|work|about/) that later tasks build; static build does not
+ * validate hrefs and there is no link-check gate, so they only dangle between
+ * build steps (never on a deployed site — INV-3 is a launch-time property).
+ */
+import { localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { chrome, NAV_ITEMS } from '@/i18n/ui';
+import ThemeToggle from '@/components/ThemeToggle.astro';
+import LanguageSwitcher from '@/components/LanguageSwitcher.astro';
+import SearchTrigger from '@/components/SearchTrigger.astro';
+
+interface Props {
+  lang: Locale;
+  slugMap?: Partial<Record<Locale, string>>;
+}
+
+const { lang, slugMap } = Astro.props;
+const c = chrome(lang);
+---
+
+<header class="masthead">
+  <a class="masthead__wordmark" href={localePath(lang)} aria-label={c.homeAria}>
+    <span class="masthead__word"
+      >rachid chabane<span class="masthead__dot">.</span></span
+    >
+  </a>
+  <nav class="masthead__nav" aria-label={c.navAria}>
+    {NAV_ITEMS.map((it) => <a href={localePath(lang, it.path)}>{c[it.key]}</a>)}
+  </nav>
+  <div class="masthead__right">
+    <SearchTrigger lang={lang} />
+    <LanguageSwitcher lang={lang} slugMap={slugMap} />
+    <ThemeToggle label={c.themeToggleAria} />
+  </div>
+</header>
+
+<style>
+  /* Ported from design .rc-nav / .rc-wordmark / .rc-nav__links / .rc-nav__right.
+     Tokens only. The in-wordmark avatar mark is deliberately omitted (D-007:
+     typographic wordmark; the avatar mark is task-20 territory). */
+  .masthead {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-5);
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 20px 40px;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(1.4) blur(10px);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .masthead__wordmark {
+    display: inline-flex;
+    align-items: center;
+  }
+  .masthead__word {
+    font-family: var(--font-display);
+    font-variation-settings: 'opsz' 36, 'wght' 510;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+  }
+  .masthead__dot {
+    color: var(--accent);
+  }
+  .masthead__nav {
+    display: flex;
+    gap: 22px;
+    margin-left: 14px;
+  }
+  .masthead__nav a {
+    position: relative;
+    padding: 4px 0;
+    font-size: 14px;
+    color: var(--fg-muted);
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .masthead__nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1.5px;
+    background: var(--accent);
+    transition: width var(--dur-hover) var(--ease-soft);
+  }
+  .masthead__nav a:hover {
+    color: var(--fg);
+  }
+  .masthead__nav a:hover::after {
+    width: 100%;
+  }
+  .masthead__right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  /* Design parity: nav links hide below 720px; search/lang/theme/avatar stay
+     reachable. Mobile menu is a flagged follow-up, out of task-6 scope (R7). */
+  @media (max-width: 720px) {
+    .masthead {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+    .masthead__nav {
+      display: none;
+    }
+  }
+</style>

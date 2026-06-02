@@ -1,0 +1,124 @@
+---
+/**
+ * Footer — wordmark, RSS link, language-switcher MIRROR, theme toggle (all per
+ * the design's rich home.jsx footer), a quiet autonomous-maintenance credit, and
+ * the copyright tail. Ports .rc-footer (tokens only).
+ *
+ * RSS href is the raw `/${lang}/rss.xml` — NOT localePath(lang, 'rss.xml'),
+ * which would yield `/fr/rss.xml/` (a wrong trailing slash on a file). The RSS
+ * route (task 16) dangles until then, same as the nav links.
+ */
+import type { Locale } from '@/i18n/index';
+import { chrome } from '@/i18n/ui';
+import LanguageSwitcher from '@/components/LanguageSwitcher.astro';
+import ThemeToggle from '@/components/ThemeToggle.astro';
+
+interface Props {
+  lang: Locale;
+  slugMap?: Partial<Record<Locale, string>>;
+}
+
+const { lang, slugMap } = Astro.props;
+const c = chrome(lang);
+const year = new Date().getFullYear(); // build-time; not asserted (year-brittleness)
+---
+
+<footer class="footer">
+  <div class="footer__row">
+    <span class="footer__word"
+      >rachid chabane<span class="footer__dot">.</span></span
+    >
+    <a class="footer__rss" href={`/${lang}/rss.xml`} aria-label={c.footerRssAria}>
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M4 11a9 9 0 0 1 9 9"></path>
+        <path d="M4 4a16 16 0 0 1 16 16"></path>
+        <circle cx="5" cy="19" r="1"></circle>
+      </svg>
+      <span>{c.footerRss}</span>
+    </a>
+    <span class="footer__spacer"></span>
+    <div class="footer__controls">
+      <LanguageSwitcher lang={lang} slugMap={slugMap} />
+      <ThemeToggle label={c.themeToggleAria} />
+    </div>
+  </div>
+  <p class="footer__credit t-eyebrow">{c.footerCredit}</p>
+  <p class="footer__small">© {year} rachid chabane · {c.footerRights}</p>
+</footer>
+
+<style>
+  /* Ported from design .rc-footer (site.css) + rich-footer overrides
+     (screens.css). Tokens only; 96/32/48px map to --sp-9/--sp-6/--sp-7. */
+  .footer {
+    width: 100%;
+    max-width: 1080px;
+    margin: var(--sp-9) auto 0;
+    padding: var(--sp-6) 40px var(--sp-7);
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .footer__row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .footer__word {
+    font-family: var(--font-display);
+    font-variation-settings: 'opsz' 28, 'wght' 500;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+  }
+  .footer__dot {
+    color: var(--accent);
+  }
+  .footer__rss {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--fg-muted);
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .footer__rss:hover {
+    color: var(--accent);
+  }
+  .footer__spacer {
+    margin-left: auto;
+  }
+  .footer__controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .footer__credit {
+    margin: 0;
+  }
+  .footer__small {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+  }
+  @media (max-width: 720px) {
+    .footer {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+</style>

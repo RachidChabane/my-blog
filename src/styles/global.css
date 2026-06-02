@@ -55,6 +55,41 @@ svg {
   outline-offset: 2px;
 }
 
+/* ---- Skip link + visually-hidden utility (cross-cutting a11y; chrome
+   component styles stay scoped in their own .astro files). Tokens only. ---- */
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: var(--sp-3);
+  z-index: 100;
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--surface);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  /* Off-screen until focused (kept focusable — not display:none). */
+  transform: translateY(-120%);
+  transition: transform var(--dur-hover) var(--ease-soft);
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---- Semantic type roles (ported from the design system; tokens only) ---- */
 .t-display {
   font-family: var(--font-display);
