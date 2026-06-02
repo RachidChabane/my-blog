@@ -48,7 +48,12 @@ export function applyThreshold(
   const topSimilarity = result.topSimilarity;
 
   if (topSimilarity >= threshold) {
-    return { kind: 'grounded', chunks: result.candidates, topSimilarity, threshold };
+    return {
+      kind: 'grounded',
+      chunks: result.candidates,
+      topSimilarity,
+      threshold,
+    };
   }
 
   const nearMisses = [...result.candidates]

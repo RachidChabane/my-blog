@@ -87,8 +87,18 @@ export interface RetrievalResult {
 
 /** The threshold gate's decision. Discriminated on `kind`. */
 export type ThresholdOutcome =
-  | { kind: 'grounded'; chunks: Candidate[]; topSimilarity: number; threshold: number }
-  | { kind: 'idk'; nearMisses: Candidate[]; topSimilarity: number; threshold: number };
+  | {
+      kind: 'grounded';
+      chunks: Candidate[];
+      topSimilarity: number;
+      threshold: number;
+    }
+  | {
+      kind: 'idk';
+      nearMisses: Candidate[];
+      topSimilarity: number;
+      threshold: number;
+    };
 
 /**
  * Turns text into dense vectors. Real impl (post-secret) targets the
@@ -120,7 +130,11 @@ export interface VectorStore {
  */
 export interface Reranker {
   readonly model: string;
-  rerank(query: string, candidates: ScoredChunk[], topK: number): Promise<ScoredChunk[]>;
+  rerank(
+    query: string,
+    candidates: ScoredChunk[],
+    topK: number
+  ): Promise<ScoredChunk[]>;
 }
 
 /** One chat message for the synthesis LLM. */

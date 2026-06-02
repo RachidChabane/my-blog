@@ -93,7 +93,8 @@ export class Bm25Index {
         const f = doc.tf.get(term);
         if (!f) continue;
         const idf = Math.log(1 + (this.n - df + 0.5) / (df + 0.5));
-        const denom = f + this.k1 * (1 - this.b + this.b * (doc.len / this.avgdl));
+        const denom =
+          f + this.k1 * (1 - this.b + this.b * (doc.len / this.avgdl));
         score += (idf * (f * (this.k1 + 1))) / denom;
       }
       if (score > 0) scored.push({ chunk: doc.chunk, score });

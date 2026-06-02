@@ -119,17 +119,31 @@ export async function retrieve(
 export function createRetriever(
   artifact: IndexArtifact,
   deps: { embedder: Embedder; reranker?: Reranker }
-): { retrieve(query: string, opts?: RetrieveOptions): Promise<RetrievalResult> } {
+): {
+  retrieve(query: string, opts?: RetrieveOptions): Promise<RetrievalResult>;
+} {
   if (artifact.dimensions !== deps.embedder.dimensions) {
     throw new Error(
       `createRetriever: artifact dimensions ${artifact.dimensions} != embedder dimensions ${deps.embedder.dimensions}`
     );
   }
-  const vectorStore = new InMemoryVectorStore(artifact.chunks, artifact.dimensions);
+  const vectorStore = new InMemoryVectorStore(
+    artifact.chunks,
+    artifact.dimensions
+  );
   const lexical = new Bm25Index(artifact.chunks);
   return {
     retrieve(query: string, opts?: RetrieveOptions): Promise<RetrievalResult> {
-      return retrieve(query, { embedder: deps.embedder, vectorStore, lexical, reranker: deps.reranker }, opts);
+      return retrieve(
+        query,
+        {
+          embedder: deps.embedder,
+          vectorStore,
+          lexical,
+          reranker: deps.reranker,
+        },
+        opts
+      );
     },
   };
 }
