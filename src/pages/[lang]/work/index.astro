@@ -1,0 +1,141 @@
+---
+/**
+ * S6 — Portfolio index. `/[lang]/work/` (FR + EN). A restrained, uniform grid of
+ * project cards generated from the `projects` content collection (task 11),
+ * published-only (app-ia §4: only "published" reaches a visitor). One grid per
+ * locale, no pagination (the design shows a single grid).
+ *
+ * View-models + curated ordering come from src/lib/content.ts; copy from
+ * src/i18n/ui.ts; chrome (masthead/footer/avatar/skip-link) from Base. No slugMap
+ * → the language switcher falls back to the localized home (plan §0 / blog
+ * decision #6; NFR-11 holds since both /fr/work/ and /en/work/ exist). Cards link
+ * to the task-13 detail route /[lang]/work/<slug>/ (a forward reference — asserted
+ * by href, never required to resolve until that task lands).
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import { LOCALES } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { portfolioIndexStrings } from '@/i18n/ui';
+import { getPublishedProjects, toProjectCard } from '@/lib/content';
+import type { ProjectCardVM } from '@/lib/content';
+import Base from '@/layouts/Base.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+
+export const getStaticPaths = (async () => {
+  const projects = await getCollection('projects');
+  return LOCALES.map((lang) => ({
+    params: { lang },
+    props: {
+      lang,
+      cards: getPublishedProjects(projects, lang).map((e) =>
+        toProjectCard(e, lang)
+      ),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { lang, cards } = Astro.props as { lang: Locale; cards: ProjectCardVM[] };
+const s = portfolioIndexStrings(lang);
+const title = `${s.title} — rachid chabane`;
+---
+
+<Base title={title} lang={lang}>
+  <div class="rc-work rc-enter">
+    <header class="rc-pagehd">
+      <span class="t-eyebrow">{s.eyebrow}</span>
+      <h1 class="rc-pagehd__title">{s.title}</h1>
+      <span class="rc-pagehd__meta">{s.meta}</span>
+    </header>
+
+    {
+      cards.length > 0 ? (
+        <div class="rc-projgrid">
+          {cards.map((card, i) => (
+            <ProjectCard
+              card={card}
+              ordinal={String(i + 1).padStart(2, '0')}
+              ordinalWord={s.ordinalWord}
+              viewCta={s.viewCta}
+            />
+          ))}
+        </div>
+      ) : (
+        <p class="rc-empty-note">{s.empty}</p>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  /* Inner content column (Base already provides <main>; no second <main>). Wider
+     than the article index (824px) so the auto-fill minmax(300px,1fr) grid shows
+     2–3 columns. Tokens only. */
+  .rc-work {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+  }
+  @media (max-width: 720px) {
+    .rc-work {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+
+  /* Page header — identical block to the article index (screens.css). */
+  .rc-pagehd {
+    padding-top: 52px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rc-pagehd__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-head);
+    font-size: var(--text-h1);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
+    color: var(--fg);
+  }
+  .rc-pagehd__meta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--fg-subtle);
+  }
+
+  /* Uniform card grid (screens.css .rc-projgrid). */
+  .rc-projgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 22px;
+  }
+
+  .rc-empty-note {
+    margin: 0;
+    padding: 48px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+
+  /* Translate-only entrance (no opacity fade) so content is never hidden if the
+     animation is paused; prefers-reduced-motion neutralizes it via tokens.css. */
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>

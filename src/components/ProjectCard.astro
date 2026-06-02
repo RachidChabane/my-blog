@@ -1,0 +1,179 @@
+---
+/**
+ * ProjectCard — one card in the S6 portfolio grid (app-ia §6). Renders a
+ * ProjectCardVM (built in src/lib/content.ts). Markup follows the design's
+ * ProjectCard (projects.jsx) and ports the .rc-proj* / .rc-pstatus* CSS from
+ * the design screens.css. Tokens only — nothing inherited from the gallery.
+ *
+ * Three deltas vs ArticleListItem (do NOT copy that row blindly):
+ *  1. The title is the SOLE link; the whole <article> is not wrapped in <a>
+ *     (no nested anchors). Exactly one <a> per card (e2e asserts this).
+ *  2. Stack chips are <span class="rc-tag">, NOT links — there are no stack
+ *     pages (article-row tags ARE links to /tags/; that does not apply here).
+ *  3. The quiet affordance is the "<viewCta> →" decorative aria-hidden span
+ *     (the →detail link), not the project's external links[] (those render on
+ *     the task-13 detail page, never on the index card — the VM omits them).
+ */
+import type { ProjectCardVM } from '@/lib/content';
+
+interface Props {
+  card: ProjectCardVM;
+  ordinal: string; // "01" … zero-padded, from render position (computed in the route)
+  ordinalWord: string; // strings.ordinalWord — uppercased via CSS → "PROJET · 01"
+  viewCta: string; // strings.viewCta — rendered "<viewCta> →" (decorative)
+}
+
+const { card, ordinal, ordinalWord, viewCta } = Astro.props;
+---
+
+<article class="rc-proj">
+  <div class="rc-proj__top">
+    <span class="rc-proj__n">{ordinalWord} · {ordinal}</span>
+    <span class:list={['rc-pstatus', { 'is-live': card.isLive }]}>
+      <span class="rc-pstatus__dot"></span>{card.status}
+    </span>
+  </div>
+  <h3 class="rc-proj__title"><a href={card.href}>{card.name}</a></h3>
+  <p class="rc-proj__desc">{card.summary}</p>
+  <div class="rc-proj__chips">
+    {card.stack.map((s) => <span class="rc-tag">{s}</span>)}
+  </div>
+  <div class="rc-proj__foot">
+    <span class="rc-proj__link" aria-hidden="true">{viewCta} →</span>
+  </div>
+</article>
+
+<style>
+  /* Ported from the design screens.css .rc-proj* / .rc-pstatus* (the .rc-projgrid
+     wrapper lives in the route). .rc-proj__ph is dropped (we have real content);
+     .rc-tag is ported from ArticleListItem (chip pill), minus its :hover — chips
+     here are static <span>, not interactive. Tokens only. */
+  .rc-proj {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px 22px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    text-align: left;
+    min-height: 232px;
+    transition:
+      box-shadow var(--dur-hover) var(--ease-soft),
+      transform var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft);
+  }
+  /* .is-hover lets a future hover demo / test force the state without a pointer. */
+  .rc-proj:hover,
+  .rc-proj.is-hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+    border-color: var(--border);
+  }
+  .rc-proj__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .rc-proj__n {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase; /* stored "Projet"/"Project" → "PROJET"/"PROJECT" */
+    color: var(--fg-subtle);
+  }
+  .rc-pstatus {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--fg-muted);
+  }
+  .rc-pstatus__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--fg-subtle);
+    flex: none;
+  }
+  .rc-pstatus.is-live .rc-pstatus__dot {
+    background: var(--accent); /* accent reserved for production-live status */
+  }
+  .rc-proj__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: 20px;
+    line-height: 1.22;
+    color: var(--fg-muted);
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-proj__title a {
+    color: inherit; /* the title is the sole link; inherit the hover→accent shift */
+  }
+  .rc-proj:hover .rc-proj__title,
+  .rc-proj.is-hover .rc-proj__title {
+    color: var(--accent);
+  }
+  /* Uniformity clamp: real summaries run 2–3 sentences (longer than the design's
+     one-line placeholder); clip to 3 lines so the grid stays uniform. Text stays
+     in the DOM (a11y + e2e toBeVisible hold); only visually clipped. flex:1 +
+     min-height equalize card heights. */
+  .rc-proj__desc {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--fg-subtle);
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .rc-proj__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .rc-proj__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 2px;
+    padding-top: 14px;
+    border-top: 1px solid var(--hairline);
+  }
+  .rc-proj__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: border-color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-proj:hover .rc-proj__link,
+  .rc-proj.is-hover .rc-proj__link {
+    border-bottom-color: var(--accent);
+  }
+
+  /* chip pill — ported from ArticleListItem .rc-tag (no :hover; static spans). */
+  .rc-tag {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 4px 11px;
+    border-radius: var(--radius-pill);
+    background: var(--fill-subtle);
+    color: var(--fg-muted);
+    border: 1px solid var(--border-subtle);
+  }
+</style>
