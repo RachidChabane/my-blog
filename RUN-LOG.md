@@ -38,3 +38,19 @@ All times CEST. Build driven by `claude-plan-execute-loop` (interactive/tmux bac
 
 - **Task 1 done** (attempt 1, commit `b356094`) — Astro+CF scaffold, vitest, playwright, CI. Passed all gates **including the now-active `e2e` block-gate** → confirms the gate-wiring fix + Playwright pre-install were correct. No intervention needed.
 - Task 2 (design tokens) now `planning`. Process healthy (loop+runner PIDs alive). Pushed `b356094` to origin. Re-armed heartbeat.
+
+---
+
+## 2026-06-02 05:00 — INTERVENTION: fix cross-cutting lint cascade (eslint Node globals)
+
+**Symptom**: Tasks 1,2,3 done; **task 4 blocked** on its `lint` gate:
+```
+src/lib/env.ts  29:25 & 44:25  error  'process' is not defined  no-undef
+```
+**Why it mattered (cascade)**: Task 4's files were already committed (`4f83617`), and `lint` = `astro check && eslint . && prettier --check .` lints the **whole repo**. So the broken `env.ts` would fail the `lint` gate of **every** subsequent task (5–30) → full cascade-block, not a leaf failure. (Task 4 itself is a leaf — nothing `depends_on` it — so the loop correctly continued to task 5.)
+
+**Root cause**: `eslint.config.js` (from task 1) granted only `globals.browser` to `**/*.ts`. `src/lib/env.ts` is a *server-only* accessor that legitimately uses `process.env` (with an `env?` override param for Cloudflare Workers bindings) — correct code, wrong lint env.
+
+**Fix** (durable; survives a task-4 re-run since task 4 doesn't own this file): added `...globals.node` to the `**/*.ts` block in `eslint.config.js`. Verified: `pnpm exec eslint src/lib/env.ts` → exit 0.
+
+**Concurrency discipline applied**: did NOT run any cpe subcommand (incl. `--reset`) while the loop is live — that would be a 2nd process writing `state.json` (corruption risk). Only a file edit + explicit-add commit in a no-`index.lock` window. **Task 4 is still `blocked` in state**; its deliverables are committed and now lint-clean. Deferred action: when the loop drains/exits, `--reset 4` + run task 4 solo to flip it to `done`.

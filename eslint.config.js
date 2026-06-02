@@ -12,7 +12,9 @@ export default [
     languageOptions: {
       parser: tsParser,
       parserOptions: { project: './tsconfig.json' },
-      globals: { ...globals.browser },
+      // Server-side TS (src/lib, scripts/, functions/, env accessor) uses Node
+      // globals (process, etc.) alongside browser globals in client islands.
+      globals: { ...globals.browser, ...globals.node },
     },
     plugins: { '@typescript-eslint': tsPlugin },
     rules: {
