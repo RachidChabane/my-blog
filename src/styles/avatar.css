@@ -275,10 +275,12 @@
   border-left: 2px solid var(--accent);
 }
 .rc-dock .rc-cite__row {
+  color: inherit;
+}
+.rc-dock .rc-cite__inner {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  color: inherit;
 }
 .rc-dock .rc-cite__lbl {
   display: inline-flex;

@@ -56,7 +56,7 @@ const s = avatarStrings(lang);
   const panel = root?.querySelector<HTMLElement>('[data-avatar-panel]');
   const launcher = root?.querySelector<HTMLButtonElement>('[data-avatar-slot]');
   const body = root?.querySelector<HTMLElement>('[data-avatar-body]');
-  const form = root?.querySelector<HTMLFormElement>('[data-avatar-form]');
+  const form = root?.querySelector<HTMLElement>('[data-avatar-form]');
   const input = root?.querySelector<HTMLInputElement>('[data-avatar-input]');
   const sendBtn = root?.querySelector<HTMLButtonElement>('[data-avatar-send]');
   const closeBtn = root?.querySelector<HTMLButtonElement>(
@@ -178,12 +178,16 @@ const s = avatarStrings(lang);
       const cites = ans.querySelector<HTMLElement>('[data-slot="cites"]');
       const prose = ans.querySelector<HTMLElement>('[data-slot="prose"]');
       for (const cit of citations) {
-        const row = cloneTpl(tplCite);
-        const title = row.querySelector<HTMLElement>('[data-slot="title"]');
+        // Build the <a> in JS (an <a> cannot live in the <template> — it would
+        // leak out of it during HTML parsing). The inner content (icon + label +
+        // title) is cloned from the inert <span> template, keeping copy out of JS.
+        const row = document.createElement('a');
+        row.className = 'rc-cite__row';
+        const inner = cloneTpl(tplCite);
+        const title = inner.querySelector<HTMLElement>('[data-slot="title"]');
         if (title) title.textContent = cit.title;
-        if (row instanceof HTMLAnchorElement && isSafeHref(cit.sourceUrl)) {
-          row.href = cit.sourceUrl;
-        }
+        if (isSafeHref(cit.sourceUrl)) row.href = cit.sourceUrl; // allow-list (D5)
+        row.append(inner);
         if (cites) cites.append(row);
       }
       body.append(ans);

@@ -36,6 +36,45 @@ const GROUNDED_EN =
     threshold: 0.25,
   });
 
+// Grounded stream carrying one SAFE citation URL plus two UNSAFE ones (a
+// `javascript:` scheme and a protocol-relative `//host`). Exercises isSafeHref's
+// rejection path (D5/R3): unsafe URLs must render as text with NO href.
+const GROUNDED_EN_MIXED =
+  frame('sources', {
+    citations: [
+      {
+        n: 1,
+        title: 'Safe citation',
+        sourceUrl: '/en/blog/hybrid-rag-retrieval/',
+        headingAnchor: '',
+        slug: 'hybrid-rag-retrieval',
+        lang: 'en',
+      },
+      {
+        n: 2,
+        title: 'Script scheme',
+        sourceUrl: 'javascript:alert(1)',
+        headingAnchor: '',
+        slug: 'x',
+        lang: 'en',
+      },
+      {
+        n: 3,
+        title: 'Protocol relative',
+        sourceUrl: '//evil.example/x',
+        headingAnchor: '',
+        slug: 'y',
+        lang: 'en',
+      },
+    ],
+  }) +
+  frame('token', { text: 'Grounded.' }) +
+  frame('done', {
+    finishReason: 'grounded',
+    topSimilarity: 0.7,
+    threshold: 0.25,
+  });
+
 // Refusal stream. The message is reused by both the mock and the assertion so the
 // "prose equals the streamed message (no fabrication)" check cannot drift. ASCII
 // only — avoids the typographic-apostrophe matching trap.
@@ -114,6 +153,29 @@ test.describe('S10 avatar overlay', () => {
       );
     });
     expect(citeBeforeProse).toBe(true);
+  });
+
+  test('unsafe citation URLs render as text with no href (D5/R3)', async ({
+    page,
+  }) => {
+    await page.route('**/api/avatar/query', (route) =>
+      fulfillSSE(route, GROUNDED_EN_MIXED)
+    );
+    await page.goto('/en/');
+    await page.locator('[data-avatar-slot]').click();
+    const input = page.locator('[data-avatar-input]');
+    await input.fill('Has Rachid built a RAG system?');
+    await input.press('Enter');
+
+    const ans = page.locator('[data-avatar-panel] .rc-ans');
+    // All three citations render as rows...
+    await expect(ans.locator('a.rc-cite__row')).toHaveCount(3);
+    // ...but only the safe one is linked (the unsafe schemes get no href).
+    await expect(ans.locator('a.rc-cite__row[href]')).toHaveCount(1);
+    await expect(ans.locator('a.rc-cite__row[href]')).toHaveAttribute(
+      'href',
+      '/en/blog/hybrid-rag-retrieval/'
+    );
   });
 
   test('"I don\'t know" shows the refusal — no citation, no fabrication', async ({

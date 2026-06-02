@@ -124,8 +124,12 @@ const { strings } = Astro.props;
     </div>
   </template>
 
+  <!-- Cite-row INNER content only. The <a> wrapper is built in the island (an
+       <a> is a formatting element — left inside a <template> the HTML parser
+       reconstructs it OUTSIDE the template, leaking a stray empty link into the
+       page. A <span> root is inert and safe to clone.) -->
   <template data-tpl-cite>
-    <a class="rc-cite__row" data-slot="link">
+    <span class="rc-cite__inner">
       <span class="rc-cite__lbl">
         <svg
           width="12"
@@ -148,7 +152,7 @@ const { strings } = Astro.props;
         {strings.sourceLbl}
       </span>
       <span class="rc-cite__title" data-slot="title"></span>
-    </a>
+    </span>
   </template>
 
   <template data-tpl-refuse>
