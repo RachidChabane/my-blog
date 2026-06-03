@@ -80,10 +80,13 @@ def _mk_candidate(tid: str, key: str) -> ResearchCandidate:
     )
 
 
-def _cli(args: list[str]) -> subprocess.CompletedProcess[str]:
-    env = {**os.environ, "PYTHONPATH": str(_REPO_ROOT)}
+def _cli(
+    args: list[str], *, env: dict | None = None
+) -> subprocess.CompletedProcess[str]:
+    base = env if env is not None else os.environ
+    run_env = {**base, "PYTHONPATH": str(_REPO_ROOT)}
     return subprocess.run(
-        [sys.executable, "-m", *args], capture_output=True, text=True, env=env
+        [sys.executable, "-m", *args], capture_output=True, text=True, env=run_env
     )
 
 
@@ -461,14 +464,21 @@ def test_27b_select_dedup_real_embedder_errors(tmp_path):
     (research_dir / "candidates.json").write_text(
         _fixture_text("candidates.valid.json"), encoding="utf-8"
     )
+    # Deterministic: strip the CF creds so the real embedder is UNCONFIGURED -> fail-loud,
+    # NO live Workers AI call. (With both creds present `--embedder real` would attempt a
+    # real embed; this test asserts the unconfigured path, not a network round-trip.)
+    clean_env = {
+        k: v
+        for k, v in os.environ.items()
+        if k not in ("EMBEDDINGS_API_KEY", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID")
+    }
     proc = _cli(
-        ["pipeline.stages.select", "dedup", "--run-dir", str(run_dir), "--embedder", "real"]
+        ["pipeline.stages.select", "dedup", "--run-dir", str(run_dir), "--embedder", "real"],
+        env=clean_env,
     )
     assert proc.returncode != 0
-    # task 27 wired create_real_embedder (defer-and-throw, OQ-5). Env-robust: do NOT assert
-    # 'absent' -- the runner's env may set EMBEDDINGS_API_KEY, flipping to 'present, not wired'.
     out = proc.stdout + proc.stderr
-    assert "OQ-5" in out and "EMBEDDINGS_API_KEY" in out
+    assert "EMBEDDINGS_API_KEY" in out and "CLOUDFLARE_ACCOUNT_ID" in out
 
 
 def test_28_validate_clis_exit_codes(tmp_path):

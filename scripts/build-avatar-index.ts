@@ -3,8 +3,9 @@
 // I/O layer may use Date (the tested path stays Date-free). RELATIVE imports
 // (tsx ignores the `@/` alias), mirroring scripts/gen-portfolio.ts.
 //
-//   pnpm build:index                      # real embedder (default) — throws
-//                                          # until OQ-5 resolves (post-secret)
+//   pnpm build:index                      # real embedder (default) — Workers AI
+//                                          # bge-m3 (needs EMBEDDINGS_API_KEY +
+//                                          # CLOUDFLARE_ACCOUNT_ID; see DEPLOY.md §5)
 //   pnpm build:index --embedder=fake      # NON-PRODUCTION monolingual index
 //   pnpm build:index --out=path.json      # custom output path
 //
@@ -19,6 +20,7 @@ import {
   loadPublishedSources,
 } from '../src/lib/avatar/index-build';
 import { FakeEmbedder } from '../src/lib/avatar/fakes';
+import { createWorkersAiRestEmbedder } from '../src/lib/avatar/embedder';
 import type { Embedder, IndexArtifact } from '../src/lib/avatar/contracts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -40,16 +42,13 @@ function parseArgs(argv: string[]): CliArgs {
 }
 
 /**
- * The real multilingual embedder is OQ-5, still pending — throws with the SAME
- * message shape as functions/api/avatar/query.ts#createEmbedder. The real impl
- * (reading EMBEDDINGS_API_KEY) lands as the post-secret step.
+ * The real multilingual embedder: Cloudflare Workers AI `@cf/baai/bge-m3` over the
+ * REST API. `createWorkersAiRestEmbedder` reads EMBEDDINGS_API_KEY (the CF token) +
+ * CLOUDFLARE_ACCOUNT_ID and throws `EmbedderNotConfigured` (fail-loud) when absent —
+ * so an unconfigured `pnpm build:index` fails clearly instead of silent-faking.
  */
 function createRealEmbedder(env: Record<string, string | undefined>): Embedder {
-  const hasKey = Boolean(env.EMBEDDINGS_API_KEY);
-  throw new Error(
-    `Avatar embedder not configured (OQ-5 pending — see docs/persona.md; ` +
-      `EMBEDDINGS_API_KEY ${hasKey ? 'present, embedder not wired yet' : 'absent'}).`
-  );
+  return createWorkersAiRestEmbedder(env);
 }
 
 function createEmbedder(kind: string): Embedder {

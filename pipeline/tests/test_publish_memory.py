@@ -4,8 +4,8 @@ Every test runs offline with real fixtures + fakes: no claude/tmux, no network, 
 secret. They lock the publish MECHANISM deterministically -- the projection
 (``project_sources`` / ``build_article`` / ``validate_published`` against
 ``src/content/schemas.ts``), bilingual-or-nothing write, the idempotent topic-memory
-append, the defer-and-throw embedder seam, and the import-light invariant -- NOT live
-retrieval/LLM quality (the post-secret nets).
+append, the Workers AI bge-m3 embedder seam (stubbed urlopen -- no network), and the
+import-light invariant -- NOT live retrieval/LLM quality (the post-secret nets).
 
 Real-repo safety: every publish path passes a TMP ``--repo-root`` and a TMP ``--memory``
 (the default ``--memory`` derives from ``repo_root``, so a tmp repo keeps it tmp). No test
@@ -129,31 +129,77 @@ def _record(**overrides) -> TopicRecord:
 
 
 # ---------------------------------------------------------------------------
-# Embedder -- memory/embedder.py (OQ-5 defer-and-throw)
+# Embedder -- memory/embedder.py (Workers AI bge-m3, REST; stubbed urlopen)
 # ---------------------------------------------------------------------------
+
+
+class _StubResp:
+    """Minimal urlopen() return: a context manager whose .read() yields the payload."""
+
+    def __init__(self, payload: dict) -> None:
+        self._body = json.dumps(payload).encode("utf-8")
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_exc):
+        return False
+
+    def read(self) -> bytes:
+        return self._body
+
+
+def _stub_urlopen(payload: dict, calls: list | None = None):
+    def _open(request, timeout=None):
+        if calls is not None:
+            calls.append(request)
+        return _StubResp(payload)
+
+    return _open
 
 
 def test_01_create_real_embedder_absent_raises():
     with pytest.raises(EmbedderNotConfigured) as exc:
         create_real_embedder({})
     msg = str(exc.value)
-    assert "OQ-5" in msg and "EMBEDDINGS_API_KEY" in msg and "absent" in msg
+    assert "EMBEDDINGS_API_KEY" in msg and "CLOUDFLARE_ACCOUNT_ID" in msg and "absent" in msg
 
 
-def test_02_create_real_embedder_present_still_raises():
-    # mirrors scripts/reindex.ts: a key present still throws (provider/model unchosen).
+def test_02_create_real_embedder_token_without_account_raises():
+    # fail-loud: a token but no account id must still raise (never silent-fake).
     with pytest.raises(EmbedderNotConfigured) as exc:
         create_real_embedder({"EMBEDDINGS_API_KEY": "x"})
-    assert "not wired" in str(exc.value)
+    assert "account absent" in str(exc.value)
 
 
-def test_03_real_embedder_methods_raise_and_conform():
-    emb = RealEmbedder(api_key="x")
-    assert isinstance(emb.model, str) and isinstance(emb.dimensions, int)
-    with pytest.raises(EmbedderNotConfigured):
-        emb.embed(["a"])
-    with pytest.raises(EmbedderNotConfigured):
-        emb.embed_query("a")
+def test_03_create_real_embedder_configured_returns_bge_m3():
+    emb = create_real_embedder({"EMBEDDINGS_API_KEY": "tok", "CLOUDFLARE_ACCOUNT_ID": "acc"})
+    assert isinstance(emb, RealEmbedder)
+    assert emb.model == "@cf/baai/bge-m3" and emb.dimensions == 1024
+
+
+def test_03b_real_embedder_posts_and_parses_workers_ai():
+    calls: list = []
+    payload = {"success": True, "result": {"data": [[0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]]}}
+    emb = RealEmbedder(
+        api_key="tok", account_id="acc", dimensions=4, urlopen=_stub_urlopen(payload, calls)
+    )
+    assert emb.embed(["hello", "world"]) == [[0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]]
+    req = calls[0]
+    assert req.full_url == (
+        "https://api.cloudflare.com/client/v4/accounts/acc/ai/run/@cf/baai/bge-m3"
+    )
+    assert req.get_header("Authorization") == "Bearer tok"
+    assert json.loads(req.data.decode("utf-8")) == {"text": ["hello", "world"]}
+
+
+def test_03c_real_embedder_malformed_response_raises():
+    bad = RealEmbedder(
+        api_key="t", account_id="a", dimensions=4,
+        urlopen=_stub_urlopen({"success": False, "result": {}}),
+    )
+    with pytest.raises(RuntimeError):
+        bad.embed(["x"])
 
 
 # ---------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 // task-18 `buildIndex` core); this I/O layer may use Date. RELATIVE imports (tsx
 // ignores the `@/` alias), mirroring scripts/build-avatar-index.ts.
 //
-//   pnpm reindex                              # incremental, real embedder (OQ-5 throw)
+//   pnpm reindex                              # incremental, real embedder (Workers AI bge-m3)
 //   pnpm reindex --mode=full                  # full re-embed (nightly safety net)
 //   pnpm reindex --event=push                 # mode from the GH trigger (selectMode)
 //   pnpm reindex --embedder=fake              # NON-PRODUCTION monolingual index
@@ -27,6 +27,7 @@ import { loadPublishedSources } from '../src/lib/avatar/index-build';
 import { reindex, selectMode } from '../src/lib/avatar/reindex';
 import type { ReindexMode } from '../src/lib/avatar/reindex';
 import { FakeEmbedder } from '../src/lib/avatar/fakes';
+import { createWorkersAiRestEmbedder } from '../src/lib/avatar/embedder';
 import type { Embedder, IndexArtifact } from '../src/lib/avatar/contracts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -77,17 +78,12 @@ function parseArgs(argv: string[]): CliArgs {
 }
 
 /**
- * The real multilingual embedder is OQ-5, still pending — throws with the SAME
- * message shape as functions/api/avatar/query.ts#createEmbedder and
- * scripts/build-avatar-index.ts. The real impl (reading EMBEDDINGS_API_KEY) lands
- * as the post-secret step.
+ * The real multilingual embedder: Cloudflare Workers AI `@cf/baai/bge-m3` (REST),
+ * shared with scripts/build-avatar-index.ts. Reads EMBEDDINGS_API_KEY (the CF token)
+ * + CLOUDFLARE_ACCOUNT_ID; throws `EmbedderNotConfigured` (fail-loud) when absent.
  */
 function createRealEmbedder(env: Record<string, string | undefined>): Embedder {
-  const hasKey = Boolean(env.EMBEDDINGS_API_KEY);
-  throw new Error(
-    `Avatar embedder not configured (OQ-5 pending — see docs/persona.md; ` +
-      `EMBEDDINGS_API_KEY ${hasKey ? 'present, embedder not wired yet' : 'absent'}).`
-  );
+  return createWorkersAiRestEmbedder(env);
 }
 
 function createEmbedder(kind: string): Embedder {

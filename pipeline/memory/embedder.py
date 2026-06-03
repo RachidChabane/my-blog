@@ -1,77 +1,117 @@
-"""The shared OQ-5 multilingual ``Embedder`` (Python side) -- defer-and-throw.
+"""The shared multilingual ``Embedder`` (Python side) -- Cloudflare Workers AI bge-m3.
 
-Mirrors ``src/lib/avatar/contracts.ts`` ``Embedder`` and
-``scripts/reindex.ts`` ``createRealEmbedder``. OQ-5 (the managed multilingual
-embedding provider/model) is UNRESOLVED: the TS sibling throws even with a key
-present ("present, embedder not wired yet"). So this module ships the conforming
-scaffold + a ``create_real_embedder`` factory that raises the SAME fail-loud
-contract -- it never silently fabricates vectors against an invented request shape.
+Mirrors ``src/lib/avatar/embedder.ts`` ``WorkersAiRestEmbedder`` and is pinned to the
+SAME model/dimensions (``@cf/baai/bge-m3`` / 1024-d) so the vectors this pipeline
+produces (dedup over candidate keys, topic memory) stay comparable with the TS index.
 
-Real wiring (BOTH languages, pinned to the same model/dimensions so vectors stay
-comparable) is the post-secret step. There is deliberately NO urllib/HTTP client and
-NO stubbed-``urlopen`` test here: a green test against a guessed request shape would be
-false confidence the moment OQ-5 resolves to a non-OpenAI-compatible API (plan §0.7).
+Provider resolved (was OQ-5): a stubbed-``urlopen`` test is now legitimate -- the
+request/response shape is the Workers AI REST envelope (``{result: {data}, success}``),
+not a guess. ``create_real_embedder`` reads the Cloudflare token + account from env and
+raises ``EmbedderNotConfigured`` (fail-loud) when either is absent -- it never silently
+fabricates vectors, so the offline default stays ``fake`` and a misconfigured
+``--embedder real`` fails clearly.
 """
 from __future__ import annotations
 
+import json
 import os
+import urllib.request
 
 from ..contracts.embedder import Embedder  # Protocol (documentation/typing only)
 
+WORKERS_AI_MODEL = "@cf/baai/bge-m3"
+WORKERS_AI_DIMENSIONS = 1024
+EMBED_BATCH_SIZE = 100  # per-request cap, kept well under Workers AI limits
+_CF_API_BASE = "https://api.cloudflare.com/client/v4"
+_TIMEOUT = 30.0
+
 
 class EmbedderNotConfigured(RuntimeError):
-    """Raised when the real multilingual embedder (OQ-5) is requested without wiring."""
+    """Raised when the real multilingual embedder is requested without credentials."""
 
 
 class RealEmbedder:
-    """Real multilingual ``Embedder`` (OQ-5). Scaffold only -- NOT wired (post-secret step).
+    """Real multilingual ``Embedder``: Workers AI ``@cf/baai/bge-m3`` over the REST API.
 
     Conforms to ``contracts.embedder.Embedder`` (``model`` / ``dimensions`` /
-    ``embed`` / ``embed_query``) so a live wiring is a drop-in. ``model`` and
-    ``dimensions`` are intentionally NOT hard-coded to a guess -- they are pinned at
-    the post-secret step in BOTH languages so vectors stay comparable. Calling
-    ``embed`` / ``embed_query`` before wiring raises ``EmbedderNotConfigured`` -- the
-    same fail-loud contract as the TS sibling.
+    ``embed`` / ``embed_query``). ``urlopen`` is injectable so the offline test
+    exercises the request/parse without a network call.
     """
 
     def __init__(
         self,
         *,
         api_key: str,
-        model: str | None = None,
-        dimensions: int | None = None,
+        account_id: str,
+        model: str = WORKERS_AI_MODEL,
+        dimensions: int = WORKERS_AI_DIMENSIONS,
+        urlopen=None,
     ) -> None:
         self.api_key = api_key
-        self.model = model or "oq5-pending"
-        self.dimensions = dimensions or 0
+        self.account_id = account_id
+        self.model = model
+        self.dimensions = dimensions
+        self._urlopen = urlopen if urlopen is not None else urllib.request.urlopen
+
+    def _run_batch(self, texts: list[str]) -> list[list[float]]:
+        url = f"{_CF_API_BASE}/accounts/{self.account_id}/ai/run/{self.model}"
+        body = json.dumps({"text": texts}).encode("utf-8")
+        request = urllib.request.Request(
+            url,
+            data=body,
+            method="POST",
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+            },
+        )
+        with self._urlopen(request, timeout=_TIMEOUT) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+        data = (payload.get("result") or {}).get("data")
+        if not payload.get("success") or not isinstance(data, list) or len(data) != len(texts):
+            raise RuntimeError("Workers AI embeddings: malformed response.")
+        return data
 
     def embed(self, texts: list[str]) -> list[list[float]]:
-        raise EmbedderNotConfigured(
-            "Pipeline embedder not wired yet (OQ-5 pending -- see docs/persona.md)."
-        )
+        out: list[list[float]] = []
+        for i in range(0, len(texts), EMBED_BATCH_SIZE):
+            out.extend(self._run_batch(texts[i : i + EMBED_BATCH_SIZE]))
+        for vec in out:
+            if len(vec) != self.dimensions:
+                raise RuntimeError(
+                    f"Workers AI embeddings: expected {self.dimensions}-d, got {len(vec)}"
+                )
+        return out
 
     def embed_query(self, text: str) -> list[float]:
-        raise EmbedderNotConfigured(
-            "Pipeline embedder not wired yet (OQ-5 pending -- see docs/persona.md)."
-        )
+        return self.embed([text])[0]
 
 
-def create_real_embedder(env: dict[str, str] | None = None) -> RealEmbedder:
-    """Mirror ``scripts/reindex.ts`` ``createRealEmbedder``. Reads ``EMBEDDINGS_API_KEY``.
+def create_real_embedder(env: dict[str, str] | None = None, *, urlopen=None) -> RealEmbedder:
+    """Mirror ``scripts/build-avatar-index.ts`` ``createWorkersAiRestEmbedder``.
 
-    Absent  -> ``EmbedderNotConfigured('... EMBEDDINGS_API_KEY absent ...')``.
-    Present -> still raises ('present, embedder not wired yet') -- OQ-5's provider /
-    model are unchosen, so we never silently fabricate vectors. The post-secret step
-    wires ``RealEmbedder``. ``always raises`` is the point: the offline default stays
-    ``fake`` and a live ``--embedder real`` without wiring fails loud, never silent-fake.
+    Reads the CF token from ``EMBEDDINGS_API_KEY`` (or ``CLOUDFLARE_API_TOKEN``) and the
+    account from ``CLOUDFLARE_ACCOUNT_ID``. Absent -> ``EmbedderNotConfigured``;
+    present -> a working ``RealEmbedder`` pinned to bge-m3 / 1024-d.
     """
     env = os.environ if env is None else env
-    has_key = bool(env.get("EMBEDDINGS_API_KEY"))
-    raise EmbedderNotConfigured(
-        "Pipeline multilingual embedder not configured (OQ-5 pending -- see "
-        "docs/persona.md; EMBEDDINGS_API_KEY "
-        f"{'present, embedder not wired yet' if has_key else 'absent'})."
-    )
+    api_key = env.get("EMBEDDINGS_API_KEY") or env.get("CLOUDFLARE_API_TOKEN")
+    account_id = env.get("CLOUDFLARE_ACCOUNT_ID")
+    if not api_key or not account_id:
+        raise EmbedderNotConfigured(
+            "Workers AI embedder not configured: need EMBEDDINGS_API_KEY (or "
+            "CLOUDFLARE_API_TOKEN) + CLOUDFLARE_ACCOUNT_ID (see DEPLOY.md §5). "
+            f"token {'present' if api_key else 'absent'}, "
+            f"account {'present' if account_id else 'absent'}."
+        )
+    return RealEmbedder(api_key=api_key, account_id=account_id, urlopen=urlopen)
 
 
-__all__ = ["Embedder", "RealEmbedder", "EmbedderNotConfigured", "create_real_embedder"]
+__all__ = [
+    "Embedder",
+    "RealEmbedder",
+    "EmbedderNotConfigured",
+    "create_real_embedder",
+    "WORKERS_AI_MODEL",
+    "WORKERS_AI_DIMENSIONS",
+]
