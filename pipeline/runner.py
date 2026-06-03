@@ -94,6 +94,8 @@ class RunResult:
     slate: AssembledSlate
     result: SlateResult
     plan: ResumePlan
+    fallback_attempts: int = 0  # fallback-to-next-topic re-drives taken (OQ-14a)
+    alerted: bool = False       # an ALERT.json was written (skip/dry or terminal block)
 
 
 # ---------------------------------------------------------------------------
@@ -222,6 +224,19 @@ def assemble_slate(
     caps["max_review_rounds"] = config.max_review_rounds
     caps["max_gate_repair_rounds"] = config.max_gate_repair_rounds
 
+    # Absolutize the file pointers. cpe `os.chdir(--dir=run_dir)`s BEFORE resolving
+    # these (cli.py), so a relative `pipeline/invariants.yaml` would resolve under
+    # run_dir and silently NOT load (load_invariants returns [] for a missing path) =>
+    # the M-4 gates would never fire in a live run; persona_file has the same latent
+    # bug (missing => silent ""). Derived from the fixed config.repo_root, so the
+    # written tasks.yaml stays byte-identical across run-ids (assemble determinism). No
+    # .resolve() (avoids macOS /private symlink churn; repo_root is already absolute).
+    repo_root = config.repo_root
+    for key in ("persona_file", "invariants_file"):
+        val = defaults.get(key)
+        if val and not Path(val).is_absolute():
+            defaults[key] = str(repo_root / val)
+
     if stage_descriptions:
         for task in raw.get("tasks", []):
             tid = str(task.get("id"))
@@ -345,17 +360,46 @@ def run(
     *,
     resume: bool = False,
 ) -> RunResult:
-    """Assemble (or reload, on resume) -> drive -> read the resume point.
+    """Assemble (or reload, on resume) -> drive -> read the resume point, then run the
+    fallback-to-next-topic re-drive loop (OQ-14a) if ``draft`` blocked.
 
-    Fallback-to-next-topic (OQ-14a) is NOT wired here: it is a harness-owned
-    re-drive (re-run from ``draft`` with a new topic), left as a documented seam.
-    cpe cannot jump back to ``draft`` via a depends_on edge.
+    cpe cannot jump back to ``draft`` via a depends_on edge, so the harness owns the
+    re-drive: on a blocked draft, ``fallback.apply_fallback`` rewrites the brief for the
+    next fallback topic (or skips+alerts when the shortlist is dry / the budget is spent)
+    and resets ``draft`` to pending; we re-drive (resume) and re-read. After the budget
+    is spent with draft still blocked, write a terminal ALERT.json. A non-blocked run
+    never enters the loop (existing resume/interrupt behavior unchanged).
     """
-    # TODO(task-26): fallback re-drive using config.fallback_topic_attempts.
     slate = load_slate(run_id, config) if resume else assemble_slate(run_id, config)
     result = driver.run_slate(slate, resume=resume)
     plan = resume_point(slate, config)
-    return RunResult(run_id=run_id, slate=slate, result=result, plan=plan)
+
+    from .gate import fallback as _fb  # LAZY — keep stages.* out of `import pipeline`
+
+    attempts, alerted = 0, False
+    while "draft" in plan.blocked and attempts < config.fallback_topic_attempts:
+        decision = _fb.apply_fallback(slate.run_dir, config, attempts_used=attempts)
+        if decision.action == "skip":
+            alerted = True  # apply_fallback already wrote ALERT.json
+            break
+        attempts += 1
+        result = driver.run_slate(slate, resume=True)
+        plan = resume_point(slate, config)
+    if "draft" in plan.blocked and not alerted:
+        _fb.write_alert(
+            slate.run_dir,
+            reason=f"terminal failure: draft blocked after {attempts} fallback attempt(s)",
+            blocked_task="draft",
+        )
+        alerted = True
+    return RunResult(
+        run_id=run_id,
+        slate=slate,
+        result=result,
+        plan=plan,
+        fallback_attempts=attempts,
+        alerted=alerted,
+    )
 
 
 __all__ = [
