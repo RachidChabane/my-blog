@@ -78,6 +78,50 @@ result = run("2026-06-02-am", cfg, CpeLoopDriver(cfg), resume=True)
 checkout. Overrides: `CLAUDE_PLAN_EXECUTE_LOOP_BIN`, `CLAUDE_PLAN_EXECUTE_HOME`,
 `CLAUDE_PLAN_EXECUTE_BACKEND`.
 
+## Scheduling (M-5)
+
+The run is driven on a **LOCAL** cron/launchd schedule (not CI — CI has no Claude
+subscription login), via `python -m pipeline.schedule.cron`:
+
+```
+run      drive one editorial slate (records a heartbeat; alerts on failure/block)
+monitor  dead-man's-switch: alert on a missed / stalled / overdue run
+pause    pause the schedule  (FR-F4 — a config flag, no code change)
+resume   resume the schedule (FR-F4)
+status   recent run history + pause state + next fire (FR-F1)
+render   print the reference crontab + launchd plist (`--resolve` fills real paths)
+```
+
+**Two entries = a dead-man's-switch** (a missed run can't self-report): a
+twice-weekly **RUN** (Mon & Thu) plus a daily **MONITOR**. Install them as an
+owner runner-setup step (same family as the one-time tmux/subscription login) —
+copy `pipeline/schedule/scheduler.cron.example` into `crontab -e` (or load
+`scheduler.plist.example` as two LaunchAgents) after editing `<REPO_ROOT>` /
+`<STATE_DIR>`, or pipe `python -m pipeline.schedule.cron render --resolve` into
+`crontab -`. The schedule code **never** auto-installs or touches the real
+crontab. Runtime state (heartbeat/alerts ledgers, the `schedule.json` pause flag,
+`cron.log`) lives under `pipeline/schedule/state/` and is gitignored.
+
+**Times are dual-framed, reconciled by run_id.** The local cron `HOUR` is
+wall-clock (`0 9 * * 1,4` = 09:00 _local_); the heartbeat `Cadence` is UTC-framed.
+They are reconciled by matching the period on the **run_id / calendar day**, not
+the instant — so a healthy 07:00-UTC (= 09:00 Paris) record is not mis-read as a
+missed 09:00-UTC slot (holds for any offset west of UTC+10).
+
+> **Honest limitations (do not over-claim "alerts on missed runs").** The local
+> monitor shares the runner's failure domain: it catches _"machine up, run
+> failed/overdue"_ but **not** _"machine asleep/off"_ (macOS cron has no
+> catch-up). A long usage-limit sleep (shorter than `schedule_grace_hours`, an
+> owner knob) reads as a benign in-flight `pending`, never a false missed. The
+> build ships **File / Log / Collecting** alert sinks only; a live **email /
+> webhook** channel and an **external uptime-ping** dead-man's-switch are
+> POST-SECRET seams behind the `AlertSink` Protocol. And the **git push** that
+> fires the Cloudflare Pages deploy + reindex is owner/deploy-wiring — **not** a
+> push from the schedule code.
+>
+> **Live runs (post-OQ-5):** set `PIPELINE_EMBEDDER=real` so the `select` stage
+> dedups with the real multilingual embedder, not the monolingual offline fake.
+
 ## Tests — fully offline
 
 `pytest -q pipeline` runs with **no claude, no tmux, no network, no secrets**.
