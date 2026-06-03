@@ -517,6 +517,37 @@ export function getPublishedProjects(
     });
 }
 
+/* ------------------------------------------------------- S1 home (task 10) */
+/**
+ * Home/hub "latest" + "teaser" selectors. Thin slices over the existing
+ * published+ordered queries — newest-first articles, curated-order projects —
+ * so the home reuses the exact ordering S2/S6 already prove. Pure (no
+ * astro:content import); the route maps the returned entries → cards.
+ */
+
+/** S1 home — newest published articles to feature (design: 3; app-ia §7: 3–5). */
+export const HOME_LATEST_COUNT = 3;
+/** S1 home — top flagship projects to tease (design/app-ia: 2–3 → 3). */
+export const HOME_TEASER_COUNT = 3;
+
+/** Newest `n` published articles for `lang` (reuses getPublishedArticles' order). */
+export function latestArticles(
+  entries: ArticleEntryLike[],
+  lang: Locale,
+  n: number = HOME_LATEST_COUNT
+): ArticleEntryLike[] {
+  return getPublishedArticles(entries, lang).slice(0, n);
+}
+
+/** Top `n` published projects for `lang` in curated PROJECT_ORDER (flagships first). */
+export function teaserProjects(
+  entries: ProjectEntryLike[],
+  lang: Locale,
+  n: number = HOME_TEASER_COUNT
+): ProjectEntryLike[] {
+  return getPublishedProjects(entries, lang).slice(0, n);
+}
+
 /* ---- RSS helpers (task 16) ---- */
 
 /**

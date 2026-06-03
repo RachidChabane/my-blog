@@ -24,6 +24,10 @@ import {
   tagDirectory,
   unknownArticleTags,
   getRelatedArticles,
+  HOME_LATEST_COUNT,
+  HOME_TEASER_COUNT,
+  latestArticles,
+  teaserProjects,
 } from '@/lib/content';
 import type {
   ArticleEntryLike,
@@ -994,5 +998,83 @@ describe('getRelatedArticles — resolve project relatedArticles', () => {
     expect(
       getRelatedArticles(articles, ['kx'], 'fr').map((r) => r.href)
     ).toEqual(['/fr/blog/fr-x/']);
+  });
+});
+
+/* ============================================================ S1 home (task 10) */
+describe('latestArticles — newest published slice', () => {
+  // 4 fr/published (distinct dates) + a newer DRAFT + a newer EN → only the fr
+  // published count, newest-first; the default cap (HOME_LATEST_COUNT=3) trims 'd'.
+  const arts = [
+    entry({ slug: 'a', publishDate: '05-05-2026' }),
+    entry({ slug: 'b', publishDate: '04-05-2026' }),
+    entry({ slug: 'c', publishDate: '03-05-2026' }),
+    entry({ slug: 'd', publishDate: '02-05-2026' }),
+    entry({ slug: 'draft', publishDate: '06-05-2026', publishState: 'draft' }),
+    entry({ slug: 'en1', publishDate: '06-05-2026', lang: 'en' }),
+  ];
+
+  it('returns the newest HOME_LATEST_COUNT, published + lang-filtered, newest-first', () => {
+    const out = latestArticles(arts, 'fr');
+    expect(out).toHaveLength(HOME_LATEST_COUNT);
+    expect(out.map((e) => e.data.slug)).toEqual(['a', 'b', 'c']); // 'd' trimmed; draft/en excluded
+  });
+
+  it('honors an explicit n and never exceeds the available count', () => {
+    expect(latestArticles(arts, 'fr', 2).map((e) => e.data.slug)).toEqual([
+      'a',
+      'b',
+    ]);
+    // fewer published than n → returns all available (here 1 EN published)
+    expect(latestArticles(arts, 'en')).toHaveLength(1);
+    expect(latestArticles(arts, 'en')[0].data.slug).toBe('en1');
+  });
+
+  it('does not mutate the input array', () => {
+    const before = arts.map((e) => e.data.slug);
+    latestArticles(arts, 'fr');
+    expect(arts.map((e) => e.data.slug)).toEqual(before);
+  });
+});
+
+describe('teaserProjects — top published slice in PROJECT_ORDER', () => {
+  // fr/published flagships + a DRAFT + an EN → curated order, flagship first,
+  // capped at HOME_TEASER_COUNT=3.
+  const projs = [
+    projectEntry({ translationKey: 'athletic-tracker', slug: 'at' }),
+    projectEntry({ translationKey: 'sterna-ai-platform', slug: 'st' }),
+    projectEntry({ translationKey: 'claude-plan-execute', slug: 'cpe' }),
+    projectEntry({ translationKey: 'bayan-rag-platform', slug: 'ba' }),
+    projectEntry({
+      translationKey: 'atelier',
+      slug: 'atl',
+      publishState: 'draft',
+    }),
+    projectEntry({ translationKey: 'ijtihad-engine', slug: 'ij', lang: 'en' }),
+  ];
+
+  it('returns the top HOME_TEASER_COUNT, flagship first, published + lang-filtered', () => {
+    const out = teaserProjects(projs, 'fr');
+    expect(out).toHaveLength(HOME_TEASER_COUNT);
+    expect(out.map((e) => e.data.translationKey)).toEqual([
+      'sterna-ai-platform', // flagship leads (PROJECT_ORDER index 0)
+      'claude-plan-execute',
+      'bayan-rag-platform', // 'athletic-tracker' trimmed; draft/en excluded
+    ]);
+  });
+
+  it('honors an explicit n and returns all when fewer exist', () => {
+    expect(teaserProjects(projs, 'fr', 1).map((e) => e.data.slug)).toEqual([
+      'st',
+    ]);
+    expect(teaserProjects(projs, 'en')).toHaveLength(1); // only the EN ijtihad
+    expect(teaserProjects(projs, 'en')[0].data.slug).toBe('ij');
+  });
+});
+
+describe('home count constants', () => {
+  it('are the documented numbers (design: 3)', () => {
+    expect(HOME_LATEST_COUNT).toBe(3);
+    expect(HOME_TEASER_COUNT).toBe(3);
   });
 });
