@@ -85,7 +85,15 @@ tasks:
     depends_on: [select]
     # M-4 gates (task 26): registered from defaults.invariants_file (pipeline/invariants.yaml),
     # scoped to this task. A blocking gate => draft blocks => publish never runs (NFR-11).
-    gates_extra: [factcheck-fr, factcheck-en, grounding-fr, grounding-en, style-fr, style-en]
+    gates_extra:
+      [
+        factcheck-fr,
+        factcheck-en,
+        grounding-fr,
+        grounding-en,
+        style-fr,
+        style-en,
+      ]
   - id: publish
     phase: publish
     title: 'Publish FR+EN to src/content at parallel URLs; trigger build + reindex'

@@ -18,43 +18,43 @@
 
 - name: factcheck-fr
   kind: shell
-  command: "PYTHONPATH=../../.. python3 -m pipeline.gate.factcheck --run-dir . --lang fr"
+  command: 'PYTHONPATH=../../.. python3 -m pipeline.gate.factcheck --run-dir . --lang fr'
   on_failure: block
-  when: [always]          # scoped to the draft task via draft.gates_extra
-  parallel_safe: true     # gates only READ artifacts the draft phase already wrote
+  when: [always] # scoped to the draft task via draft.gates_extra
+  parallel_safe: true # gates only READ artifacts the draft phase already wrote
   timeout_minutes: 5
-  comment: "M-4 fact-check (FR-C1): provenance integrity + per-claim supported verdict."
+  comment: 'M-4 fact-check (FR-C1): provenance integrity + per-claim supported verdict.'
 
 - name: factcheck-en
   kind: shell
-  command: "PYTHONPATH=../../.. python3 -m pipeline.gate.factcheck --run-dir . --lang en"
+  command: 'PYTHONPATH=../../.. python3 -m pipeline.gate.factcheck --run-dir . --lang en'
   on_failure: block
   when: [always]
   parallel_safe: true
   timeout_minutes: 5
-  comment: "M-4 fact-check (FR-C1): provenance integrity + per-claim supported verdict."
+  comment: 'M-4 fact-check (FR-C1): provenance integrity + per-claim supported verdict.'
 
 - name: grounding-fr
   kind: shell
-  command: "PYTHONPATH=../../.. python3 -m pipeline.gate.grounding --run-dir . --lang fr"
+  command: 'PYTHONPATH=../../.. python3 -m pipeline.gate.grounding --run-dir . --lang fr'
   on_failure: block
   when: [always]
   parallel_safe: true
   timeout_minutes: 5
-  comment: "M-4 source-grounding (FR-C2): inline citations + reachable sources, no dangling."
+  comment: 'M-4 source-grounding (FR-C2): inline citations + reachable sources, no dangling.'
 
 - name: grounding-en
   kind: shell
-  command: "PYTHONPATH=../../.. python3 -m pipeline.gate.grounding --run-dir . --lang en"
+  command: 'PYTHONPATH=../../.. python3 -m pipeline.gate.grounding --run-dir . --lang en'
   on_failure: block
   when: [always]
   parallel_safe: true
   timeout_minutes: 5
-  comment: "M-4 source-grounding (FR-C2): inline citations + reachable sources, no dangling."
+  comment: 'M-4 source-grounding (FR-C2): inline citations + reachable sources, no dangling.'
 
 - name: style-fr
   kind: shell
-  command: "PYTHONPATH=../../.. python3 -m pipeline.gate.style --run-dir . --lang fr"
+  command: 'PYTHONPATH=../../.. python3 -m pipeline.gate.style --run-dir . --lang fr'
   on_failure: block
   when: [always]
   parallel_safe: true
@@ -63,7 +63,7 @@
 
 - name: style-en
   kind: shell
-  command: "PYTHONPATH=../../.. python3 -m pipeline.gate.style --run-dir . --lang en"
+  command: 'PYTHONPATH=../../.. python3 -m pipeline.gate.style --run-dir . --lang en'
   on_failure: block
   when: [always]
   parallel_safe: true
