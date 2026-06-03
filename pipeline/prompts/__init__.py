@@ -11,6 +11,7 @@ from pathlib import Path
 
 from ..config import PipelineConfig
 from .draft import build_draft_prompt, build_revise_prompt
+from .publish import build_publish_prompt
 from .research import build_research_prompt
 from .select import build_select_prompt
 
@@ -23,7 +24,7 @@ def editorial_stage_descriptions(
 ) -> dict[str, str]:
     """Compose per-stage prompt descriptions keyed by cpe task id.
 
-    Returns ``{"research": ..., "select": ..., "draft": ...}`` (task 27 adds publish).
+    Returns ``{"research": ..., "select": ..., "draft": ..., "publish": ...}``.
     """
     return {
         "research": build_research_prompt(
@@ -39,6 +40,10 @@ def editorial_stage_descriptions(
             repo_root=config.repo_root,
             run_dir=run_dir,
         ),
+        "publish": build_publish_prompt(
+            repo_root=config.repo_root,
+            run_dir=run_dir,
+        ),
     }
 
 
@@ -47,5 +52,6 @@ __all__ = [
     "build_select_prompt",
     "build_draft_prompt",
     "build_revise_prompt",
+    "build_publish_prompt",
     "editorial_stage_descriptions",
 ]

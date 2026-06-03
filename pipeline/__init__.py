@@ -41,6 +41,7 @@ from .fakes import (
 )
 from .prompts import (
     build_draft_prompt,
+    build_publish_prompt,
     build_research_prompt,
     build_revise_prompt,
     build_select_prompt,
@@ -90,11 +91,12 @@ __all__ = [
     "FakeEmbedder",
     "FakeTopicMemory",
     "tokenize",
-    # prompt builders (task 24 + task 25 draft/revise)
+    # prompt builders (task 24 + task 25 draft/revise + task 27 publish)
     "build_research_prompt",
     "build_select_prompt",
     "build_draft_prompt",
     "build_revise_prompt",
+    "build_publish_prompt",
     "editorial_stage_descriptions",
 ]
 # Stage symbols (DraftDoc / ReviewReport / StyleReport, ...) are intentionally NOT
@@ -109,3 +111,10 @@ __all__ = [
 # {select,research}, so re-exporting it would pull those into `import pipeline` and break
 # `python -m pipeline.stages.select`'s no-runpy guarantee. runner.run() imports fallback
 # LAZILY; the tests import every gate symbol directly from pipeline.gate.<name>.
+#
+# Task 27 holds pipeline.stages.publish AND the whole pipeline.memory.* package to the same
+# rule: only the import-light PROMPT build_publish_prompt is re-exported above. The publish
+# stage CLI, pipeline.memory.topic_memory, and pipeline.memory.embedder are NOT re-exported
+# (publish imports the other stages; that's safe under `python -m pipeline.stages.publish`
+# only because none of them is the -m target, which requires they stay out of this eager
+# graph). Import them directly from their submodules, as the tests do.
