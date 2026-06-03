@@ -22,8 +22,9 @@ dist/
 # Lighthouse report (build output of `pnpm lh`; budgets file IS committed)
 perf/.lh-report.json
 
-# Avatar index artifact (deploy-time; a real one needs EMBEDDINGS_API_KEY)
+# Avatar index artifacts (deploy-time; real ones need EMBEDDINGS_API_KEY)
 public/avatar-index.json
+.avatar-index/
 
 # Dependencies
 node_modules/

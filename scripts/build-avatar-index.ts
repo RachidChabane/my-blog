@@ -1,51 +1,63 @@
-// Deploy-time CLI for the avatar index artifact (task 18). Thin imperative
-// shell around the tested `loadPublishedSources` + `buildIndex` library; this
-// I/O layer may use Date (the tested path stays Date-free). RELATIVE imports
-// (tsx ignores the `@/` alias), mirroring scripts/gen-portfolio.ts.
+// Deploy-time CLI: build the avatar index and (--push) populate Cloudflare Vectorize
+// + D1 (M-2/M-4). Thin imperative shell around the tested `buildIndex` + `index-sink`
+// libraries. RELATIVE imports (tsx ignores the `@/` alias), mirroring gen-portfolio.ts.
 //
-//   pnpm build:index                      # real embedder (default) — Workers AI
-//                                          # bge-m3 (needs EMBEDDINGS_API_KEY +
-//                                          # CLOUDFLARE_ACCOUNT_ID; see DEPLOY.md §5)
-//   pnpm build:index --embedder=fake      # NON-PRODUCTION monolingual index
-//   pnpm build:index --out=path.json      # custom output path
+//   pnpm build:index --push                 # real embedder (Workers AI bge-m3) -> upsert
+//                                            # Vectorize + execute D1 (needs CF creds +
+//                                            # the index/DB from scripts/cf-provision.sh)
+//   pnpm build:index                        # dry run: write vectors.ndjson + index.sql only
+//   pnpm build:index --embedder=fake        # NON-PRODUCTION monolingual vectors
+//   pnpm build:index --out-dir=path         # where to write the sink artifacts
 //
-// The owner/deploy runs `pnpm build:index` (real embedder) BEFORE `pnpm build`.
-// Wiring WHEN it runs in CI/Cloudflare is out of scope here (documented intent).
+// Full rebuild + full replace every run: the corpus is small (one article/day) and
+// bge-m3 re-embedding is ~$0, so there is no incremental prior. The daily refresh runs
+// `build:index --push` (see .github/workflows/reindex.yml).
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { writeFileSync, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 import {
   buildIndex,
   loadPublishedSources,
 } from '../src/lib/avatar/index-build';
+import { toVectorizeNdjson, toD1Sql } from '../src/lib/avatar/index-sink';
 import { FakeEmbedder } from '../src/lib/avatar/fakes';
 import { createWorkersAiRestEmbedder } from '../src/lib/avatar/embedder';
-import type { Embedder, IndexArtifact } from '../src/lib/avatar/contracts';
+import type { Embedder } from '../src/lib/avatar/contracts';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 interface CliArgs {
   embedderKind: string;
-  out: string;
+  outDir: string;
+  push: boolean;
+  indexName: string;
+  dbName: string;
 }
 
 function parseArgs(argv: string[]): CliArgs {
-  let embedderKind = 'real'; // real by default — a fake index must NEVER ship.
-  let out = join(__dirname, '../public/avatar-index.json');
+  const args: CliArgs = {
+    embedderKind: 'real', // real by default — a fake index must NEVER ship.
+    outDir: join(process.cwd(), '.avatar-index'),
+    push: false,
+    indexName: 'my-blog-avatar', // matches wrangler.toml + cf-provision.sh
+    dbName: 'my-blog-avatar',
+  };
   for (const arg of argv) {
-    if (arg.startsWith('--embedder=')) embedderKind = arg.slice(11);
-    else if (arg.startsWith('--out=')) out = arg.slice(6);
+    if (arg.startsWith('--embedder=')) args.embedderKind = arg.slice(11);
+    else if (arg.startsWith('--out-dir=')) args.outDir = arg.slice(10);
+    else if (arg === '--push') args.push = true;
+    else if (arg.startsWith('--index=')) args.indexName = arg.slice(8);
+    else if (arg.startsWith('--db=')) args.dbName = arg.slice(5);
   }
-  return { embedderKind, out };
+  return args;
 }
 
 /**
- * The real multilingual embedder: Cloudflare Workers AI `@cf/baai/bge-m3` over the
- * REST API. `createWorkersAiRestEmbedder` reads EMBEDDINGS_API_KEY (the CF token) +
- * CLOUDFLARE_ACCOUNT_ID and throws `EmbedderNotConfigured` (fail-loud) when absent —
- * so an unconfigured `pnpm build:index` fails clearly instead of silent-faking.
+ * The real multilingual embedder: Cloudflare Workers AI `@cf/baai/bge-m3` (REST).
+ * Reads EMBEDDINGS_API_KEY (the CF token) + CLOUDFLARE_ACCOUNT_ID; throws
+ * `EmbedderNotConfigured` (fail-loud) when absent — never silent-fakes.
  */
 function createRealEmbedder(env: Record<string, string | undefined>): Embedder {
   return createWorkersAiRestEmbedder(env);
@@ -62,40 +74,64 @@ function createEmbedder(kind: string): Embedder {
   throw new Error(`Unknown --embedder=${kind} (expected "real" or "fake").`);
 }
 
-/** Load a prior artifact for incremental reuse; a parse failure → full rebuild. */
-function loadPrior(outPath: string): IndexArtifact | null {
-  if (!existsSync(outPath)) return null;
-  try {
-    return JSON.parse(readFileSync(outPath, 'utf8')) as IndexArtifact;
-  } catch {
-    console.warn(
-      `Could not parse prior artifact at ${outPath}; doing a full rebuild.`
-    );
-    return null;
-  }
+/**
+ * UNTESTED-UNTIL-BRING-UP: the live wrangler shell-out. Upserts the vectors into
+ * Vectorize and runs the full-replace SQL on the REMOTE D1. Needs
+ * CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID and the index/DB created by
+ * scripts/cf-provision.sh. `--remote --yes` so D1 runs non-interactively.
+ */
+function pushIndex(ndjsonPath: string, sqlPath: string, args: CliArgs): void {
+  console.log(`==> wrangler vectorize upsert ${args.indexName}`);
+  execFileSync(
+    'npx',
+    ['wrangler', 'vectorize', 'upsert', args.indexName, '--file', ndjsonPath],
+    { stdio: 'inherit' }
+  );
+  console.log(`==> wrangler d1 execute ${args.dbName} (remote)`);
+  execFileSync(
+    'npx',
+    [
+      'wrangler',
+      'd1',
+      'execute',
+      args.dbName,
+      '--remote',
+      '--file',
+      sqlPath,
+      '--yes',
+    ],
+    { stdio: 'inherit' }
+  );
 }
 
 async function main(): Promise<void> {
-  const { embedderKind, out } = parseArgs(process.argv.slice(2));
-  const embedder = createEmbedder(embedderKind);
-  const prior = loadPrior(out);
+  const args = parseArgs(process.argv.slice(2));
+  const embedder = createEmbedder(args.embedderKind);
   const sources = loadPublishedSources();
 
   const { artifact, stats } = await buildIndex({
     sources,
     embedder,
-    prior,
+    prior: null, // full rebuild every run (small corpus; bge-m3 ~$0)
     generatedAt: new Date().toISOString(),
   });
 
-  mkdirSync(dirname(out), { recursive: true });
-  writeFileSync(out, JSON.stringify(artifact)); // minified — embeddings are large
+  mkdirSync(args.outDir, { recursive: true });
+  const ndjsonPath = join(args.outDir, 'vectors.ndjson');
+  const sqlPath = join(args.outDir, 'index.sql');
+  writeFileSync(ndjsonPath, toVectorizeNdjson(artifact));
+  writeFileSync(sqlPath, toD1Sql(artifact));
 
   console.log(
-    `avatar-index: embedded ${stats.embeddedSlugs.length} slug(s), ` +
-      `reused ${stats.reusedSlugs.length}, dropped ${stats.droppedSlugs.length}; ` +
-      `${stats.totalChunks} chunks (${artifact.dimensions}-d, model ${artifact.embeddingModel}) -> ${out}`
+    `avatar-index: ${stats.totalChunks} chunks (${artifact.dimensions}-d, ` +
+      `model ${artifact.embeddingModel}) -> ${ndjsonPath} + ${sqlPath}`
   );
+
+  if (args.push) pushIndex(ndjsonPath, sqlPath, args);
+  else
+    console.log(
+      '  (dry run — pass --push to upsert Vectorize + execute D1 via wrangler)'
+    );
 }
 
 if (__filename === process.argv[1]) {

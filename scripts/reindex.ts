@@ -1,3 +1,10 @@
+// SUPERSEDED by `pnpm build:index --push` (Vectorize + D1 migration): the live
+// avatar store is Cloudflare Vectorize + D1, not the public/avatar-index.json this
+// writes, so the daily refresh (reindex.yml) now runs `build:index --push` (full
+// rebuild). This CLI + the tested `reindex()` incremental-reuse lib are retained for
+// reference / the incremental cost-optimization follow-up; they are NOT in the deploy
+// path. Do not wire this into deploy.
+//
 // Deploy-time CLI for incremental + full avatar reindex (task 21, FR-E3). Thin
 // imperative shell around the tested `reindex` wrapper (which delegates to the
 // task-18 `buildIndex` core); this I/O layer may use Date. RELATIVE imports (tsx
