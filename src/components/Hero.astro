@@ -1,0 +1,74 @@
+---
+/**
+ * Hero — S1 restrained typographic hero (design home.jsx <Hero> + site.css .rc-hero).
+ * Owns the page <h1> (the one-line statement). The brand wordmark is the masthead's
+ * (Base → Masthead), not repeated here. Single filled button on the home: the
+ * primary CTA → the blog index. Tokens only; no gradient (task constraint, D-007).
+ */
+interface Props {
+  eyebrow: string;
+  line: string;
+  sub: string;
+  ctaLabel: string;
+  ctaHref: string;
+}
+const { eyebrow, line, sub, ctaLabel, ctaHref } = Astro.props;
+---
+
+<section class="rc-hero">
+  <span class="t-eyebrow">{eyebrow}</span>
+  <h1 class="rc-hero__line">{line}</h1>
+  <p class="rc-hero__sub">{sub}</p>
+  <a class="rc-btn rc-btn--primary" href={ctaHref}>{ctaLabel} →</a>
+</section>
+
+<style>
+  .rc-hero {
+    padding-top: 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    max-width: 760px;
+  }
+  .rc-hero__line {
+    margin: 6px 0 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-display);
+    font-size: var(--text-display);
+    line-height: 1.06;
+    letter-spacing: -0.022em;
+    color: var(--fg);
+  }
+  .rc-hero__sub {
+    margin: 0;
+    font-size: var(--text-body-lg);
+    line-height: 1.7;
+    color: var(--fg-muted);
+    max-width: 56ch;
+  }
+  .rc-btn {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    transition: all var(--dur-hover) var(--ease-soft);
+  }
+  .rc-btn--primary {
+    align-self: flex-start;
+    margin-top: 6px;
+    background: var(--accent);
+    color: var(--fg-on-accent);
+  }
+  .rc-btn--primary:hover {
+    background: var(--accent-strong);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  @media (max-width: 720px) {
+    .rc-hero {
+      padding-top: 52px;
+    }
+  }
+</style>
