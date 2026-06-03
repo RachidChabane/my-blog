@@ -57,8 +57,12 @@ _MON = datetime(2026, 6, 1, tzinfo=UTC).date()
 _THU = datetime(2026, 6, 4, tzinfo=UTC).date()
 # Mon 09:00 UTC -> the launch instant for the run_id "2026-06-01".
 _NOW = datetime(2026, 6, 1, 9, 0, tzinfo=UTC)
-# A Tuesday well past the Monday fire (used for missed/stalled with a 6h grace).
+# A Tuesday at noon (daily cadence: its own fire is Tue 09:00) -- the A-section cadence
+# test uses it to show daily fires every weekday.
 _TUE = datetime(2026, 6, 2, 12, 0, tzinfo=UTC)
+# Mon 16:00 UTC: 7h past the 09:00 fire (> the 6h grace) on the SAME calendar day as the
+# seeded Mon records -- a present record still matches by run_id; an absent one -> MISSED.
+_MON_LATE = datetime(2026, 6, 1, 16, 0, tzinfo=UTC)
 
 
 # ---------------------------------------------------------------------------
@@ -108,23 +112,25 @@ def _rec(status, *, fire_day, when=None, reason=None, topic_id=None, cadence=DEF
 # ---------------------------------------------------------------------------
 
 
-def test_previous_next_fire_within_week():
+def test_previous_next_fire_daily():
     c = DEFAULT_CADENCE
-    assert c.previous_fire(_TUE) == datetime(2026, 6, 1, 9, 0, tzinfo=UTC)
-    assert c.next_fire(_TUE) == datetime(2026, 6, 4, 9, 0, tzinfo=UTC)
+    assert c.previous_fire(_TUE) == datetime(2026, 6, 2, 9, 0, tzinfo=UTC)  # Tue's own fire
+    assert c.next_fire(_TUE) == datetime(2026, 6, 3, 9, 0, tzinfo=UTC)  # Wed (daily)
 
 
-def test_previous_next_fire_cross_week_boundary():
+def test_previous_next_fire_includes_weekends():
     c = DEFAULT_CADENCE
-    fri = datetime(2026, 6, 5, 12, 0, tzinfo=UTC)  # Friday after Thu
-    assert c.previous_fire(fri) == datetime(2026, 6, 4, 9, 0, tzinfo=UTC)
-    assert c.next_fire(fri) == datetime(2026, 6, 8, 9, 0, tzinfo=UTC)  # next Monday
+    fri = datetime(2026, 6, 5, 12, 0, tzinfo=UTC)  # Friday
+    assert c.previous_fire(fri) == datetime(2026, 6, 5, 9, 0, tzinfo=UTC)  # Fri's own fire
+    assert c.next_fire(fri) == datetime(2026, 6, 6, 9, 0, tzinfo=UTC)  # Sat (daily incl weekend)
+    sun = datetime(2026, 6, 7, 12, 0, tzinfo=UTC)  # Sunday
+    assert c.next_fire(sun) == datetime(2026, 6, 8, 9, 0, tzinfo=UTC)  # Mon
 
 
 def test_fire_instant_is_its_own_previous_fire():
     c = DEFAULT_CADENCE
     assert c.previous_fire(_NOW) == _NOW  # inclusive on the fire instant
-    assert c.next_fire(_NOW) == datetime(2026, 6, 4, 9, 0, tzinfo=UTC)  # strictly after
+    assert c.next_fire(_NOW) == datetime(2026, 6, 2, 9, 0, tzinfo=UTC)  # next day (daily)
 
 
 def test_run_id_for_is_utc_calendar_day():
@@ -357,22 +363,23 @@ def test_ledger_roundtrip_and_corrupt_line_skipped(config):
 
 def test_D1_i1_regression_run_id_match_not_instant(config):
     """Seed ONE ok at Mon 07:00 UTC (= 09:00 Paris, STRICTLY < the 09:00-UTC prev) with
-    run_id = the Mon fire day; now = Tue; small grace -> verdict ok, NOT missed. The
-    naive ``r.when >= prev`` filter would drop the 07:00 record and mis-fire MISSED."""
+    run_id = the Mon fire day; now = Mon 16:00 (same day, past grace); small grace ->
+    verdict ok, NOT missed. The naive ``r.when >= prev`` filter would drop the 07:00
+    record and mis-fire MISSED."""
     c = DEFAULT_CADENCE
     ok_when = datetime(2026, 6, 1, 7, 0, tzinfo=UTC)  # 07:00 UTC < 09:00 UTC prev
     heartbeat.append_heartbeat(config, _rec("ok", fire_day=_MON, when=ok_when))
-    verdict = check_heartbeat(config, now=_TUE, cadence=c, grace_hours=6)
+    verdict = check_heartbeat(config, now=_MON_LATE, cadence=c, grace_hours=6)
     assert verdict.status == "ok", verdict
     # discrimination guard: prove the record is < prev (so the buggy filter WOULD drop it)
-    prev = c.previous_fire(_TUE)
+    prev = c.previous_fire(_MON_LATE)
     assert ok_when < prev
     assert [r for r in heartbeat.read_ledger(config) if r.when >= prev] == []
 
 
 def test_D2_missed_emits_named_alert(config):
     sink = CollectingAlertSink()
-    verdict = check_and_alert(config, sink, now=_TUE, grace_hours=6)
+    verdict = check_and_alert(config, sink, now=_MON_LATE, grace_hours=6)
     assert verdict.status == "missed"
     assert len(sink.alerts) == 1 and sink.alerts[0].kind == RUN_MISSED
     assert "2026-06-01" in sink.alerts[0].reason  # names the slot (FR-F2)
@@ -381,7 +388,7 @@ def test_D2_missed_emits_named_alert(config):
 def test_D3_stalled_lone_started_past_grace(config):
     heartbeat.append_heartbeat(config, _rec("started", fire_day=_MON))  # started at Mon 09:00
     sink = CollectingAlertSink()
-    verdict = check_and_alert(config, sink, now=_TUE, grace_hours=6)  # ~27h > grace
+    verdict = check_and_alert(config, sink, now=_MON_LATE, grace_hours=6)  # 7h > grace
     assert verdict.status == "stalled" and sink.alerts[0].kind == RUN_STALLED
 
 
@@ -408,21 +415,21 @@ def test_D6_monitor_does_not_realert_failed_terminal(config):
         config, _rec("failed", fire_day=_MON, when=failed_when, reason="exit 1")
     )
     sink = CollectingAlertSink()
-    verdict = check_and_alert(config, sink, now=_TUE, grace_hours=6)
+    verdict = check_and_alert(config, sink, now=_MON_LATE, grace_hours=6)
     assert verdict.status == "ok" and sink.alerts == []
 
 
 def test_D7_daily_reminder_and_dedup_knob(config):
     # reminder-until-resolved: two ticks -> two alerts
     sink = CollectingAlertSink()
-    check_and_alert(config, sink, now=_TUE, grace_hours=6)
-    check_and_alert(config, sink, now=_TUE, grace_hours=6)
+    check_and_alert(config, sink, now=_MON_LATE, grace_hours=6)
+    check_and_alert(config, sink, now=_MON_LATE, grace_hours=6)
     assert len(sink.alerts) == 2
     # dedup knob: persist to the canonical alerts.jsonl; second tick is suppressed
     coll = CollectingAlertSink()
     multi = MultiAlertSink([coll, FileAlertSink(config.schedule_state_dir / "alerts.jsonl")])
-    check_and_alert(config, multi, now=_TUE, grace_hours=6, dedup=True)
-    check_and_alert(config, multi, now=_TUE, grace_hours=6, dedup=True)
+    check_and_alert(config, multi, now=_MON_LATE, grace_hours=6, dedup=True)
+    check_and_alert(config, multi, now=_MON_LATE, grace_hours=6, dedup=True)
     assert len(coll.alerts) == 1
 
 
@@ -606,7 +613,7 @@ def test_G_plist_example_matches_render():
 
 def test_G_rendered_crontab_content_and_purity():
     out = cron.render_crontab()
-    assert "0 9 * * 1,4" in out
+    assert "0 9 * * *" in out
     assert "pipeline.schedule.cron run" in out
     assert "pipeline.schedule.cron monitor" in out
     assert "run_id/calendar-day" in out  # the LOCAL-vs-UTC reconciliation comment
@@ -619,11 +626,11 @@ def test_G_render_resolve_substitutes_paths():
     assert "<REPO_ROOT>" not in out and "/x/repo" in out and "/x/py" in out
 
 
-def test_G_rendered_plist_has_both_agents_and_weekdays():
+def test_G_rendered_plist_daily_both_agents():
     out = cron.render_launchd_plist()
     assert out.count("<plist version=") == 2  # two LaunchAgents
-    assert "<key>Weekday</key><integer>1</integer>" in out  # Mon
-    assert "<key>Weekday</key><integer>4</integer>" in out  # Thu
+    assert "<key>Weekday</key>" not in out  # daily -> no weekday restriction
+    assert "<key>Hour</key><integer>9</integer>" in out  # run fires at 09:00
     assert "pipeline.schedule.cron" in out
 
 

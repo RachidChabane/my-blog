@@ -31,7 +31,7 @@ Aim: the autonomous publishing engine + a bilingual (FR/EN) portfolio + the RAG 
 
 | ID | Feature | Effort | Why |
 |---|---|---|---|
-| M-5 | Twice-weekly scheduling + heartbeat/monitoring + failure alerting + auto-resume | M | Mitigates Risk 2; sustained cadence is the success metric (`NFR-8`). |
+| M-5 | Daily scheduling + heartbeat/monitoring + failure alerting + auto-resume | M | Mitigates Risk 2; sustained cadence is the success metric (`NFR-8`). |
 | M-6 | Interactive/tmux Claude backend (stay on the subscription pool post 2026-06-15) | M | Mitigates the billing-split risk; pattern from `claude-plan-execute` (`NFR-10`). |
 | M-7 | Secret hygiene: no secrets in repo, config via env / secret store | S | The inventory shows committed secrets are a recurring failure across repos (`NFR-5`). |
 

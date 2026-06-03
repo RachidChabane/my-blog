@@ -157,18 +157,21 @@ def render_crontab(
     monitor_hour: int = 12,
 ) -> str:
     """Render the reference crontab (placeholder form by default; pure + deterministic)."""
-    days = ",".join(str(_cron_weekday(wd)) for wd in cadence.weekdays)
+    # A full week collapses to cron's "*" (every day); a subset stays an explicit list.
+    full_week = len(set(cadence.weekdays)) == 7
+    days = "*" if full_week else ",".join(str(_cron_weekday(wd)) for wd in cadence.weekdays)
+    days_desc = "daily" if full_week else f"weekdays {days}"
     hh, mm, mh = cadence.hour, cadence.minute, monitor_hour
     base = f"cd {repo_root} && {python} -m pipeline.schedule.cron"
     log = f"{state_dir}/cron.log"
     run_line = f"{mm} {hh} * * {days}  {base} run    >> {log} 2>&1"
     mon_line = f"{mm} {mh} * * *   {base} monitor >> {log} 2>&1"
     lines = [
-        "# my-blog content engine - twice-weekly editorial run (M-5). Times below are LOCAL.",
+        "# my-blog content engine - editorial run (M-5). Times below are LOCAL.",
         f"# NOTE: local cron HOUR is wall-clock; the heartbeat Cadence is UTC-framed (hour={hh}).",
         "#   Reconciled by run_id/calendar-day matching (see heartbeat.check_heartbeat).",
-        "# LIVE runs (post-OQ-5): set PIPELINE_EMBEDDER=real or select dedups on the fake.",
-        f"# RUN: weekdays {days} at {hh:02d}:{mm:02d} local - drive one editorial slate.",
+        "# LIVE runs: set PIPELINE_EMBEDDER=real or select dedups on the fake.",
+        f"# RUN: {days_desc} at {hh:02d}:{mm:02d} local - drive one editorial slate.",
         run_line,
         f"# MONITOR: daily {mh:02d}:{mm:02d} local dead-man's-switch (alert on missed/stalled).",
         mon_line,
@@ -222,18 +225,23 @@ def render_launchd_plist(
     monitor_hour: int = 12,
 ) -> str:
     """Render the reference launchd plists (two LaunchAgents; placeholder form by default)."""
-    run_intervals = "\n".join(
-        _cal_dict(
-            weekday=_cron_weekday(wd), hour=cadence.hour, minute=cadence.minute, indent="    "
+    # A full week = one weekday-less interval (launchd fires it daily); a subset = one
+    # interval per Weekday.
+    if len(set(cadence.weekdays)) == 7:
+        run_intervals = _cal_dict(hour=cadence.hour, minute=cadence.minute, indent="    ")
+    else:
+        run_intervals = "\n".join(
+            _cal_dict(
+                weekday=_cron_weekday(wd), hour=cadence.hour, minute=cadence.minute, indent="    "
+            )
+            for wd in cadence.weekdays
         )
-        for wd in cadence.weekdays
-    )
     mon_intervals = _cal_dict(hour=monitor_hour, minute=cadence.minute, indent="    ")
     header = (
         "<!-- my-blog content engine - scheduling (M-5). TWO LaunchAgents: save each\n"
         "     as ~/Library/LaunchAgents/<Label>.plist and `launchctl load` it. Edit\n"
         "     <REPO_ROOT>; times are LOCAL (reconciled to the UTC Cadence by run_id/\n"
-        "     calendar-day matching). LIVE runs (post-OQ-5): export PIPELINE_EMBEDDER=real. -->"
+        "     calendar-day matching). LIVE runs: export PIPELINE_EMBEDDER=real. -->"
     )
     run_agent = _launch_agent(
         label="com.rachidchabane.myblog.run",

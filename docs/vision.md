@@ -68,7 +68,7 @@ The MVP is the autonomous publishing engine + the bilingual portfolio + the RAG 
 - A static site (Astro + Cloudflare Pages) with post rendering, an FR/EN language switcher, and a portfolio section (`M-1`, `M-2`, `M-8`).
 - The article pipeline: news-search → topic-select → draft (FR + EN) → automated review → auto-publish (`M-3`).
 - The mandatory pre-publish quality gate, run per language (`M-4`).
-- Twice-weekly scheduling with monitoring, alerting, and auto-resume (`M-5`).
+- Daily scheduling with monitoring, alerting, and auto-resume (`M-5`).
 - Interactive/tmux Claude backend so the pipeline stays on the subscription pool (`M-6`).
 - Secret hygiene and topic memory (`M-7`, `M-9`).
 - The RAG chatbot avatar with event-driven incremental reindex (`M-10`).

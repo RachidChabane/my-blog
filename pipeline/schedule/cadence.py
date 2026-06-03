@@ -8,7 +8,7 @@ NEVER import ``from .cron`` (that back-edge would double-import ``cron`` at
 All datetimes are **tz-aware UTC**. Every public function takes an injected
 ``now`` and never calls ``datetime.now()`` itself -- determinism + testability.
 
-The dual-frame note (the I1 fix, plan §0.6): macOS cron fires ``0 9 * * 1,4`` at
+The dual-frame note (the I1 fix, plan §0.6): macOS cron fires ``0 9 * * *`` at
 **09:00 LOCAL** (= 07:00 UTC in Paris summer), but this ``Cadence`` is UTC-framed
 (``hour=9``). The two are reconciled by ``run_id_for`` -- the calendar-day period
 key shared by the run (the day it ran) and the monitor (the day of the expected
@@ -23,15 +23,18 @@ from datetime import UTC, date, datetime, timedelta
 
 @dataclass(frozen=True)
 class Cadence:
-    """A twice-weekly fire schedule, UTC-framed.
+    """A daily fire schedule (M-15), UTC-framed.
 
     ``weekdays`` use ``date.weekday()`` numbering (Mon=0 .. Sun=6); the default
-    ``(0, 3)`` is Mon & Thu. ``hour``/``minute`` are the UTC-framed fire time
-    (the local cron entry uses 09:00 *local* clock time -- see the module-level
-    dual-frame note; the frames are reconciled by ``run_id_for``).
+    ``(0..6)`` is every day (one article/day). A subset (e.g. ``(0, 3)`` for Mon &
+    Thu) still works -- the render helpers collapse a full week to ``*`` / a
+    weekday-less launchd interval, and keep an explicit day list otherwise.
+    ``hour``/``minute`` are the UTC-framed fire time (the local cron entry uses
+    09:00 *local* clock time -- see the module-level dual-frame note; the frames
+    are reconciled by ``run_id_for``).
     """
 
-    weekdays: tuple[int, ...] = (0, 3)
+    weekdays: tuple[int, ...] = (0, 1, 2, 3, 4, 5, 6)
     hour: int = 9
     minute: int = 0
 

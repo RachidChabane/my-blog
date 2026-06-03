@@ -93,7 +93,7 @@ render   print the reference crontab + launchd plist (`--resolve` fills real pat
 ```
 
 **Two entries = a dead-man's-switch** (a missed run can't self-report): a
-twice-weekly **RUN** (Mon & Thu) plus a daily **MONITOR**. Install them as an
+daily **RUN** (09:00) plus a daily **MONITOR**. Install them as an
 owner runner-setup step (same family as the one-time tmux/subscription login) —
 copy `pipeline/schedule/scheduler.cron.example` into `crontab -e` (or load
 `scheduler.plist.example` as two LaunchAgents) after editing `<REPO_ROOT>` /
@@ -103,7 +103,7 @@ crontab. Runtime state (heartbeat/alerts ledgers, the `schedule.json` pause flag
 `cron.log`) lives under `pipeline/schedule/state/` and is gitignored.
 
 **Times are dual-framed, reconciled by run_id.** The local cron `HOUR` is
-wall-clock (`0 9 * * 1,4` = 09:00 _local_); the heartbeat `Cadence` is UTC-framed.
+wall-clock (`0 9 * * *` = 09:00 _local_); the heartbeat `Cadence` is UTC-framed.
 They are reconciled by matching the period on the **run_id / calendar day**, not
 the instant — so a healthy 07:00-UTC (= 09:00 Paris) record is not mis-read as a
 missed 09:00-UTC slot (holds for any offset west of UTC+10).

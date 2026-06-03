@@ -1,7 +1,7 @@
 <!-- my-blog content engine - scheduling (M-5). TWO LaunchAgents: save each
      as ~/Library/LaunchAgents/<Label>.plist and `launchctl load` it. Edit
      <REPO_ROOT>; times are LOCAL (reconciled to the UTC Cadence by run_id/
-     calendar-day matching). LIVE runs (post-OQ-5): export PIPELINE_EMBEDDER=real. -->
+     calendar-day matching). LIVE runs: export PIPELINE_EMBEDDER=real. -->
 
 <!-- 1/2 - RUN -->
 <?xml version="1.0" encoding="UTF-8"?>
@@ -20,12 +20,6 @@
   <key>StartCalendarInterval</key>
   <array>
     <dict>
-      <key>Weekday</key><integer>1</integer>
-      <key>Hour</key><integer>9</integer>
-      <key>Minute</key><integer>0</integer>
-    </dict>
-    <dict>
-      <key>Weekday</key><integer>4</integer>
       <key>Hour</key><integer>9</integer>
       <key>Minute</key><integer>0</integer>
     </dict>
