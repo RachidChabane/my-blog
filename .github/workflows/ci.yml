@@ -54,3 +54,43 @@ jobs:
 
       - name: E2E tests
         run: pnpm test:e2e
+
+  # Lighthouse runs in CI for the "Lighthouse >= 90" criterion (task 29 / NFR-1) but
+  # is NON-BLOCKING: `continue-on-error: true` at the job level + no `needs:` ⇒ it
+  # runs in PARALLEL and a sub-0.90 / flaky score reports without failing the run
+  # (the project's WARN tier — never wedges an autonomous gate). The blocking
+  # `e2e` gate covers perf via deterministic proxies (e2e/perf.spec.ts); do NOT
+  # un-skip the in-spec Lighthouse test by setting LIGHTHOUSE=1 here (it lives in
+  # the blocking gate). `pnpm dlx lighthouse` pulls no browser of its own → uses the
+  # preinstalled Chrome via CHROME_PATH; no `playwright install` needed.
+  lighthouse:
+    name: Lighthouse (non-blocking, perf >= 0.90)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build + start preview
+        run: |
+          pnpm build
+          pnpm preview --port 4321 &
+          for i in $(seq 1 30); do curl -sf http://localhost:4321/en/ >/dev/null && break; sleep 1; done
+
+      - name: Lighthouse (budget + score gate)
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: |
+          pnpm lh
+          node -e "const s=require('./perf/.lh-report.json').categories.performance.score; if(s<0.9){console.error('Lighthouse perf '+s+' < 0.90'); process.exit(1)} else console.log('Lighthouse perf '+s)"
