@@ -1,0 +1,8 @@
+# my-blog content engine - twice-weekly editorial run (M-5). Times below are LOCAL.
+# NOTE: local cron HOUR is wall-clock; the heartbeat Cadence is UTC-framed (hour=9).
+#   Reconciled by run_id/calendar-day matching (see heartbeat.check_heartbeat).
+# LIVE runs (post-OQ-5): set PIPELINE_EMBEDDER=real or select dedups on the fake.
+# RUN: weekdays 1,4 at 09:00 local - drive one editorial slate.
+0 9 * * 1,4  cd <REPO_ROOT> && python3 -m pipeline.schedule.cron run    >> <STATE_DIR>/cron.log 2>&1
+# MONITOR: daily 12:00 local dead-man's-switch (alert on missed/stalled).
+0 12 * * *   cd <REPO_ROOT> && python3 -m pipeline.schedule.cron monitor >> <STATE_DIR>/cron.log 2>&1

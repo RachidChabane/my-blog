@@ -1,0 +1,62 @@
+<!-- my-blog content engine - scheduling (M-5). TWO LaunchAgents: save each
+     as ~/Library/LaunchAgents/<Label>.plist and `launchctl load` it. Edit
+     <REPO_ROOT>; times are LOCAL (reconciled to the UTC Cadence by run_id/
+     calendar-day matching). LIVE runs (post-OQ-5): export PIPELINE_EMBEDDER=real. -->
+
+<!-- 1/2 - RUN -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.rachidchabane.myblog.run</string>
+  <key>WorkingDirectory</key><string><REPO_ROOT></string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>python3</string>
+    <string>-m</string>
+    <string>pipeline.schedule.cron</string>
+    <string>run</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict>
+      <key>Weekday</key><integer>1</integer>
+      <key>Hour</key><integer>9</integer>
+      <key>Minute</key><integer>0</integer>
+    </dict>
+    <dict>
+      <key>Weekday</key><integer>4</integer>
+      <key>Hour</key><integer>9</integer>
+      <key>Minute</key><integer>0</integer>
+    </dict>
+  </array>
+  <key>StandardOutPath</key><string><REPO_ROOT>/pipeline/schedule/state/cron.log</string>
+  <key>StandardErrorPath</key><string><REPO_ROOT>/pipeline/schedule/state/cron.log</string>
+</dict>
+</plist>
+
+<!-- 2/2 - MONITOR (dead-man's-switch) -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.rachidchabane.myblog.monitor</string>
+  <key>WorkingDirectory</key><string><REPO_ROOT></string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>python3</string>
+    <string>-m</string>
+    <string>pipeline.schedule.cron</string>
+    <string>monitor</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict>
+      <key>Hour</key><integer>12</integer>
+      <key>Minute</key><integer>0</integer>
+    </dict>
+  </array>
+  <key>StandardOutPath</key><string><REPO_ROOT>/pipeline/schedule/state/cron.log</string>
+  <key>StandardErrorPath</key><string><REPO_ROOT>/pipeline/schedule/state/cron.log</string>
+</dict>
+</plist>
