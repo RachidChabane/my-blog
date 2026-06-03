@@ -18,13 +18,15 @@ from __future__ import annotations
 
 import json
 import sys
+import urllib.error
+import urllib.request
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Callable, Sequence
     from typing import TextIO
 
 # kind constants (FR-F2 "naming the reason")
@@ -121,6 +123,76 @@ class MultiAlertSink:
                 )
 
 
+class WebhookAlertSink:
+    """POSTs ``alert.to_json()`` as a JSON body to a webhook URL (M-14 owner channel).
+
+    The live owner-notification channel named in the module docstring: a generic
+    JSON webhook (Slack/Discord/ntfy/Zapier/your own endpoint), URL from the env
+    var ``ALERT_WEBHOOK_URL``. Stays behind the ``AlertSink`` Protocol, so it drops
+    into ``_default_sink``'s ``MultiAlertSink`` next to File/Log.
+
+    Delivery contract: a non-2xx response or a transport error RAISES -- so a dead
+    channel surfaces, and ``MultiAlertSink`` (which isolates a raising sink) still
+    fires File/Log. ``urlopen`` is injectable for the offline test (no network).
+    """
+
+    def __init__(
+        self,
+        url: str,
+        *,
+        timeout: float = 10.0,
+        urlopen: Callable[..., object] | None = None,
+    ) -> None:
+        self.url = url
+        self.timeout = timeout
+        # default bound lazily so a test can inject a stub without touching the net
+        self._urlopen = urlopen if urlopen is not None else urllib.request.urlopen
+
+    def emit(self, alert: Alert) -> None:
+        body = json.dumps(alert.to_json(), ensure_ascii=False).encode("utf-8")
+        request = urllib.request.Request(
+            self.url,
+            data=body,
+            method="POST",
+            headers={"Content-Type": "application/json"},
+        )
+        with self._urlopen(request, timeout=self.timeout) as resp:
+            status = getattr(resp, "status", None) or resp.getcode()
+            resp.read()
+            if status is not None and not (200 <= int(status) < 300):
+                raise urllib.error.HTTPError(
+                    self.url, int(status), "webhook rejected the alert", hdrs=None, fp=None
+                )
+
+
+def ping_uptime(
+    url: str,
+    *,
+    timeout: float = 10.0,
+    urlopen: Callable[..., object] | None = None,
+) -> bool:
+    """Best-effort success ping to an EXTERNAL dead-man's-switch (M-14).
+
+    A local monitor shares the runner's failure domain -- it cannot detect a
+    machine that is asleep/off. The robust complement is an external uptime
+    service (healthchecks.io, cron-monitor, Uptime Kuma push, ...): the runner
+    pings ``url`` on every healthy beat; if the pings STOP, that external service
+    -- which does NOT share our failure domain -- raises the alarm.
+
+    Best-effort by design: a failed ping must NEVER fail the editorial run, so all
+    errors are swallowed. Returns ``True`` iff the ping was delivered (2xx).
+    """
+    opener = urlopen if urlopen is not None else urllib.request.urlopen
+    try:
+        with opener(url, timeout=timeout) as resp:
+            status = getattr(resp, "status", None) or resp.getcode()
+            resp.read()
+            return status is None or 200 <= int(status) < 300
+    except Exception as exc:  # noqa: BLE001 - a dead ping must not break the run
+        print(f"[UPTIME-PING-ERROR] {url}: {exc}", file=sys.stderr)
+        return False
+
+
 def alert_from_terminal_json(payload: dict, *, run_id: str, now: datetime) -> Alert:
     """Bridge fallback's ``plans/ALERT.json`` artifact -> an ``Alert`` (delivery).
 
@@ -149,5 +221,7 @@ __all__ = [
     "LogAlertSink",
     "FileAlertSink",
     "MultiAlertSink",
+    "WebhookAlertSink",
+    "ping_uptime",
     "alert_from_terminal_json",
 ]

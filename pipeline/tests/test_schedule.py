@@ -18,14 +18,17 @@ import os
 import shutil
 import subprocess
 import sys
+import urllib.error
+from dataclasses import replace
 from datetime import UTC, datetime
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 from pipeline.config import PipelineConfig
 from pipeline.fakes import FakeClaudeDriver
-from pipeline.schedule import cron, heartbeat, pause
+from pipeline.schedule import cron, deploy, heartbeat, pause
 from pipeline.schedule.alert import (
     RUN_BLOCKED,
     RUN_FAILED,
@@ -35,7 +38,9 @@ from pipeline.schedule.alert import (
     CollectingAlertSink,
     FileAlertSink,
     MultiAlertSink,
+    WebhookAlertSink,
     alert_from_terminal_json,
+    ping_uptime,
 )
 from pipeline.schedule.cadence import DEFAULT_CADENCE, run_id_for
 from pipeline.schedule.heartbeat import (
@@ -203,6 +208,137 @@ def test_alert_from_terminal_json_bridge():
     assert a.topic_id == "t1"
     assert a.detail == {"blocked_task": "draft"}
     assert a.reason == "draft blocked after 2 fallback attempt(s)"
+
+
+# ---------------------------------------------------------------------------
+# C2. M-13 deploy push + M-14 webhook / uptime channels
+# ---------------------------------------------------------------------------
+
+
+class _FakeResp:
+    """Minimal urlopen() return: a context manager exposing .status/.read()."""
+
+    def __init__(self, status: int = 200) -> None:
+        self.status = status
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_exc):
+        return False
+
+    def read(self) -> bytes:
+        return b""
+
+    def getcode(self) -> int:
+        return self.status
+
+
+def _capturing_urlopen(status: int = 200, calls: list | None = None):
+    def _urlopen(target, timeout=None):  # target: Request (webhook) or str (ping)
+        if calls is not None:
+            calls.append(target)
+        return _FakeResp(status)
+
+    return _urlopen
+
+
+def test_webhook_sink_posts_alert_json():
+    calls: list = []
+    sink = WebhookAlertSink("https://hook.example/notify", urlopen=_capturing_urlopen(200, calls))
+    sink.emit(Alert(RUN_BLOCKED, "2026-06-01", "draft blocked", _NOW, topic_id="t1"))
+    assert len(calls) == 1
+    req = calls[0]
+    assert req.full_url == "https://hook.example/notify" and req.method == "POST"
+    assert req.headers["Content-type"] == "application/json"
+    body = json.loads(req.data.decode("utf-8"))
+    assert body["kind"] == RUN_BLOCKED and body["run_id"] == "2026-06-01"
+    assert body["reason"] == "draft blocked" and body["topic_id"] == "t1"
+
+
+def test_webhook_sink_non_2xx_raises_and_multi_isolates_it():
+    bad = WebhookAlertSink("https://hook.example/notify", urlopen=_capturing_urlopen(500))
+    with pytest.raises(urllib.error.HTTPError):
+        bad.emit(Alert(RUN_FAILED, "x", "r", _NOW))
+    # MultiAlertSink must isolate the raising webhook so File/Collecting still fire.
+    coll = CollectingAlertSink()
+    MultiAlertSink([bad, coll]).emit(Alert(RUN_FAILED, "x", "r", _NOW))
+    assert len(coll.alerts) == 1
+
+
+def test_ping_uptime_best_effort_true_then_false():
+    assert ping_uptime("https://hc.example/ping", urlopen=_capturing_urlopen(200)) is True
+
+    def _boom(target, timeout=None):
+        raise OSError("network down")
+
+    # a dead ping must NEVER raise (it would crash an otherwise-successful run)
+    assert ping_uptime("https://hc.example/ping", urlopen=_boom) is False
+
+
+def test_default_sink_adds_webhook_only_when_configured(config):
+    plain = cron._default_sink(config)
+    assert not any(isinstance(s, WebhookAlertSink) for s in plain.sinks)
+    hooked = cron._default_sink(replace(config, alert_webhook_url="https://hook.example/notify"))
+    assert any(isinstance(s, WebhookAlertSink) for s in hooked.sinks)
+
+
+def test_push_after_success_gated_off_by_default(config):
+    calls: list = []
+    ran = deploy.push_after_success(config, runner=lambda *a, **k: calls.append((a, k)))
+    assert ran is False and calls == []  # git_push defaults off -> no push, no runner call
+
+
+def test_push_after_success_runs_git_push_when_enabled(config):
+    calls: list = []
+
+    def _runner(argv, cwd=None):
+        calls.append((argv, cwd))
+        return SimpleNamespace(returncode=0)
+
+    cfg = replace(config, git_push=True, git_remote="origin", git_branch="main")
+    assert deploy.push_after_success(cfg, runner=_runner) is True
+    assert calls == [(["git", "push", "origin", "main"], str(cfg.repo_root))]
+
+
+def test_push_after_success_nonzero_exit_is_false_not_raise(config):
+    cfg = replace(config, git_push=True)
+    failed = deploy.push_after_success(cfg, runner=lambda *a, **k: SimpleNamespace(returncode=1))
+    assert failed is False
+
+
+def test_after_run_pings_and_pushes_only_on_completion(config):
+    pings: list = []
+    pushes: list = []
+    fake_ping = lambda url: pings.append(url)  # noqa: E731
+    fake_push = lambda cfg: pushes.append(cfg)  # noqa: E731
+    cfg = replace(config, uptime_ping_url="https://hc.example/ping")
+
+    completed = cron.ScheduledOutcome(run_id="2026-06-01", ran=True)  # ran, not alerted
+    cron._after_run(cfg, completed, ping=fake_ping, push=fake_push)
+    assert pings == ["https://hc.example/ping"] and len(pushes) == 1
+
+    pings.clear()
+    pushes.clear()
+    for skip in (
+        cron.ScheduledOutcome(run_id="x", ran=True, alerted=True),     # failed/blocked
+        cron.ScheduledOutcome(run_id="x", paused=True),                # paused
+        cron.ScheduledOutcome(run_id="x", already_complete=True),      # idempotent no-op
+    ):
+        cron._after_run(cfg, skip, ping=fake_ping, push=fake_push)
+    assert pings == [] and pushes == []
+
+
+def test_after_run_skips_ping_when_no_uptime_url(config):
+    pings: list = []
+    pushes: list = []
+    cron._after_run(
+        config,  # no uptime_ping_url
+        cron.ScheduledOutcome(run_id="2026-06-01", ran=True),
+        ping=lambda url: pings.append(url),
+        push=lambda cfg: pushes.append(cfg),
+    )
+    assert pings == [] and len(pushes) == 1  # push still attempted (it self-gates on git_push)
 
 
 # ---------------------------------------------------------------------------

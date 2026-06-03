@@ -9,11 +9,13 @@ Ownership split (plan §2.5/§2.6): ``run_scheduled`` owns ``RUN_FAILED`` / ``RU
 at run time and bridges fallback's ``plans/ALERT.json`` artifact -> delivery; the monitor
 (``heartbeat.check_and_alert``) owns ``RUN_MISSED`` / ``RUN_STALLED`` only.
 
-OUT of scope (do not add here): the ``git push`` / ``wrangler`` deploy / CI workflow that
-fires Cloudflare Pages + the reindex -- that is owner/deploy-wiring, NOT a push from the
-schedule code [MEM: publish-stage-commit-no-push-gap]. Do NOT add a
-``pipeline/schedule/__main__.py``: the entry is the ``cron`` module, and a package
-``__main__`` would re-import it.
+Deploy wiring (M-13, [MEM: publish-stage-commit-no-push-gap]): the pure
+``run_scheduled`` core stays push-free -- it only commits via the publish stage. The
+opt-in ``git push`` lives at the CLI layer (``_after_run`` -> ``deploy.push_after_success``),
+gated on ``config.git_push`` (env ``PIPELINE_GIT_PUSH=1``), so a run-to-completion fires
+the Cloudflare Pages deploy + reindex while tests/CI never push. ``wrangler``/CI workflow
+config itself stays out of this module. Do NOT add a ``pipeline/schedule/__main__.py``:
+the entry is the ``cron`` module, and a package ``__main__`` would re-import it.
 """
 from __future__ import annotations
 
@@ -260,11 +262,42 @@ def render_launchd_plist(
 
 
 def _default_sink(config: PipelineConfig) -> AlertSink:
-    from .alert import FileAlertSink, LogAlertSink, MultiAlertSink
-
-    return MultiAlertSink(
-        [FileAlertSink(config.schedule_state_dir / "alerts.jsonl"), LogAlertSink()]
+    from .alert import (
+        AlertSink as _AlertSink,
     )
+    from .alert import (
+        FileAlertSink,
+        LogAlertSink,
+        MultiAlertSink,
+        WebhookAlertSink,
+    )
+
+    sinks: list[_AlertSink] = [
+        FileAlertSink(config.schedule_state_dir / "alerts.jsonl"),
+        LogAlertSink(),
+    ]
+    if config.alert_webhook_url:  # M-14 owner channel, off unless configured
+        sinks.append(WebhookAlertSink(config.alert_webhook_url))
+    return MultiAlertSink(sinks)
+
+
+def _after_run(config: PipelineConfig, outcome: ScheduledOutcome, *, ping=None, push=None) -> None:
+    """Side effects after a run (M-13/M-14), ONLY on a run-to-completion.
+
+    Lazy-imports ``alert``/``deploy`` to preserve the import-light contract; both
+    helpers are injectable for the offline test. Healthy beat -> ping the external
+    dead-man's-switch (M-14); then push so CI deploys + reindexes (M-13). Paused /
+    already-complete / failed / blocked outcomes are skipped (they did not just
+    produce a fresh published article)."""
+    if not (outcome.ran and not outcome.alerted):
+        return
+    from . import alert, deploy
+
+    do_ping = ping if ping is not None else alert.ping_uptime
+    do_push = push if push is not None else deploy.push_after_success
+    if config.uptime_ping_url:
+        do_ping(config.uptime_ping_url)
+    do_push(config)
 
 
 def _run_summary(outcome: ScheduledOutcome) -> str:
@@ -282,13 +315,17 @@ def _cmd_run(config: PipelineConfig, *, now: datetime) -> int:
 
     outcome = run_scheduled(config, CpeLoopDriver(config), _default_sink(config), now=now)
     print(_run_summary(outcome))
+    _after_run(config, outcome)  # M-13 push + M-14 uptime ping (run-to-completion only)
     return 0  # ran / idempotent / paused are all success; only a harness error raises
 
 
 def _cmd_monitor(config: PipelineConfig, *, now: datetime) -> int:
-    from . import heartbeat
+    from . import alert, heartbeat
 
     verdict = heartbeat.check_and_alert(config, _default_sink(config), now=now)
+    # M-14: a healthy monitor tick is a liveness beat -> ping the external switch.
+    if verdict.status == "ok" and config.uptime_ping_url:
+        alert.ping_uptime(config.uptime_ping_url)
     print(f"[{verdict.status}] {verdict.reason} (next fire {verdict.next_fire.isoformat()})")
     # Always exit 0: an alert was already delivered; a nonzero would make cron spam mail.
     return 0

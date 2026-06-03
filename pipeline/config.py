@@ -18,6 +18,14 @@ CPE_HOME_ENV = "CLAUDE_PLAN_EXECUTE_HOME"
 CPE_BACKEND_ENV = "CLAUDE_PLAN_EXECUTE_BACKEND"
 
 
+def _env_truthy(value: str | None) -> bool:
+    """Parse a boolean env var (``1``/``true``/``yes``/``on`` -> True; else False).
+
+    Mirrors ``pause.is_paused``'s truthy set so the engine reads env flags one way.
+    """
+    return (value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 def discover_loop_bin() -> str | None:
     """Path to the ``claude-plan-execute-loop`` exit-75 auto-resume wrapper.
 
@@ -109,6 +117,17 @@ class PipelineConfig:
     schedule_state_dir: Path | None = None
     # owner knob: MISSED/STALLED grace window (usage-limit sleeps stay benign)
     schedule_grace_hours: int = 6
+    # M-14 notification channels (post-secret; off unless the env var is set).
+    # alert_webhook_url -> WebhookAlertSink (ALERT_WEBHOOK_URL); uptime_ping_url ->
+    # external dead-man's-switch pinged on a healthy beat (UPTIME_PING_URL).
+    alert_webhook_url: str | None = None
+    uptime_ping_url: str | None = None
+    # M-13 deploy push: after a run-to-completion, push the publish commit so CI
+    # (Pages deploy + reindex) fires. OFF by default -- tests/CI never push; the
+    # runner opts in with PIPELINE_GIT_PUSH=1 once it has push credentials.
+    git_push: bool = False
+    git_remote: str = "origin"
+    git_branch: str = "main"
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "repo_root", Path(self.repo_root))
@@ -152,4 +171,9 @@ class PipelineConfig:
             loop_bin=discover_loop_bin(),
             cpe_home=discover_cpe_home(),
             claude_backend=backend,
+            alert_webhook_url=os.environ.get("ALERT_WEBHOOK_URL") or None,
+            uptime_ping_url=os.environ.get("UPTIME_PING_URL") or None,
+            git_push=_env_truthy(os.environ.get("PIPELINE_GIT_PUSH")),
+            git_remote=os.environ.get("PIPELINE_GIT_REMOTE") or "origin",
+            git_branch=os.environ.get("PIPELINE_GIT_BRANCH") or "main",
         )
