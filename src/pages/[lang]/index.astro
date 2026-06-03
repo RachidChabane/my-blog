@@ -1,0 +1,195 @@
+---
+/**
+ * S1 — Home / hub. `/[lang]/` (FR + EN). A restrained typographic hero (the page
+ * heading; the brand wordmark is the masthead's), then two blocks: the newest
+ * published articles ("Derniers articles") reusing the pinned ArticleListItem
+ * (S2 row), and a top-flagships teaser ("Projets") reusing ProjectCard (S6 card).
+ * No SaaS landing tropes, no gradient hero, no email capture (task constraint,
+ * guarded statically by tests/home.test.ts).
+ *
+ * Selectors + view-models come from src/lib/content.ts; copy from src/i18n/ui.ts;
+ * chrome (masthead/footer/avatar/skip-link) from Base. No slugMap → the language
+ * switcher falls back to the localized home (decision #6; NFR-11 holds since both
+ * /fr/ and /en/ exist). The two "see all" affordances link to the section indexes
+ * (/[lang]/blog/, /[lang]/work/), which exist. Blocks render only when non-empty
+ * (defensive; the seeds guarantee ≥3 published per locale).
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import {
+  homeStrings,
+  articleIndexStrings,
+  portfolioIndexStrings,
+} from '@/i18n/ui';
+import {
+  latestArticles,
+  teaserProjects,
+  toArticleCard,
+  toProjectCard,
+} from '@/lib/content';
+import type { ArticleCard, ProjectCardVM } from '@/lib/content';
+import Base from '@/layouts/Base.astro';
+import Hero from '@/components/Hero.astro';
+import ArticleListItem from '@/components/ArticleListItem.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+
+export const getStaticPaths = (async () => {
+  const [articles, projects, tagEntries] = await Promise.all([
+    getCollection('articles'),
+    getCollection('projects'),
+    getCollection('tags'),
+  ]);
+  const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
+  return LOCALES.map((lang) => ({
+    params: { lang },
+    props: {
+      lang,
+      latest: latestArticles(articles, lang).map((e) =>
+        toArticleCard(e, lang, tags)
+      ),
+      teaser: teaserProjects(projects, lang).map((e) => toProjectCard(e, lang)),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { lang, latest, teaser } = Astro.props as {
+  lang: Locale;
+  latest: ArticleCard[];
+  teaser: ProjectCardVM[];
+};
+const h = homeStrings(lang);
+const ai = articleIndexStrings(lang); // ai.readCta — reused for the article rows
+const pi = portfolioIndexStrings(lang); // pi.ordinalWord / pi.viewCta — reused for the cards
+const blogHref = localePath(lang, 'blog');
+const workHref = localePath(lang, 'work');
+---
+
+<Base title={h.metaTitle} description={h.heroSub} lang={lang}>
+  <div class="rc-home rc-enter">
+    <Hero
+      eyebrow={h.heroEyebrow}
+      line={h.heroLine}
+      sub={h.heroSub}
+      ctaLabel={h.heroCta}
+      ctaHref={blogHref}
+    />
+
+    {
+      latest.length > 0 && (
+        <section class="rc-block">
+          <div class="rc-block__head">
+            <h2 class="rc-block__title">{h.latestTitle}</h2>
+            <a class="rc-teaser-all" href={blogHref}>
+              {h.latestAll} →
+            </a>
+          </div>
+          <div class="rc-arows">
+            {latest.map((card) => (
+              <ArticleListItem card={card} readCta={ai.readCta} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    {
+      teaser.length > 0 && (
+        <section class="rc-block">
+          <div class="rc-block__head">
+            <h2 class="rc-block__title">{h.projectsTitle}</h2>
+            <a class="rc-teaser-all" href={workHref}>
+              {h.projectsAll} →
+            </a>
+          </div>
+          <div class="rc-projgrid">
+            {teaser.map((card, i) => (
+              <ProjectCard
+                card={card}
+                ordinal={String(i + 1).padStart(2, '0')}
+                ordinalWord={pi.ordinalWord}
+                viewCta={pi.viewCta}
+              />
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  /* Inner content column (Base already provides <main>; no second <main>). Same
+     1080px width + padding as work/index.astro so the teaser grid aligns with the
+     portfolio it links into. Tokens only. */
+  .rc-home {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-9);
+  }
+  @media (max-width: 720px) {
+    .rc-home {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+  .rc-block {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .rc-block__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 16px;
+  }
+  .rc-block__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-head);
+    font-size: var(--text-h2);
+    letter-spacing: -0.015em;
+    color: var(--fg);
+  }
+  .rc-teaser-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    white-space: nowrap;
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-teaser-all:hover {
+    color: var(--accent-strong);
+  }
+  .rc-arows {
+    display: flex;
+    flex-direction: column;
+  }
+  .rc-projgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 22px;
+  }
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>
