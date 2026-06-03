@@ -24,9 +24,12 @@ defaults:
   # Same idle-fallback issue as plan (0.8*review_timeout): default 15m fired at
   # 720s and cut long opus/max reviews off before they wrote review-N.md
   # (observed: task 14 review_missing at exactly 721s; task 8 review also hit 721s
-  # but won the race). 30m -> fallback at 24m. Implement (60m) left as-is: it
+  # but won the race). Raised 15->30 (fallback 24m); then task 28 (M-5, the largest
+  # plan: 52KB, 231k/247k-token review rounds) recurred — its review-2 hit 1442s =
+  # 0.8*30m=24m and was cut before writing review-2.md (review_missing). 60m ->
+  # fallback at 48m (2x the 24m that failed). Implement (60m) left as-is: it
   # streams output continuously so it doesn't trip the idle detector.
-  review_timeout_minutes: 30
+  review_timeout_minutes: 60
   max_review_rounds: 3
   on_max_review_rounds: fail   # autonomous-safe: a plan that can't pass review blocks+alerts, never auto-approves
   parallelism: 1
