@@ -489,3 +489,32 @@ def test_G_rendered_plist_has_both_agents_and_weekdays():
     assert "<key>Weekday</key><integer>1</integer>" in out  # Mon
     assert "<key>Weekday</key><integer>4</integer>" in out  # Thu
     assert "pipeline.schedule.cron" in out
+
+
+# ---------------------------------------------------------------------------
+# H. CLI dispatch (the _main -> _cmd_* wiring; FR-F4 round-trip)
+# ---------------------------------------------------------------------------
+
+
+def test_H_cli_pause_resume_roundtrip(config, monkeypatch, capsys):
+    """FR-F4 wired path: `cron.py pause`/`resume` flip the flag via the CLI dispatch
+    (the round-trip the function-level tests prove the pieces of, end to end)."""
+    from pipeline import config as cfgmod
+
+    monkeypatch.setattr(cfgmod.PipelineConfig, "from_env", lambda *a, **k: config)
+    assert cron._main(["pause"]) == 0
+    assert pause.is_paused(config, env={}) is True
+    assert cron._main(["resume"]) == 0
+    assert pause.is_paused(config, env={}) is False
+    out = capsys.readouterr().out
+    assert "paused" in out and "resumed" in out
+
+
+def test_H_cli_status_reads_ledger(config, monkeypatch, capsys):
+    from pipeline import config as cfgmod
+
+    monkeypatch.setattr(cfgmod.PipelineConfig, "from_env", lambda *a, **k: config)
+    heartbeat.append_heartbeat(config, _rec("ok", fire_day=_MON))
+    assert cron._main(["status"]) == 0
+    out = capsys.readouterr().out
+    assert "paused:" in out and "next fire:" in out and "2026-06-01" in out
