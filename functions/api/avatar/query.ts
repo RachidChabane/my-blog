@@ -11,7 +11,10 @@ import {
   applyThreshold,
   DEFAULT_SIMILARITY_THRESHOLD,
 } from '../../../src/lib/avatar/threshold';
-import { createRetriever } from '../../../src/lib/avatar/retrieval';
+import { retrieve } from '../../../src/lib/avatar/retrieval';
+import { WorkersAiBindingEmbedder } from '../../../src/lib/avatar/embedder';
+import { VectorizeVectorStore } from '../../../src/lib/avatar/vectorize-store';
+import { D1LexicalStore } from '../../../src/lib/avatar/d1-lexical';
 import {
   buildSynthesisRequest,
   IDK_MESSAGE,
@@ -25,8 +28,6 @@ import {
 
 // --- type-only imports (verbatimModuleSyntax) ---
 import type {
-  Embedder,
-  IndexArtifact,
   LLMProvider,
   LlmRequest,
   RetrievalResult,
@@ -34,16 +35,19 @@ import type {
 } from '../../../src/lib/avatar/contracts';
 import type { RetrieveOptions } from '../../../src/lib/avatar/retrieval';
 import type { Citation, Locale } from '../../../src/lib/avatar/protocol';
+import type {
+  AiBinding,
+  VectorizeIndex,
+  D1Database,
+} from '../../../src/lib/avatar/cf';
 
-// --- minimal Cloudflare Pages types (no @cloudflare/workers-types dependency) -
-interface Fetcher {
-  fetch(input: Request | string): Promise<Response>;
-}
+// --- Cloudflare Pages env (bindings hand-typed in src/lib/avatar/cf.ts) ---------
 interface Env {
-  OPENROUTER_API_KEY?: string;
-  EMBEDDINGS_API_KEY?: string;
+  OPENROUTER_API_KEY?: string; // avatar LLM (synthesis)
   AVATAR_SIMILARITY_THRESHOLD?: string; // optional runtime override, non-secret
-  ASSETS?: Fetcher; // Pages static-asset binding
+  AI?: AiBinding; // Workers AI: query-time bge-m3 embeddings (no key/HTTP)
+  VECTORIZE?: VectorizeIndex; // dense leg
+  DB?: D1Database; // lexical (FTS5 BM25) + chunk hydration
 }
 interface PagesContext {
   request: Request;
@@ -192,69 +196,37 @@ export async function handleAvatarQuery(
   );
 }
 
-// --- runtime wiring (onRequestPost; not unit-tested — needs secrets+artifact) -
-let cached: { artifact: IndexArtifact; retriever: AvatarRetriever } | null =
-  null;
-
+// --- runtime wiring (onRequestPost; not unit-tested — needs the live bindings) -
 export async function onRequestPost(context: PagesContext): Promise<Response> {
   const { request, env } = context;
   try {
-    if (!cached) {
-      const artifact = await loadIndexArtifact(request, env);
-      const embedder = createEmbedder(env); // throws until OQ-5 resolves
-      cached = { artifact, retriever: createRetriever(artifact, { embedder }) };
-    }
+    const retriever = createBindingRetriever(env); // throws if a binding is absent
     const llm = createLLMProvider(env);
     const threshold = parseThreshold(env.AVATAR_SIMILARITY_THRESHOLD);
-    return await handleAvatarQuery(request, {
-      retriever: cached.retriever,
-      llm,
-      threshold,
-    });
+    return await handleAvatarQuery(request, { retriever, llm, threshold });
   } catch {
     return jsonError(503, 'Avatar service unavailable.');
   }
 }
 
-/** PINNED CONTRACT: task 18 emits the artifact to `/avatar-index.json`. */
-async function loadIndexArtifact(
-  request: Request,
-  env: Env
-): Promise<IndexArtifact> {
-  const url = new URL('/avatar-index.json', request.url);
-  const res = env.ASSETS
-    ? await env.ASSETS.fetch(new Request(url.toString()))
-    : await fetch(url.toString());
-  if (!res.ok) throw new Error('Index artifact unavailable.');
-  const artifact = (await res.json()) as IndexArtifact;
-  // `version !== 1` is a DELIBERATE fail-closed hard pin, not an oversight: an
-  // unknown future `version: 2` may carry an incompatible shape, so we 503
-  // rather than risk mis-reading it. Bump this in lockstep when task 18 revs the
-  // artifact format. (Known forward-compat limit — see Risks.)
-  if (
-    artifact.version !== 1 ||
-    !(artifact.dimensions > 0) ||
-    !Array.isArray(artifact.chunks)
-  ) {
-    throw new Error('Index artifact malformed.');
-  }
-  return artifact;
-}
-
 /**
- * OQ-5 still open: the real multilingual embedder is not chosen yet. Keep `env`
- * and reference it (the real embedder will read `EMBEDDINGS_API_KEY`) so the stub
- * is honest about its future input AND so eslint's `no-unused-vars` (bare
- * `recommended` — no `argsIgnorePattern`, a leading `_` is NOT exempt) does not
- * fail the BLOCK lint gate. (Dropping the param instead would force changing the
- * call site too: `createEmbedder(env)` against a 0-arity fn errors TS2554.)
+ * Wire the production retriever from the Cloudflare bindings: bge-m3 via the AI
+ * binding (query-time embeddings, no key/HTTP), the dense leg over Vectorize, the
+ * lexical leg over D1 FTS5. The wrappers are thin (no heavy index load), so building
+ * one per request is cheap. Throws (-> 503) if a binding is missing — e.g. on a
+ * preview deploy where the avatar index has not been provisioned.
  */
-function createEmbedder(env: Env): Embedder {
-  const hasKey = Boolean(env.EMBEDDINGS_API_KEY);
-  throw new Error(
-    `Avatar embedder not configured (OQ-5 pending — see docs/persona.md; ` +
-      `EMBEDDINGS_API_KEY ${hasKey ? 'present, embedder not wired yet' : 'absent'}).`
-  );
+function createBindingRetriever(env: Env): AvatarRetriever {
+  if (!env.AI || !env.VECTORIZE || !env.DB) {
+    throw new Error('Avatar bindings unavailable (AI / VECTORIZE / DB).');
+  }
+  const embedder = new WorkersAiBindingEmbedder(env.AI);
+  const vectorStore = new VectorizeVectorStore(env.VECTORIZE, env.DB);
+  const lexical = new D1LexicalStore(env.DB);
+  return {
+    retrieve: (query: string, opts?: RetrieveOptions) =>
+      retrieve(query, { embedder, vectorStore, lexical }, opts),
+  };
 }
 
 function createLLMProvider(env: Env): LLMProvider {

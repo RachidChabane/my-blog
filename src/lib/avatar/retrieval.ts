@@ -17,10 +17,19 @@ import { Bm25Index } from './lexical';
 import { reciprocalRankFusion, DEFAULT_RRF_K } from './rrf';
 import { InMemoryVectorStore } from './vector-store';
 
+/**
+ * The lexical (BM25) leg. The in-memory `Bm25Index` (sync) and the D1 FTS5 store
+ * (async) both satisfy this — `retrieve()` awaits the result either way, so the
+ * production swap (in-memory -> D1) needs no change to the fusion logic.
+ */
+export interface LexicalSearcher {
+  search(query: string, topK: number): ScoredChunk[] | Promise<ScoredChunk[]>;
+}
+
 export interface RetrieveDeps {
   embedder: Embedder;
   vectorStore: VectorStore;
-  lexical: Bm25Index;
+  lexical: LexicalSearcher;
   /** Optional cross-encoder rerank. Omit for the canonical "no rerank" config. */
   reranker?: Reranker;
 }
@@ -61,7 +70,8 @@ export async function retrieve(
 
   const queryEmbedding = await deps.embedder.embedQuery(query);
   const vectorResults = await deps.vectorStore.search(queryEmbedding, legTopK);
-  const lexicalResults = deps.lexical.search(query, legTopK);
+  // `await` covers both legs: in-memory Bm25Index (sync) and the D1 FTS5 store (async).
+  const lexicalResults = await deps.lexical.search(query, legTopK);
 
   // Gate signal: the vector leg is sorted by cosine, so [0].score is the corpus
   // max cosine. Captured BEFORE fusion/rerank/truncation.
