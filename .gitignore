@@ -41,6 +41,9 @@ coverage/
 # Content-engine per-run working dirs (assembled slate + cpe state + artifacts)
 pipeline/runs/
 
+# Content-engine schedule runtime state (heartbeat/alerts ledgers, pause flag, cron log)
+pipeline/schedule/state/
+
 # Python tooling caches
 __pycache__/
 .pytest_cache/

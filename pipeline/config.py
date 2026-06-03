@@ -103,6 +103,12 @@ class PipelineConfig:
     max_minutes_per_phase: int = 30        # caps
     fallback_topic_attempts: int = 2       # OQ-14a — harness-owned (task 26)
     embedder: str = "shared-multilingual"  # OQ-5 seam name only
+    # Scheduling (M-5, task 28). schedule_state_dir holds the gitignored runtime
+    # ledgers/flags (heartbeat.jsonl, alerts.jsonl, schedule.json, cron.log);
+    # derived under repo_root in __post_init__ when left None.
+    schedule_state_dir: Path | None = None
+    # owner knob: MISSED/STALLED grace window (usage-limit sleeps stay benign)
+    schedule_grace_hours: int = 6
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "repo_root", Path(self.repo_root))
@@ -119,6 +125,13 @@ class PipelineConfig:
             self.repo_root / "pipeline" / "tasks-template.yaml"
             if tmpl is None
             else Path(tmpl),
+        )
+        object.__setattr__(
+            self,
+            "schedule_state_dir",
+            self.repo_root / "pipeline" / "schedule" / "state"
+            if self.schedule_state_dir is None
+            else Path(self.schedule_state_dir),
         )
         if self.cpe_home is not None:
             object.__setattr__(self, "cpe_home", Path(self.cpe_home))
