@@ -105,11 +105,25 @@ gh secret set SITE_URL              --body "https://my-blog-4uk.pages.dev"
 
 # 3. Seed Vectorize + D1 from the existing articles (full rebuild + push via wrangler):
 EMBEDDINGS_API_KEY=$CLOUDFLARE_API_TOKEN pnpm build:index --push
+#   If `wrangler d1 execute --file` errors "cannot start a transaction within a transaction",
+#   drop the BEGIN/COMMIT wrapper in src/lib/avatar/index-sink.ts#toD1Sql (wrangler may wrap it).
 
 # 4. First deploy. Either push to main (CI `deploy` job does index+build+deploy once the
 #    GH secrets in step 2 are set), or deploy manually:
 pnpm build && npx wrangler pages deploy dist --project-name=my-blog --branch=main
-#   -> verify https://my-blog-4uk.pages.dev ; smoke-test avatar (grounded answer + honest "I don't know")
+#   -> verify https://my-blog-4uk.pages.dev (static site is the fast win).
+
+# 4b. CALIBRATE THE AVATAR GATE — SAFETY-CRITICAL (the "I don't know" guarantee, NFR-4).
+#     The 0.25 default threshold was tuned for the FAKE embedder; NO test covers real bge-m3,
+#     so this MUST be done by hand before exposing the avatar:
+#   (i)  DIRECTION FIRST — ask an OBVIOUSLY on-topic question; the `done` SSE frame's
+#        `topSimilarity` must be NEAR 1 (Vectorize cosine metric = similarity, higher = better).
+#        If it is NEAR 0, Vectorize is returning DISTANCE -> the gate is INVERTED (off-topic
+#        questions would pass and the avatar would hallucinate). Fix: flip the score in
+#        VectorizeVectorStore.search and redeploy. Green tests cannot catch this — do not skip.
+#   (ii) MAGNITUDE — run a few on-topic + off-topic questions, note their topSimilarity values,
+#        set `AVATAR_SIMILARITY_THRESHOLD` (Pages env var — no code redeploy) BETWEEN the on-topic
+#        floor and the off-topic ceiling. Confirm off-topic -> honest "I don't know".
 
 # 5. Runner (daily pipeline): on the O5 machine, install deps + cpe + claude(tmux-authed), then:
 export PIPELINE_EMBEDDER=real EMBEDDINGS_API_KEY=$CLOUDFLARE_API_TOKEN PIPELINE_GIT_PUSH=1
@@ -140,6 +154,12 @@ execute --remote`): the NDJSON/SQL generation is tested; the wrangler invocation
   attach after the first `wrangler pages deploy` (vs needing one-time dashboard setup) — see §3.
 - **End-to-end embedding parity**: that bge-m3 vectors built via the REST path retrieve correctly
   against the in-Worker AI-binding query vectors (same model/stack — verify one grounded answer).
+- **The Function's import graph on the Workers runtime.** `pnpm build` (astro + pagefind) does NOT
+  bundle `functions/` for the edge — `wrangler pages deploy` does. The rewired `query.ts` pulls five
+  new `src/lib/avatar/*` modules via relative imports; the deploy is their first real bundle (astro
+  check resolved the types, so this should be fine, but it is unverified until deploy).
+- **The avatar gate threshold/direction** — the safety-critical §3 step 4b. Listed here too so it is
+  not lost: a fake-tuned `0.25` over real bge-m3 scores is the one "tests pass, avatar unsafe" gap.
 
 ---
 
