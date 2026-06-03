@@ -291,6 +291,14 @@ def test_draft_prompt_substrings():
         "python3 -m pipeline.stages.review check",
         "python3 -m pipeline.stages.humanize scan",
         "PYTHONPATH=/abs/repo",
+        # fact-check PRODUCER step (task 26 / FR-C1) — judge != author
+        "/abs/repo/pipeline/runs/run-1/plans/task-draft/factcheck-fr.json",
+        "/abs/repo/pipeline/runs/run-1/plans/task-draft/factcheck-en.json",
+        "python3 -m pipeline.gate.factcheck",
+        "supported",
+        "separate sub-agent",  # the judge != author separation
+        "does not see the draft",
+        "[s1]",  # the pinned [sN] citation convention the grounding gate keys on
     ]:
         assert needle in p, f"draft prompt missing {needle!r}"
     # the round cap is interpolated into the humanize section (asserted in context, not

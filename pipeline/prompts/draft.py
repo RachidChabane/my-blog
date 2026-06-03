@@ -29,6 +29,8 @@ def _draft_paths(run_dir: Path) -> dict[str, Path]:
         "csm": draft_dir / "claim_source_map.json",
         "style_fr": draft_dir / "style-fr.json",
         "style_en": draft_dir / "style-en.json",
+        "factcheck_fr": draft_dir / "factcheck-fr.json",
+        "factcheck_en": draft_dir / "factcheck-en.json",
     }
 
 
@@ -123,6 +125,52 @@ def _humanize_section(
     )
 
 
+def _factcheck_section(repo_root: Path, run_dir: Path) -> str:
+    """The fact-check PRODUCER step (FR-C1, plan section 3.9 / D2).
+
+    Live-only boundary: the genuine judge != author independence is a fresh sub-agent on
+    the subscription pool, exercisable only in a real run. The shipped OFFLINE gate's
+    teeth are structural provenance + the findings PARSER (pipeline/gate/factcheck.py); a
+    ``factcheck-{lang}.json`` fixture stands in for a sub-agent run in CI, as
+    ``style_findings.*`` stands in for the ``style-auditor``. [MEM: m4-gate-contract]
+    """
+    p = _draft_paths(run_dir)
+    factcheck_fr = _cmd(repo_root, f"pipeline.gate.factcheck --run-dir {run_dir} --lang fr")
+    factcheck_en = _cmd(repo_root, f"pipeline.gate.factcheck --run-dir {run_dir} --lang en")
+    return (
+        "6. FACT-CHECK every load-bearing claim (role 4 / FR-C1) -- judge != author, the\n"
+        "   same separation the humanize step gets from the auditor. Do NOT grade your own\n"
+        "   claims: a self-graded check would rubber-stamp every claim and the gate would\n"
+        "   verify nothing.\n"
+        "   - Dispatch a separate sub-agent (a fresh general-purpose Task with clean\n"
+        "     context): it does not see the draft prose, the brief, or the fact that you\n"
+        "     authored the claims. Hand it ONLY, per language, the list of\n"
+        "     {claim, source_id} from the claim->source map paired with each mapped\n"
+        "     sources[].excerpt (and the excerpt_span when present).\n"
+        "   - For EACH claim the sub-agent judges -- semantically, across languages --\n"
+        "     whether the EXCERPT supports the CLAIM, and assigns supported: true|false\n"
+        "     plus a one-line reason. (This multilingual entailment is the judgment the\n"
+        "     deterministic gate cannot make: a fr claim may be backed by an English\n"
+        "     excerpt, so a token match would wrongly fail it.)\n"
+        "   - The sub-agent WRITES these files (you do NOT write them yourself, and you do\n"
+        "     NOT override its verdict):\n"
+        f"       {p['factcheck_fr']}\n"
+        f"       {p['factcheck_en']}\n"
+        '     each shaped {"verdict": "supported"|"unsupported", "claims": [{"claim",\n'
+        '     "source_id", "supported": <bool>, "reason"}]}, where verdict is\n'
+        '     "unsupported" if and only if ANY claim is supported: false.\n'
+        "   - Then the blocking M-4 fact-check gate parses it and BLOCKS on any\n"
+        "     supported: false (and on a missing findings file -- the pass must have run):\n"
+        f"       {factcheck_fr}\n"
+        f"       {factcheck_en}\n"
+        "     A claim whose excerpt does not support it must be RE-SOURCED or CUT; do not\n"
+        "     fabricate support.\n"
+        "   - CITATION CONVENTION (producer and consumer must agree): source_ids are 's'\n"
+        "     plus digits (e.g. s1), cited inline in the body as [s1]. The grounding gate\n"
+        "     keys its dangling-citation check on exactly that [sN] shape.\n"
+    )
+
+
 def build_draft_prompt(
     *,
     repo_root: Path,
@@ -158,9 +206,17 @@ def build_draft_prompt(
             style_auditor=style_auditor,
         )
         + "\n"
-        "6. Use no emojis anywhere (D-007). PRIVACY / SECRET HYGIENE (FR-D3): no secrets,\n"
+        + _factcheck_section(repo_root, run_dir)
+        + "\n"
+        "7. Use no emojis anywhere (D-007). PRIVACY / SECRET HYGIENE (FR-D3): no secrets,\n"
         "   private-repo internals, internal codenames, or third-party personal data in\n"
         "   either draft or in any field.\n"
+        "\n"
+        "All 6 M-4 gates BLOCK this task (publish never runs while draft is blocked):\n"
+        "factcheck-fr, factcheck-en, grounding-fr, grounding-en, style-fr, style-en --\n"
+        "per-language fact-check (provenance + supported verdict), source-grounding\n"
+        "(inline citations + reachable sources), and style (no-emoji + 'clean'). Write so\n"
+        "they pass on the first try.\n"
     )
 
 
