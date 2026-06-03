@@ -34,16 +34,24 @@ from pipeline import (
 )
 from pipeline import config as cfgmod
 
-_TEMPLATE = Path(__file__).resolve().parents[1] / "tasks-template.yaml"
+_PIPELINE_DIR = Path(__file__).resolve().parents[1]
+_TEMPLATE = _PIPELINE_DIR / "tasks-template.yaml"
 _SPINE = ["research", "select", "draft", "publish"]
 
 
 @pytest.fixture
 def config(tmp_path):
-    """A PipelineConfig over an isolated temp repo with the real template copied in."""
+    """A PipelineConfig over an isolated temp repo with the real template + the files the
+    template's defaults point at (house_style.md, invariants.yaml) copied in.
+
+    assemble_slate now ABSOLUTIZES persona_file / invariants_file against repo_root
+    (task 26), so those pointers resolve under this tmp repo; copying the real files in
+    keeps a subsequent loader.load_tasks_file / live load warning-free."""
     repo = tmp_path / "repo"
     (repo / "pipeline").mkdir(parents=True)
     shutil.copy(_TEMPLATE, repo / "pipeline" / "tasks-template.yaml")
+    shutil.copy(_PIPELINE_DIR / "house_style.md", repo / "pipeline" / "house_style.md")
+    shutil.copy(_PIPELINE_DIR / "invariants.yaml", repo / "pipeline" / "invariants.yaml")
     return PipelineConfig(repo_root=repo, runs_root=repo / "pipeline" / "runs")
 
 
@@ -313,6 +321,12 @@ def test_bilingual_or_nothing_blocked_draft(config):
     assert rr.plan.next_task != "publish"
     assert "publish" not in rr.plan.done
     assert not (rr.slate.plans_dir / "task-publish").exists()
+    # task 26: the fallback loop fires on the blocked draft; the fake's stub brief has no
+    # fallback shortlist, so it skips+alerts immediately (no extra re-drive). Observable
+    # outcome above is unchanged; a terminal ALERT.json is the new artifact.
+    assert rr.alerted
+    assert rr.fallback_attempts == 0
+    assert (rr.slate.plans_dir / "ALERT.json").is_file()
 
 
 # ---------------------------------------------------------------------------

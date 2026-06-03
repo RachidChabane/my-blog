@@ -102,3 +102,10 @@ __all__ = [
 # into sys.modules during `import pipeline`, reintroducing the runpy double-import
 # RuntimeWarning the import-light stages package avoids (review-1.md I1). Import them
 # directly from pipeline.stages.<name>, as the tests do.
+#
+# The M-4 gate package (task 26) is held to the SAME rule and is even stricter: NOTHING
+# from pipeline.gate.* is re-exported here -- not the factcheck/grounding/style CLIs (same
+# runpy hazard) and not pipeline.gate.fallback either. fallback imports pipeline.stages.
+# {select,research}, so re-exporting it would pull those into `import pipeline` and break
+# `python -m pipeline.stages.select`'s no-runpy guarantee. runner.run() imports fallback
+# LAZILY; the tests import every gate symbol directly from pipeline.gate.<name>.

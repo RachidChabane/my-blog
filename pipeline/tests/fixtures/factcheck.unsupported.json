@@ -1,0 +1,17 @@
+{
+  "verdict": "unsupported",
+  "claims": [
+    {
+      "claim": "Agentic coding harnesses run tool-use loops over a task suite.",
+      "source_id": "s1",
+      "supported": true,
+      "reason": "The excerpt states the tool-use loop over a task suite directly."
+    },
+    {
+      "claim": "Benchmarks measure pass rate across multi-step coding tasks.",
+      "source_id": "s2",
+      "supported": false,
+      "reason": "The mapped excerpt does not mention pass rate; it discusses latency only."
+    }
+  ]
+}
