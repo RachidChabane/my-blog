@@ -1,43 +1,31 @@
 name: Avatar reindex
 
-# Event-driven incremental reindex on publish (content push) + a nightly FULL
-# reindex safety net (FR-E3, rag-avatar.md §3). Mode policy lives in tested TS
-# (selectMode); this YAML only routes triggers.
+# Periodic + manual avatar-index refresh (Workers AI bge-m3 -> Vectorize + D1).
 #
-# COORDINATION (owner, at deploy-wiring time): this job deploys the full dist/ via
-# wrangler. D-005 specifies Cloudflare Pages git-push auto-deploy. Pick ONE owner of
-# the index deploy to avoid double-deploys — see plans/task-21/plan.md §6 R1.
+# A content push to main is handled by the CI `deploy` job (ci.yml), which already
+# refreshes the index AND deploys the site. To avoid a DOUBLE-DEPLOY this workflow is
+# INDEX-ONLY (no site deploy) and is NOT triggered by push — it runs on a nightly
+# safety-net schedule + manual dispatch (e.g. to re-seed after a schema change).
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'src/content/articles/**'
-      - 'src/content/projects/**'
   schedule:
-    - cron: '17 3 * * *' # 03:17 UTC nightly — full reindex safety net
-  workflow_dispatch:
-    inputs:
-      mode:
-        description: 'Reindex mode'
-        type: choice
-        options: [incremental, full]
-        default: incremental
+    - cron: '17 3 * * *' # 03:17 UTC nightly — index refresh safety net
+  workflow_dispatch: {}
 
 concurrency:
   group: avatar-reindex
-  cancel-in-progress: false # never interrupt an in-flight index deploy
+  cancel-in-progress: false # never interrupt an in-flight index push
 
 jobs:
   reindex:
-    name: Reindex avatar index + deploy
+    name: Refresh avatar index (Vectorize + D1)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      # Secret gate. The real embedder (OQ-5) + Cloudflare deploy need owner secrets
-      # absent during the autonomous build. Without them this is a documented no-op
-      # (green), not a failure — mirrors scripts/build-avatar-index.ts.
+      # Secret gate. The live refresh needs the CF token (= EMBEDDINGS_API_KEY, for
+      # Workers AI) + CLOUDFLARE_ACCOUNT_ID. Absent during the autonomous build -> a
+      # documented no-op (green), not a failure.
       - name: Check secrets present
         id: gate
         env:
@@ -48,7 +36,7 @@ jobs:
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::Avatar reindex wired but skipped — EMBEDDINGS_API_KEY / CLOUDFLARE_API_TOKEN not set (post-secret step; OQ-5)."
+            echo "::notice::Avatar reindex wired but skipped — EMBEDDINGS_API_KEY / CLOUDFLARE_API_TOKEN not set (owner secrets; see DEPLOY.md)."
           fi
 
       - uses: pnpm/action-setup@v4
@@ -64,23 +52,10 @@ jobs:
         if: steps.gate.outputs.ready == 'true'
         run: pnpm install --frozen-lockfile
 
-      - name: Reindex (mode derived from the trigger)
-        id: reindex
+      - name: Build + push avatar index (full rebuild -> Vectorize + D1)
         if: steps.gate.outputs.ready == 'true'
         env:
           EMBEDDINGS_API_KEY: ${{ secrets.EMBEDDINGS_API_KEY }}
-          SITE_URL: ${{ vars.SITE_URL || 'https://rachidchabane.dev' }}
-        run: |
-          DISPATCH_MODE="${{ github.event.inputs.mode }}"
-          pnpm reindex --event="${{ github.event_name }}" ${DISPATCH_MODE:+--mode="$DISPATCH_MODE"}
-
-      - name: Build site (copies the refreshed public/avatar-index.json into dist/)
-        if: steps.gate.outputs.ready == 'true'
-        run: pnpm build
-
-      - name: Deploy to Cloudflare Pages
-        if: steps.gate.outputs.ready == 'true'
-        env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: pnpm dlx wrangler@3 pages deploy dist --project-name=my-blog --branch=main
+        run: pnpm build:index --push

@@ -94,3 +94,63 @@ jobs:
         run: |
           pnpm lh
           node -e "const s=require('./perf/.lh-report.json').categories.performance.score; if(s<0.9){console.error('Lighthouse perf '+s+' < 0.90'); process.exit(1)} else console.log('Lighthouse perf '+s)"
+
+  # M-8 deploy: on push to main, refresh the avatar index (Workers AI bge-m3 ->
+  # Vectorize + D1) then build + deploy the static site to Cloudflare Pages. This is
+  # the SINGLE index+deploy owner on a content push; reindex.yml is index-only
+  # (schedule/dispatch) so there is no double-deploy. Gated on owner secrets: absent
+  # during the autonomous build -> a documented no-op (green), never a failure.
+  deploy:
+    name: Deploy (avatar index + Pages)
+    runs-on: ubuntu-latest
+    needs: [lint-and-test, e2e]
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check secrets present
+        id: gate
+        env:
+          HAS_CF: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+          HAS_EMBED: ${{ secrets.EMBEDDINGS_API_KEY != '' }}
+        run: |
+          if [ "$HAS_CF" = "true" ] && [ "$HAS_EMBED" = "true" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Deploy wired but skipped — CLOUDFLARE_API_TOKEN / EMBEDDINGS_API_KEY not set (owner secrets; see DEPLOY.md)."
+          fi
+
+      - uses: pnpm/action-setup@v4
+        if: steps.gate.outputs.ready == 'true'
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.ready == 'true'
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Install dependencies
+        if: steps.gate.outputs.ready == 'true'
+        run: pnpm install --frozen-lockfile
+
+      # Full rebuild + replace into Vectorize + D1 (bge-m3, ~$0 at this corpus size).
+      # Runs every deploy; could be content-path-gated later for efficiency.
+      - name: Build + push avatar index
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          EMBEDDINGS_API_KEY: ${{ secrets.EMBEDDINGS_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: pnpm build:index --push
+
+      - name: Build static site
+        if: steps.gate.outputs.ready == 'true'
+        run: pnpm build
+
+      - name: Deploy to Cloudflare Pages
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: pnpm dlx wrangler pages deploy dist --project-name=my-blog --branch=main
