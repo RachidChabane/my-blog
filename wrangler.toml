@@ -1,3 +1,27 @@
 name = "my-blog"
 compatibility_date = "2025-09-01"
 pages_build_output_dir = "dist"
+
+# --- Avatar RAG bindings (M-1..M-5) -----------------------------------------
+# The Vectorize index + D1 DB are created out-of-band by scripts/cf-provision.sh
+# (`wrangler vectorize create` / `wrangler d1 create`); paste the printed
+# database_id into [[d1_databases]] below. Names MUST match cf-provision.sh + the
+# reindex workflow. wrangler.toml drives these bindings for `wrangler pages deploy`
+# (local / preview / production) — after the first deploy, verify they appear on the
+# PRODUCTION deployment in the Pages dashboard (binding config has historically been
+# dashboard-managed; if a binding is missing, add it there once). See DEPLOY.md §3.
+
+# Workers AI: env.AI.run('@cf/baai/bge-m3', { text }) -> { data: number[][] } (1024-d).
+[ai]
+binding = "AI"
+
+# Dense leg. Created 1024-dim / cosine to match bge-m3 (see cf-provision.sh).
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "my-blog-avatar"
+
+# Lexical (FTS5 BM25) + chunk hydration. Paste database_id from `wrangler d1 create`.
+[[d1_databases]]
+binding = "DB"
+database_name = "my-blog-avatar"
+database_id = "PLACEHOLDER-run-scripts-cf-provision-sh"
