@@ -17,6 +17,7 @@
     "test:e2e": "playwright test",
     "lh": "pnpm dlx lighthouse http://localhost:4321/en/ --preset=desktop --budget-path=perf/lighthouse-budgets.json --output=json --output-path=perf/.lh-report.json --chrome-flags=\"--headless=new --no-sandbox\" --quiet",
     "lint": "astro check && eslint . && prettier --check .",
+    "launch-check": "tsx scripts/launch-check.ts",
     "lint:fix": "eslint . --fix && prettier --write .",
     "format": "prettier --write .",
     "gen-portfolio": "tsx scripts/gen-portfolio.ts"
