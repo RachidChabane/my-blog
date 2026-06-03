@@ -13,7 +13,7 @@ test.describe('French home page', () => {
     await expect(page).toHaveURL('/fr/');
     await expect(page).toHaveTitle(/Rachid Chabane/);
     await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
-    await expect(page.locator('h1')).toContainText('Rachid Chabane');
+    await expect(page.locator('h1.rc-hero__line')).toBeVisible();
   });
 });
 
@@ -23,7 +23,7 @@ test.describe('English home page', () => {
     await expect(page).toHaveURL('/en/');
     await expect(page).toHaveTitle(/Rachid Chabane/);
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-    await expect(page.locator('h1')).toContainText('Rachid Chabane');
+    await expect(page.locator('h1.rc-hero__line')).toBeVisible();
   });
 });
 

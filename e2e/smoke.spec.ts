@@ -9,7 +9,8 @@ test.describe('smoke', () => {
   test('English home page renders', async ({ page }) => {
     await page.goto('/en/');
     await expect(page).toHaveTitle(/Rachid Chabane/);
-    await expect(page.locator('h1')).toContainText('Rachid Chabane');
+    // The brand now lives in the masthead wordmark; the page h1 is the hero line.
+    await expect(page.locator('h1.rc-hero__line')).toBeVisible();
     await expect(page.locator('main')).toBeVisible();
   });
 
