@@ -28,6 +28,7 @@ import yaml
 
 from ..contracts.claim_source_map import ContractError
 from ..contracts.embedder import Embedder, PriorTopic, cosine, load_topic_memory
+from ..memory.embedder import EmbedderNotConfigured
 from .research import CandidatesDoc, ResearchCandidate
 
 # OQ-8 PLACEHOLDER — the fake's cosine distribution is unlike the real embedder's,
@@ -261,9 +262,9 @@ def _make_embedder(name: str) -> Embedder:
 
         return FakeEmbedder()
     if name == "real":
-        raise NotImplementedError(
-            "real embedder is wired in task 27 (pipeline/memory/embedder.py)"
-        )
+        from ..memory.embedder import create_real_embedder  # lazy: keep select import-light
+
+        return create_real_embedder()
     raise ValueError(f"unknown embedder {name!r} (expected 'fake' or 'real')")
 
 
@@ -284,7 +285,7 @@ def _cmd_dedup(args) -> int:
     embedder_name = args.embedder or os.environ.get("PIPELINE_EMBEDDER") or "fake"
     try:
         embedder = _make_embedder(embedder_name)
-    except NotImplementedError as exc:
+    except (NotImplementedError, EmbedderNotConfigured) as exc:
         print(str(exc), file=sys.stderr)
         return 1
 

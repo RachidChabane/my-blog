@@ -22,12 +22,16 @@ def build_select_prompt(
     run_dir = Path(run_dir)
     candidates_path = run_dir / "plans" / "task-research" / "candidates.json"
     brief_path = run_dir / "plans" / "task-select" / "brief.md"
+    topic_memory = repo_root / "pipeline" / "memory" / "topic_memory.json"
 
-    # No --embedder: the live stage uses the configured/default embedder (task 27/28
-    # flips it off the fake). --threshold only when the caller overrides the default.
+    # --memory: query the persistent evergreen topic memory (FR-G1; the committed `[]`
+    # store guarantees the path exists in a live run). No --embedder: the live stage uses
+    # the configured/default embedder -- task 28 sets PIPELINE_EMBEDDER=real, which fails
+    # loud with no key (the intended flip off the fake, never silent-fake)
+    # [MEM: select-dedup-fake-embedder-default]. --threshold only when the caller overrides.
     dedup_cmd = (
         f"PYTHONPATH={repo_root} python3 -m pipeline.stages.select dedup"
-        f" --run-dir {run_dir}"
+        f" --run-dir {run_dir} --memory {topic_memory}"
     )
     if threshold is not None:
         dedup_cmd += f" --threshold {threshold}"
