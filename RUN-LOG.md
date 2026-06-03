@@ -330,7 +330,25 @@ the model survives a veto — only the query path would flip. Verified via CF/wo
   plist; regenerated example files; ~12 cadence/monitor/render test updates; docs → daily).
 - Gates green: `pytest -q pipeline` (185), `ruff check pipeline`, `prettier --check` on touched md.
 
-**Phase B (RAG → Vectorize+D1+bge-m3) — in progress**, ordered by testability per advisor: embedders
-(stubbed-fetch tests now legit — provider resolved) → wrangler.toml/D1 schema/cf-provision →
-stores+query → index-builder. Thin live-binding calls + wrangler shell-out are the only
-untested-until-bring-up surface (tracked in `DEPLOY.md` §4).
+**Phase B (RAG → Vectorize+D1+bge-m3) — DONE**, committed per testable unit:
+
+- `7497be0` M-2 real embedder — Workers AI bge-m3: `cf.ts` (hand-rolled binding types),
+  `embedder.ts` (REST + AI-binding impls), Python REST embedder; 3 defer-throw factories wired;
+  15 stubbed-fetch/urlopen tests. Removed the reference-only `@cloudflare/workers-types` (net-zero).
+- `b78e604` M-1 — `wrangler.toml` AI/Vectorize/D1 bindings + `avatar-d1-schema.sql` (FTS5
+  `remove_diacritics 2`) + `cf-provision.sh`.
+- `88ccfaa` M-3/M-5 — `VectorizeVectorStore` + `D1LexicalStore` (FTS5, `toFtsMatch` escapes operator
+  input) + `d1.ts` hydration; `retrieve()` lexical leg awaited (new `LexicalSearcher` seam);
+  `query.ts onRequestPost` rewired to AI/VECTORIZE/DB; 10 store tests (incl. fake-binding RRF e2e).
+- `4b4e453` M-4 — `index-sink.ts` (NDJSON + transactional full-replace SQL, escaped) +
+  `build:index --push` (wrangler upsert/execute); reindex.ts marked superseded; 6 tests + dry-run
+  smoke on the real 31-chunk corpus.
+- `7212fb6` M-8 — ci.yml `deploy` job (push → index+Pages) + reindex.yml index-only (no double-deploy).
+
+Final gates GREEN: `pnpm test` 451 (25 files) · `pnpm lint` 0 errors · `pytest -q pipeline` 187 ·
+`ruff check pipeline` · `prettier --check .`. Untested-until-bring-up surface = the thin live
+binding calls + the wrangler shell-out + wrangler.toml prod-binding attach (DEPLOY.md §4).
+
+**Autonomous queue EXHAUSTED.** Remaining work is owner-gated (O1–O6: rotated CF token, OpenRouter
+key, runner, alert webhook) → see `DEPLOY.md` §1 + §3 bring-up runbook. Decision D-1 (embeddings =
+Workers AI bge-m3, overriding locked OpenRouter-embeddings) flagged for veto in DEPLOY.md §0.

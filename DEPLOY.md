@@ -68,15 +68,22 @@ Everything else below is automated; I do it once O1/O3 (and O5/O6 for the pipeli
 ## 2 · Done autonomously (this deploy phase)
 
 - **M-13** git-push-on-success — `deploy.push_after_success` at the CLI layer, gated on
-  `PIPELINE_GIT_PUSH=1`. Closes the publish-commits-but-never-pushes gap (publish → push → CI deploy
-  - reindex). Pure run core stays push-free; tests/CI never push.
+  `PIPELINE_GIT_PUSH=1`. Closes the publish-commits-but-never-pushes gap (publish → push → CI
+  deploy & reindex). Pure run core stays push-free; tests/CI never push.
 - **M-14** alerting — `WebhookAlertSink` (POST to `ALERT_WEBHOOK_URL`) behind the existing
   `AlertSink` Protocol + `ping_uptime()` external dead-man's-switch (`UPTIME_PING_URL`). Wired into
   `_default_sink` + run/monitor.
 - **M-15** daily cadence — `DEFAULT_CADENCE` → every day; render + example files + docs updated.
-- _(Phase B RAG migration — in progress; this section is updated as units land.)_
+- **M-1/M-2** Vectorize+D1 bindings + D1 schema (FTS5 `remove_diacritics`) + `cf-provision.sh`; real
+  embedder = Workers AI `@cf/baai/bge-m3` (TS binding + REST, Python REST), fail-loud factories.
+- **M-3/M-5** query path over the bindings — `VectorizeVectorStore` (dense) + `D1LexicalStore` (FTS5
+  BM25, query escaped) + chunk hydration; RRF unchanged; `onRequestPost` rewired off the JSON
+  artifact onto AI/VECTORIZE/DB.
+- **M-4** `build:index --push` populates Vectorize + D1 (NDJSON + transactional SQL; full replace).
+- **M-8** CI `deploy` job (push → index + Pages) + `reindex.yml` index-only (no double-deploy).
 
-All committed with `pnpm test` / `pnpm lint` / `pytest -q pipeline` / `ruff check pipeline` green.
+All committed with `pnpm test` (451) / `pnpm lint` (0 err) / `pytest -q pipeline` (187) /
+`ruff check pipeline` green.
 
 ---
 
@@ -96,10 +103,11 @@ gh secret set SITE_URL              --body "https://my-blog-4uk.pages.dev"
 #   Pages env vars (dashboard or `wrangler pages ... `): OPENROUTER_API_KEY, SITE_URL
 #   (Vectorize/D1/AI are bindings in wrangler.toml; the embeddings key is NOT needed in the Function.)
 
-# 3. Seed the index from existing articles -> Vectorize + D1:
-EMBEDDINGS_API_KEY=$CLOUDFLARE_API_TOKEN pnpm build:index
+# 3. Seed Vectorize + D1 from the existing articles (full rebuild + push via wrangler):
+EMBEDDINGS_API_KEY=$CLOUDFLARE_API_TOKEN pnpm build:index --push
 
-# 4. First deploy (static site is the fast win; avatar comes up with the bindings):
+# 4. First deploy. Either push to main (CI `deploy` job does index+build+deploy once the
+#    GH secrets in step 2 are set), or deploy manually:
 pnpm build && npx wrangler pages deploy dist --project-name=my-blog --branch=main
 #   -> verify https://my-blog-4uk.pages.dev ; smoke-test avatar (grounded answer + honest "I don't know")
 
@@ -122,8 +130,16 @@ confirm in the dashboard — if a binding is missing, add it there once).
 These compile + pass unit tests (with stubbed fetch / DI fakes) but have **never run against live
 Cloudflare resources** — verify them during the supervised bring-up:
 
-- _(populated as Phase B lands — the thin live-binding calls: `VECTORIZE.query/upsert`,
-  `DB.prepare().all()`, in-Worker `AI.run`, and the `wrangler` index-upsert shell-out.)_
+- **In-Worker bindings** (the stores behind `functions/api/avatar/query.ts`): `VECTORIZE.query`,
+  `DB.prepare().bind().all()` (dense hydration + the FTS5 MATCH JOIN), in-Worker
+  `AI.run('@cf/baai/bge-m3')`. Unit-tested with fake bindings; the shapes match the official
+  `.d.ts` but were never exercised live.
+- **The `build:index --push` wrangler shell-out** (`wrangler vectorize upsert` + `wrangler d1
+execute --remote`): the NDJSON/SQL generation is tested; the wrangler invocation + flags are not.
+- **wrangler.toml bindings on a PRODUCTION Pages deploy**: confirm `VECTORIZE` / `DB` / `AI` actually
+  attach after the first `wrangler pages deploy` (vs needing one-time dashboard setup) — see §3.
+- **End-to-end embedding parity**: that bge-m3 vectors built via the REST path retrieve correctly
+  against the in-Worker AI-binding query vectors (same model/stack — verify one grounded answer).
 
 ---
 
