@@ -461,7 +461,9 @@ describe('RT-G — secrets cannot be exfiltrated', () => {
     const frames = parseSSE(raw);
     const last = frames[frames.length - 1];
     expect(last.event).toBe('error');
-    expect((last.data as { message: string }).message).toBe('Synthesis failed.');
+    expect((last.data as { message: string }).message).toBe(
+      'Synthesis failed.'
+    );
     expect(raw).not.toContain('sk-');
     expect(raw).not.toContain('upstream 502');
     expect(frames.some((f) => f.event === 'done')).toBe(false);

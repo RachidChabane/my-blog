@@ -1,4 +1,4 @@
-import { test, expect, type Route } from '@playwright/test';
+import { test, expect, type Route, type Page } from '@playwright/test';
 
 // Avatar red-team — client renders adversarial server output INERTLY (M-12, NFR-7).
 // The endpoint is a Cloudflare Pages Function (absent from `pnpm preview`), so —
@@ -30,7 +30,11 @@ const XSS_TOKENS =
   }) +
   frame('token', { text: '<img src=x onerror="window.__pwned=1">' }) +
   frame('token', { text: '<script>window.__pwned=1</script>' }) +
-  frame('done', { finishReason: 'grounded', topSimilarity: 0.7, threshold: 0.25 });
+  frame('done', {
+    finishReason: 'grounded',
+    topSimilarity: 0.7,
+    threshold: 0.25,
+  });
 
 // A sources frame mixing a markup-bearing title + two unsafe schemes + one safe URL.
 const XSS_CITATIONS =
@@ -61,19 +65,22 @@ const XSS_CITATIONS =
         lang: 'en',
       },
     ],
-  }) + frame('done', { finishReason: 'grounded', topSimilarity: 0.7, threshold: 0.25 });
+  }) +
+  frame('done', {
+    finishReason: 'grounded',
+    topSimilarity: 0.7,
+    threshold: 0.25,
+  });
 
 // A refusal whose message carries an XSS payload (must render as text, no citation).
 const XSS_REFUSAL =
   frame('idk', {
     message: '<img src=x onerror="window.__pwned=1"> not found',
     suggestions: [],
-  }) + frame('done', { finishReason: 'idk', topSimilarity: 0.1, threshold: 0.25 });
+  }) +
+  frame('done', { finishReason: 'idk', topSimilarity: 0.1, threshold: 0.25 });
 
-const ask = async (
-  page: import('@playwright/test').Page,
-  question: string
-): Promise<void> => {
+const ask = async (page: Page, question: string): Promise<void> => {
   await page.locator('[data-avatar-slot]').click();
   const input = page.locator('[data-avatar-input]');
   await input.fill(question);
@@ -97,7 +104,9 @@ test.describe('S10 avatar red-team — adversarial output renders inertly', () =
     // No element was parsed out of the payload, and the onerror never ran.
     await expect(panel.locator('img')).toHaveCount(0);
     await expect(panel.locator('script')).toHaveCount(0);
-    expect(await page.evaluate(() => (window as { __pwned?: unknown }).__pwned)).toBeFalsy();
+    expect(
+      await page.evaluate(() => (window as { __pwned?: unknown }).__pwned)
+    ).toBeFalsy();
   });
 
   test('E2E-RT-2 [LOCK]: citation title HTML is text; only the safe URL is linked', async ({
@@ -118,8 +127,13 @@ test.describe('S10 avatar red-team — adversarial output renders inertly', () =
     // Only the safe same-origin URL is linked; javascript: and data: get no href.
     const linked = panel.locator('a.rc-cite__row[href]');
     await expect(linked).toHaveCount(1);
-    await expect(linked).toHaveAttribute('href', '/en/blog/hybrid-rag-retrieval/');
-    expect(await page.evaluate(() => (window as { __pwned?: unknown }).__pwned)).toBeFalsy();
+    await expect(linked).toHaveAttribute(
+      'href',
+      '/en/blog/hybrid-rag-retrieval/'
+    );
+    expect(
+      await page.evaluate(() => (window as { __pwned?: unknown }).__pwned)
+    ).toBeFalsy();
   });
 
   test('E2E-RT-3 [LOCK]: refusal message HTML renders as text, no element, no citation', async ({
@@ -137,6 +151,8 @@ test.describe('S10 avatar red-team — adversarial output renders inertly', () =
     await expect(panel.locator('img')).toHaveCount(0);
     // A refusal carries no citation.
     await expect(panel.locator('.rc-cite')).toHaveCount(0);
-    expect(await page.evaluate(() => (window as { __pwned?: unknown }).__pwned)).toBeFalsy();
+    expect(
+      await page.evaluate(() => (window as { __pwned?: unknown }).__pwned)
+    ).toBeFalsy();
   });
 });
