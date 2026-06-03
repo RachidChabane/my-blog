@@ -5,7 +5,7 @@
 # Mirrors docs/writing-flow.md §2/§3 reconciled with cpe-native role mapping:
 #   tasks = research -> select -> draft(FR+EN) -> publish
 #   review = the draft task's built-in APPROVED/NEEDS_REVISION loop
-#   M-4 gate = agent gates on the draft (task 26, via invariants_file + gates_extra)
+#   M-4 gate = per-language shell gates on the draft (task 26, via invariants_file + gates_extra)
 # publish depends_on [draft], so a blocked draft (gate failure) => publish never
 # runs = bilingual-or-nothing (NFR-11, writing-flow.md §6).
 #
@@ -23,7 +23,7 @@ defaults:
   claude_backend: tmux # M-6 / NFR-10 — subscription pool
   on_max_review_rounds: fail # autonomous-safe: block, never auto-approve
   persona_file: pipeline/house_style.md # FR-G2 (task 25 authors; missing => "")
-  invariants_file: pipeline/invariants.yaml # M-4 agent gates (task 26 authors)
+  invariants_file: pipeline/invariants.yaml # M-4 shell gates (task 26); runner absolutizes
   parallelism: 1 # fan-out is structural (depends_on); >1 needs branch_per_task
   branch_per_task: false
   base_branch: main
@@ -83,7 +83,9 @@ tasks:
     key_files: [pipeline/stages/draft.py]
     commit_message: 'content(draft): FR + EN drafts + claim->source map'
     depends_on: [select]
-    # gates_extra: [factcheck-fr, factcheck-en, grounding-fr, grounding-en, style-fr, style-en]  # task 26 wires + registers via invariants.yaml
+    # M-4 gates (task 26): registered from defaults.invariants_file (pipeline/invariants.yaml),
+    # scoped to this task. A blocking gate => draft blocks => publish never runs (NFR-11).
+    gates_extra: [factcheck-fr, factcheck-en, grounding-fr, grounding-en, style-fr, style-en]
   - id: publish
     phase: publish
     title: 'Publish FR+EN to src/content at parallel URLs; trigger build + reindex'
