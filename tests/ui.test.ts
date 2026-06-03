@@ -20,6 +20,8 @@ import {
   searchStrings,
   AVATAR,
   avatarStrings,
+  HOME,
+  homeStrings,
 } from '@/i18n/ui';
 import { LOCALES } from '@/i18n/index';
 
@@ -421,5 +423,44 @@ describe('avatar string table (AVATAR)', () => {
   it('avatarStrings(lang) returns the locale record', () => {
     expect(avatarStrings('fr')).toBe(AVATAR.fr);
     expect(avatarStrings('en')).toBe(AVATAR.en);
+  });
+});
+
+describe('home string table (HOME)', () => {
+  it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
+    expect(Object.keys(HOME.fr).sort()).toEqual(Object.keys(HOME.en).sort());
+  });
+
+  it('every home string is a non-empty string in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(HOME[locale])) {
+        expect(typeof value, `${locale}.${key}`).toBe('string');
+        expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('contains no emoji in any string (INV-9)', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(HOME[locale])) {
+        expect(EMOJI.test(value), `${locale}.${key} = "${value}"`).toBe(false);
+      }
+    }
+  });
+
+  // Lock the e2e-asserted block titles + the branded metaTitle to the source so
+  // the strings and the home.spec assertions cannot drift apart.
+  it('carries the block titles verbatim and a branded metaTitle', () => {
+    expect(HOME.fr.latestTitle).toBe('Derniers articles');
+    expect(HOME.en.latestTitle).toBe('Latest articles');
+    expect(HOME.fr.projectsTitle).toBe('Projets');
+    expect(HOME.en.projectsTitle).toBe('Projects');
+    expect(HOME.fr.metaTitle).toContain('Rachid Chabane');
+    expect(HOME.en.metaTitle).toContain('Rachid Chabane');
+  });
+
+  it('homeStrings(lang) returns the locale record', () => {
+    expect(homeStrings('fr')).toBe(HOME.fr);
+    expect(homeStrings('en')).toBe(HOME.en);
   });
 });

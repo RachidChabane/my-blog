@@ -265,6 +265,61 @@ export function portfolioIndexStrings(lang: Locale): PortfolioIndexStrings {
 }
 
 /**
+ * Home / hub (S1) copy. Dedicated table — sibling to the other *_INDEX tables,
+ * kept out of ChromeStrings per this file's header. Hero + block copy lifted
+ * verbatim from the design `T` (home.jsx). `metaTitle` leads with the brand so
+ * the existing `toHaveTitle(/Rachid Chabane/)` e2e assertions stay green after
+ * the home stubs are removed. NO arrows in the strings — the template appends
+ * ` →` (mirrors ArticleListItem). The em-dash `—` is typographic, FR apostrophes
+ * use U+2019 `’` (file convention; Prettier-stable, INV-9 safe). `projectsTitle`
+ * intentionally equals `PORTFOLIO_INDEX.title` (no cross-table uniqueness rule).
+ */
+export interface HomeStrings {
+  metaTitle: string; // <title> — leads with the brand (keeps /Rachid Chabane/ green)
+  heroEyebrow: string; // role/location kicker (owner-tunable)
+  heroLine: string; // the one-line statement (rendered as the page <h1>)
+  heroSub: string; // supporting paragraph (also reused as <meta description>)
+  heroCta: string; // primary CTA label → /[lang]/blog/
+  latestTitle: string; // "Derniers articles" / "Latest articles"
+  latestAll: string; // "Tout voir" / "See all" → /[lang]/blog/
+  projectsTitle: string; // "Projets" / "Projects"
+  projectsAll: string; // "Voir le portfolio" / "View the portfolio" → /[lang]/work/
+}
+
+export const HOME: Record<Locale, HomeStrings> = {
+  fr: {
+    metaTitle: 'Rachid Chabane — Ingénieur IA',
+    heroEyebrow: 'Ingénieur IA — Paris',
+    heroLine:
+      'J’écris sur l’ingénierie de l’IA de pointe — et ce site s’en charge tout seul.',
+    heroSub:
+      'Évaluations, agents outillés, garde-fous. Un carnet tenu — et publié — par un agent, sous revue humaine.',
+    heroCta: 'Lire les écrits',
+    latestTitle: 'Derniers articles',
+    latestAll: 'Tout voir',
+    projectsTitle: 'Projets',
+    projectsAll: 'Voir le portfolio',
+  },
+  en: {
+    metaTitle: 'Rachid Chabane — AI engineer',
+    heroEyebrow: 'AI engineer — Paris',
+    heroLine:
+      'I write about cutting-edge AI engineering — and this site runs itself.',
+    heroSub:
+      'Evaluations, tool-using agents, guardrails. A notebook kept — and published — by an agent, under human review.',
+    heroCta: 'Read the writing',
+    latestTitle: 'Latest articles',
+    latestAll: 'See all',
+    projectsTitle: 'Projects',
+    projectsAll: 'View the portfolio',
+  },
+};
+
+export function homeStrings(lang: Locale): HomeStrings {
+  return HOME[lang];
+}
+
+/**
  * Tag surfaces (S4 directory + S5 tag index) copy. One combined table — S4 and S5
  * are a single feature and share the count templates. The chip-rail/CTA/empty copy
  * S5 needs is REUSED from ARTICLE_INDEX (allTag, filterAria, readCta, empty), not
