@@ -399,6 +399,8 @@ def test_25_select_prompt_substrings_no_emoji():
         "validate-brief",
         "fallback shortlist",
         "claim->source",
+        "--memory",
+        "pipeline/memory/topic_memory.json",
     ]:
         assert needle in prompt, f"select prompt missing {needle!r}"
     assert "no emoji" in prompt.lower()
@@ -412,8 +414,8 @@ def test_26_prompts_absolute_paths_and_composition_seam():
     assert "PYTHONPATH=/abs/repo" in select
     config = PipelineConfig(repo_root=_ABS_REPO)
     descriptions = editorial_stage_descriptions(config, _ABS_RUN)
-    # task 25 adds the "draft" key to the composition seam (task 27 will add "publish").
-    assert set(descriptions) == {"research", "select", "draft"}
+    # task 25 added "draft"; task 27 adds "publish" to the composition seam.
+    assert set(descriptions) == {"research", "select", "draft", "publish"}
     assert descriptions["research"] == research
     assert descriptions["select"] == select
 
@@ -463,7 +465,10 @@ def test_27b_select_dedup_real_embedder_errors(tmp_path):
         ["pipeline.stages.select", "dedup", "--run-dir", str(run_dir), "--embedder", "real"]
     )
     assert proc.returncode != 0
-    assert "task 27" in (proc.stdout + proc.stderr)
+    # task 27 wired create_real_embedder (defer-and-throw, OQ-5). Env-robust: do NOT assert
+    # 'absent' -- the runner's env may set EMBEDDINGS_API_KEY, flipping to 'present, not wired'.
+    out = proc.stdout + proc.stderr
+    assert "OQ-5" in out and "EMBEDDINGS_API_KEY" in out
 
 
 def test_28_validate_clis_exit_codes(tmp_path):
