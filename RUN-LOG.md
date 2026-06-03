@@ -272,3 +272,15 @@ Post-relaunch (review_timeout=60) progressing well:
 - **Task 16 (404) rebuilt → DONE** (`be097e3` relaunch). **26/30** [+16]. Its committed deliverables + the earlier 404 e2e strict-mode fix held; clean re-run.
 - **Task 10 (HOME) plan SUCCEEDED — the socket error did NOT recur.** usage.jsonl: plan ran **1010s / 286k output, NO error-output.txt** (vs the prior failed attempt's 2161s/146k "socket closed"). Confirms the earlier failure was a transient API socket drop, not a structural over-long-plan problem. **Task-10 socket-error watch CLEARED.** Task 10 now `reviewing`.
 Remaining: task 10 (home) review→implement→done → **then HOME visual re-check**; task 28 (M-5) pending (will re-review with the 48m headroom); then 29 (full-site e2e) → 30 (launch gate) → 30/30. Effective-stuck=0, cpe healthy (2 procs, tmux `cpe-fcf6148e`) → RIDE.
+
+## 2026-06-03 08:44 — task 10 (HOME) DONE → HOME visual re-check PASS; 27/30
+
+**Task 10 (HOME hub) DONE** — `2aec55e feat: home hub with latest articles and portfolio teaser` (Hero.astro owns the page h1; [lang]/index.astro replaces the placeholder stubs; e2e home.spec + static guards). **27/30** [+10]. The placeholder "Bientôt disponible" is gone.
+**HOME visual re-check (Playwright MCP @1440×1024, port 4399, fresh build) — PASS:**
+- **FR hero** matches design home.png/home-scroll.png precisely: eyebrow "INGÉNIEUR IA — PARIS" (mono), Fraunces headline "J'écris sur l'ingénierie de l'IA de pointe — et ce site s'en charge tout seul.", body, violet "Lire les écrits →" CTA → /fr/blog/. ✓
+- **"Derniers articles"** section: "Tout voir →" + 3 real article cards (date·reading-time·title·dek·tags·"Lire →"). ✓
+- **"Projets"** teaser: "Voir le portfolio →" + 3 project cards (Projet·01/02/03, status, tech chips, "Voir →"). ✓
+- **Dark mode**: cool-ink bg + violet accent preserved, Fraunces crisp, sun icon. ✓
+- **EN parallel**: title "AI engineer", "Latest articles", "Projects" — English, no FR leak. ✓
+- **Emoji scan**: 0 on dist/fr/index.html + dist/en/index.html. ✓
+**The full site is now built and visually verified on-brand** (cool-ink + iris-violet, Fraunces/Inter/JetBrains-Mono, non-figurative mark, 0 emojis). Preview stopped. Remaining: task 29 (full-site e2e, planning) + task 28 (M-5, pending) → task 30 (launch gate) → 30/30. cpe healthy (2 procs), effective-stuck=0.
