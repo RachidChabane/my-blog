@@ -108,7 +108,9 @@ test.describe('no SaaS tropes (task constraint)', () => {
 });
 
 test.describe('language switch on the home (decision #6)', () => {
-  test('FR home → EN switcher falls back to /en/ (NFR-11)', async ({ page }) => {
+  test('FR home → EN switcher falls back to /en/ (NFR-11)', async ({
+    page,
+  }) => {
     await page.goto('/fr/');
     // No slugMap on the home → switcher bounces to /en/, never a dead end.
     await expect(page.locator('header a[lang="en"]')).toHaveAttribute(
@@ -117,7 +119,9 @@ test.describe('language switch on the home (decision #6)', () => {
     );
   });
 
-  test('EN home → FR switcher falls back to /fr/ (NFR-11)', async ({ page }) => {
+  test('EN home → FR switcher falls back to /fr/ (NFR-11)', async ({
+    page,
+  }) => {
     await page.goto('/en/');
     await expect(page.locator('header a[lang="fr"]')).toHaveAttribute(
       'href',
