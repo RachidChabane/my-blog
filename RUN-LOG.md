@@ -303,3 +303,34 @@ The relaunched loop (bn3luude2) drained with **ALL TASKS COMPLETE**. **task 28 (
 **Known tracked defects (per LAUNCH.md — NOT launch-blockers, gated as such):** (1) a few WCAG-AA contrast sub-AA elements (`--fg-subtle` microcopy, search trigger, project desc, primary CTA dark, active chip dark, contact link) listed in `e2e/helpers/axe.ts KNOWN_AA_DEFECTS` — fix = one `--ink-400`/`--graphite-400` token bump + dark accent review; (2) `scrollable-region-focusable` on article `<pre>` blocks, excluded in a11y spec. Both owner-tracked.
 
 **BUILD COMPLETE.** No production deploy, no live AI calls, pipeline built+tested with fakes (never operated) — per directive. Owner handoff = LAUNCH.md "Owner manual steps". Posting the consolidated final summary; supervision loop ENDS (no re-arm).
+
+---
+
+# DEPLOY / OPS PHASE (post-build)
+
+## 2026-06-03 — deploy/ops start: decision record + Phase-A ops wiring (M-13/14/15)
+
+Moved from BUILD (30/30 done) into deploy/ops. Resume goal: deployed site + live avatar (RAG on
+Cloudflare Vectorize + D1) + daily article pipeline. Owner-only steps consolidated in `DEPLOY.md` §1.
+
+**Decision (D-1): embeddings = Cloudflare Workers AI `@cf/baai/bge-m3`** (1024-dim, multilingual,
+instruction-free), overriding the locked "OpenRouter embeddings" *mechanism* (the store decision —
+Vectorize+D1 — is unchanged). Rationale: the locked plan's own "native CF / $0 / no external vendor"
+goal points here; query-time embedding runs in-Worker via the `AI` binding (no hot-path HTTP, no
+embeddings key in the Function). Avatar LLM stays on OpenRouter. `bge-m3` is also on OpenRouter, so
+the model survives a veto — only the query path would flip. Verified via CF/workers-types `.d.ts`:
+`AI.run('@cf/baai/bge-m3',{text})` → `{data:number[][]}`; `VECTORIZE.query/upsert`; D1
+`prepare().bind().all()`. Vectorize cap 1536 (1024 ok), runs on Workers **Free** → O2 not a blocker.
+
+**Phase A (provider-independent, fully tested) — DONE + committed:**
+- `27bb861` M-13 git-push-on-success (`deploy.push_after_success`, gated `PIPELINE_GIT_PUSH`) +
+  M-14 `WebhookAlertSink` (`ALERT_WEBHOOK_URL`) + `ping_uptime` external dead-man's-switch
+  (`UPTIME_PING_URL`); config knobs; 9 new offline tests.
+- `3dda2b5` M-15 daily cadence (`DEFAULT_CADENCE` (0,3)→every day; render `0 9 * * *` + weekday-less
+  plist; regenerated example files; ~12 cadence/monitor/render test updates; docs → daily).
+- Gates green: `pytest -q pipeline` (185), `ruff check pipeline`, `prettier --check` on touched md.
+
+**Phase B (RAG → Vectorize+D1+bge-m3) — in progress**, ordered by testability per advisor: embedders
+(stubbed-fetch tests now legit — provider resolved) → wrangler.toml/D1 schema/cf-provision →
+stores+query → index-builder. Thin live-binding calls + wrangler shell-out are the only
+untested-until-bring-up surface (tracked in `DEPLOY.md` §4).
