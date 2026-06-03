@@ -265,3 +265,10 @@ Scheduler → **task 28 (scheduling, monitoring, alerting, pause/resume — M-5)
 4. Relaunched `claude-plan-execute-loop ... > /tmp/my-blog-build.log 2>&1` (bg task bn3luude2). Verified: **2 cpe procs + new tmux `cpe-dfdab189`** (07:43). Scheduler claimed **task 16 (404) planning** first; order ≈ 16→10→28 → then 29 (deps[10,16,…]) → 30 (deps[22,28,29]) → 30/30.
 
 **Watches now armed:** (a) **task 10 (home) socket-error** — its plan socket-errored before (2161s/146k); if it recurs (plans/task-10/error-output.txt "socket closed") → lower plan effort / pre-seed plan.md / split (advisor on the lever). (b) **task 28 re-review** should now clear with 48m headroom; if review_missing AGAIN → manual-approve from the /tmp backup. (c) **task 29 full-site e2e gate** — root-cause any failing spec (home/404 freshly built). (d) **HOME visual re-check** after task 10 builds. Effective-stuck reset (all three now pending/active, not blocked).
+
+## 2026-06-03 08:14 — relaunch working: task 16 (404) DONE; task 10 (HOME) plan CLEAN (socket error did NOT recur)
+
+Post-relaunch (review_timeout=60) progressing well:
+- **Task 16 (404) rebuilt → DONE** (`be097e3` relaunch). **26/30** [+16]. Its committed deliverables + the earlier 404 e2e strict-mode fix held; clean re-run.
+- **Task 10 (HOME) plan SUCCEEDED — the socket error did NOT recur.** usage.jsonl: plan ran **1010s / 286k output, NO error-output.txt** (vs the prior failed attempt's 2161s/146k "socket closed"). Confirms the earlier failure was a transient API socket drop, not a structural over-long-plan problem. **Task-10 socket-error watch CLEARED.** Task 10 now `reviewing`.
+Remaining: task 10 (home) review→implement→done → **then HOME visual re-check**; task 28 (M-5) pending (will re-review with the 48m headroom); then 29 (full-site e2e) → 30 (launch gate) → 30/30. Effective-stuck=0, cpe healthy (2 procs, tmux `cpe-fcf6148e`) → RIDE.
