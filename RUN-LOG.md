@@ -284,3 +284,8 @@ Remaining: task 10 (home) review→implement→done → **then HOME visual re-ch
 - **EN parallel**: title "AI engineer", "Latest articles", "Projects" — English, no FR leak. ✓
 - **Emoji scan**: 0 on dist/fr/index.html + dist/en/index.html. ✓
 **The full site is now built and visually verified on-brand** (cool-ink + iris-violet, Fraunces/Inter/JetBrains-Mono, non-figurative mark, 0 emojis). Preview stopped. Remaining: task 29 (full-site e2e, planning) + task 28 (M-5, pending) → task 30 (launch gate) → 30/30. cpe healthy (2 procs), effective-stuck=0.
+
+## 2026-06-03 10:46 — task 29 (full-site e2e/a11y/perf) DONE; 28/30; task 28 (M-5) re-reviewing with 60m headroom
+
+**Task 29 DONE** — `4b25752 test: full-site e2e, a11y, and performance budgets` (e2e/full-site.spec 60-route smoke + cross-screen journeys; e2e/a11y.spec axe structural matrix + scoped contrast + landmarks + focus-visible; e2e/perf.spec deterministic LCP/CLS/JS-weight lighthouse budgets + non-blocking WARN-tier CI lighthouse job perf≥0.90; tests/integration.test.ts real-corpus invariants + avatar NFR-4 lock). Passed its (large) gate first try. **28/30** [+29].
+Only **task 28 (M-5, reviewing)** + **task 30 (launch gate, deps[22,28,29])** remain. **Task 28 re-plan after the reset completed CLEAN** (1017s/273k, plan.md written) and **review round 1 is now running with review_timeout=60 (48m idle-fallback) — the test of the timeout-bump fix.** If it clears → implement → done → task 30 → 30/30. If review_missing recurs even at 60m → manual-approve from /tmp/task-28-plan-verified.md backup (sanctioned escalation, timeout then ruled out). Effective-stuck=0, cpe healthy (2 procs). Pushed task-29 commits.
