@@ -8,11 +8,16 @@
 import type { AvatarQueryRequest, Locale } from './protocol';
 
 export const MAX_QUERY_LENGTH = 2000;
+export const MAX_SLUG_LENGTH = 128;
 const LOCALES: readonly Locale[] = ['fr', 'en'];
+// Article slug charset (lowercase alphanumerics joined by single hyphens) — matches the
+// pipeline's localized slugs. A scopeSlug is only ever an exact-match filter on chunk.slug
+// (it can never inject), but validating the shape rejects malformed client input early.
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /** Validation outcome: a clean request, or a status+message for a JSON reject. */
 export type ValidatedQuery =
-  | { ok: true; query: string; lang: Locale }
+  | { ok: true; query: string; lang: Locale; scopeSlug?: string }
   | { ok: false; status: 400; message: string };
 
 /**
@@ -61,7 +66,20 @@ export function validateQueryRequest(parsed: unknown): ValidatedQuery {
     }
     lang = body.lang;
   }
-  return { ok: true, query, lang };
+  let scopeSlug: string | undefined;
+  if (body.scopeSlug !== undefined) {
+    if (
+      typeof body.scopeSlug !== 'string' ||
+      body.scopeSlug.length > MAX_SLUG_LENGTH ||
+      !SLUG_RE.test(body.scopeSlug)
+    ) {
+      return { ok: false, status: 400, message: 'Invalid "scopeSlug".' };
+    }
+    scopeSlug = body.scopeSlug;
+  }
+  return scopeSlug
+    ? { ok: true, query, lang, scopeSlug }
+    : { ok: true, query, lang };
 }
 
 // --- Prompt-isolation + grounded-only policy (composed by synthesize.ts) -----

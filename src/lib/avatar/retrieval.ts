@@ -41,10 +41,25 @@ export interface RetrieveOptions {
   topK?: number;
   /** RRF damping constant. Default DEFAULT_RRF_K (60). */
   rrfK?: number;
+  /**
+   * Restrict retrieval to a single article (its slug) — the per-article "ask about
+   * this piece" mode. Both legs are filtered to this slug BEFORE the gate signal is
+   * captured, so an out-of-scope query honestly refuses (topSimilarity over the
+   * scoped subset) instead of passing on an out-of-scope chunk.
+   */
+  scopeSlug?: string;
 }
 
 const DEFAULT_LEG_TOP_K = 30;
 const DEFAULT_TOP_K = 5;
+// When scoped, pull a WIDE leg so the in-scope chunks are present before the slug filter:
+// the stores have no slug pre-filter (slug is known only post-hydration), so a default-30
+// pull could miss an article's chunks for an off-topic query. Capped at Cloudflare
+// Vectorize's max query topK (VECTORIZE_MAX_TOPK = 100) so the production dense leg never
+// throws; the corpus is far under 100 chunks, so this returns the whole corpus and never
+// truncates today. Beyond 100 chunks, scoped retrieval needs a Vectorize reindex with slug
+// metadata (a true pre-filter) -- see avatar-index-builder-seams.
+const SCOPED_LEG_TOP_K = 100;
 
 /**
  * Run hybrid lexical+vector retrieval, fuse with RRF, optionally rerank.
@@ -64,17 +79,30 @@ export async function retrieve(
   opts?: RetrieveOptions
 ): Promise<RetrievalResult> {
   const topK = opts?.topK ?? DEFAULT_TOP_K;
-  // legTopK >= topK always: the per-leg pull must be at least the final count.
-  const legTopK = Math.max(opts?.legTopK ?? DEFAULT_LEG_TOP_K, topK);
+  const scopeSlug = opts?.scopeSlug;
+  // legTopK >= topK always: the per-leg pull must be at least the final count. When scoped,
+  // widen the default pull so the in-scope chunks survive the slug filter below.
+  const baseLegTopK =
+    opts?.legTopK ?? (scopeSlug ? SCOPED_LEG_TOP_K : DEFAULT_LEG_TOP_K);
+  const legTopK = Math.max(baseLegTopK, topK);
   const rrfK = opts?.rrfK ?? DEFAULT_RRF_K;
 
   const queryEmbedding = await deps.embedder.embedQuery(query);
-  const vectorResults = await deps.vectorStore.search(queryEmbedding, legTopK);
+  // Restrict both legs to the scoped article (if any) BEFORE the gate signal is captured.
+  // The store results are still cosine/BM25-sorted, so filtering preserves order.
+  const inScope = (r: ScoredChunk): boolean =>
+    scopeSlug === undefined || r.chunk.slug === scopeSlug;
+  const vectorResults = (
+    await deps.vectorStore.search(queryEmbedding, legTopK)
+  ).filter(inScope);
   // `await` covers both legs: in-memory Bm25Index (sync) and the D1 FTS5 store (async).
-  const lexicalResults = await deps.lexical.search(query, legTopK);
+  const lexicalResults = (await deps.lexical.search(query, legTopK)).filter(
+    inScope
+  );
 
-  // Gate signal: the vector leg is sorted by cosine, so [0].score is the corpus
-  // max cosine. Captured BEFORE fusion/rerank/truncation.
+  // Gate signal: the vector leg is sorted by cosine, so [0].score is the max cosine of the
+  // (possibly scoped) candidate set. Captured BEFORE fusion/rerank/truncation. When scoped,
+  // this is the in-scope max -> an out-of-scope query has topSimilarity 0 -> honest refusal.
   const topSimilarity = vectorResults.length > 0 ? vectorResults[0].score : 0;
 
   const vectorById = new Map<string, number>();

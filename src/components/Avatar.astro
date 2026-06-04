@@ -98,6 +98,10 @@ const s = avatarStrings(lang);
   ) {
     let busy = false;
     let proseEl: HTMLElement | null = null; // current grounded answer's prose node
+    // Per-article scope: the slug an "ask about this article" trigger set, or null for the
+    // corpus-wide launcher. Sent as scopeSlug so the answer (and the honest refusal) is
+    // restricted to that article; cleared when the panel closes or the FAB opens fresh.
+    let askScope: string | null = null;
 
     const cloneTpl = (tpl: HTMLTemplateElement): HTMLElement => {
       const node = tpl.content.firstElementChild;
@@ -130,6 +134,7 @@ const s = avatarStrings(lang);
       panel.hidden = true;
       launcher.setAttribute('aria-expanded', 'false');
       launcher.focus();
+      askScope = null; // a fresh open is corpus-wide unless a trigger re-scopes it
     };
 
     // Allow http(s) absolute, or a single-leading-slash same-origin relative path.
@@ -234,7 +239,11 @@ const s = avatarStrings(lang);
         const res = await fetch('/api/avatar/query', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query, lang: document.documentElement.lang }),
+          body: JSON.stringify({
+            query,
+            lang: document.documentElement.lang,
+            ...(askScope ? { scopeSlug: askScope } : {}),
+          }),
         });
         if (!res.ok || !res.body) {
           showError();
@@ -278,7 +287,10 @@ const s = avatarStrings(lang);
 
     launcher.addEventListener('click', () => {
       if (isOpen()) close();
-      else open();
+      else {
+        askScope = null; // the corner launcher is corpus-wide
+        open();
+      }
     });
     closeBtn.addEventListener('click', close);
     sendBtn.addEventListener('click', send);
@@ -301,5 +313,28 @@ const s = avatarStrings(lang);
       if (isOpen() && e.target instanceof Node && !root.contains(e.target))
         close();
     });
+
+    // Per-article "ask about this article" entry points (ArticleAskButton). A
+    // delegated, CAPTURE-phase listener: it runs BEFORE the bubble-phase
+    // outside-click closer above, and stopPropagation keeps that closer from
+    // firing on the (out-of-dock) trigger. Opens the existing panel, SCOPES the
+    // session to the trigger's article (data-avatar-scope -> scopeSlug), and
+    // pre-fills the composer with the build-time seed.
+    document.addEventListener(
+      'click',
+      (e) => {
+        const trigger =
+          e.target instanceof Element
+            ? e.target.closest('[data-avatar-ask]')
+            : null;
+        if (!(trigger instanceof HTMLElement)) return;
+        e.stopPropagation();
+        askScope = trigger.dataset.avatarScope ?? null;
+        if (!isOpen()) open();
+        input.value = trigger.dataset.avatarSeed ?? '';
+        input.focus();
+      },
+      true
+    );
   }
 </script>

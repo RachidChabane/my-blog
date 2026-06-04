@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { rowToChunk, type ChunkRow } from '@/lib/avatar/d1';
-import { VectorizeVectorStore } from '@/lib/avatar/vectorize-store';
+import {
+  VectorizeVectorStore,
+  VECTORIZE_MAX_TOPK,
+} from '@/lib/avatar/vectorize-store';
 import { D1LexicalStore, toFtsMatch } from '@/lib/avatar/d1-lexical';
 import { retrieve } from '@/lib/avatar/retrieval';
 import { FakeEmbedder } from '@/lib/avatar/fakes';
@@ -136,6 +139,24 @@ describe('VectorizeVectorStore', () => {
     const out = await store.search([0, 0, 0], 10);
     expect(out.map((s) => s.chunk.id)).toEqual(['a#h#0', 'b#h#0']);
     expect(out.map((s) => s.score)).toEqual([0.91, 0.42]);
+  });
+
+  it('clamps query topK to the Vectorize ceiling (wide scoped pull never throws)', async () => {
+    const sink = { topK: -1 };
+    const recording: VectorizeIndex = {
+      query: (_v, opts) => {
+        sink.topK = opts?.topK ?? -1;
+        return Promise.resolve({ matches: [], count: 0 });
+      },
+      upsert: () => Promise.resolve({ ids: [], count: 0 }),
+      insert: () => Promise.resolve({ ids: [], count: 0 }),
+      deleteByIds: () => Promise.resolve({ ids: [], count: 0 }),
+    };
+    const store = new VectorizeVectorStore(recording, fakeD1({}));
+    await store.search([0], 500); // a wide scoped pull above the cap
+    expect(sink.topK).toBe(VECTORIZE_MAX_TOPK);
+    await store.search([0], 10); // under the cap -> passed through unchanged
+    expect(sink.topK).toBe(10);
   });
 
   it('skips an orphaned vector id (no matching D1 row)', async () => {

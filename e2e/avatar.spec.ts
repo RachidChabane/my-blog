@@ -269,3 +269,81 @@ test.describe('S10 avatar overlay', () => {
     expect(postBody).toContain('"lang":"fr"');
   });
 });
+
+// Per-article "ask about this article" entry button (ArticleAskButton). A static
+// button at the end of the article opens the always-present avatar panel, pre-fills
+// the composer with a build-time seed, and SCOPES the session to this article
+// (scopeSlug) so the avatar answers from this piece (and honestly refuses otherwise).
+test.describe('S10 avatar — per-article ask button', () => {
+  const EN_ARTICLE = '/en/blog/hybrid-rag-reciprocal-rank-fusion/';
+  const EN_SLUG = 'hybrid-rag-reciprocal-rank-fusion';
+  const EN_SEED = 'What does this article say about RAG?';
+
+  test('the article button opens the panel pre-filled and focuses the input', async ({
+    page,
+  }) => {
+    await page.goto(EN_ARTICLE);
+    const ask = page.locator('[data-avatar-ask]');
+    const panel = page.locator('[data-avatar-panel]');
+    await expect(ask).toBeVisible();
+    await expect(panel).toBeHidden();
+
+    await ask.scrollIntoViewIfNeeded();
+    await ask.click();
+
+    await expect(panel).toBeVisible();
+    await expect(page.locator('[data-avatar-slot]')).toHaveAttribute(
+      'aria-expanded',
+      'true'
+    );
+    const input = page.locator('[data-avatar-input]');
+    await expect(input).toBeFocused();
+    await expect(input).toHaveValue(EN_SEED);
+  });
+
+  test('the seeded query submits scoped to this article (scopeSlug)', async ({
+    page,
+  }) => {
+    let postBody = '';
+    await page.route('**/api/avatar/query', (route) => {
+      postBody = route.request().postData() ?? '';
+      return fulfillSSE(route, GROUNDED_EN);
+    });
+    await page.goto(EN_ARTICLE);
+    const ask = page.locator('[data-avatar-ask]');
+    await ask.scrollIntoViewIfNeeded();
+    await ask.click();
+
+    const input = page.locator('[data-avatar-input]');
+    await expect(input).toHaveValue(EN_SEED);
+    await input.press('Enter');
+
+    await expect(
+      page.locator('[data-avatar-panel] .rc-ans__prose')
+    ).toContainText('hybrid RAG system');
+    expect(postBody).toContain(`"query":"${EN_SEED}"`);
+    expect(postBody).toContain('"lang":"en"');
+    // The per-article entry point scopes retrieval to THIS article.
+    expect(postBody).toContain(`"scopeSlug":"${EN_SLUG}"`);
+  });
+
+  test('the corner launcher stays corpus-wide (no scopeSlug)', async ({
+    page,
+  }) => {
+    let postBody = '';
+    await page.route('**/api/avatar/query', (route) => {
+      postBody = route.request().postData() ?? '';
+      return fulfillSSE(route, GROUNDED_EN);
+    });
+    await page.goto(EN_ARTICLE);
+    // Open via the FAB launcher (not the article button) → corpus-wide.
+    await page.locator('[data-avatar-slot]').click();
+    const input = page.locator('[data-avatar-input]');
+    await input.fill('Has Rachid built a RAG system?');
+    await input.press('Enter');
+    await expect(
+      page.locator('[data-avatar-panel] .rc-ans__prose')
+    ).toContainText('hybrid RAG system');
+    expect(postBody).not.toContain('scopeSlug');
+  });
+});

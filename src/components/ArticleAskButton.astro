@@ -1,0 +1,81 @@
+---
+/**
+ * Per-article "ask the agent about this article" entry point. Sits at the end of
+ * the <article>, OUTSIDE data-pagefind-body, so it never pollutes the Pagefind
+ * corpus. Ships ZERO JS of its own: a static <button> carrying a build-time seed
+ * (data-avatar-seed) and the article slug (data-avatar-scope). The always-present
+ * Avatar island (src/components/Avatar.astro) has a delegated [data-avatar-ask]
+ * listener that opens the panel, SCOPES the session to this article (scopeSlug),
+ * and pre-fills the composer. Scoped retrieval means the avatar answers from THIS
+ * article and honestly refuses ("this piece doesn't cover that") when it doesn't.
+ * Tokens only; AA-compliant foreground (no sub-AA token). A plain <div>, not a
+ * landmark, to avoid landmark collisions.
+ */
+interface Props {
+  prompt: string; // quiet lead-in line
+  label: string; // button text + aria-label
+  seed: string; // localized seed question, pre-filled into the composer
+  scope: string; // article slug -> data-avatar-scope -> scopeSlug (scoped retrieval)
+}
+const { prompt, label, seed, scope } = Astro.props;
+---
+
+<div class="rc-ask">
+  <p class="rc-ask__prompt">{prompt}</p>
+  <button
+    class="rc-ask__btn"
+    type="button"
+    data-avatar-ask
+    data-avatar-scope={scope}
+    data-avatar-seed={seed}
+    aria-label={label}
+  >
+    <span class="rc-ask__text">{label}</span>
+    <span class="rc-ask__arrow" aria-hidden="true">→</span>
+  </button>
+</div>
+
+<style>
+  .rc-ask {
+    margin-top: 40px;
+    padding-top: 28px;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .rc-ask__prompt {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-meta);
+    letter-spacing: 0.04em;
+    color: var(--fg-muted);
+  }
+  .rc-ask__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition:
+      color var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-ask__btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .rc-ask__arrow {
+    transition: transform var(--dur-hover) var(--ease-soft);
+  }
+  .rc-ask__btn:hover .rc-ask__arrow {
+    transform: translateX(3px);
+  }
+</style>

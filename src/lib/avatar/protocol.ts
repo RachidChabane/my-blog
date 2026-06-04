@@ -8,6 +8,13 @@ export type Locale = 'fr' | 'en';
 export interface AvatarQueryRequest {
   query: string;
   lang?: Locale;
+  /**
+   * Restrict retrieval to a single article (its slug) — the per-article "ask about
+   * this piece" mode. Omitted for the corpus-wide launcher. When set, the honest
+   * refusal gate is computed over the SCOPED subset (retrieval.ts), so an
+   * out-of-scope question refuses instead of answering from another article.
+   */
+  scopeSlug?: string;
 }
 
 /** A grounded source, derived from a retrieved chunk (NOT model-generated). */

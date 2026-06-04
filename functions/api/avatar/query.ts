@@ -167,7 +167,13 @@ export async function handleAvatarQuery(
   // 3. Retrieve + gate. Retrieval/gate failures → generic 500 (no leak).
   let outcome: ThresholdOutcome;
   try {
-    const result = await deps.retriever.retrieve(v.query, deps.retrieveOptions);
+    // Per-request scope (the per-article "ask about this piece" mode) overrides any
+    // deps-level options; absent scopeSlug keeps the corpus-wide behavior unchanged.
+    const retrieveOptions: RetrieveOptions | undefined =
+      v.scopeSlug !== undefined
+        ? { ...deps.retrieveOptions, scopeSlug: v.scopeSlug }
+        : deps.retrieveOptions;
+    const result = await deps.retriever.retrieve(v.query, retrieveOptions);
     outcome = applyThreshold(result, {
       threshold: deps.threshold,
       maxNearMisses: deps.maxNearMisses,

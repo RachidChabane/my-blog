@@ -9,6 +9,11 @@ import type { ScoredChunk, VectorStore } from './contracts';
 import type { D1Database, VectorizeIndex } from './cf';
 import { loadChunksByIds } from './d1';
 
+// Cloudflare Vectorize's documented max query topK for id+score results (it is lower
+// when returning values/metadata, which we do not). A request above this throws, so the
+// store clamps to it — see the scoped wide-pull (retrieval.ts SCOPED_LEG_TOP_K).
+export const VECTORIZE_MAX_TOPK = 100;
+
 export class VectorizeVectorStore implements VectorStore {
   constructor(
     private readonly index: VectorizeIndex,
@@ -16,7 +21,12 @@ export class VectorizeVectorStore implements VectorStore {
   ) {}
 
   async search(queryEmbedding: number[], topK: number): Promise<ScoredChunk[]> {
-    const { matches } = await this.index.query(queryEmbedding, { topK });
+    // Clamp to Vectorize's cap so a wide scoped pull can never exceed it and throw. The
+    // corpus is far under 100 chunks, so this never truncates today; scoped retrieval
+    // beyond 100 chunks needs a slug-metadata pre-filter (avatar-index-builder-seams).
+    const { matches } = await this.index.query(queryEmbedding, {
+      topK: Math.min(topK, VECTORIZE_MAX_TOPK),
+    });
     const chunks = await loadChunksByIds(
       this.db,
       matches.map((m) => m.id)

@@ -33,41 +33,62 @@ import Base from '@/layouts/Base.astro';
 import Prose from '@/components/Prose.astro';
 import SourceList from '@/components/SourceList.astro';
 import PrevNext from '@/components/PrevNext.astro';
+import ArticleAskButton from '@/components/ArticleAskButton.astro';
+import ProvenanceSidenotes from '@/components/ProvenanceSidenotes.astro';
+import type { ProvenanceCitation } from '@/lib/avatar/sidenotes';
 
 export const getStaticPaths = (async () => {
-  const [articles, tagEntries] = await Promise.all([
+  const [articles, tagEntries, provenance] = await Promise.all([
     getCollection('articles'),
     getCollection('tags'),
+    getCollection('provenance'),
   ]);
   const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
   return LOCALES.flatMap((lang) =>
-    getPublishedArticles(articles, lang).map((entry) => ({
-      params: { lang, slug: entry.data.slug },
-      props: {
-        lang,
-        entry,
-        sources: toSourceViews(entry.data.sources),
-        prevNext: getPrevNextByTag(articles, entry, lang, tags),
-        slugMap: buildSlugMap(articles, entry.data.translationKey),
-        metaTags: entry.data.tags.map((t) => tagLabel(t, lang, tags)),
-      },
-    }))
+    getPublishedArticles(articles, lang).map((entry) => {
+      const prov = provenance.find(
+        (p: CollectionEntry<'provenance'>) =>
+          p.data.slug === entry.data.slug && p.data.lang === lang
+      );
+      return {
+        params: { lang, slug: entry.data.slug },
+        props: {
+          lang,
+          entry,
+          sources: toSourceViews(entry.data.sources),
+          prevNext: getPrevNextByTag(articles, entry, lang, tags),
+          slugMap: buildSlugMap(articles, entry.data.translationKey),
+          metaTags: entry.data.tags.map((t) => tagLabel(t, lang, tags)),
+          provenanceCitations: prov?.data.citations ?? [],
+        },
+      };
+    })
   );
 }) satisfies GetStaticPaths;
 
-const { lang, entry, sources, prevNext, slugMap, metaTags } = Astro.props as {
+const {
+  lang,
+  entry,
+  sources,
+  prevNext,
+  slugMap,
+  metaTags,
+  provenanceCitations,
+} = Astro.props as {
   lang: Locale;
   entry: CollectionEntry<'articles'>;
   sources: SourceView[];
   prevNext: PrevNextNav;
   slugMap: Partial<Record<Locale, string>>;
   metaTags: string[];
+  provenanceCitations: ProvenanceCitation[];
 };
 
 const s = articleDetailStrings(lang);
 const { Content } = await render(entry); // ← the load-bearing call (plan G1)
 const dek = excerpt(entry.body);
 const eyebrow = `${metaTags[0]} · ${s.maintained}`;
+const askSeed = s.askSeed.replace('{topic}', metaTags[0]);
 const hasBoth = Boolean(slugMap.fr && slugMap.en);
 const metaItems = [
   entry.data.publishDate,
@@ -115,6 +136,17 @@ const title = `${entry.data.title} — rachid chabane`;
       nextDir={s.nextDir}
       ariaLabel={s.prevNextAria}
     />
+    <ArticleAskButton
+      prompt={s.askPrompt}
+      label={s.askLabel}
+      seed={askSeed}
+      scope={entry.data.slug}
+    />
+    {
+      provenanceCitations.length > 0 && (
+        <ProvenanceSidenotes citations={provenanceCitations} />
+      )
+    }
   </article>
 </Base>
 

@@ -145,6 +145,9 @@ export interface ArticleDetailStrings {
   nextDir: string; // "Next" / "Suivant"
   prevNextAria: string; // related-nav aria-label
   bilingualNote: string; // meta tail "FR / EN"
+  askPrompt: string; // quiet lead-in above the "ask the agent" entry button
+  askLabel: string; // entry-button text + aria-label (opens the avatar panel)
+  askSeed: string; // seed question template; "{topic}" is filled in the page
 }
 
 export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
@@ -156,6 +159,9 @@ export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
     nextDir: 'Suivant',
     prevNextAria: 'Articles liés',
     bilingualNote: 'FR / EN',
+    askPrompt: 'Envie d’aller plus loin ?',
+    askLabel: 'Interroger l’agent sur cet article',
+    askSeed: 'Que dit cet article sur {topic} ?',
   },
   en: {
     back: 'All articles',
@@ -165,6 +171,9 @@ export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
     nextDir: 'Next',
     prevNextAria: 'Related articles',
     bilingualNote: 'FR / EN',
+    askPrompt: 'Want to go deeper?',
+    askLabel: 'Ask the agent about this article',
+    askSeed: 'What does this article say about {topic}?',
   },
 };
 
