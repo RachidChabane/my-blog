@@ -1,0 +1,4 @@
+# Grounded-citation provenance sidecars (Option B) land here, written by the pipeline's
+# publish stage as <slug>.<lang>.json (see pipeline/stages/publish.py build_provenance and
+# src/content/schemas.ts provenanceSchema). Empty until the pipeline runs; this .gitkeep
+# keeps the `provenance` content-collection glob base present for the build.

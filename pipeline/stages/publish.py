@@ -41,6 +41,7 @@ from .research import CandidatesDoc
 from .select import parse_brief
 
 ARTICLES_REL = "src/content/articles"  # publish target dir (under repo_root)
+PROVENANCE_REL = "src/content/provenance"  # per-language grounded-citation sidecars
 _DDMMYYYY_RE = re.compile(r"^\d{2}-\d{2}-\d{4}$")
 _HTTP_RE = re.compile(r"^https?://", re.IGNORECASE)
 
@@ -107,6 +108,54 @@ def project_sources(csm: ClaimSourceMap) -> list[dict]:
             }
         )
     return out
+
+
+def project_provenance(csm: ClaimSourceMap, lang: str) -> list[dict]:
+    """Project the per-language grounded citations for the renderer's provenance sidecar.
+
+    Keyed on the sources CITED IN THIS LANGUAGE (``csm.claims_for(lang)``), NOT all map
+    sources like ``project_sources`` -- so the sidecar set matches the body's ``[sN]`` markers
+    exactly (the grounding gate guarantees every cited source's marker is in the body). One
+    entry per cited source, in ``csm.sources`` order: ``{sourceId, label, url, excerpt, span?}``.
+    ``span`` (offsets into ``excerpt``) is carried ONLY when EXACTLY ONE of this language's
+    claims for that source has an ``excerpt_span`` -- otherwise a single ``[sN]`` anchor cannot
+    resolve one substring, so the whole excerpt stands (the renderer highlights nothing).
+    """
+    claims = csm.claims_for(lang)
+    cited = {claim.source_id for claim in claims}
+    out: list[dict] = []
+    for source in csm.sources:
+        if source.source_id not in cited:
+            continue
+        spans = [
+            claim.excerpt_span
+            for claim in claims
+            if claim.source_id == source.source_id and claim.excerpt_span is not None
+        ]
+        entry: dict = {
+            "sourceId": source.source_id,
+            "label": source.label,
+            "url": source.url,
+            "excerpt": source.excerpt,
+        }
+        if len(spans) == 1:
+            entry["span"] = spans[0].to_dict()
+        out.append(entry)
+    return out
+
+
+def build_provenance(csm: ClaimSourceMap, draft: DraftDoc) -> dict:
+    """The renderer-facing provenance record for one language's published article.
+
+    ``citations`` is ``project_provenance(csm, draft.lang)`` (per-cited-source, span only when
+    unambiguous). Matches ``provenanceSchema`` in ``src/content/schemas.ts``.
+    """
+    return {
+        "slug": draft.slug,
+        "lang": draft.lang,
+        "translationKey": draft.translation_key,
+        "citations": project_provenance(csm, draft.lang),
+    }
 
 
 def build_article(draft: DraftDoc, sources: list[dict], *, publish_date: str) -> str:
@@ -336,6 +385,7 @@ def _build_manifest(
                 "lang": "fr",
                 "slug": fr_slug,
                 "path": f"{ARTICLES_REL}/{fr_slug}.fr.md",
+                "provenance": f"{PROVENANCE_REL}/{fr_slug}.fr.json",
                 "url": f"/fr/blog/{fr_slug}/",
                 "contentHash": content_hash(ctx.fr_doc.translation_key, "fr", ctx.fr_doc.body),
             },
@@ -343,6 +393,7 @@ def _build_manifest(
                 "lang": "en",
                 "slug": en_slug,
                 "path": f"{ARTICLES_REL}/{en_slug}.en.md",
+                "provenance": f"{PROVENANCE_REL}/{en_slug}.en.json",
                 "url": f"/en/blog/{en_slug}/",
                 "contentHash": content_hash(ctx.en_doc.translation_key, "en", ctx.en_doc.body),
             },
@@ -381,6 +432,17 @@ def publish_run(
     # collection loader globs **/*.md and keys on frontmatter (plan section 5.2 step 5 / C4).
     (articles_dir / f"{ctx.fr_doc.slug}.fr.md").write_text(ctx.fr_article, encoding="utf-8")
     (articles_dir / f"{ctx.en_doc.slug}.en.md").write_text(ctx.en_article, encoding="utf-8")
+
+    # Per-language grounded-citation sidecars (the `provenance` collection). Built from the
+    # same validated CSM, so reaching here (both articles written) means both sidecars are
+    # sound -- bilingual-or-nothing holds. The renderer no-ops for an article with no sidecar.
+    provenance_dir = repo_root / PROVENANCE_REL
+    provenance_dir.mkdir(parents=True, exist_ok=True)
+    for doc in (ctx.fr_doc, ctx.en_doc):
+        provenance = build_provenance(ctx.csm, doc)
+        (provenance_dir / f"{doc.slug}.{doc.lang}.json").write_text(
+            json.dumps(provenance, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
 
     topic_memory_info = _append_topic_memory(
         run_dir, Path(memory_path), ctx, publish_date=publish_date
@@ -481,10 +543,13 @@ if __name__ == "__main__":
 
 __all__ = [
     "ARTICLES_REL",
+    "PROVENANCE_REL",
     "PublishResult",
     "iso_to_ddmmyyyy",
     "content_hash",
     "project_sources",
+    "project_provenance",
+    "build_provenance",
     "build_article",
     "validate_published",
     "publish_run",

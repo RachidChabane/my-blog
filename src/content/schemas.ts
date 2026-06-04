@@ -52,6 +52,31 @@ export const tagSchema = z.object({
   }),
 });
 
+// Per-language grounded-citation provenance sidecar (Option B). One file per published
+// article (`<slug>.<lang>.json`), written by the pipeline's publish stage from the
+// claim->source map. Keyed per CITED source so each entry matches an [sN] marker in the
+// body; `span` (offsets into `excerpt`) is present only when unambiguous.
+const excerptSpanSchema = z.object({
+  start: z.number().int().nonnegative(),
+  end: z.number().int().nonnegative(),
+});
+
+const provenanceCitationSchema = z.object({
+  sourceId: z.string().regex(/^s\d+$/),
+  label: z.string().min(1),
+  url: httpUrl,
+  excerpt: z.string().min(1),
+  span: excerptSpanSchema.optional(),
+});
+
+export const provenanceSchema = z.object({
+  slug: z.string().min(1),
+  lang: z.enum(['fr', 'en']),
+  translationKey: z.string().min(1),
+  citations: z.array(provenanceCitationSchema).min(1),
+});
+
 export type ArticleFrontmatter = z.infer<typeof articleFrontmatterSchema>;
 export type ProjectFrontmatter = z.infer<typeof projectFrontmatterSchema>;
 export type Tag = z.infer<typeof tagSchema>;
+export type Provenance = z.infer<typeof provenanceSchema>;

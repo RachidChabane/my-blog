@@ -11,3 +11,5 @@ LAUNCH.md
 # Generated/data content markdown — validated by `astro check` + Zod schema, not prettier
 # (also covers the pipeline's future generated articles).
 src/content/**/*.md
+# Generated provenance sidecars (Option B) — pipeline-written JSON, Zod-validated, not prettier.
+src/content/provenance/**/*.json

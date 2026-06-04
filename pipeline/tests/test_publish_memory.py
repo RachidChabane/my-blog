@@ -38,7 +38,9 @@ from pipeline.memory.embedder import (
 )
 from pipeline.memory.topic_memory import TopicMemory, TopicRecord
 from pipeline.stages.publish import (
+    build_provenance,
     iso_to_ddmmyyyy,
+    project_provenance,
     project_sources,
     publish_run,
     validate_published,
@@ -280,6 +282,62 @@ def test_10_project_sources_dates():
     assert all(set(s) == {"label", "url", "date"} for s in sources)
 
 
+def test_10b_project_provenance_per_cited_source_and_span():
+    # Option B sidecar projection. complete fixture: en cites s1(span 0-24)+s2(no span);
+    # fr cites s1(no span)+s2(no span); sources s1,s2.
+    csm = ClaimSourceMap.load_path(_FIXTURES / "claim_source_map.complete.json")
+    en = project_provenance(csm, "en")
+    fr = project_provenance(csm, "fr")
+
+    assert [c["sourceId"] for c in en] == ["s1", "s2"]
+    assert en[0]["span"] == {"start": 0, "end": 24}  # the single en s1 span is carried
+    assert "span" not in en[1]  # en s2 has no span -> whole excerpt stands
+    for entry in (*en, *fr):
+        assert set(entry) <= {"sourceId", "label", "url", "excerpt", "span"}
+        assert entry["excerpt"].strip() and entry["url"].startswith("http")
+    # fr: same two cited sources, neither with a span
+    assert [c["sourceId"] for c in fr] == ["s1", "s2"]
+    assert all("span" not in c for c in fr)
+
+
+def test_10c_project_provenance_excludes_sources_not_cited_in_lang():
+    # advisor correctness fix: key on sources CITED IN THIS LANGUAGE, not all map sources.
+    # s2 backs only an EN claim, so it must NOT appear in the FR sidecar.
+    csm = ClaimSourceMap.from_dict(
+        {
+            "claims": [
+                {"lang": "en", "claim": "A", "source_id": "s1",
+                 "excerpt_span": {"start": 0, "end": 5}},
+                {"lang": "en", "claim": "B", "source_id": "s2"},
+                {"lang": "fr", "claim": "Afr", "source_id": "s1"},
+            ],
+            "sources": [
+                {"source_id": "s1", "label": "L1", "url": "https://e.example/1",
+                 "retrieved_at": "2026-01-01", "excerpt": "Alpha excerpt"},
+                {"source_id": "s2", "label": "L2", "url": "https://e.example/2",
+                 "retrieved_at": "2026-01-02", "excerpt": "Beta excerpt"},
+            ],
+        }
+    )
+    csm.validate()
+    assert [c["sourceId"] for c in project_provenance(csm, "en")] == ["s1", "s2"]
+    fr = project_provenance(csm, "fr")
+    assert [c["sourceId"] for c in fr] == ["s1"]  # s2 excluded: not cited in fr
+    assert "span" not in fr[0]
+
+
+def test_10d_build_provenance_record_shape():
+    csm = ClaimSourceMap.load_path(_FIXTURES / "claim_source_map.complete.json")
+    from pipeline.stages.draft import DraftDoc
+
+    en_doc = DraftDoc.parse(_fixture_text("draft-en.valid.md"))
+    rec = build_provenance(csm, en_doc)
+    assert rec["slug"] == en_doc.slug
+    assert rec["lang"] == "en"
+    assert rec["translationKey"] == en_doc.translation_key
+    assert [c["sourceId"] for c in rec["citations"]] == ["s1", "s2"]
+
+
 def test_11_publish_happy_path_writes_both(tmp_path):
     run = _make_publish_run(
         tmp_path / "run",
@@ -323,6 +381,42 @@ def test_11_publish_happy_path_writes_both(tmp_path):
     assert "harnais de codage agentique" in fr.read_text(encoding="utf-8")
 
 
+def test_11b_publish_writes_provenance_sidecars(tmp_path):
+    run = _make_publish_run(
+        tmp_path / "run",
+        draft=_good_drafts(),
+        select=_good_select(),
+        research=_good_research(),
+    )
+    repo = tmp_path / "repo"
+    store = tmp_path / "store.json"
+    store.write_text("[]\n", encoding="utf-8")
+    result = publish_run(
+        run, repo, publish_date="01-06-2026", memory_path=store
+    )
+    assert result.ok, result.problems
+
+    prov_dir = repo / "src" / "content" / "provenance"
+    fr = prov_dir / f"{_FR_SLUG}.fr.json"
+    en = prov_dir / f"{_EN_SLUG}.en.json"
+    assert fr.is_file() and en.is_file()
+
+    en_data = json.loads(en.read_text(encoding="utf-8"))
+    assert en_data["slug"] == _EN_SLUG
+    assert en_data["lang"] == "en"
+    assert en_data["translationKey"] == _TRANSLATION_KEY
+    cits = en_data["citations"]
+    assert [c["sourceId"] for c in cits] == ["s1", "s2"]
+    assert cits[0]["span"] == {"start": 0, "end": 24}
+    assert "span" not in cits[1]
+    assert all(c["excerpt"].strip() and c["url"].startswith("http") for c in cits)
+
+    # the manifest records the provenance paths next to each article
+    assert result.manifest is not None
+    en_entry = next(a for a in result.manifest["articles"] if a["lang"] == "en")
+    assert en_entry["provenance"] == f"src/content/provenance/{_EN_SLUG}.en.json"
+
+
 def test_12_bilingual_or_nothing_writes_neither(tmp_path):
     drafts = _good_drafts()
     # drop EN translationKey -> parity fails -> write NEITHER
@@ -343,6 +437,8 @@ def test_12_bilingual_or_nothing_writes_neither(tmp_path):
     assert proc.returncode == 1
     assert proc.stdout.strip()  # problems printed
     assert not (repo / "src" / "content" / "articles").exists()
+    # bilingual-or-nothing extends to the sidecars: a failed publish writes NO provenance.
+    assert not (repo / "src" / "content" / "provenance").exists()
 
 
 def test_13_translationkey_parity_mismatch_reported(tmp_path):

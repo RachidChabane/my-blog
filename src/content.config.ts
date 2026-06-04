@@ -4,6 +4,7 @@ import {
   articleFrontmatterSchema,
   projectFrontmatterSchema,
   tagSchema,
+  provenanceSchema,
 } from './content/schemas';
 
 export const collections = {
@@ -18,5 +19,11 @@ export const collections = {
   tags: defineCollection({
     loader: file('./src/content/tags/index.json'),
     schema: tagSchema,
+  }),
+  // Grounded-citation provenance sidecars (Option B), written by the publish stage.
+  // Empty until the pipeline runs; the renderer no-ops for articles with no entry.
+  provenance: defineCollection({
+    loader: glob({ pattern: '**/*.json', base: './src/content/provenance' }),
+    schema: provenanceSchema,
   }),
 };
