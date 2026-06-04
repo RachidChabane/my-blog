@@ -14,13 +14,26 @@ draft clears the `style-auditor` and the no-emoji scan without rework.
   notebook (D-007): write as the engineer who did the work, not as a narrator
   describing a field.
 - Engineering-first and concrete. Lead with the mechanism, the trade-off, the
-  measured result. Prefer the specific number, command, or failure mode over the
-  general claim.
+  measured result. The core argument MUST be anchored in at least one concrete
+  number, command, or named failure mode -- never settle for the general claim.
+  Any NUMBER is a load-bearing claim: it must come from a captured source and carry
+  its `[sN]` citation (section 4). Never state an unsourced figure, not even from
+  your own work, and never invent a source to make a number look cited. When no
+  source gives a number, reach for a concrete command or a named failure mode
+  instead. Bad: "RRF improves retrieval quality." Good: "RRF lifts recall@10 over
+  BM25 alone [s3], with one `k` constant instead of ten tuned weights."
 - The quality bar is the caliber of `bayan` (D-007): premium, considered, dense with
   signal. A reader who builds with AI should learn something they can act on.
 - No marketing tone. No hype verbs (leverage, utilize, empower, unlock, supercharge),
   no vague superlatives (game-changing, revolutionary, seamless). State what a thing
   does and what it costs.
+- Take a position. Every article makes one load-bearing argument the reader could
+  disagree with -- typically what most teams get wrong about the topic, or which
+  default is wrong and what you do instead. State that take in the first paragraph
+  and defend it through the piece; a neutral explainer that only describes is
+  off-register. Mark a genuine opinion as your own ("I think", "in my experience")
+  so the fact-check gate reads it as opinion, not an uncited claim (section 4) -- an
+  opinion is a judgment, never a licence to state an unsourced number.
 
 ## 2. No emoji (D-007)
 
@@ -41,8 +54,10 @@ pass:
 - No stock LLM lead-ins: "It is worth noting that", "Importantly,", "Notably,", "In
   conclusion,", "Let's dive in", "delve into", "in the realm of", "a tapestry of".
   If deleting the lead-in leaves the sentence intact, it was filler -- do not write it.
-- No em-dash clusters. A single well-placed dash is fine; stacked-clause dashes and
-  more than about one dash per 80 words read as machine output.
+- No em-dash clusters. At most one dash per ~80 words, and never two in one sentence;
+  stacked-clause dashes ("X -- which does Y -- and thus Z") read as machine output.
+  Reach for a period, a colon, or parentheses before a second dash. Judged per
+  language: French tiret cadence is held to the same bar as English.
 - No hedging stacks: "seems to suggest", "might potentially", "arguably". Make the
   claim or cut it.
 - No over-signposting: avoid "First, we... Next, we... Finally, we..." cadences and
@@ -51,6 +66,9 @@ pass:
   the same thing in different words.
 - No heavy noun-phrase openings ("A comprehensive examination of X."). Open with a
   full sentence that has a verb.
+- No neutral throat-clearing opener. Do not open the piece, or any section, by
+  defining the subject, restating the title, or describing the field. The first
+  sentence must carry your point or the stakes, never a textbook "X is/does Y."
 
 ## 4. Citations and provenance (writing-flow section 4 and 5)
 
@@ -65,11 +83,19 @@ pass:
 
 ## 5. Structure and length
 
-- Title, then a lead paragraph that states the point of the piece. The reading-surface
-  derives the dek from the lead paragraph -- there is no separate `dek` field, so the
-  lead must stand on its own as the summary.
-- Use section headers that follow the outline in the brief. Keep paragraphs varied in
-  length; uniform paragraph shapes read as machine output.
+- Title, then a lead paragraph that opens on the problem, the stakes, or your take,
+  NOT a definition of the subject. Put the thesis in the FIRST sentence of that
+  paragraph: the reading-surface derives the dek from the first paragraph block (it
+  ends at the first blank line) and truncates near 180 characters at a word boundary,
+  so the point must land before that cut and the first block must stand alone as the
+  summary. A problem-first hook is welcome but compressed -- the hook and the thesis
+  share that first block; texture and the cited number follow in the same block or the
+  next paragraph. Never open the body with "X is/does Y" textbook prose.
+- Use section headers that follow the outline in the brief. Vary sentence and
+  paragraph length deliberately: follow a long, qualified sentence with a short blunt
+  one. Uniform sentence length and the repeated claim -> expansion -> restatement
+  paragraph shape are the strongest rhythm tells; break the pattern at least once per
+  section.
 - Aim for a focused mid-length article: enough to develop the angle with real
   engineering depth, not padded to a word count.
 
@@ -78,6 +104,14 @@ pass:
 - FR and EN are parallel authored outputs of one topic and one source set, each
   idiomatic in its own language. This is not a raw machine translation: write each
   language as a native engineer would.
+- Write French as a French engineer writes, not as a translation of the English.
+  Restructure sentences for French syntax instead of transliterating the English
+  clause order; use idiomatic French technical register and native connectors ("or",
+  "en revanche", "d'ailleurs"), not calques. Avoid literal renderings such as "un
+  défaut robuste" for "a robust default" (prefer "une valeur par défaut fiable"). If
+  a French sentence reads like the English with French words swapped in, rewrite it.
+  The two languages share the argument, the numbers, and the source ids, not the
+  sentence shapes.
 - The FR and EN pair share an identical `translationKey` (the bilingual join key).
   The `slug`, `title`, and `tags` are localized; the `translationKey` is not.
 - Claim coverage is parallel: both languages cite the same set of skeleton source ids,

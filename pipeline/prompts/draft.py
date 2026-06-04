@@ -51,6 +51,11 @@ def _draft_section(repo_root: Path, run_dir: Path) -> str:
         "\n"
         "2. DRAFT both languages as parallel outputs of one topic+sources -- this is\n"
         "   not a raw machine translation; each is idiomatic in its own language.\n"
+        "   Write French as a French engineer writes: restructure for French syntax, use\n"
+        "   native technical register and connectors, and never transliterate the English\n"
+        "   clause order or calque idioms (no 'un defaut robuste' for 'a robust default').\n"
+        "   FR and EN share the argument, the numbers, and the source_ids -- not the\n"
+        "   sentence shapes (house_style.md section 6).\n"
         f"   Write:\n"
         f"     {p['draft_fr']}\n"
         f"     {p['draft_en']}\n"
@@ -60,9 +65,18 @@ def _draft_section(repo_root: Path, run_dir: Path) -> str:
         "     slug: <localized slug>\n"
         "     title: <localized title>\n"
         "     tags: [<at least one tag>]\n"
-        "   Then the body: a lead paragraph (the dek is derived from it -- there is no\n"
-        "   dek field), section headers following the outline, and INLINE citations to\n"
-        "   source_ids (citations precede prose).\n"
+        "   Then the body. The lead paragraph MUST open on the problem, the stakes, or\n"
+        "   your take -- NOT a definition of the subject; put the thesis in its first\n"
+        "   sentence (the reading-surface derives the dek from this first block and\n"
+        "   truncates near 180 chars, so the point lands early and the block stands\n"
+        "   alone). Make ONE load-bearing argument the reader could disagree with\n"
+        "   (typically what most teams get wrong about the topic) and anchor it in at\n"
+        "   least one concrete number, command, or named failure mode. Every NUMBER is a\n"
+        "   load-bearing claim: cite it [sN] from a captured source -- never an unsourced\n"
+        "   figure, not even from your own work (house_style.md sections 1 and 4). Then\n"
+        "   section headers following the outline, and INLINE citations to source_ids\n"
+        "   (citations precede prose). Vary sentence length; no textbook 'X is/does Y'\n"
+        "   openers.\n"
         "\n"
         f"3. PRODUCE the claim->source map (task-24 contract): {p['csm']}\n"
         "   Add a claim {lang, claim, source_id, excerpt_span?} for EVERY load-bearing\n"
@@ -107,7 +121,12 @@ def _humanize_section(
         "     Hand it a context label and point it at the house style so it does not\n"
         "     stall asking for context:\n"
         '       context: "personal practitioner AI-engineering blog post; no emoji;\n'
-        '       voice per pipeline/house_style.md"\n'
+        '       voice per pipeline/house_style.md. Flag specifically: flat definitional\n'
+        '       or textbook leads (X is/does Y openers, field-describing intros); a\n'
+        '       missing opinionated stance (neutral explainer prose with no take); the\n'
+        '       absence of a concrete number, command, or named failure mode in the\n'
+        '       argument; and, for the FR draft, French that reads like a translation of\n'
+        '       English (calqued clause order, literal idioms like un defaut robuste)."\n'
         f"       (also point it at {house_style})\n"
         f"     Save its JSON output to:\n"
         f"       {p['style_fr']}\n"
