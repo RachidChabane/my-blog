@@ -23,6 +23,10 @@ launcher + the scoped per-article button). Done autonomously this bring-up:
 - **Gate calibrated (§3 step 4b, SAFETY-CRITICAL): `AVATAR_SIMILARITY_THRESHOLD = 0.46`**, cosine
   direction confirmed NOT inverted. Live `done`-frame: on-topic → grounded (topSim 0.77),
   off-topic → honest idk (0.32). Tool: `scripts/calibrate-avatar-gate.ts` (re-run on every regen).
+- **Scoped per-article gate verified live** (Option 4): scoped to an article + an on-article
+  question → grounds (0.73); scoped to an article + a different corpus topic → honest idk (0.37,
+  vs 0.54 corpus-wide) — the in-scope-`topSimilarity` fix prevents the "pass the gate, nothing in
+  scope" landmine. So 0.46 holds for the user-facing scoped button too.
 - Two live-only runtime bugs fixed (commit `55a99e4`): Workers `fetch.bind(globalThis)`; D1
   `toD1Sql` drops file-level `BEGIN/COMMIT`. See the `avatar-worker-runtime-gotchas` memory.
 - **`SITE_URL` is `https://my-blog-4uk.pages.dev` for the interim** (until the custom domain is on
