@@ -382,9 +382,17 @@ this Mac; no alert webhook (O6 skipped); O2 skipped.
   off-topic ceiling 0.4426 → **`AVATAR_SIMILARITY_THRESHOLD = 0.46`** (Pages secret). Confirmed on
   the production alias: on-topic → grounded (topSim 0.77), off-topic → idk (0.32).
 
-Gates re-verified after the source fixes: `pnpm test` 480 · `pnpm lint` 0 errors · prettier clean.
-Pages secrets set: `OPENROUTER_API_KEY`, `AVATAR_SIMILARITY_THRESHOLD`.
+Gates re-verified after the source fixes: `pnpm test` 480 · `pnpm lint` 0 errors · prettier clean
+(e2e/pytest NOT re-run — the fetch.bind path is live-only and the sink is unit-covered).
+Pages secrets set: `OPENROUTER_API_KEY`, `AVATAR_SIMILARITY_THRESHOLD`. GH Actions secrets set:
+`CLOUDFLARE_API_TOKEN`, `EMBEDDINGS_API_KEY`, `OPENROUTER_API_KEY`, `SITE_URL`.
 
-**Still open:** custom domain `rachid-chabane.com` wiring · GH Actions secrets (CI/pipeline) ·
-Option 3 embedding map · supervised pipeline first run (O5) — corpus regen → activates Option 2
-sidenotes + Tier-0 voice (then re-seed + re-calibrate).
+- **Citation links fixed.** `SITE_URL` flipped to the live `https://my-blog-4uk.pages.dev` (was
+  `rachid-chabane.com`, which 404s until the domain is on CF) and the index re-seeded + site
+  redeployed, so the avatar's source links resolve today (verified 200). Reverts to the custom domain
+  at the domain handback.
+
+**Checkpoint — open items are owner-gated/owner-decided (see DEPLOY.md "★ Bring-up status"):**
+custom domain `rachid-chabane.com` (owner DNS migration off IONOS) · pipeline first run (owner
+DECISION — reconcile with the in-flight writing-rigor slate, not run) · Option 3 map (ready
+fast-follow). Pipeline NOT run this session by design.

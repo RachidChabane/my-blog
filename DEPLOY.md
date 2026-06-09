@@ -10,6 +10,47 @@ the **owner-only** steps are consolidated in §1. See also `RUN-LOG.md` (action 
 
 ---
 
+## ★ Bring-up status (2026-06-09) — site + avatar LIVE on pages.dev, gate calibrated
+
+**Live + verified:** https://my-blog-4uk.pages.dev (static site) + the avatar (corpus-wide corner
+launcher + the scoped per-article button). Done autonomously this bring-up:
+
+- CF provisioned: Vectorize `my-blog-avatar` (1024-d/cosine) + D1 `my-blog-avatar`
+  (`database_id` `bce36924-…-2ba9fbc908c5`, pasted into `wrangler.toml`). Index seeded (31 chunks,
+  30 slugs, FR+EN). Deployed via `wrangler pages deploy`.
+- Secrets: Pages → `OPENROUTER_API_KEY`, `AVATAR_SIMILARITY_THRESHOLD`. GH Actions →
+  `CLOUDFLARE_API_TOKEN`, `EMBEDDINGS_API_KEY`, `OPENROUTER_API_KEY`, `SITE_URL`.
+- **Gate calibrated (§3 step 4b, SAFETY-CRITICAL): `AVATAR_SIMILARITY_THRESHOLD = 0.46`**, cosine
+  direction confirmed NOT inverted. Live `done`-frame: on-topic → grounded (topSim 0.77),
+  off-topic → honest idk (0.32). Tool: `scripts/calibrate-avatar-gate.ts` (re-run on every regen).
+- Two live-only runtime bugs fixed (commit `55a99e4`): Workers `fetch.bind(globalThis)`; D1
+  `toD1Sql` drops file-level `BEGIN/COMMIT`. See the `avatar-worker-runtime-gotchas` memory.
+- **`SITE_URL` is `https://my-blog-4uk.pages.dev` for the interim** (until the custom domain is on
+  Cloudflare) so the avatar's citation links resolve today. Flip everything to
+  `https://rachid-chabane.com` at the domain handback (item 1 below).
+
+**Open — needs the owner (consolidated handoff):**
+
+1. **Custom domain `rachid-chabane.com` — owner DNS migration.** It's registered at IONOS
+   (`*.ui-dns.*` nameservers), NOT on Cloudflare, so Pages cannot attach it yet. Owner: add the zone
+   in the CF dashboard; **audit the current IONOS DNS first and recreate any email (MX), SPF/DKIM/TXT,
+   and subdomain records in Cloudflare** (moving nameservers makes CF authoritative for the WHOLE
+   domain — un-migrated records break on cutover); then point the IONOS nameservers at the CF pair.
+   Tell me when the zone is Active → I attach the Pages custom domain + DNS record and flip `SITE_URL`
+   (build + reseed + GH/Pages) to the apex.
+2. **Pipeline first run (§3 step 5) — owner DECISION, intentionally NOT run.** The owner's in-flight
+   `docs/writing-rigor-handoff-prompt.md` targets the pipeline's argument/source-quality/editorial
+   gaps and says "reconcile with DEPLOY.md §3", so running step 5 now would publish content with
+   prompts under active revision. Options: **(a)** run AFTER the writing-rigor slate lands
+   (recommended); or **(b)** a no-push throwaway run now to de-risk the cpe harness mechanics
+   (findings §3 flagged it as never run green end-to-end) — inspected, then discarded, never promoted.
+3. **Option 3 embedding map — ready to build (autonomous), greenlight when wanted.** Lowest-value /
+   owner-questioned; best timed once the corpus is finalized (auto-updates on reindex). Build plan +
+   guardrails (empty-map fallback; emit in the build:index/deploy path, not `reindex.yml`):
+   `engagement-findings.md` §5 item 2.
+
+---
+
 ## 0 · Decision record (read this first)
 
 ### D-1 — Embeddings: Cloudflare Workers AI `@cf/baai/bge-m3`, NOT OpenRouter `text-embedding-3-large`
