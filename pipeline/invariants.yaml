@@ -70,6 +70,19 @@
   timeout_minutes: 5
   comment: "M-4 style (FR-C3): no-emoji (D-007) + style-auditor 'clean' re-check."
 
+# G3 EDITORIAL-QUALITY (task 4) -- scoped to the `draft` task via draft.gates_extra.
+# SINGLE gate, NO --lang: judged on the EN draft as the canonical realization of the shared
+# argument (fr/en structural parity rests on review.py set-equality, not on a second judge).
+# The empty tail after `--run-dir .` (no --lang) is what the golden bank's `args: []` extends.
+- name: editorial-quality
+  kind: shell
+  command: 'PYTHONPATH=../../.. python3 -m pipeline.gate.editorial --run-dir .'
+  on_failure: block
+  when: [always] # scoped to the draft task via draft.gates_extra
+  parallel_safe: true # the gate only READS the artifact the draft phase wrote
+  timeout_minutes: 5
+  comment: 'G3 editorial-quality: a fresh judge rates the finished EN article; BLOCK on a thin verdict.'
+
 # G1 ARGUMENT-RIGOR (task 3) -- scoped to the `argue` task via argue.gates_extra, NOT draft.
 # Single gate, NO --lang: the brief's claim_skeleton is language-neutral, so the thesis is
 # judged once, before the bilingual draft is paid for. The empty tail after `--run-dir .`

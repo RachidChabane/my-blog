@@ -63,6 +63,7 @@ _DRAFT_GATE_NAMES = [
     "grounding-en",
     "style-fr",
     "style-en",
+    "editorial-quality",  # task 4: G3, a draft gate -> precedes the argue gate in load order
 ]
 _ARGUE_GATE_NAMES = ["argument-rigor"]
 _ALL_GATE_NAMES = _DRAFT_GATE_NAMES + _ARGUE_GATE_NAMES  # invariants.yaml load order
@@ -413,7 +414,10 @@ def test_apply_fallback_retry(tmp_path):
     (run_dir / "plans" / "task-research" / "candidates.json").write_text(
         _fixture_text("candidates.valid.json"), encoding="utf-8"
     )
-    stale = _make_draft_run(run_dir, {"claim_source_map.json": "{stale}"})
+    stale = _make_draft_run(
+        run_dir,
+        {"claim_source_map.json": "{stale}", "editorial.json": '{"verdict":"thin"}'},
+    )
     # a SURVIVING argument.json + a 'done' argue state from the KILLED topic: the re-driven
     # draft must NOT consume the killed topic's strengthened_argument (the bug task 3 fixes).
     argue_dir = run_dir / "plans" / "task-argue"
@@ -438,6 +442,8 @@ def test_apply_fallback_retry(tmp_path):
     state = State(run_dir / "plans" / "state.json")
     assert state.get("draft")["status"] == "pending"
     assert not (stale / "plans" / "task-draft" / "claim_source_map.json").exists()
+    # task 4: stale G3 editorial findings cleared too -- a re-draft must re-dispatch the judge
+    assert not (run_dir / "plans" / "task-draft" / "editorial.json").exists()
     assert not (run_dir / "plans" / "ALERT.json").exists()
     # MUST-KEEP (review-1 C1): the SOLE guard for argue-reset-on-blocked-draft. Without the
     # _STALE_ARGUE_ARTIFACTS clear, a re-driven fallback draft silently consumes the KILLED
@@ -545,7 +551,7 @@ def test_run_fallback_blocked_argue_dry_skip_names_argue(config):
 # ---------------------------------------------------------------------------
 
 
-def test_invariants_load_as_seven_blocking_shell_gates():
+def test_invariants_load_as_eight_blocking_shell_gates():
     ensure_cpe_importable()
     from claude_plan_execute.gates import GateRegistry
     from claude_plan_execute.gates.invariants import (
@@ -556,7 +562,9 @@ def test_invariants_load_as_seven_blocking_shell_gates():
     out, err = io.StringIO(), io.StringIO()
     with redirect_stdout(out), redirect_stderr(err):
         pairs = load_invariants(_PIPELINE_DIR / "invariants.yaml")
-    assert [name for name, _ in pairs] == _ALL_GATE_NAMES  # argument-rigor appended LAST
+    # load order == _DRAFT_GATE_NAMES + _ARGUE_GATE_NAMES: the 6 M-4 + editorial-quality
+    # (task 4, a draft gate) precede argument-rigor (task 3, the argue gate), appended LAST.
+    assert [name for name, _ in pairs] == _ALL_GATE_NAMES
     assert all(gate.kind == "shell" for _, gate in pairs)
     assert all(gate.on_failure == "block" for _, gate in pairs)
     assert "Warning:" not in out.getvalue()
@@ -565,7 +573,7 @@ def test_invariants_load_as_seven_blocking_shell_gates():
     registry = GateRegistry()  # a LOCAL registry, not the singleton
     register_invariants_on(registry, pairs)
     resolved, unknown = registry.resolve(_ALL_GATE_NAMES)
-    assert len(resolved) == 7
+    assert len(resolved) == 8
     assert unknown == []
 
 
@@ -589,7 +597,7 @@ def test_gate_clis_have_no_runpy_double_import_warning():
     # -W error::RuntimeWarning the runpy double-import warning becomes a nonzero exit, so
     # a future re-export of a gate CLI from pipeline/__init__.py would fail here.
     env = {**os.environ, "PYTHONPATH": str(_REPO_ROOT)}
-    for mod in ("factcheck", "grounding", "style", "argument"):
+    for mod in ("factcheck", "grounding", "style", "argument", "editorial"):
         proc = subprocess.run(
             [sys.executable, "-W", "error::RuntimeWarning", "-m",
              f"pipeline.gate.{mod}", "--help"],

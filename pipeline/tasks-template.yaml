@@ -112,6 +112,7 @@ tasks:
         grounding-en,
         style-fr,
         style-en,
+        editorial-quality,
       ]
   - id: publish
     phase: publish

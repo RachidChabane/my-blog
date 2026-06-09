@@ -39,6 +39,7 @@ _STALE_DRAFT_ARTIFACTS = (
     "factcheck-en.json",
     "style-fr.json",
     "style-en.json",
+    "editorial.json",  # task 4: G3 editorial findings -- a re-draft must re-dispatch the judge
     "review.json",
 )
 
