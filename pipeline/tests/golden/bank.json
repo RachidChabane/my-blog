@@ -56,5 +56,44 @@
     },
     "expect_contains": ["no-emoji", "U+1F680"],
     "why": "An emoji in the body (D-007). Paired with a CLEAN style verdict so the ONLY block cause is the deterministic no-emoji scan. The M-4 style gate must BLOCK. Deterministic-only: the no-emoji rule needs no judge."
+  },
+  {
+    "id": "argument-trivially-true",
+    "gate": "argument",
+    "args": [],
+    "artifacts": { "argument.json": "golden/artifacts/argument.trivial.json" },
+    "expect_contains": ["argument verdict is", "weak"],
+    "why": "A trivially-true / unfalsifiable thesis ('AI is transforming software engineering'). The argument-rigor judge returns 'weak' (the thesis says nothing a reader could disagree with). The G1 gate must BLOCK before the topic is drafted bilingually. CADENCE-SAFETY: validate the LIVE judgment at bring-up so an over-aggressive judge does not burn the fallback shortlist.",
+    "live": {
+      "produces": "argument.json",
+      "adversarial_artifacts": { "argue-brief.md": "golden/artifacts/argue-brief.trivial.md" },
+      "expect_contains": ["argument verdict is"]
+    }
+  },
+  {
+    "id": "argument-aging-badly",
+    "gate": "argument",
+    "args": [],
+    "artifacts": { "argument.json": "golden/artifacts/argument.aging.json" },
+    "expect_contains": ["argument verdict is", "weak"],
+    "why": "A thesis pinned to a transient fact (a current model ranking) that ages badly. The judge returns 'weak'. The G1 gate must BLOCK.",
+    "live": {
+      "produces": "argument.json",
+      "adversarial_artifacts": { "argue-brief.md": "golden/artifacts/argue-brief.aging.md" },
+      "expect_contains": ["argument verdict is"]
+    }
+  },
+  {
+    "id": "argument-attack-wins",
+    "gate": "argument",
+    "args": [],
+    "artifacts": { "argument.json": "golden/artifacts/argument.attack.json" },
+    "expect_contains": ["argument verdict is", "weak"],
+    "why": "An overstated central claim a single counterexample refutes: the strongest attack wins. The judge returns 'weak'. The G1 gate must BLOCK.",
+    "live": {
+      "produces": "argument.json",
+      "adversarial_artifacts": { "argue-brief.md": "golden/artifacts/argue-brief.attack.md" },
+      "expect_contains": ["argument verdict is"]
+    }
   }
 ]

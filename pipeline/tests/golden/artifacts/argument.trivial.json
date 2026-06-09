@@ -1,0 +1,8 @@
+{
+  "verdict": "weak",
+  "steelman": "AI is transforming software engineering.",
+  "strongest_attack": "The claim is unfalsifiable: no reader can state what 'transforming' would have to look like to be false, so it asserts nothing a reader could test or disagree with.",
+  "reconciliation": "Restated as precisely as possible, the thesis still predicts no specific, checkable outcome; there is nothing in it to defend, so it cannot survive as a claim.",
+  "strengthened_argument": "",
+  "reason": "Unfalsifiable / trivially-true: the thesis states nothing a reader could disagree with."
+}

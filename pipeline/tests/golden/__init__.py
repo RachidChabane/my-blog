@@ -39,11 +39,19 @@ BANK_PATH = GOLDEN_DIR / "bank.json"
 # Gate modules the bank may drive. Tasks 3-6 EXTEND this as they add gates
 # (argument, editorial, source_quality, independence). A bank entry naming any other gate
 # is malformed (fail-closed in _entry_from_dict).
-KNOWN_GATES = ("factcheck", "grounding", "style")
+KNOWN_GATES = ("factcheck", "grounding", "style", "argument")
 
 # Floor for the seeded retro-proof. A truncated bank => fewer entries => the floor test fails
 # rather than silently parametrizing zero defects. Tasks may raise it as they add entries.
-EXPECTED_MIN_ENTRIES = 4
+EXPECTED_MIN_ENTRIES = 7
+
+# Most gates read plans/task-draft/; the argue (G1) gate -- and task 6's independence (G4)
+# -- read plans/task-argue/. The bank stays purely additive (no new bank.json field): the
+# subdir is DERIVED from the gate. Tasks adding a cross-dir gate add one entry here.
+# CADENCE-SAFETY (task 8 bring-up note): argue now gates cadence; an over-aggressive judge
+# could block every fallback candidate and burn the whole shortlist. The argue golden-LIVE
+# entries are the calibration signal -- validate them at bring-up (DEPLOY.md section 3).
+GATE_ARTIFACT_SUBDIR: dict[str, str] = {"argument": "task-argue"}
 
 
 class BankError(AssertionError):
@@ -191,13 +199,15 @@ def load_bank(path: Path | None = None) -> list[BankEntry]:
     return entries
 
 
-def materialize(artifacts: dict[str, str], run_dir: Path) -> Path:
-    """Copy each (target_filename -> source_rel) into run_dir/plans/task-draft (mirrors
-    test_gate.py:_make_draft_run). Returns run_dir (the gate's --run-dir)."""
-    draft = run_dir / "plans" / "task-draft"
-    draft.mkdir(parents=True, exist_ok=True)
+def materialize(artifacts: dict[str, str], run_dir: Path, *, subdir: str = "task-draft") -> Path:
+    """Copy each (target_filename -> source_rel) into run_dir/plans/<subdir> (mirrors
+    test_gate.py:_make_draft_run). ``subdir`` DEFAULTS to ``task-draft`` (keeps every
+    existing call site/entry unchanged); a cross-dir gate (argue G1) passes its own subdir
+    derived from GATE_ARTIFACT_SUBDIR. Returns run_dir (the gate's --run-dir)."""
+    dest_dir = run_dir / "plans" / subdir
+    dest_dir.mkdir(parents=True, exist_ok=True)
     for target, source in artifacts.items():
-        shutil.copyfile(artifact_path(source), draft / target)
+        shutil.copyfile(artifact_path(source), dest_dir / target)
     return run_dir
 
 
@@ -234,7 +244,8 @@ def produce_live_findings(entry: BankEntry, run_dir: Path) -> Path:
         src.is_file(),
         f"{entry.id}: live findings not found at {src} -- the fresh judge did not produce them",
     )
-    dest = run_dir / "plans" / "task-draft" / entry.live.produces
+    subdir = GATE_ARTIFACT_SUBDIR.get(entry.gate, "task-draft")  # argue G1 reads task-argue/
+    dest = run_dir / "plans" / subdir / entry.live.produces
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(src, dest)
     return dest
@@ -242,6 +253,7 @@ def produce_live_findings(entry: BankEntry, run_dir: Path) -> Path:
 
 __all__ = [
     "BankEntry", "LiveSpec", "BankError",
-    "KNOWN_GATES", "EXPECTED_MIN_ENTRIES", "REPO_ROOT", "GOLDEN_DIR", "BANK_PATH",
+    "KNOWN_GATES", "EXPECTED_MIN_ENTRIES", "GATE_ARTIFACT_SUBDIR",
+    "REPO_ROOT", "GOLDEN_DIR", "BANK_PATH",
     "artifact_path", "load_bank", "materialize", "run_gate", "produce_live_findings",
 ]

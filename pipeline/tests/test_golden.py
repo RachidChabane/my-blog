@@ -27,6 +27,7 @@ from pipeline.contracts.claim_source_map import ClaimSourceMap
 from pipeline.stages.humanize import house_style_violations
 from pipeline.tests.golden import (
     EXPECTED_MIN_ENTRIES,
+    GATE_ARTIFACT_SUBDIR,
     REPO_ROOT,
     BankEntry,
     artifact_path,
@@ -53,6 +54,13 @@ def test_bank_meets_floor_and_seeds_present():
         "must FAIL, not silently parametrize fewer defects."
     )
     assert _SEED_IDS <= {e.id for e in _BANK}, "the seeded retro-proof defects must be present"
+
+
+def test_argue_golden_entries_present():
+    # task 3: the three G1 argument-rigor archetypes (trivially-true / aging / attack-wins).
+    assert {"argument-trivially-true", "argument-aging-badly", "argument-attack-wins"} <= {
+        e.id for e in _BANK
+    }
 
 
 def test_seeded_live_split_is_correct():
@@ -95,7 +103,10 @@ def test_bank_gate_invocations_match_invariants():
 
 @pytest.mark.parametrize("entry", _BANK, ids=lambda e: e.id)
 def test_golden_mechanism_blocks_and_names_defect(entry: BankEntry, tmp_path):
-    run_dir = materialize(entry.artifacts, tmp_path)
+    run_dir = materialize(
+        entry.artifacts, tmp_path,
+        subdir=GATE_ARTIFACT_SUBDIR.get(entry.gate, "task-draft"),
+    )
     proc = run_gate(entry.gate, entry.args, run_dir)
     # returncode == 1 (a BLOCK), not just != 0: argparse misuse exits 2, a traceback exits 1
     # with a stderr dump; the substring check below disambiguates a real verdict block.
@@ -140,7 +151,10 @@ def test_live_adversarial_artifacts_are_clean_and_isolating():
 @pytest.mark.parametrize("entry", _LIVE, ids=lambda e: e.id)
 def test_golden_live_judgment_blocks(entry: BankEntry, tmp_path):
     assert entry.live is not None
-    run_dir = materialize(entry.live.adversarial_artifacts, tmp_path)
+    run_dir = materialize(
+        entry.live.adversarial_artifacts, tmp_path,
+        subdir=GATE_ARTIFACT_SUBDIR.get(entry.gate, "task-draft"),
+    )
     produce_live_findings(entry, run_dir)  # the fresh judge's output (raises loudly if missing)
     proc = run_gate(entry.gate, entry.args, run_dir)
     assert proc.returncode == 1, (

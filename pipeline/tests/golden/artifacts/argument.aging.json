@@ -1,0 +1,8 @@
+{
+  "verdict": "weak",
+  "steelman": "Model X currently tops the coding-benchmark leaderboard, so teams should standardize on it.",
+  "strongest_attack": "The claim is pinned to a transient ranking that turns over monthly; within months a newer model displaces X and the thesis is simply false -- the article would be wrong before most readers reach it.",
+  "reconciliation": "The argument rests on a fact with a multi-week shelf life, so it cannot survive as a durable claim worth publishing.",
+  "strengthened_argument": "",
+  "reason": "Ages badly: the claim is pinned to a transient fact (a current model ranking) that will be false within months."
+}
