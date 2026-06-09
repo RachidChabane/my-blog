@@ -36,7 +36,7 @@ from pipeline import config as cfgmod
 
 _PIPELINE_DIR = Path(__file__).resolve().parents[1]
 _TEMPLATE = _PIPELINE_DIR / "tasks-template.yaml"
-_SPINE = ["research", "select", "draft", "publish"]
+_SPINE = ["research", "select", "argue", "draft", "publish"]
 
 
 @pytest.fixture
@@ -128,7 +128,8 @@ def test_spine_present_and_acyclic(config):
     assert len(order) == len(raw["tasks"])  # acyclic: every task ordered
     by_id = _by_id(raw)
     assert by_id["select"]["depends_on"] == ["research"]
-    assert by_id["draft"]["depends_on"] == ["select"]
+    assert by_id["argue"]["depends_on"] == ["select"]   # task 3: argue between select and draft
+    assert by_id["draft"]["depends_on"] == ["argue"]    # was ["select"]
     assert by_id["publish"]["depends_on"] == ["draft"]
 
 
@@ -265,7 +266,7 @@ def test_interrupt_then_resume_completes(config):
     assert rr.result.usage_limited
     assert (rr.slate.plans_dir / "USAGE_LIMIT").is_file()
     assert set(rr.plan.done) == {"research", "select"}
-    assert rr.plan.next_task == "draft"
+    assert rr.plan.next_task == "argue"   # task 3: argue now runs after select, before draft
     assert not rr.plan.complete
 
     rr2 = run("run-c1", config, FakeClaudeDriver(config), resume=True)

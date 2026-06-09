@@ -69,3 +69,16 @@
   parallel_safe: true
   timeout_minutes: 5
   comment: "M-4 style (FR-C3): no-emoji (D-007) + style-auditor 'clean' re-check."
+
+# G1 ARGUMENT-RIGOR (task 3) -- scoped to the `argue` task via argue.gates_extra, NOT draft.
+# Single gate, NO --lang: the brief's claim_skeleton is language-neutral, so the thesis is
+# judged once, before the bilingual draft is paid for. The empty tail after `--run-dir .`
+# (no --lang) is what the golden bank's `args: []` extends (test_bank_gate_invocations_match_invariants).
+- name: argument-rigor
+  kind: shell
+  command: 'PYTHONPATH=../../.. python3 -m pipeline.gate.argument --run-dir .'
+  on_failure: block
+  when: [always] # scoped to the argue task via argue.gates_extra
+  parallel_safe: true # the gate only READS the artifact the argue phase wrote
+  timeout_minutes: 5
+  comment: 'G1 argument-rigor: a fresh judge steelmans/attacks/reconciles the thesis; BLOCK on a weak verdict.'

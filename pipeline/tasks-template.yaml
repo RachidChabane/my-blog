@@ -36,6 +36,8 @@ phases:
     title: 'Research — web-search sweep, capture source excerpts (FR-B1)'
   - id: select
     title: 'Select — angle, semantic dedup vs topic memory, claim skeleton + fallback shortlist (FR-B2)'
+  - id: argue
+    title: 'Argue -- steelman/attack/reconcile the thesis as a claim (G1 argument-rigor); a weak thesis blocks => fallback to next topic'
   - id: draft
     title: 'Draft — FR+EN parallel outputs + claim->source map; review loop; M-4 gates (FR-B3/B4/C1/C2)'
   - id: publish
@@ -66,6 +68,23 @@ tasks:
     key_files: [pipeline/stages/select.py]
     commit_message: 'content(select): brief.md'
     depends_on: [research]
+  - id: argue
+    phase: argue
+    title: 'Pressure-test the thesis (steelman -> strongest attack -> reconcile)'
+    description: |
+      [STAGE: Argue -- G1 argument-rigor (writing-flow.md section 7). Prompt body authored
+      by task 3 (pipeline/prompts/argue.py); this is a substrate placeholder.]
+      Dispatch ONE fresh judge (judge != author) to steelman the brief's thesis, mount the
+      strongest attack, and reconcile; write plans/task-argue/argument.json with a
+      defensible|weak verdict plus the strengthened_argument. A 'weak' verdict BLOCKS the
+      argument-rigor gate => the run falls back to the next-ranked topic and re-argues it.
+      Judges the THESIS AS A CLAIM, not the finished article's craft (that is the editorial
+      gate). A blocked argue => draft never runs => publish never runs (bilingual-or-nothing).
+    key_files: [pipeline/prompts/argue.py, pipeline/gate/argument.py]
+    commit_message: 'content(argue): argument.json (steelman/attack/reconcile)'
+    depends_on: [select]
+    # G1 gate (task 3): single gate, no fr/en split (the claim skeleton is language-neutral).
+    gates_extra: [argument-rigor]
   - id: draft
     phase: draft
     title: 'Draft FR+EN with claim->source map (review loop + M-4 gates apply here)'
@@ -82,7 +101,7 @@ tasks:
       (bilingual-or-nothing).
     key_files: [pipeline/stages/draft.py]
     commit_message: 'content(draft): FR + EN drafts + claim->source map'
-    depends_on: [select]
+    depends_on: [argue]
     # M-4 gates (task 26): registered from defaults.invariants_file (pipeline/invariants.yaml),
     # scoped to this task. A blocking gate => draft blocks => publish never runs (NFR-11).
     gates_extra:

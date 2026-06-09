@@ -56,7 +56,7 @@ _FIXTURES = Path(__file__).resolve().parent / "fixtures"
 _PIPELINE_DIR = Path(__file__).resolve().parents[1]
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 
-_GATE_NAMES = [
+_DRAFT_GATE_NAMES = [
     "factcheck-fr",
     "factcheck-en",
     "grounding-fr",
@@ -64,6 +64,8 @@ _GATE_NAMES = [
     "style-fr",
     "style-en",
 ]
+_ARGUE_GATE_NAMES = ["argument-rigor"]
+_ALL_GATE_NAMES = _DRAFT_GATE_NAMES + _ARGUE_GATE_NAMES  # invariants.yaml load order
 _S1_URL = "https://arxiv.example/abs/agentic-harness"  # source s1 in the complete map
 
 
@@ -499,7 +501,7 @@ def test_run_fallback_attempts_exhausted_alerts(config):
 # ---------------------------------------------------------------------------
 
 
-def test_invariants_load_as_six_blocking_shell_gates():
+def test_invariants_load_as_seven_blocking_shell_gates():
     ensure_cpe_importable()
     from claude_plan_execute.gates import GateRegistry
     from claude_plan_execute.gates.invariants import (
@@ -510,7 +512,7 @@ def test_invariants_load_as_six_blocking_shell_gates():
     out, err = io.StringIO(), io.StringIO()
     with redirect_stdout(out), redirect_stderr(err):
         pairs = load_invariants(_PIPELINE_DIR / "invariants.yaml")
-    assert [name for name, _ in pairs] == _GATE_NAMES
+    assert [name for name, _ in pairs] == _ALL_GATE_NAMES  # argument-rigor appended LAST
     assert all(gate.kind == "shell" for _, gate in pairs)
     assert all(gate.on_failure == "block" for _, gate in pairs)
     assert "Warning:" not in out.getvalue()
@@ -518,8 +520,8 @@ def test_invariants_load_as_six_blocking_shell_gates():
 
     registry = GateRegistry()  # a LOCAL registry, not the singleton
     register_invariants_on(registry, pairs)
-    resolved, unknown = registry.resolve(_GATE_NAMES)
-    assert len(resolved) == 6
+    resolved, unknown = registry.resolve(_ALL_GATE_NAMES)
+    assert len(resolved) == 7
     assert unknown == []
 
 
@@ -527,8 +529,11 @@ def test_assembled_template_wires_gates_and_absolute_pointers(config):
     slate = assemble_slate("run-wire", config)
     raw = yaml.safe_load(slate.tasks_path.read_text())
     by_id = {t["id"]: t for t in raw["tasks"]}
-    assert by_id["draft"]["gates_extra"] == _GATE_NAMES
-    # the 6 gates are scoped to draft ONLY (not added to defaults.gates) -- R7
+    assert by_id["draft"]["gates_extra"] == _DRAFT_GATE_NAMES
+    assert by_id["argue"]["gates_extra"] == _ARGUE_GATE_NAMES
+    # the G1 gate is scoped to `argue`, NOT mis-scoped onto `select` (no editorial gate there)
+    assert not by_id["select"].get("gates_extra")
+    # gates are scoped to tasks ONLY (not added to defaults.gates) -- R7
     assert not raw["defaults"].get("gates")
     inv = raw["defaults"]["invariants_file"]
     assert Path(inv).is_absolute() and inv.endswith("pipeline/invariants.yaml")
@@ -540,7 +545,7 @@ def test_gate_clis_have_no_runpy_double_import_warning():
     # -W error::RuntimeWarning the runpy double-import warning becomes a nonzero exit, so
     # a future re-export of a gate CLI from pipeline/__init__.py would fail here.
     env = {**os.environ, "PYTHONPATH": str(_REPO_ROOT)}
-    for mod in ("factcheck", "grounding", "style"):
+    for mod in ("factcheck", "grounding", "style", "argument"):
         proc = subprocess.run(
             [sys.executable, "-W", "error::RuntimeWarning", "-m",
              f"pipeline.gate.{mod}", "--help"],
