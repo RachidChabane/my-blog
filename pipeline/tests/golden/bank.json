@@ -1,0 +1,60 @@
+[
+  {
+    "id": "factcheck-unsupported-claim",
+    "gate": "factcheck",
+    "args": ["--lang", "en"],
+    "artifacts": {
+      "claim_source_map.json": "fixtures/claim_source_map.complete.json",
+      "factcheck-en.json": "fixtures/factcheck.unsupported.json"
+    },
+    "expect_contains": ["UNSUPPORTED", "s2"],
+    "why": "A subtly-unsupported claim: the fact-check judge marks the s2 pass-rate claim supported:false because the mapped excerpt discusses latency, not pass rate. The M-4 fact-check gate must BLOCK and name source s2.",
+    "live": {
+      "produces": "factcheck-en.json",
+      "adversarial_artifacts": {
+        "claim_source_map.json": "golden/artifacts/claim_source_map.unsupported.json"
+      },
+      "expect_contains": ["UNSUPPORTED", "s2"]
+    }
+  },
+  {
+    "id": "style-ai-tell",
+    "gate": "style",
+    "args": ["--lang", "en"],
+    "artifacts": {
+      "draft-en.md": "fixtures/draft-en.valid.md",
+      "style-en.json": "fixtures/style_findings.revision_needed.json"
+    },
+    "expect_contains": ["style verdict is", "revision_needed"],
+    "why": "A planted AI-tell (a stock lead-in plus an em-dash cluster): the style-auditor returns a non-clean verdict. The M-4 style gate must BLOCK on the non-'clean' verdict.",
+    "live": {
+      "produces": "style-en.json",
+      "adversarial_artifacts": {
+        "draft-en.md": "golden/artifacts/draft-en.aitell.md"
+      },
+      "expect_contains": ["style verdict is"]
+    }
+  },
+  {
+    "id": "grounding-dead-link",
+    "gate": "grounding",
+    "args": ["--lang", "en", "--dead-urls", "https://arxiv.example/abs/agentic-harness"],
+    "artifacts": {
+      "claim_source_map.json": "fixtures/claim_source_map.complete.json",
+      "draft-en.md": "fixtures/draft-en.valid.md"
+    },
+    "expect_contains": ["dead link", "https://arxiv.example/abs/agentic-harness"],
+    "why": "A cited source URL is unreachable (FakeLinkChecker dead-url). The M-4 source-grounding gate must BLOCK and name the dead link. Deterministic-only: grounding has no judge sub-agent; the real HTTP checker is task 7."
+  },
+  {
+    "id": "style-emoji",
+    "gate": "style",
+    "args": ["--lang", "en"],
+    "artifacts": {
+      "draft-en.md": "golden/artifacts/draft-en.emoji.md",
+      "style-en.json": "fixtures/style_findings.clean.json"
+    },
+    "expect_contains": ["no-emoji", "U+1F680"],
+    "why": "An emoji in the body (D-007). Paired with a CLEAN style verdict so the ONLY block cause is the deterministic no-emoji scan. The M-4 style gate must BLOCK. Deterministic-only: the no-emoji rule needs no judge."
+  }
+]

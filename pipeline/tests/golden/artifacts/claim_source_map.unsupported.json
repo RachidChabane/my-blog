@@ -1,0 +1,12 @@
+{
+  "claims": [
+    { "lang": "en", "claim": "Agentic coding harnesses run tool-use loops over a task suite.", "source_id": "s1", "excerpt_span": { "start": 0, "end": 24 } },
+    { "lang": "en", "claim": "Benchmarks measure pass rate across multi-step coding tasks.", "source_id": "s2" },
+    { "lang": "fr", "claim": "Les harnais de codage agentique executent des boucles d'outils sur une suite de taches.", "source_id": "s1" },
+    { "lang": "fr", "claim": "Les benchmarks mesurent le taux de reussite sur des taches multi-etapes.", "source_id": "s2" }
+  ],
+  "sources": [
+    { "source_id": "s1", "label": "Agentic harness evaluation", "url": "https://arxiv.example/abs/agentic-harness", "retrieved_at": "2026-01-15", "excerpt": "Agentic coding harnesses run tool-use loops over a task suite.", "source_date": "2025-12-10" },
+    { "source_id": "s2", "label": "Coding latency note", "url": "https://blog.example/coding-latency", "retrieved_at": "2026-01-16", "excerpt": "We profile end-to-end latency budgets for multi-step coding agents; throughput, not pass rate, is the focus." }
+  ]
+}
