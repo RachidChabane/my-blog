@@ -24,6 +24,7 @@ def _draft_paths(run_dir: Path) -> dict[str, Path]:
     draft_dir = run_dir / "plans" / "task-draft"
     return {
         "brief": run_dir / "plans" / "task-select" / "brief.md",
+        "argument": run_dir / "plans" / "task-argue" / "argument.json",
         "draft_fr": draft_dir / "draft-fr.md",
         "draft_en": draft_dir / "draft-en.md",
         "csm": draft_dir / "claim_source_map.json",
@@ -46,6 +47,10 @@ def _draft_section(repo_root: Path, run_dir: Path) -> str:
         f"1. READ your inputs:\n"
         f"   - the brief: {p['brief']}\n"
         f"     (topic, angle, outline, and the claim skeleton with its source_ids)\n"
+        f"   - the surviving argument: {p['argument']}\n"
+        "     (the argument-rigor judge's reconciliation and strengthened_argument -- the thesis\n"
+        "     that survived steelman/attack/reconcile). Let the strengthened_argument SHAPE the\n"
+        "     draft's one load-bearing claim; do not re-derive a weaker version of it.\n"
         f"   - the house style: {house_style}\n"
         f"     (voice, the no emoji rule, AI-tell avoidance, citation + parity rules)\n"
         "\n"

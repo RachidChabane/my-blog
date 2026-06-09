@@ -270,6 +270,9 @@ def test_draft_prompt_substrings():
     p = build_draft_prompt(repo_root=_ABS_REPO, run_dir=_ABS_RUN)
     for needle in [
         "/abs/repo/pipeline/runs/run-1/plans/task-select/brief.md",
+        # task 3: the draft consumes the surviving argument (argue cannot regress to decorative)
+        "/abs/repo/pipeline/runs/run-1/plans/task-argue/argument.json",
+        "strengthened_argument",
         "/abs/repo/pipeline/runs/run-1/plans/task-draft/draft-fr.md",
         "/abs/repo/pipeline/runs/run-1/plans/task-draft/draft-en.md",
         "/abs/repo/pipeline/runs/run-1/plans/task-draft/claim_source_map.json",
