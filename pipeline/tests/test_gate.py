@@ -381,15 +381,17 @@ def test_rewrite_brief_for_fallback_is_consistent():
 
 
 def test_write_alert(tmp_path):
-    path = write_alert(tmp_path, reason="boom", topic_id="t1")
+    path = write_alert(tmp_path, reason="boom", blocked_task="draft", topic_id="t1")
     assert path == tmp_path / "plans" / "ALERT.json"
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    assert payload == {
+    assert json.loads(path.read_text(encoding="utf-8")) == {
         "kind": "terminal_failure",
         "blocked_task": "draft",
         "reason": "boom",
         "topic_id": "t1",
     }
+    # FR-F2: an argue block names 'argue', not the old hardcoded 'draft'
+    argue_path = write_alert(tmp_path, reason="weak thesis", blocked_task="argue")
+    assert json.loads(argue_path.read_text(encoding="utf-8"))["blocked_task"] == "argue"
 
 
 def _seed_state_blocked_draft(run_dir: Path) -> None:
@@ -412,9 +414,20 @@ def test_apply_fallback_retry(tmp_path):
         _fixture_text("candidates.valid.json"), encoding="utf-8"
     )
     stale = _make_draft_run(run_dir, {"claim_source_map.json": "{stale}"})
+    # a SURVIVING argument.json + a 'done' argue state from the KILLED topic: the re-driven
+    # draft must NOT consume the killed topic's strengthened_argument (the bug task 3 fixes).
+    argue_dir = run_dir / "plans" / "task-argue"
+    argue_dir.mkdir(parents=True)
+    (argue_dir / "argument.json").write_text(
+        '{"verdict": "defensible", "reason": "stale (killed topic)"}', encoding="utf-8"
+    )
+    ensure_cpe_importable()
+    from claude_plan_execute.state import State
+
+    State(run_dir / "plans" / "state.json").set_status("argue", "done")
     _seed_state_blocked_draft(run_dir)
 
-    decision = apply_fallback(run_dir, cfg, attempts_used=0)
+    decision = apply_fallback(run_dir, cfg, attempts_used=0, blocked_task="draft")
     assert decision.action == "retry"
     assert decision.topic_id == "oss-llm-finetuning"
     # brief rewritten for the fallback topic
@@ -422,12 +435,15 @@ def test_apply_fallback_retry(tmp_path):
         (run_dir / "plans" / "task-select" / "brief.md").read_text(encoding="utf-8")
     ).chosen_topic_id == "oss-llm-finetuning"
     # draft reset to pending; stale claim_source_map removed
-    ensure_cpe_importable()
-    from claude_plan_execute.state import State
-
-    assert State(run_dir / "plans" / "state.json").get("draft")["status"] == "pending"
+    state = State(run_dir / "plans" / "state.json")
+    assert state.get("draft")["status"] == "pending"
     assert not (stale / "plans" / "task-draft" / "claim_source_map.json").exists()
     assert not (run_dir / "plans" / "ALERT.json").exists()
+    # MUST-KEEP (review-1 C1): the SOLE guard for argue-reset-on-blocked-draft. Without the
+    # _STALE_ARGUE_ARTIFACTS clear, a re-driven fallback draft silently consumes the KILLED
+    # topic's strengthened_argument.
+    assert state.get("argue")["status"] == "pending"           # argue reset for the new thesis
+    assert not (argue_dir / "argument.json").exists()          # stale argue artifact cleared
 
 
 def test_apply_fallback_dry_skips_and_alerts(tmp_path):
@@ -439,9 +455,11 @@ def test_apply_fallback_dry_skips_and_alerts(tmp_path):
     )
     _seed_state_blocked_draft(run_dir)
 
-    decision = apply_fallback(run_dir, cfg, attempts_used=0)
+    decision = apply_fallback(run_dir, cfg, attempts_used=0, blocked_task="draft")
     assert decision.action == "skip"
     assert (run_dir / "plans" / "ALERT.json").is_file()
+    payload = json.loads((run_dir / "plans" / "ALERT.json").read_text(encoding="utf-8"))
+    assert payload["blocked_task"] == "draft"
 
 
 # ---------------------------------------------------------------------------
@@ -494,6 +512,32 @@ def test_run_fallback_attempts_exhausted_alerts(config):
     assert rr.fallback_attempts == config.fallback_topic_attempts
     payload = json.loads((rr.slate.plans_dir / "ALERT.json").read_text(encoding="utf-8"))
     assert payload["kind"] == "terminal_failure"
+
+
+def test_run_fallback_on_blocked_argue_retries_then_passes(config):
+    # the section-7 cadence fires on a blocked ARGUE too (not only draft): block-then-pass
+    rr = run(
+        "run-fb-argue", config,
+        FakeClaudeDriver(config, block_argue_attempts=1, seed_research_select=True),
+    )
+    assert rr.result.complete
+    assert rr.fallback_attempts == 1
+    assert not rr.alerted
+
+
+def test_run_fallback_blocked_argue_dry_skip_names_argue(config):
+    # a 1-entry shortlist goes dry on the 2nd reach; the SKIP-path ALERT must name `argue`
+    rr = run(
+        "run-fb-argue-dry", config,
+        FakeClaudeDriver(
+            config, block_argue_attempts=99, seed_research_select=True,
+            seed_fallback_ids=("fallback-topic-1",),
+        ),
+    )
+    assert "argue" in rr.plan.blocked
+    assert rr.alerted
+    payload = json.loads((rr.slate.plans_dir / "ALERT.json").read_text(encoding="utf-8"))
+    assert payload["blocked_task"] == "argue"   # FR-F2 on the SKIP path
 
 
 # ---------------------------------------------------------------------------

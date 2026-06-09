@@ -42,6 +42,11 @@ _STALE_DRAFT_ARTIFACTS = (
     "review.json",
 )
 
+# Stale argue artifacts removed on a retry so a re-argued fallback topic cannot pass on
+# the KILLED topic's verdict (the task-draft loop below only unlinks from task-draft/).
+# Task 6 appends independence.json here.
+_STALE_ARGUE_ARTIFACTS = ("argument.json",)
+
 
 @dataclass(frozen=True)
 class FallbackDecision:
@@ -117,11 +122,15 @@ def write_alert(
     run_dir: Path | str,
     *,
     reason: str,
-    blocked_task: str = "draft",
+    blocked_task: str,
     topic_id: str | None = None,
 ) -> Path:
     """Write ``plans/ALERT.json`` (FR-C3 retains artifacts + alerts / FR-F2). Returns
-    the path."""
+    the path.
+
+    ``blocked_task`` is REQUIRED (FR-F2): the alert names the REAL blocker (``argue`` or
+    ``draft``) as a type-level guarantee, not a defaulted convention -- a blocked ``argue``
+    must not be mis-reported as ``draft``."""
     path = Path(run_dir) / "plans" / "ALERT.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
@@ -135,19 +144,29 @@ def write_alert(
 
 
 def apply_fallback(
-    run_dir: Path | str, config: PipelineConfig, *, attempts_used: int
+    run_dir: Path | str,
+    config: PipelineConfig,
+    *,
+    attempts_used: int,
+    blocked_task: str,
 ) -> FallbackDecision:
     """STATEFUL: the ``run()`` step. Decide; on retry rewrite the brief for the fallback
-    candidate, reset ``draft`` to pending, and clear stale draft artifacts; on skip write
-    the alert. Defensive: any unreadable/unusable input degrades to skip+alert (never
-    raises). [MEM: m4-gate-contract]"""
+    candidate, reset BOTH ``argue`` and ``draft`` to pending, and clear their stale
+    artifacts; on skip write the alert. Defensive: any unreadable/unusable input degrades
+    to skip+alert (never raises). [MEM: m4-gate-contract]
+
+    ``blocked_task`` (``argue`` or ``draft``) names the REAL blocker on every alert path
+    (FR-F2). BOTH stages reset on a fallback regardless of which one blocked: the fallback
+    picks a NEW topic, so the new thesis must be re-argued by a fresh judge -- a surviving
+    ``argument.json`` for the killed topic would feed the re-driven draft a
+    ``strengthened_argument`` for the wrong thesis."""
     run_dir = Path(run_dir)
     brief_path = run_dir / "plans" / "task-select" / "brief.md"
     try:
         brief_text = brief_path.read_text(encoding="utf-8")
     except OSError:
         reason = "cannot read brief.md for fallback"
-        write_alert(run_dir, reason=reason)
+        write_alert(run_dir, reason=reason, blocked_task=blocked_task)
         return FallbackDecision("skip", None, [], reason)
 
     decision = decide_fallback(
@@ -156,7 +175,7 @@ def apply_fallback(
         max_attempts=config.fallback_topic_attempts,
     )
     if decision.action == "skip":
-        write_alert(run_dir, reason=decision.reason)
+        write_alert(run_dir, reason=decision.reason, blocked_task=blocked_task)
         return decision
 
     # retry: locate the fallback candidate in candidates.json (R9: an unparseable
@@ -167,14 +186,14 @@ def apply_fallback(
         doc.validate()
     except (ContractError, OSError) as exc:
         reason = f"candidates.json unusable for fallback: {exc}"
-        write_alert(run_dir, reason=reason)
+        write_alert(run_dir, reason=reason, blocked_task=blocked_task)
         return FallbackDecision("skip", None, [], reason)
     candidate = next(
         (c for c in doc.candidates if c.topic_id == decision.topic_id), None
     )
     if candidate is None:
         reason = f"fallback topic {decision.topic_id!r} not in candidates.json"
-        write_alert(run_dir, reason=reason)
+        write_alert(run_dir, reason=reason, blocked_task=blocked_task)
         return FallbackDecision("skip", None, [], reason)
 
     brief_path.write_text(
@@ -182,22 +201,28 @@ def apply_fallback(
         encoding="utf-8",
     )
 
-    # Reset cpe state so the re-drive re-runs draft (publish is already pending).
+    # Reset cpe state so the re-drive re-runs argue THEN draft (publish is already pending).
+    # Both reset: the new fallback thesis must be re-argued by a fresh judge before re-draft.
     ensure_cpe_importable()
     from claude_plan_execute.state import State
 
     state = State(run_dir / "plans" / "state.json")
-    entry = state.get("draft")
-    entry["status"] = "pending"
-    entry.pop("block_reason", None)  # set_status merges; pop a stale reason (R6)
+    for task_id in ("argue", "draft"):
+        entry = state.get(task_id)        # auto-creates pending if absent (safe)
+        entry["status"] = "pending"
+        entry.pop("block_reason", None)   # set_status merges; pop a stale reason (R6)
     state.save()
 
-    draft_dir = run_dir / "plans" / "task-draft"
-    for name in _STALE_DRAFT_ARTIFACTS:
-        try:
-            (draft_dir / name).unlink()
-        except OSError:
-            pass  # ignore missing
+    for subdir, names in (
+        ("task-argue", _STALE_ARGUE_ARTIFACTS),
+        ("task-draft", _STALE_DRAFT_ARTIFACTS),
+    ):
+        stage_dir = run_dir / "plans" / subdir
+        for name in names:
+            try:
+                (stage_dir / name).unlink()
+            except OSError:
+                pass  # ignore missing
     return decision
 
 

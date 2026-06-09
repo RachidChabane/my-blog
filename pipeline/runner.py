@@ -36,6 +36,19 @@ from .config import (
     ensure_cpe_importable,
 )
 
+# A blocked `argue` OR `draft` triggers the fallback-to-next-topic re-drive (section 7):
+# both gate cadence and both re-run on a fallback. cpe cannot jump back via depends_on, so
+# the harness owns the re-drive (fallback.apply_fallback).
+_FALLBACK_BLOCKING_TASKS = ("argue", "draft")
+
+
+def _first_blocker(plan: ResumePlan) -> str | None:
+    """The fallback-blocking task that is blocked (argue runs before draft, so at most
+    one of the two is blocked at a time); None if neither is."""
+    return next(
+        (tid for tid in _FALLBACK_BLOCKING_TASKS if tid in plan.blocked), None
+    )
+
 
 def _usage_limit_code() -> int:
     """cpe's usage-limit exit code (== 75), fetched lazily (offline-safe).
@@ -361,14 +374,17 @@ def run(
     resume: bool = False,
 ) -> RunResult:
     """Assemble (or reload, on resume) -> drive -> read the resume point, then run the
-    fallback-to-next-topic re-drive loop (OQ-14a) if ``draft`` blocked.
+    fallback-to-next-topic re-drive loop (OQ-14a) if ``argue`` OR ``draft`` blocked.
 
-    cpe cannot jump back to ``draft`` via a depends_on edge, so the harness owns the
-    re-drive: on a blocked draft, ``fallback.apply_fallback`` rewrites the brief for the
-    next fallback topic (or skips+alerts when the shortlist is dry / the budget is spent)
-    and resets ``draft`` to pending; we re-drive (resume) and re-read. After the budget
-    is spent with draft still blocked, write a terminal ALERT.json. A non-blocked run
-    never enters the loop (existing resume/interrupt behavior unchanged).
+    cpe cannot jump back to ``argue``/``draft`` via a depends_on edge, so the harness owns
+    the re-drive: on a blocked ``argue`` or ``draft`` (the ``_FALLBACK_BLOCKING_TASKS``
+    pair, section-7 cadence), ``fallback.apply_fallback`` rewrites the brief for the next
+    fallback topic (or skips+alerts when the shortlist is dry / the budget is spent) and
+    resets BOTH ``argue`` and ``draft`` to pending; we re-drive (resume) and re-read. After
+    the budget is spent with the blocker still blocked, write a terminal ALERT.json naming
+    it. A non-blocking block (e.g. ``research``) gives ``_first_blocker == None`` -> the
+    loop is skipped (cron's generic-block alert handles it); existing resume/interrupt
+    behavior is unchanged.
     """
     slate = load_slate(run_id, config) if resume else assemble_slate(run_id, config)
     result = driver.run_slate(slate, resume=resume)
@@ -377,19 +393,23 @@ def run(
     from .gate import fallback as _fb  # LAZY — keep stages.* out of `import pipeline`
 
     attempts, alerted = 0, False
-    while "draft" in plan.blocked and attempts < config.fallback_topic_attempts:
-        decision = _fb.apply_fallback(slate.run_dir, config, attempts_used=attempts)
+    blocker = _first_blocker(plan)
+    while blocker is not None and attempts < config.fallback_topic_attempts:
+        decision = _fb.apply_fallback(
+            slate.run_dir, config, attempts_used=attempts, blocked_task=blocker
+        )
         if decision.action == "skip":
-            alerted = True  # apply_fallback already wrote ALERT.json
+            alerted = True  # apply_fallback already wrote ALERT.json (naming `blocker`)
             break
         attempts += 1
         result = driver.run_slate(slate, resume=True)
         plan = resume_point(slate, config)
-    if "draft" in plan.blocked and not alerted:
+        blocker = _first_blocker(plan)
+    if blocker is not None and not alerted:
         _fb.write_alert(
             slate.run_dir,
-            reason=f"terminal failure: draft blocked after {attempts} fallback attempt(s)",
-            blocked_task="draft",
+            reason=f"terminal failure: {blocker} blocked after {attempts} fallback attempt(s)",
+            blocked_task=blocker,
         )
         alerted = True
     return RunResult(

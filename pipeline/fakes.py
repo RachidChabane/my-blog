@@ -30,6 +30,7 @@ from .runner import AssembledSlate, SlateResult, _usage_limit_code
 STAGE_ARTIFACTS: dict[str, list[str]] = {
     "research": ["candidates.json"],
     "select": ["brief.md"],
+    "argue": ["argument.json"],
     "draft": ["draft-fr.md", "draft-en.md", "claim_source_map.json"],
     "publish": ["PUBLISHED"],  # marker; real publish writes src/content (task 27)
 }
@@ -37,6 +38,10 @@ STAGE_ARTIFACTS: dict[str, list[str]] = {
 _ARTIFACT_STUBS: dict[str, str] = {
     "candidates.json": "[]\n",
     "brief.md": "# brief\n",
+    "argument.json": (
+        '{"verdict": "defensible", "steelman": "", "strongest_attack": "", '
+        '"reconciliation": "", "strengthened_argument": "", "reason": "fake stub"}\n'
+    ),
     "draft-fr.md": "# draft (fr)\n",
     "draft-en.md": "# draft (en)\n",
     "claim_source_map.json": '{"claims": [], "sources": []}\n',
@@ -125,6 +130,10 @@ class FakeClaudeDriver:
     block_task:
         Simulate a blocking M-4 gate: set this task ``blocked`` and return,
         leaving downstream tasks (e.g. ``publish``) unreached.
+    block_argue_attempts:
+        Block ``argue`` on the first N ``run_slate`` invocations that reach it, then
+        let it pass (powers the fallback re-drive test on a blocked ARGUE: block-then-pass).
+        An instance counter survives across re-drives. ``0`` (default) disables.
     block_draft_attempts:
         Block ``draft`` on the first N ``run_slate`` invocations that reach it, then
         let it pass (powers the fallback re-drive test: block-then-pass). An instance
@@ -147,6 +156,7 @@ class FakeClaudeDriver:
         usage_limit: bool = True,
         leave_in_flight: bool = False,
         block_task: str | None = None,
+        block_argue_attempts: int = 0,
         block_draft_attempts: int = 0,
         seed_research_select: bool = False,
         seed_fallback_ids: tuple[str, ...] = ("fallback-topic-1",),
@@ -156,9 +166,11 @@ class FakeClaudeDriver:
         self.usage_limit = usage_limit
         self.leave_in_flight = leave_in_flight
         self.block_task = block_task
+        self.block_argue_attempts = block_argue_attempts
         self.block_draft_attempts = block_draft_attempts
         self.seed_research_select = seed_research_select
         self.seed_fallback_ids = seed_fallback_ids
+        self._argue_runs = 0
         self._draft_runs = 0
         self._seeded = False
 
@@ -179,6 +191,15 @@ class FakeClaudeDriver:
             if self.block_task == tid:  # simulate a blocking M-4 gate
                 state.set_status(tid, "blocked", block_reason="fake gate failure")
                 return SlateResult(1, False, False)  # publish never runs
+
+            if tid == "argue" and self.block_argue_attempts:
+                # block-then-pass on a blocking G1 argument-rigor gate: first N reaches, then pass
+                self._argue_runs += 1
+                if self._argue_runs <= self.block_argue_attempts:
+                    state.set_status(
+                        tid, "blocked", block_reason="fake argument-rigor gate failure"
+                    )
+                    return SlateResult(1, False, False)  # draft never runs
 
             if tid == "draft" and self.block_draft_attempts:
                 # block-then-pass: a blocking M-4 gate on the first N reaches, then pass
