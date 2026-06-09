@@ -32,6 +32,7 @@ def _draft_paths(run_dir: Path) -> dict[str, Path]:
         "style_en": draft_dir / "style-en.json",
         "factcheck_fr": draft_dir / "factcheck-fr.json",
         "factcheck_en": draft_dir / "factcheck-en.json",
+        "editorial": draft_dir / "editorial.json",
     }
 
 
@@ -195,6 +196,60 @@ def _factcheck_section(repo_root: Path, run_dir: Path) -> str:
     )
 
 
+def _editorial_section(repo_root: Path, run_dir: Path) -> str:
+    """The G3 editorial-quality PRODUCER step (writing-rigor task 4; closes G3).
+
+    POST-DRAFT (unlike G1 argue): piece-craft needs the realized piece. SINGLE gate on the
+    EN draft as the CANONICAL REALIZATION of the shared argument; fr/en STRUCTURAL parity
+    rests on the review self-gate's source_id set-equality + the parallel-output house
+    rule, NOT on this gate (live-only caveat; avoids fr/en inflation).
+
+    MANDATE BOUNDARY (G3 != G1): judges the FINISHED ARTICLE AS AN ARTICLE; argument-rigor
+    judged the THESIS AS A CLAIM. build_judge_dispatch is imported LAZILY (keep this module
+    import-light) -- mirrors argue.build_argue_prompt + the lazy humanize import.
+    """
+    from ..gate.judge import build_judge_dispatch  # lazy: keep prompts import-light
+
+    p = _draft_paths(run_dir)
+    editorial_gate = _cmd(repo_root, f"pipeline.gate.editorial --run-dir {run_dir}")
+    dispatch = build_judge_dispatch(
+        role="editorial judge",
+        inputs_desc=(
+            "the brief's angle and outline, and the EN draft body as the finished article "
+            "(the canonical realization of the shared argument)"
+        ),
+        out_path=p["editorial"],
+        excludes=(
+            "the FR draft, the claim->source map, or the fact that you authored this"
+        ),
+        verdict_schema=(
+            '{"verdict": "publishable"|"thin", "issues": [{"dimension": '
+            '"non_obviousness"|"angle"|"structure", "note": "..."}], "reason": "..."}'
+        ),
+    )
+    return (
+        "7. EDITORIAL-QUALITY judgment (G3 -- writing-rigor) -- judge != author, the same\n"
+        "   separation the fact-check and humanize steps get. This judges the FINISHED\n"
+        "   ARTICLE AS AN ARTICLE; do NOT grade your own craft.\n"
+        + dispatch
+        + "   - The judge decides whether the piece is NON-OBVIOUS (says something a\n"
+        "     knowledgeable reader did not already hold), its ANGLE is sound, and its\n"
+        "     STRUCTURE earns the article's length. The verdict is \"thin\" if the angle is\n"
+        "     obvious, the structure is incoherent, or the piece does not earn its length;\n"
+        "     otherwise \"publishable\".\n"
+        "   - MANDATE BOUNDARY (G3 != G1): judge the article's CRAFT, not the thesis as a\n"
+        "     claim (that was the argue gate). A 'thin'/obvious angle is NOT fixable by\n"
+        "     re-drafting -- it burns one gate-repair round, then the run falls back to a\n"
+        "     new topic (correct: a bad angle should yield the slot to a better topic).\n"
+        "   - SINGLE gate on the EN draft: fr/en STRUCTURAL parity rests on the review\n"
+        "     self-gate's source_id set-equality + the parallel-output house rule, not on\n"
+        "     this gate.\n"
+        "   - Then the blocking editorial-quality gate parses it and BLOCKS on a 'thin'\n"
+        "     verdict (and on a missing editorial.json -- the pass must have run):\n"
+        f"       {editorial_gate}\n"
+    )
+
+
 def build_draft_prompt(
     *,
     repo_root: Path,
@@ -232,15 +287,18 @@ def build_draft_prompt(
         + "\n"
         + _factcheck_section(repo_root, run_dir)
         + "\n"
-        "7. Use no emojis anywhere (D-007). PRIVACY / SECRET HYGIENE (FR-D3): no secrets,\n"
+        + _editorial_section(repo_root, run_dir)
+        + "\n"
+        "8. Use no emojis anywhere (D-007). PRIVACY / SECRET HYGIENE (FR-D3): no secrets,\n"
         "   private-repo internals, internal codenames, or third-party personal data in\n"
         "   either draft or in any field.\n"
         "\n"
-        "All 6 M-4 gates BLOCK this task (publish never runs while draft is blocked):\n"
-        "factcheck-fr, factcheck-en, grounding-fr, grounding-en, style-fr, style-en --\n"
-        "per-language fact-check (provenance + supported verdict), source-grounding\n"
-        "(inline citations + reachable sources), and style (no-emoji + 'clean'). Write so\n"
-        "they pass on the first try.\n"
+        "Seven gates BLOCK this task (publish never runs while draft is blocked): the six\n"
+        "per-language M-4 gates -- factcheck-fr, factcheck-en, grounding-fr, grounding-en,\n"
+        "style-fr, style-en (fact-check provenance + supported verdict; source-grounding\n"
+        "citations + reachable sources; style no-emoji + 'clean') -- plus editorial-quality\n"
+        "(G3, a fresh judge on the EN draft: non-obvious / sound structure / earns its\n"
+        "length). Write so they pass on the first try.\n"
     )
 
 

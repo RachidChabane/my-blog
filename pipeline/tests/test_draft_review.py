@@ -302,6 +302,14 @@ def test_draft_prompt_substrings():
         "separate sub-agent",  # the judge != author separation
         "does not see the draft",
         "[s1]",  # the pinned [sN] citation convention the grounding gate keys on
+        # G3 editorial-quality PRODUCER step (task 4) -- judge != author, EN-only. All five
+        # needles sit on single rendered lines (build_judge_dispatch wraps some phrases, so
+        # avoid spanned spans like "FINISHED ARTICLE AS AN ARTICLE"): un-flattened `in p`.
+        "/abs/repo/pipeline/runs/run-1/plans/task-draft/editorial.json",  # out_path
+        "python3 -m pipeline.gate.editorial",  # the gate shell-out
+        '"publishable"',  # verdict vocab (in verdict_schema)
+        "editorial judge",  # the dispatched role
+        "judge the article's CRAFT",  # the G3 != G1 mandate boundary bullet
     ]:
         assert needle in p, f"draft prompt missing {needle!r}"
     # the round cap is interpolated into the humanize section (asserted in context, not
