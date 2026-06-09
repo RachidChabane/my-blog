@@ -1,0 +1,597 @@
+# =============================================================================
+# my-blog — WRITING-RIGOR hardening slate for claude-plan-execute
+#
+# Closes the rigor gaps the content engine does NOT enforce today (verified
+# against the code in docs/writing-rigor-gap-ledger.md):
+#   G1  no intellectual pressure-test of the ARGUMENT (thesis never steelmanned/attacked)
+#   G2  fact-check is ENTAILMENT, not source CORRECTNESS / authority / independence
+#   G3  editorial "review" is COVERAGE, not a QUALITY judgment
+#   G4  ">=2 sources" is a COUNT, not source INDEPENDENCE
+#   G5a real link checker is faked (NotImplementedError); judgment of the semantic
+#       gates is UNPROVEN (no golden adversarial set)
+#
+# Builds five new pieces into pipeline/ and wires them into pipeline/tasks-template.yaml
+# so a REAL article run exercises them: a shared judge!=author substrate; an
+# argument-rigor pre-draft stage; source-quality + editorial-quality draft gates; an
+# independence-checked research gate; a real link checker; and a golden-adversarial-set
+# harness that proves the JUDGMENT of every semantic gate (new and existing) live.
+#
+# Engine rigor principles this slate PRESERVES (verified in code, see the ledger):
+#   - JUDGE != AUTHOR: every new judging stage is a FRESH sub-agent that never sees the
+#     draft prose / who authored the claim, and the author cannot override its verdict
+#     (mirrors the fact-check dispatch in pipeline/prompts/draft.py section 6).
+#   - FAIL-CLOSED parsers: a missing/ambiguous verdict field RAISES (blocks), never reads
+#     as pass (mirrors pipeline/gate/factcheck.py:_claim_from_dict / parse_factcheck_findings).
+#   - BILINGUAL-OR-NOTHING: a blocking gate on draft => publish never runs; fr/en parity
+#     untouched (pipeline/stages/review.py source_id set-equality).
+#   - GREEN-WITHOUT-SECRETS + an explicit LIVE-ONLY boundary: CI proves every MECHANISM
+#     deterministically with fixtures/fakes; real-LLM judgment is live-only, proven by the
+#     golden adversarial set at bring-up.
+#   - IMPORT-LIGHT stages (no pipeline.stages/gate re-export from pipeline/__init__.py;
+#     lazy cross-module imports; runpy double-import guard).
+#   - CSM is EPHEMERAL (dropped at publish): gates stay directional (mapped claims only).
+#
+# This slate's OWN gates are [tests, lint, invariant-grep] over docs/invariants.yaml
+# (build-time CODE invariants) -- distinct from the per-ARTICLE M-4 gates these tasks
+# register in pipeline/invariants.yaml. Goes GREEN WITHOUT SECRETS (fakes/fixtures);
+# live calibration / real reachability / real embedder are BRING-UP, not build (see
+# task 8 + DEPLOY.md section 3). All tasks are Python under pipeline/ -> pytest/ruff.
+# Serial (parallelism: 1), explicit depends_on. Read docs/writing-flow.md +
+# docs/content-pipeline.md + the gap ledger before planning.
+# =============================================================================
+
+version: 1
+
+defaults:
+  model: opus
+  effort: max
+  # Every task in this slate is Python under pipeline/ -> pytest + ruff (the per-task
+  # overrides docs/tasks.yaml's pipeline tasks 23-28 used are the default here).
+  test_command: "pytest -q pipeline"
+  lint_command: "ruff check pipeline"
+  gates: [tests, lint, invariant-grep]
+  # Same long-plan / long-review idle-fallback tuning the build slate settled on
+  # (docs/tasks.yaml) -- opus/max pipeline plans + reviews are large.
+  plan_timeout_minutes: 45
+  review_timeout_minutes: 60
+  max_review_rounds: 3
+  on_max_review_rounds: fail   # autonomous-safe: a plan that can't pass review blocks+alerts
+  parallelism: 1
+  branch_per_task: false
+  base_branch: main
+  # ISOLATED state dir so this slate's task IDs (1-8) do NOT collide with the
+  # original build slate's committed plans/ (docs/tasks.yaml tasks 1-30 are 'done'
+  # in plans/state.json). MUST be ABSOLUTE: the cpe runner resolves plans_dir
+  # relative to CWD, but the claude-plan-execute-loop wrapper resolves the
+  # USAGE_LIMIT/exit-75 sentinel relative to the --tasks file's parent (docs/);
+  # only an absolute path makes the two agree, so auto-resume works. Original
+  # tracked plans/ stays untouched; a future --reset only touches this dir.
+  plans_dir: /Users/rachid/dev-env/0-git/my-blog/plans-writing-rigor
+  persona_file: docs/persona.md
+  decisions_dir: docs/decisions
+  invariants_file: docs/invariants.yaml   # BUILD-time gates (secret-scan etc.), NOT the article gates
+  task_class_models:
+    pipeline: { model: opus, effort: max }
+
+phases:
+  - id: r0-substrate
+    title: "Judge!=author substrate + the golden-adversarial-set harness (the judgment-proof backbone)"
+  - id: r1-argument
+    title: "G1/G3 — argument-rigor (pre-draft) + editorial-quality (post-draft) judgments"
+  - id: r2-sources
+    title: "G2/G4 — source-quality + source-independence (correctness, authority, origin)"
+  - id: r3-reachability
+    title: "G5a — the real link checker behind the existing seam"
+  - id: r4-reconcile
+    title: "Design-of-record + bring-up reconcile (writing-flow / content-pipeline / DEPLOY)"
+
+tasks:
+  # ---------------------------------------------------------------- R0 (substrate)
+  - id: 1
+    phase: r0-substrate
+    task_class: pipeline
+    title: "feat(gate): shared judge!=author verdict substrate (DRY base for G1/G2/G3)"
+    description: |
+      THE SHARED JUDGE SUBSTRATE. G1 (argument-rigor), G2 (source-quality), G3
+      (editorial-quality) are three LLM-judge gates; per the brief they must share ONE
+      judge!=author substrate (one dispatch convention + N prompts/verdict-parsers), not
+      three bespoke implementations. Build that substrate; tasks 3-5 build on it.
+
+      WHAT TO BUILD -- pipeline/gate/judge.py (a NEW module, import-light, no top-level
+      ..stages import):
+        - A generic FAIL-CLOSED verdict parser, factored from the proven pattern in
+          pipeline/gate/factcheck.py (parse_factcheck_findings / _claim_from_dict):
+            parse_judge_findings(data, *, verdicts: tuple[str, ...], item_key: str | None,
+                                 required_item_fields: tuple[str, ...]) -> JudgeReport
+          It RAISES ContractError on: invalid JSON, a non-object payload, a `verdict` not
+          in `verdicts`, an `item_key` value that is not a list, or any item missing a
+          required field (e.g. a per-item boolean that would otherwise silently read as
+          pass). Reuse pipeline.contracts.claim_source_map.ContractError (one error type).
+        - A JudgeReport dataclass (frozen) + a `judge_passes(report, *, pass_verdict)`
+          predicate that is VERDICT-ONLY: pass iff verdict == pass_verdict. The per-item
+          `required_item_fields` are a FAIL-CLOSED PRESENCE backstop ONLY -- a MISSING
+          required field RAISES in the parser, but a present-and-FALSE descriptive boolean
+          (e.g. source-quality's primary=false on a legitimately sound SECONDARY source)
+          does NOT auto-fail the gate. Do NOT lift factcheck's all(c.supported) "every
+          per-item boolean must be true" rule into the substrate -- that "must be true"
+          semantic is factcheck-specific, and factcheck stays OFF this substrate (below).
+          One substrate; each gate supplies its own verdict vocabulary + pass_verdict so the
+          four vocabularies are NEVER conflated (the same discipline factcheck/review/humanize
+          keep: supported|unsupported vs APPROVED|NEEDS_REVISION vs clean|suspicious|revision_needed).
+        - A SHARED DISPATCH-PROMPT helper, build_judge_dispatch(*, role, inputs_desc,
+          out_path, verdict_schema): returns the canonical "dispatch a FRESH general-purpose
+          sub-agent with clean context; it does NOT see the draft prose / the brief / who
+          authored this; hand it ONLY <inputs_desc>; it WRITES <out_path>; you do NOT write
+          it yourself and do NOT override its verdict" instruction block -- factored from
+          pipeline/prompts/draft.py:_factcheck_section so tasks 3-5's prompt builders vary
+          only the role + inputs + schema. ASCII-only (D-007); paths absolute.
+
+      EXPLICITLY OUT OF SCOPE: do NOT refactor the EXISTING pipeline/gate/factcheck.py or
+      style.py onto this substrate (they are parallel, proven, and frozen -- touching them
+      is unjustified risk). The substrate is for the THREE new judges only.
+
+      TEST STRATEGY:
+        - DETERMINISTIC MECHANISM (pipeline/tests/test_judge_substrate.py): the fail-closed
+          parser RAISES on each malformed shape (bad JSON, unknown verdict, missing
+          verdict, non-list items, an item missing its required boolean) -- mirrors
+          test_gate.py:test_parse_factcheck_bad_inputs_raise; judge_passes is VERDICT-ONLY
+          (a present-and-FALSE descriptive boolean still PASSES -- only the verdict decides);
+          build_judge_dispatch is a pure function (deterministic, ASCII-only, names the
+          out_path and "fresh sub-agent / do not override").
+        - LIVE-ONLY: none here -- this is substrate, exercised by the gates that use it.
+      PRESERVES: fail-closed parsers; judge!=author; import-light. judge.py is SUBSTRATE
+      (no CLI), so it goes ONLY in the "import pipeline imports no gate module" guard
+      (test_gate.py:552-562, a wildcard that already auto-covers any pipeline.gate.* module)
+      -- NOT in the runpy `-m ... --help` loop (test_gate.py:538-549), which is for gate CLIs
+      only. The four new gate CLIs (argument/editorial/source_quality/independence) join that
+      --help loop in their own tasks.
+    key_files:
+      - pipeline/gate/judge.py
+      - pipeline/tests/test_judge_substrate.py
+    commit_message: "feat(gate): shared judge!=author verdict substrate (fail-closed, DRY)"
+    depends_on: []
+
+  - id: 2
+    phase: r0-substrate
+    task_class: pipeline
+    title: "test(golden): adversarial defect-bank harness that proves gate JUDGMENT live"
+    description: |
+      THE JUDGMENT-PROOF FIX (closes the G5 "judgment unproven" gap). The shipped gates
+      fail CLOSED on a bad MECHANISM, but nothing proves the JUDGMENT -- that the live
+      fact-checker actually catches a subtly-unsupported claim, the style-auditor an
+      AI-tell, the new judges a weak thesis / wrong source / obvious angle. Build a GOLDEN
+      ADVERSARIAL SET: a curated bank of planted defects + a runner that asserts each gate
+      catches its defect. Build it ONCE here, seeded to RETRO-PROVE the existing
+      factcheck + style gates; tasks 3-5 + 7 extend the bank with their planted defects.
+
+      WHAT TO BUILD:
+        - pipeline/tests/golden/ : the defect bank. One entry per planted defect:
+          { id, gate, args (the gate's argv beyond --run-dir -- ["--lang","fr"] for the
+          per-language EXISTING gates, [] for the no-lang new gates; OR resolve the
+          invariants.yaml gate-name like "factcheck-fr" to its `command:` which already
+          carries --lang fr), artifacts (the draft-dir files that reproduce it:
+          claim_source_map, draft-{lang}.md, brief.md, etc.), expected: "block", why }.
+          The `args` field is REQUIRED: factcheck/grounding/style declare --lang required
+          (factcheck.py:213 etc.), so a bare `--run-dir .` exits argparse code 2, not a
+          verdict -- the runner must supply each gate's full argv. Seed it with the EXISTING
+          gates' defects: a subtly-unsupported claim (factcheck must block), a planted
+          AI-tell / non-clean verdict (style must block), a dead link (grounding must block),
+          an emoji (style must block). These reuse the shapes already in pipeline/tests/fixtures/.
+        - pipeline/tests/golden/runner.py (or test_golden.py): a PARSER-AGNOSTIC runner
+          that drives ANY gate by its CLI (python3 -m pipeline.gate.<name> --run-dir . +
+          the entry's `args`, so it handles both --lang fr|en gates and no-lang gates) and
+          asserts the exit code + that the findings name the defect. Parser-agnostic so
+          it proves the bespoke factcheck/style parsers AND the task-1 substrate-based
+          gates uniformly.
+
+      ITS OWN MECHANISM/JUDGMENT SPLIT (the harness must itself go GREEN in CI):
+        - DETERMINISTIC (default `pytest -q pipeline`): the runner MECHANISM -- it loads the
+          bank, materializes each entry's artifacts into a run-dir, drives the gate, and
+          asserts the exit code -- using FIXTURE findings (a planted factcheck-*.json /
+          style-*.json that encodes the defect, exactly as test_gate.py stands in for a live
+          sub-agent). This proves the bank is well-formed and the gates BLOCK on the planted
+          findings, with no LLM / network / secret.
+        - LIVE-ONLY, DEFAULT-SKIP: a SEPARATE assertion -- "dispatch the REAL judge sub-agent
+          on the planted artifacts; it must independently produce the blocking verdict" --
+          marked with a pytest marker / guarded by an env flag (e.g. GOLDEN_LIVE=1) so it is
+          SKIPPED by default and `pytest -q pipeline` stays green-without-secrets. This is
+          the judgment proof, run at bring-up (task 8 / DEPLOY.md section 3).
+      PRESERVES: green-without-secrets + explicit live-only boundary; fail-closed (a
+      malformed bank entry is a test error, never a silent skip).
+    key_files:
+      - pipeline/tests/golden/bank.json
+      - pipeline/tests/golden/__init__.py
+      - pipeline/tests/test_golden.py
+    commit_message: "test(golden): adversarial defect-bank harness (retro-proves factcheck+style)"
+    depends_on: [1]
+
+  # ---------------------------------------------------------------- R1 (argument + editorial)
+  - id: 3
+    phase: r1-argument
+    task_class: pipeline
+    title: "feat(argue): G1 argument-rigor stage + gate between select and draft"
+    description: |
+      CLOSES G1 (no intellectual pressure-test of the argument). Productize the ad-hoc
+      steelman -> attack -> reconcile the owner runs by hand into a NEW `argue` stage
+      BETWEEN select and draft -- so a weak angle is killed BEFORE paying to draft it
+      bilingually. SINGLE gate (not fr/en): the brief's claim_skeleton is LANGUAGE-NEUTRAL
+      (stages/select.py: {id, statement, source_ids}, no lang field -- verified).
+
+      WHAT TO BUILD:
+        - pipeline/prompts/argue.py :: build_argue_prompt(repo_root, run_dir) -- pure fn,
+          ASCII-only, absolute paths. Reads plans/task-select/brief.md (angle + claim
+          skeleton). Using the task-1 build_judge_dispatch, dispatches ONE FRESH judge
+          sub-agent (judge!=author: it does not know who chose this angle) to STEELMAN the
+          thesis, mount the STRONGEST ATTACK (wrong / weak / trivially-true / aging-badly /
+          says-nothing-non-obvious-as-a-CLAIM), then RECONCILE. It WRITES
+          plans/task-argue/argument.json:
+            { "verdict": "defensible" | "weak", "steelman": "...", "strongest_attack": "...",
+              "reconciliation": "...", "strengthened_argument": "...", "reason": "..." }
+          verdict "weak" iff the strongest attack wins OR the thesis is unfalsifiable/trivial.
+          MANDATE BOUNDARY (keep G1!=G3): argue judges the THESIS AS A CLAIM (true /
+          defensible / non-trivial); it does NOT judge the finished article's craft (that is
+          task 4). Write the prompt to that distinction so G3 is not a redundant re-run.
+        - pipeline/gate/argument.py :: built on the task-1 substrate. CLI
+          `python3 -m pipeline.gate.argument --run-dir .` (NO --lang). Fail-closed:
+          BLOCKS on verdict "weak", on a missing argument.json (the pass must have run),
+          and on an unparseable verdict.
+        - DRAFT now consumes the strengthened argument: pipeline/prompts/draft.py reads
+          plans/task-argue/argument.json (the reconciliation / strengthened_argument) as a
+          draft input, so the surviving argument actually shapes the prose.
+
+      HARNESS WIRING (the cross-cutting edit -- a blocked `argue` must behave like a blocked
+      `draft`, per writing-flow.md section 7 cadence policy; otherwise a weak thesis halts
+      the run and breaks unattended cadence):
+        - pipeline/gate/fallback.py: a blocked `argue` falls back to the next-ranked topic
+          and re-runs argue -> draft. apply_fallback resets BOTH `argue` and `draft` to
+          pending and clears the stale ARGUE artifacts from plans/task-argue/ -- add a
+          `_STALE_ARGUE_ARTIFACTS = ("argument.json",)` cleared from the task-argue dir (the
+          existing `_STALE_DRAFT_ARTIFACTS` loop only unlinks from task-draft/, so a
+          task-argue file would otherwise SURVIVE a re-drive and pass on the killed topic's
+          verdict; task 6 appends independence.json to this set). write_alert must NAME the
+          real blocker: its hardcoded blocked_task="draft" (fallback.py:120) becomes a
+          parameter, AND apply_fallback gains a `blocked_task` parameter (threaded from the
+          runner's plan.blocked) forwarded to EVERY internal write_alert call -- the
+          skip/dry/unusable paths (fallback.py:150/159/169/177) otherwise still emit "draft".
+          FR-F2 requires naming the real blocker on the skip path too.
+        - pipeline/runner.py: the fallback re-drive loop + terminal alert key on
+          {"argue", "draft"} (a module constant), not the literal "draft"; pass the actual
+          blocked task into apply_fallback + the terminal write_alert so the ALERT names it.
+        - WIRE THE STAGE: pipeline/prompts/__init__.py:editorial_stage_descriptions adds
+          "argue": build_argue_prompt(...) (the prompt-injection seam -- verified at
+          prompts/__init__.py:29-47). pipeline/tasks-template.yaml adds the `argue` task
+          (phase between select/draft, depends_on [select], gates_extra: [argument-rigor]),
+          flips draft.depends_on to [argue]. pipeline/invariants.yaml registers
+          `argument-rigor` (kind: shell, on_failure: block, when: [always], the no-lang
+          command). Add `argue` to STAGE_ARTIFACTS in pipeline/fakes.py (argument.json).
+
+      TEST STRATEGY:
+        - DETERMINISTIC MECHANISM: the gate BLOCKS on a "weak" fixture + missing file +
+          unparseable verdict (mirror test_gate.py); build_argue_prompt is pure/ASCII/names
+          "fresh sub-agent / do not override"; ASSERT build_draft_prompt output references the
+          absolute plans/task-argue/argument.json path (+ the strengthened_argument key) so
+          the argue stage cannot regress to decorative (mirror the path-substring assertions
+          in test_draft_review.py); fallback resets argue+draft + clears the stale
+          argument.json; the runner re-drive fires on a blocked-argue (extend the
+          FakeClaudeDriver block path); the SKIP-path ALERT.json blocked_task == "argue" (not
+          only the retry/terminal path). UPDATE the now-changed assertions: test_gate.py
+          (test_write_alert blocked_task, test_run_fallback_*); test_runner.py (the
+          draft.depends_on==["select"] assert at :131 -> ["argue"] + a new argue depends_on
+          [select]; the interrupt-after-select next_task "draft" -> "argue" at :268; extend
+          _SPINE (:39) with "argue" for the done-set at :273); the editorial_stage_descriptions
+          tests -- ALL THREE set-equality twins (test_research_select.py:421,
+          test_draft_review.py:327, test_publish_memory.py:573) now include "argue"; and
+          (since invariants.yaml's gate set now diverges from draft.gates_extra) SPLIT
+          test_gate.py's overloaded _GATE_NAMES into per-task lists (all-invariants vs draft
+          vs argue vs select) and rename/recount test_invariants_load_as_six_blocking_shell_gates
+          as gates are added.
+        - LIVE-ONLY (golden set): add planted weak/obvious/aging-badly theses to the
+          task-2 bank that argument-rigor MUST block at bring-up. CADENCE-SAFETY: because
+          argue now gates cadence, an over-aggressive judge could burn the whole fallback
+          shortlist; its golden-set calibration is cadence-safety-relevant (flag this for
+          task 8's bring-up note).
+      PRESERVES: judge!=author; fail-closed; bilingual-or-nothing (a blocked argue =>
+      draft never runs => publish never runs); import-light.
+    key_files:
+      - pipeline/prompts/argue.py
+      - pipeline/gate/argument.py
+      - pipeline/prompts/__init__.py
+      - pipeline/prompts/draft.py
+      - pipeline/gate/fallback.py
+      - pipeline/runner.py
+      - pipeline/fakes.py
+      - pipeline/tasks-template.yaml
+      - pipeline/invariants.yaml
+      - pipeline/tests/test_argue.py
+      - pipeline/tests/test_gate.py
+      - pipeline/tests/test_runner.py
+      - pipeline/tests/test_research_select.py
+      - pipeline/tests/test_draft_review.py
+      - pipeline/tests/test_publish_memory.py
+    commit_message: "feat(argue): G1 argument-rigor stage + gate; blocked-argue falls back to next topic"
+    depends_on: [2]
+
+  - id: 4
+    phase: r1-argument
+    task_class: pipeline
+    title: "feat(gate): G3 editorial-quality judgment on the drafted piece"
+    description: |
+      CLOSES G3 (editorial review is coverage, not quality). stages/review.py only checks
+      source_id coverage + fr/en parity; nothing asks "is the angle non-obvious, the
+      structure sound, does it say anything." Add a distinct judge!=author editorial gate.
+      POST-DRAFT (not pre-draft like argue): piece-craft -- structure, whether the finished
+      article earns its length -- needs the realized piece. SINGLE gate, judged on the EN
+      draft as the CANONICAL REALIZATION of the shared argument (fr/en STRUCTURAL parity
+      rests on review.py's source_id set-equality + the parallel-output house-style rule,
+      NOT on this gate -- an honest, named live-only-style caveat that avoids fr/en
+      inflation).
+
+      MANDATE BOUNDARY (keep G3!=G1): editorial-quality judges the FINISHED ARTICLE AS AN
+      ARTICLE (non-obvious / well-built / earns its length / sound structure); argument-rigor
+      (task 3) judged the THESIS AS A CLAIM. Non-overlapping prompts.
+
+      WHAT TO BUILD:
+        - A producer section in pipeline/prompts/draft.py (mirroring _factcheck_section, via
+          the task-1 build_judge_dispatch): dispatch a FRESH editorial judge that sees the
+          brief (angle/outline) + the EN draft (NOT who wrote it), judges
+          non-obviousness/angle-soundness/structure, and WRITES
+          plans/task-draft/editorial.json: { "verdict": "publishable" | "thin",
+          "issues": [{ "dimension": "non_obviousness|angle|structure", "note": "..." }],
+          "reason": "..." }.
+        - pipeline/gate/editorial.py on the task-1 substrate. CLI
+          `python3 -m pipeline.gate.editorial --run-dir .` (no --lang). Fail-closed: BLOCKS
+          on "thin", on a missing editorial.json, on an unparseable verdict.
+        - WIRE: pipeline/invariants.yaml registers `editorial-quality`;
+          pipeline/tasks-template.yaml adds it to draft.gates_extra. (No new task/dep:
+          draft already depends on argue; publish already depends on draft.)
+        - FALLBACK HYGIENE: add editorial.json to fallback.py:_STALE_DRAFT_ARTIFACTS so a
+          fallback re-drive cannot pass on the KILLED topic's stale editorial findings -- the
+          same defense the existing factcheck-*/style-* entries give: a re-draft that skips
+          re-dispatching the editorial judge must fail LOUDLY (missing file), not pass.
+
+      NOTE (not a bug): a "thin"/obvious angle is NOT fixable by re-drafting, so it burns
+      one max_gate_repair_round then falls back to a new topic via the task-3 fallback path.
+      That is correct -- a bad angle should yield the slot to a better topic.
+
+      TEST STRATEGY:
+        - DETERMINISTIC MECHANISM (pipeline/tests/test_gate.py / a new test_quality_gates.py):
+          gate BLOCKS on a "thin" fixture + missing file + unparseable verdict; UPDATE the
+          gate-wiring assertions (the hardcoded gate-name list + draft.gates_extra in
+          test_gate.py) to include editorial-quality; add the gate CLI to the runpy guard.
+        - LIVE-ONLY (golden set): add an obvious / structurally-incoherent draft to the
+          task-2 bank that editorial-quality MUST block at bring-up.
+      PRESERVES: judge!=author; fail-closed; single-gate (no fr/en inflation, justified).
+    key_files:
+      - pipeline/gate/editorial.py
+      - pipeline/prompts/draft.py
+      - pipeline/gate/fallback.py
+      - pipeline/tasks-template.yaml
+      - pipeline/invariants.yaml
+      - pipeline/tests/test_quality_gates.py
+      - pipeline/tests/test_gate.py
+    commit_message: "feat(gate): G3 editorial-quality (non-obviousness/angle/structure) judge gate"
+    depends_on: [3]
+
+  # ---------------------------------------------------------------- R2 (sources)
+  - id: 5
+    phase: r2-sources
+    task_class: pipeline
+    title: "feat(gate): G2 source-quality (primary/authority/corroboration) alongside factcheck"
+    description: |
+      CLOSES G2 (fact-check is entailment, not correctness/authority). gate/factcheck.py
+      verifies only "does this excerpt support this claim"; a confidently-wrong but
+      faithfully-cited source passes. Add a source-quality dimension ALONGSIDE (not
+      replacing) the entailment fact-check. SINGLE gate: the cited source SET is identical
+      fr/en (review.py enforces source_id set-equality), and authority/primacy is a property
+      of the SOURCE, not the citing language.
+
+      WHAT TO BUILD:
+        - A producer section in pipeline/prompts/draft.py (via the task-1 build_judge_dispatch):
+          dispatch a FRESH source-quality judge handed ONLY the claim_source_map sources[]
+          (label, url, excerpt, source_date) + the {claim, source_id} pairs -- NOT the prose.
+          For each load-bearing source it assesses: primary vs secondary; authority of the
+          origin; whether the claim has INDEPENDENT corroboration among the OTHER cited
+          sources. It WRITES plans/task-draft/source_quality.json:
+            { "verdict": "sound" | "unsound",
+              "claims": [{ "source_id", "primary": bool, "authoritative": bool,
+                           "corroborated": bool, "note" }], "reason" }
+          "unsound" iff a load-bearing claim rests on a non-authoritative / confidently-wrong
+          / single-origin source with no corroboration. This is the "supported by this text"
+          vs "the source is actually right" distinction.
+        - pipeline/gate/source_quality.py on the task-1 substrate. CLI
+          `python3 -m pipeline.gate.source_quality --run-dir .` (no --lang). Fail-closed:
+          BLOCKS on the "unsound" VERDICT, a missing file, an unparseable verdict, AND -- as a
+          structural PRESENCE backstop -- on any per-claim entry MISSING a required boolean (so
+          a producer that drops `corroborated` cannot silently pass). The per-claim booleans
+          are DESCRIPTIVE: primary=false/authoritative=true is a legitimately sound SECONDARY
+          source and must PASS -- only the judge's "unsound" verdict blocks (do NOT all()-AND
+          the booleans; that is factcheck's rule, off this substrate -- see task 1).
+        - WIRE: register `source-quality` in pipeline/invariants.yaml; add to
+          draft.gates_extra.
+        - FALLBACK HYGIENE: add source_quality.json to fallback.py:_STALE_DRAFT_ARTIFACTS so a
+          fallback re-drive cannot pass on the KILLED topic's stale source-quality findings.
+
+      TEST STRATEGY:
+        - DETERMINISTIC MECHANISM: gate BLOCKS on an "unsound" fixture, a missing file, a
+          per-claim entry missing a required boolean, an unparseable verdict; AND a "sound"
+          fixture whose claim rests on a legitimately sound SECONDARY source (primary=false)
+          PASSES (the descriptive-boolean regression guard -- the analogue of
+          test_parse_factcheck_supported_passes); update the gate-wiring assertions + runpy guard.
+        - LIVE-ONLY (golden set): add a wrong-but-faithfully-cited claim AND a single-origin
+          claim set to the task-2 bank that source-quality MUST block at bring-up.
+      PRESERVES: judge!=author; fail-closed (incl. structural per-item backstop); alongside
+      (not replacing) factcheck; single-gate.
+    key_files:
+      - pipeline/gate/source_quality.py
+      - pipeline/prompts/draft.py
+      - pipeline/gate/fallback.py
+      - pipeline/tasks-template.yaml
+      - pipeline/invariants.yaml
+      - pipeline/tests/test_quality_gates.py
+      - pipeline/tests/test_gate.py
+    commit_message: "feat(gate): G2 source-quality (primary/authority/corroboration) judge gate"
+    depends_on: [4]
+
+  - id: 6
+    phase: r2-sources
+    task_class: pipeline
+    title: "feat(gate): G4 source-independence research gate + broadened sweep"
+    description: |
+      CLOSES G4 (">=2 sources" is a count, not independence). research.py requires
+      len(sources) >= 2 -- two echoes of one press release qualify. Add a source-independence
+      gate on the CHOSEN candidate, scoped to the ARGUE task (single gate: independence is a
+      property of the chosen topic's source set). SCOPE IT TO ARGUE, NOT SELECT: a fallback
+      re-drive (task 3) resets argue+draft but NOT select, so a select-scoped gate would never
+      re-fire on a fallback topic -- a syndicated-source fallback topic would auto-publish
+      ungated (fallback is still auto-publish). argue is the per-chosen-topic pre-draft stage
+      that DOES re-run, so co-locating the thesis judge + the independence judge there is both
+      coherent and fallback-safe. Do NOT raise ResearchCandidate.validate() -- that would
+      break the existing fakes/fixtures (fakes.py _SEED_CANDIDATES uses same-host sources)
+      and the research --validate self-check for ALL candidates; keep the contract stable and
+      put both checks in the gate.
+
+      WHAT TO BUILD:
+        - pipeline/gate/independence.py on the task-1 substrate, with TWO layers (mirroring
+          factcheck's structural-backstop + semantic-verdict):
+            (a) DETERMINISTIC backstop: load the chosen candidate -- resolve it from the
+                AUTHORITATIVE choice in plans/task-select/brief.md
+                (parse_brief(...).chosen_topic_id) -> plans/task-research/candidates.json, NOT
+                from dedup.json (which is only the dedup RECOMMENDATION the select agent is
+                explicitly allowed to override, prompts/select.py:56-57; precedent:
+                gate/fallback.py already uses parse_brief to resolve the live chosen topic).
+                Require its cited sources span >= 2 DISTINCT registrable domains (catches the
+                lazy two-URLs-same-host echo).
+            (b) JUDGE: parse plans/task-argue/independence.json from a fresh independence
+                judge -- { "verdict": "independent" | "single_origin", "origins": [...],
+                "reason" } -- which catches CROSS-OUTLET SYNDICATION (distinct hosts, one
+                origin: the same wire/press-release re-run). BLOCK on "single_origin".
+          CLI `python3 -m pipeline.gate.independence --run-dir .` (no --lang). Fail-closed on
+          a missing file / unparseable verdict / <2 distinct domains.
+        - The producer: pipeline/prompts/argue.py (the task-3 argue prompt) dispatches the
+          fresh independence judge -- a SECOND judge alongside the thesis judge, both pre-draft
+          chosen-topic checks -- for the chosen candidate (brief.md's chosen_topic_id, the
+          authoritative choice; via build_judge_dispatch), writing task-argue/independence.json.
+        - BROADEN THE SWEEP: pipeline/prompts/research.py asks for a multi-angle capture
+          (a primary/origin source + an INDEPENDENT corroboration + a skeptical/contrarian
+          source where one exists) so candidates arrive with independent sourcing to begin with.
+        - WIRE: register `source-independence` in pipeline/invariants.yaml; add it to
+          argue.gates_extra (now [argument-rigor, source-independence]) in
+          pipeline/tasks-template.yaml.
+        - FALLBACK HYGIENE: append independence.json to the task-3 `_STALE_ARGUE_ARTIFACTS`
+          set (fallback.py) so a fallback re-drive re-runs the independence judge on the new
+          topic instead of passing on the killed topic's stale independence.json.
+
+      TEST STRATEGY:
+        - DETERMINISTIC MECHANISM: the distinct-domain backstop BLOCKS a same-host pair;
+          the judge layer BLOCKS a "single_origin" fixture; missing-file / unparseable
+          fail-closed; update the gate-wiring assertions (argue.gates_extra now has two gates)
+          + runpy guard.
+        - LIVE-ONLY (golden set): add a candidate whose two "sources" are two syndications of
+          one release (distinct hosts, one origin) that source-independence MUST block at
+          bring-up.
+      PRESERVES: judge!=author; fail-closed; contract stability (no fixture breakage);
+      structural-backstop + semantic-judge layering.
+    key_files:
+      - pipeline/gate/independence.py
+      - pipeline/prompts/argue.py
+      - pipeline/prompts/research.py
+      - pipeline/gate/fallback.py
+      - pipeline/tasks-template.yaml
+      - pipeline/invariants.yaml
+      - pipeline/tests/test_quality_gates.py
+      - pipeline/tests/test_gate.py
+    commit_message: "feat(gate): G4 source-independence gate (distinct-origin + syndication judge)"
+    depends_on: [5]
+
+  # ---------------------------------------------------------------- R3 (reachability)
+  - id: 7
+    phase: r3-reachability
+    task_class: pipeline
+    title: "feat(grounding): G5a real HTTP link checker behind the existing seam"
+    description: |
+      CLOSES G5a (the real link checker raises NotImplementedError; reachability is faked).
+      Implement the REAL reachability checker behind the existing LinkChecker seam in
+      pipeline/gate/grounding.py:_make_link_checker("real") -- replacing the
+      NotImplementedError -- with MOCKED-network unit tests. Keep it buildable
+      green-without-secrets: CI keeps the gate's DEFAULT `--link-check fake`; the real
+      checker is exercised only on demand (`--link-check real`) and LIVE at bring-up.
+
+      WHAT TO BUILD:
+        - A HttpLinkChecker implementing the LinkChecker Protocol: HEAD with a short timeout,
+          fall back to a ranged GET, follow a bounded number of redirects, treat 2xx/3xx as
+          reachable, 4xx/5xx/timeouts/DNS errors as unreachable; a small per-process cache so
+          a URL cited by many claims is fetched once. stdlib-only (urllib) to avoid a new dep,
+          OR document the dep if one is added. Because research captures excerpts up front, a
+          live re-fetch is a FALLBACK (writing-flow.md section 4.1) -- so this is correctness,
+          not the primary provenance mechanism; keep it lean.
+        - _make_link_checker("real") returns it; the grounding CLI's `--link-check real` path
+          now WORKS (no longer raises).
+
+      TEST STRATEGY:
+        - DETERMINISTIC MECHANISM (mocked network, no real HTTP): monkeypatch the
+          urllib opener so a fixed URL->status map drives the checker; assert reachable for
+          2xx/3xx, unreachable for 4xx/5xx/timeout/DNS-failure, redirect-follow bounded, the
+          cache hits once. UPDATE test_gate.py:test_grounding_cli -- the existing assertion
+          that `--link-check real` raises NotImplementedError MUST change to the mocked-real
+          behavior.
+        - LIVE-ONLY: real reachability against real URLs is BRING-UP (task 8 / DEPLOY.md) --
+          a one-time supervised `--link-check real` over a real article's cited URLs.
+      PRESERVES: the seam (fake stays the CI default => green-without-secrets); the
+      build-vs-bring-up line (real network is bring-up, not build).
+    key_files:
+      - pipeline/gate/grounding.py
+      - pipeline/tests/test_gate.py
+    commit_message: "feat(grounding): real HTTP link checker behind the seam (mocked-network tests)"
+    depends_on: [6]
+
+  # ---------------------------------------------------------------- R4 (reconcile)
+  - id: 8
+    phase: r4-reconcile
+    task_class: pipeline
+    title: "docs: reconcile design-of-record + bring-up runbook with the new engine"
+    description: |
+      Make the DESIGN OF RECORD and the BRING-UP RUNBOOK match the hardened engine. No code;
+      docs only. Two surfaces, kept distinct.
+
+      DESIGN OF RECORD (the engine's own design):
+        - docs/writing-flow.md: insert the `argue` stage into the section-2 slate diagram
+          (research -> select -> ARGUE -> draft -> publish) and the section-3 roster; add the
+          source-quality + editorial-quality gates to the section-5 gate bundle and the
+          source-independence gate + multi-angle sweep to section-4/section-8; extend the
+          section-7 terminal-failure policy to a blocked `argue` (fall back to next topic).
+        - docs/content-pipeline.md: section-3 gate list gains source-quality + editorial +
+          independence; note the new pre-draft argument-rigor step.
+        - State the test-suite couplings each task changed (the hardcoded gate-name list and
+          gates_extra assertions in pipeline/tests/test_gate.py, the editorial_stage_descriptions
+          test, the runpy/import-light guards) so the design of record names them.
+
+      BRING-UP RECONCILE (DEPLOY.md section 3 / docs/owner-bringup-checklist.md -- RECONCILE,
+      do NOT re-author what they already own). Already owned, REFERENCE only: PIPELINE_EMBEDDER=real
+      (DEPLOY.md section 3 step 5 + env table + owner-bringup GROUP 2); the supervised first run.
+      PROPOSE ADDING (currently missing from DEPLOY.md section 3) as bring-up steps -- NOT slate tasks:
+        (1) DEDUP-THRESHOLD (OQ-8) CALIBRATION: DEDUP_SIMILARITY_THRESHOLD=0.82 is a fake-tuned
+            placeholder; calibrate it against real bge-m3 cosine scores at first live run
+            (analogous to the avatar gate's section-3 step-4b calibration).
+        (2) LIVE LINK-REACHABILITY: now that task 7 implements the real checker, a one-time
+            supervised `--link-check real` over a real article's cited URLs (optional -- captured
+            excerpts make it a fallback).
+        (3) LIVE GOLDEN-SET VALIDATION (the judgment proof): run the task-2 golden set with
+            GOLDEN_LIVE=1 against the REAL judge sub-agents and confirm every gate -- factcheck,
+            style, argument-rigor, editorial-quality, source-quality, source-independence --
+            catches its planted defect BEFORE trusting auto-publish. Call out that argument-rigor's
+            calibration is CADENCE-SAFETY-relevant (an over-aggressive thesis judge can exhaust the
+            fallback shortlist).
+        Tie this to DEPLOY.md's existing item 2 (it already defers the pipeline's first live run
+        until "after the writing-rigor slate lands").
+
+      TEST STRATEGY: docs only -- the slate's `tests`/`lint` gates pass trivially (no code).
+      invariant-grep over docs/invariants.yaml stays clean (no code touched).
+      PRESERVES: the build-vs-bring-up line (no live/secret step enters the green slate); a
+      clean, single bring-up runbook (additions reconciled into DEPLOY.md, not duplicated).
+    key_files:
+      - docs/writing-flow.md
+      - docs/content-pipeline.md
+      - DEPLOY.md
+      - docs/owner-bringup-checklist.md
+    commit_message: "docs: reconcile design-of-record + bring-up runbook with writing-rigor engine"
+    depends_on: [7]
