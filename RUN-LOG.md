@@ -352,3 +352,39 @@ binding calls + the wrangler shell-out + wrangler.toml prod-binding attach (DEPL
 **Autonomous queue EXHAUSTED.** Remaining work is owner-gated (O1–O6: rotated CF token, OpenRouter
 key, runner, alert webhook) → see `DEPLOY.md` §1 + §3 bring-up runbook. Decision D-1 (embeddings =
 Workers AI bge-m3, overriding locked OpenRouter-embeddings) flagged for veto in DEPLOY.md §0.
+
+---
+
+## Bring-up (2026-06-09) — site + live avatar LIVE, gate calibrated
+
+Owner provided O1 (CF token, +DNS scope for `rachid-chabane.com`) + O3 (OpenRouter key); runner =
+this Mac; no alert webhook (O6 skipped); O2 skipped.
+
+- **Provision (§3.1)** — `cf-provision.sh`: Vectorize `my-blog-avatar` (1024-d/cosine) + D1
+  `my-blog-avatar` (id `bce36924-…908c5`, pasted into wrangler.toml). Schema load failed first on the
+  PLACEHOLDER id (wrangler resolves a D1 by name → its wrangler.toml `database_id`); fixed by pasting
+  the real id, then re-running.
+- **Seed (§3.3)** — `build:index` (real bge-m3 REST) → 31 chunks (30 slugs, FR+EN). Vectorize upsert
+  OK (31 vectors). **D1 `--file` rejected file-level `BEGIN TRANSACTION`** → durable fix in
+  `toD1Sql` (drop the wrapper; import is already atomic) + test updated. Re-seeded with
+  `SITE_URL=https://rachid-chabane.com` (first pass had baked the wrong default
+  `rachidchabane.dev` into citation `source_url`s).
+- **Deploy (§3.4)** — `wrangler pages deploy` to the existing `my-blog` project; the
+  `functions/api/avatar/query.ts` + 5 `src/lib/avatar` imports bundled cleanly (a §4 unknown). Live:
+  https://my-blog-4uk.pages.dev.
+- **Synthesis bug (live-only)** — grounded queries emitted `sources` then a swallowed `error`. Real
+  cause (surfaced via a temp `diag` field): **"Illegal invocation"** — `globalThis.fetch` stored on
+  `this` and called as a method on the Workers runtime. **Fix:** `globalThis.fetch.bind(globalThis)`
+  in `synthesize.ts` + `embedder.ts`.
+- **Gate calibration (§3.4b, SAFETY-CRITICAL) — DONE.** New committed tool
+  `scripts/calibrate-avatar-gate.ts` (bilingual on/off-topic probes vs live Vectorize). Direction
+  **NOT inverted** (similarity, higher=better). Live binding-path band: on-topic floor 0.4758,
+  off-topic ceiling 0.4426 → **`AVATAR_SIMILARITY_THRESHOLD = 0.46`** (Pages secret). Confirmed on
+  the production alias: on-topic → grounded (topSim 0.77), off-topic → idk (0.32).
+
+Gates re-verified after the source fixes: `pnpm test` 480 · `pnpm lint` 0 errors · prettier clean.
+Pages secrets set: `OPENROUTER_API_KEY`, `AVATAR_SIMILARITY_THRESHOLD`.
+
+**Still open:** custom domain `rachid-chabane.com` wiring · GH Actions secrets (CI/pipeline) ·
+Option 3 embedding map · supervised pipeline first run (O5) — corpus regen → activates Option 2
+sidenotes + Tier-0 voice (then re-seed + re-calibrate).

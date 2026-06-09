@@ -26,17 +26,24 @@ describe('toVectorizeNdjson', () => {
 });
 
 describe('toD1Sql', () => {
-  it('wraps a full replace in a transaction and wipes all four tables', () => {
+  it('wipes all four tables before any insert, with NO file-level transaction', () => {
     const sql = toD1Sql(artifact);
-    expect(sql.startsWith('BEGIN TRANSACTION;')).toBe(true);
-    expect(sql.trimEnd().endsWith('COMMIT;')).toBe(true);
+    // D1's `wrangler d1 execute --remote --file` import REJECTS file-level
+    // BEGIN TRANSACTION/COMMIT and is itself atomic, so the script must not emit them.
+    expect(sql).not.toContain('BEGIN TRANSACTION');
+    expect(sql).not.toContain('COMMIT;');
+    const firstInsert = sql.indexOf('INSERT INTO');
+    expect(firstInsert).toBeGreaterThan(0);
     for (const table of [
       'chunks',
       'chunks_fts',
       'source_hashes',
       'index_meta',
     ]) {
-      expect(sql).toContain(`DELETE FROM ${table};`);
+      const del = sql.indexOf(`DELETE FROM ${table};`);
+      expect(del).toBeGreaterThanOrEqual(0);
+      // every wipe precedes every insert -> the replace stays all-or-nothing
+      expect(del).toBeLessThan(firstInsert);
     }
   });
 

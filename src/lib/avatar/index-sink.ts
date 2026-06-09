@@ -40,12 +40,20 @@ function insertChunk(c: IndexChunk): string {
 }
 
 /**
- * A full-replace D1 script (single transaction): wipe the four tables, then
- * repopulate chunks + the FTS5 mirror + per-slug hashes + provenance. All string
- * values are single-quote-escaped.
+ * A full-replace D1 script: wipe the four tables, then repopulate chunks + the
+ * FTS5 mirror + per-slug hashes + provenance. All string values are
+ * single-quote-escaped.
+ *
+ * NO explicit `BEGIN TRANSACTION`/`COMMIT`: the import path that runs this
+ * (`wrangler d1 execute --remote --file`, used by build:index + reindex.yml)
+ * REJECTS file-level SQL transactions ("To execute a transaction, please use the
+ * state.storage.transaction() API … BEGIN TRANSACTION … is [not allowed]") and is
+ * ALREADY atomic — a failed import rolls the DB back to its prior state. The wrapper
+ * was therefore both redundant and fatal. Ordering the four DELETEs ahead of every
+ * INSERT keeps the replace all-or-nothing within that import.
  */
 export function toD1Sql(artifact: IndexArtifact): string {
-  const lines: string[] = ['BEGIN TRANSACTION;'];
+  const lines: string[] = [];
   for (const table of ['chunks', 'chunks_fts', 'source_hashes', 'index_meta']) {
     lines.push(`DELETE FROM ${table};`);
   }
@@ -69,6 +77,5 @@ export function toD1Sql(artifact: IndexArtifact): string {
       `INSERT INTO index_meta (key, value) VALUES (${sqlStr(key)}, ${sqlStr(value)});`
     );
   }
-  lines.push('COMMIT;');
   return lines.join('\n') + '\n';
 }

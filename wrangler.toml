@@ -24,4 +24,4 @@ index_name = "my-blog-avatar"
 [[d1_databases]]
 binding = "DB"
 database_name = "my-blog-avatar"
-database_id = "PLACEHOLDER-run-scripts-cf-provision-sh"
+database_id = "bce36924-e881-4342-9283-2ba9fbc908c5"

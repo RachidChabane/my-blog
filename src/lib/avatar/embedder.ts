@@ -71,7 +71,10 @@ export class WorkersAiRestEmbedder implements Embedder {
   }) {
     this.accountId = opts.accountId;
     this.apiToken = opts.apiToken;
-    this.fetchImpl = opts.fetchImpl ?? globalThis.fetch;
+    // Bind to globalThis so a bare native `fetch` survives being called as
+    // `this.fetchImpl(...)` (the Workers runtime throws "Illegal invocation" otherwise).
+    // This REST path runs in Node today; bound for parity with synthesize.ts.
+    this.fetchImpl = opts.fetchImpl ?? globalThis.fetch.bind(globalThis);
   }
 
   private async runBatch(texts: string[]): Promise<number[][]> {

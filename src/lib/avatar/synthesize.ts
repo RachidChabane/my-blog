@@ -97,7 +97,10 @@ export class OpenRouterLLMProvider implements LLMProvider {
     this.apiKey = opts.apiKey;
     this.model = opts.model ?? DEFAULT_MODEL;
     this.baseUrl = opts.baseUrl ?? OPENROUTER_BASE_URL;
-    this.fetchImpl = opts.fetchImpl ?? globalThis.fetch;
+    // Bind to globalThis: on the Cloudflare Workers runtime a bare `globalThis.fetch`
+    // called as `this.fetchImpl(...)` throws "Illegal invocation" (native fetch requires
+    // `this === globalThis`). Tests inject fetchImpl, so this default path is live-only.
+    this.fetchImpl = opts.fetchImpl ?? globalThis.fetch.bind(globalThis);
   }
 
   async *stream(request: LlmRequest): AsyncIterable<string> {
