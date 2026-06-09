@@ -40,6 +40,7 @@ from .fakes import (
     tokenize,
 )
 from .prompts import (
+    build_argue_prompt,
     build_draft_prompt,
     build_publish_prompt,
     build_research_prompt,
@@ -91,9 +92,10 @@ __all__ = [
     "FakeEmbedder",
     "FakeTopicMemory",
     "tokenize",
-    # prompt builders (task 24 + task 25 draft/revise + task 27 publish)
+    # prompt builders (task 24 + task 3 argue + task 25 draft/revise + task 27 publish)
     "build_research_prompt",
     "build_select_prompt",
+    "build_argue_prompt",
     "build_draft_prompt",
     "build_revise_prompt",
     "build_publish_prompt",

@@ -323,8 +323,8 @@ def test_revise_prompt_separation():
 def test_editorial_stage_descriptions_includes_draft():
     config = PipelineConfig(repo_root=_ABS_REPO)
     descriptions = editorial_stage_descriptions(config, _ABS_RUN)
-    # task 27 adds "publish" to the composition seam.
-    assert set(descriptions) == {"research", "select", "draft", "publish"}
+    # task 3 added "argue"; task 27 adds "publish" to the composition seam.
+    assert set(descriptions) == {"research", "select", "argue", "draft", "publish"}
     assert descriptions["draft"] == build_draft_prompt(repo_root=_ABS_REPO, run_dir=_ABS_RUN)
 
 

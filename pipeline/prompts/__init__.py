@@ -2,14 +2,16 @@
 
 ``editorial_stage_descriptions`` returns the ``{task_id: description}`` overrides
 that task 28's scheduler passes to ``assemble_slate(stage_descriptions=...)``. Task
-24 fills ``research`` + ``select``; task 25 adds ``draft``; task 27 adds ``publish``.
-``run()`` / ``assemble_slate`` are NOT modified here — wiring is the seam.
+24 fills ``research`` + ``select``; task 3 adds ``argue``; task 25 adds ``draft``;
+task 27 adds ``publish``. ``run()`` / ``assemble_slate`` are NOT modified here —
+wiring is the seam.
 """
 from __future__ import annotations
 
 from pathlib import Path
 
 from ..config import PipelineConfig
+from .argue import build_argue_prompt
 from .draft import build_draft_prompt, build_revise_prompt
 from .publish import build_publish_prompt
 from .research import build_research_prompt
@@ -24,7 +26,7 @@ def editorial_stage_descriptions(
 ) -> dict[str, str]:
     """Compose per-stage prompt descriptions keyed by cpe task id.
 
-    Returns ``{"research": ..., "select": ..., "draft": ..., "publish": ...}``.
+    Returns ``{"research": ..., "select": ..., "argue": ..., "draft": ..., "publish": ...}``.
     """
     return {
         "research": build_research_prompt(
@@ -33,6 +35,10 @@ def editorial_stage_descriptions(
             topic_memory_summary=topic_memory_summary,
         ),
         "select": build_select_prompt(
+            repo_root=config.repo_root,
+            run_dir=run_dir,
+        ),
+        "argue": build_argue_prompt(
             repo_root=config.repo_root,
             run_dir=run_dir,
         ),
@@ -50,6 +56,7 @@ def editorial_stage_descriptions(
 __all__ = [
     "build_research_prompt",
     "build_select_prompt",
+    "build_argue_prompt",
     "build_draft_prompt",
     "build_revise_prompt",
     "build_publish_prompt",

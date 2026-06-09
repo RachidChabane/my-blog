@@ -417,8 +417,8 @@ def test_26_prompts_absolute_paths_and_composition_seam():
     assert "PYTHONPATH=/abs/repo" in select
     config = PipelineConfig(repo_root=_ABS_REPO)
     descriptions = editorial_stage_descriptions(config, _ABS_RUN)
-    # task 25 added "draft"; task 27 adds "publish" to the composition seam.
-    assert set(descriptions) == {"research", "select", "draft", "publish"}
+    # task 25 added "draft"; task 3 added "argue"; task 27 adds "publish" to the seam.
+    assert set(descriptions) == {"research", "select", "argue", "draft", "publish"}
     assert descriptions["research"] == research
     assert descriptions["select"] == select
 
