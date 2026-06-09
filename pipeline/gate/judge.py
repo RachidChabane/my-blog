@@ -149,25 +149,32 @@ def build_judge_dispatch(
     inputs_desc: str,
     out_path: str | Path,
     verdict_schema: str,
+    excludes: str = "the draft prose, the brief, or the fact that you authored this",
 ) -> str:
     """The canonical judge != author dispatch instruction block (pure, ASCII-only).
 
     Factored from ``pipeline/prompts/draft.py:_factcheck_section`` so the tasks-3-5 prompt
-    builders vary only ``role`` + ``inputs_desc`` + ``out_path`` + ``verdict_schema``. The
-    returned block instructs the stage to dispatch a FRESH general-purpose sub-agent with
-    clean context that does NOT see the draft prose / the brief / who authored the work,
-    is handed ONLY ``inputs_desc``, WRITES ``out_path`` (shaped ``verdict_schema``), and
-    whose verdict the author does NOT override. Callers pass an ABSOLUTE ``out_path``
-    (D-007: ASCII-only; paths absolute). Indented as 3-space bullets so it nests under a
-    numbered step in the calling prompt (mirrors ``_factcheck_section``'s sub-bullets).
+    builders vary only ``role`` + ``inputs_desc`` + ``out_path`` + ``verdict_schema`` (+
+    ``excludes``). The returned block instructs the stage to dispatch a FRESH
+    general-purpose sub-agent with clean context that does NOT see ``excludes``, is handed
+    ONLY ``inputs_desc``, WRITES ``out_path`` (shaped ``verdict_schema``), and whose verdict
+    the author does NOT override. Callers pass an ABSOLUTE ``out_path`` (D-007: ASCII-only;
+    paths absolute). Indented as 3-space bullets so it nests under a numbered step in the
+    calling prompt (mirrors ``_factcheck_section``'s sub-bullets).
+
+    ``excludes`` DEFAULTS to the original frozen clause ("the draft prose, the brief, or the
+    fact that you authored this"), so the pre-draft consumers (argument, factcheck) render
+    UNCHANGED. The G3 editorial judge (task 4) is the first artifact-reading consumer whose
+    job IS to read the finished draft, so it overrides ``excludes`` to withhold only the FR
+    draft + claim->source map + authorship -- without the override the clause would
+    self-contradict ("does NOT see the draft ... hand it ONLY the EN draft body").
     """
     out_path = Path(out_path)
     return (
         "   - This is a JUDGE != AUTHOR check: do NOT grade your own work. A self-graded\n"
         "     check rubber-stamps itself and the gate would verify nothing.\n"
         "   - Dispatch a FRESH general-purpose sub-agent (a new Task with clean context)\n"
-        f"     as the {role}. It does NOT see the draft prose, the brief, or the fact that\n"
-        f"     you authored this; hand it ONLY {inputs_desc}.\n"
+        f"     as the {role}. It does NOT see {excludes}; hand it ONLY {inputs_desc}.\n"
         "   - The sub-agent WRITES this file (you do NOT write it yourself, and you do NOT\n"
         "     override its verdict):\n"
         f"       {out_path}\n"

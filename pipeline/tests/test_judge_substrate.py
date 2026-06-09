@@ -289,3 +289,34 @@ def test_build_judge_dispatch_accepts_path_object():
         verdict_schema="{}",
     )
     assert _ABS_OUT in block
+
+
+def test_build_judge_dispatch_default_excludes_unchanged():
+    # task 4: the default reproduces task-1's frozen "does NOT see the draft prose..." clause,
+    # so the pre-draft consumers (argument/factcheck) render unchanged (this is the needle
+    # test_build_judge_dispatch_names_outpath_and_separation asserts).
+    block = build_judge_dispatch(
+        role="r", inputs_desc="i", out_path=_ABS_OUT, verdict_schema="{}"
+    )
+    flat = " ".join(block.split())
+    assert (
+        "does NOT see the draft prose, the brief, or the fact that you authored this"
+        in flat
+    )
+
+
+def test_build_judge_dispatch_excludes_override():
+    # task 4: an artifact-reading judge (editorial) withholds only authorship/FR, not the
+    # draft -- else the clause self-contradicts ("does NOT see the draft ... hand it ONLY
+    # the EN draft body").
+    block = build_judge_dispatch(
+        role="editorial judge",
+        inputs_desc="the brief's angle/outline + the EN draft body",
+        out_path=_ABS_OUT,
+        verdict_schema="{}",
+        excludes="the FR draft, the claim->source map, or the fact that you authored this",
+    )
+    flat = " ".join(block.split())
+    assert "It does NOT see the FR draft, the claim->source map" in flat
+    assert "hand it ONLY the brief's angle/outline + the EN draft body" in flat
+    assert "the draft prose, the brief," not in flat  # the default clause is gone
