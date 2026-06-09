@@ -95,5 +95,21 @@
       "adversarial_artifacts": { "argue-brief.md": "golden/artifacts/argue-brief.attack.md" },
       "expect_contains": ["argument verdict is"]
     }
+  },
+  {
+    "id": "editorial-thin-obvious",
+    "gate": "editorial",
+    "args": [],
+    "artifacts": { "editorial.json": "golden/artifacts/editorial.thin.json" },
+    "expect_contains": ["editorial verdict is", "thin"],
+    "why": "An obvious angle on a structurally-thin draft: the editorial judge returns 'thin' because the piece is not non-obvious and its structure does not earn its length. The G3 editorial-quality gate must BLOCK before publish. CADENCE-SAFETY: validate the LIVE judgment at bring-up so an over-aggressive judge does not burn the fallback shortlist (a thin verdict yields the slot to a new topic).",
+    "live": {
+      "produces": "editorial.json",
+      "adversarial_artifacts": {
+        "draft-en.md": "golden/artifacts/draft-en.obvious.md",
+        "brief.md": "golden/artifacts/editorial-brief.obvious.md"
+      },
+      "expect_contains": ["editorial verdict is"]
+    }
   }
 ]

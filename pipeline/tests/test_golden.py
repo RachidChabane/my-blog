@@ -63,6 +63,11 @@ def test_argue_golden_entries_present():
     }
 
 
+def test_editorial_golden_entry_present():
+    # task 4: the G3 editorial-quality archetype (obvious angle / thin structure).
+    assert "editorial-thin-obvious" in {e.id for e in _BANK}
+
+
 def test_seeded_live_split_is_correct():
     # The two judge-backed defects carry a live block; the deterministic ones do not. (Later
     # tasks ADD live entries -- a subset assertion, so appending one needs no edit here.)
