@@ -310,6 +310,25 @@ describe('about string table (ABOUT)', () => {
     }
   });
 
+  // Regression: the page once shipped bracketed owner-fill scaffolding
+  // (e.g. "[short bio, first person, ...]"). Guard against a relapse.
+  it('carries no leftover bracketed placeholder copy', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(ABOUT[locale])) {
+        expect(value, `${locale}.${key}`).not.toMatch(/[[\]]/);
+      }
+    }
+  });
+
+  // Standing owner directive: zero em-dashes (U+2014) site-wide.
+  it('contains no em-dash (U+2014) in any string', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(ABOUT[locale])) {
+        expect(value.includes('—'), `${locale}.${key}`).toBe(false);
+      }
+    }
+  });
+
   it('aboutStrings(lang) returns the locale record', () => {
     expect(aboutStrings('fr')).toBe(ABOUT.fr);
     expect(aboutStrings('en')).toBe(ABOUT.en);
@@ -322,12 +341,17 @@ describe('contact links (CONTACTS)', () => {
     expect(gh?.href).toBe('https://github.com/RachidChabane');
   });
 
-  // Tripwire: encodes the deliberate privacy decision (CLAUDE.md #3 / FR-D3). The
-  // owner handoff flips these to a valid mailto/https AND must update the e2e
-  // is-placeholder count (about.spec.ts) from 2 to 1 per filled entry.
-  it('stages email and linkedin as owner-fill (no committed personal data)', () => {
-    expect(CONTACTS.find((c) => c.icon === 'mail')?.href).toBeNull();
-    expect(CONTACTS.find((c) => c.icon === 'linkedin')?.href).toBeNull();
+  // The owner published email + LinkedIn from the public résumé (the privacy gate
+  // in CLAUDE.md #3 / FR-D3 is the owner's call, now made): email is a mailto,
+  // LinkedIn a public https profile. All rows are live links → the e2e
+  // is-placeholder count is 0.
+  it('ships email as a mailto and linkedin as a public https profile', () => {
+    expect(CONTACTS.find((c) => c.icon === 'mail')?.href).toBe(
+      'mailto:rachid.chabane59@gmail.com'
+    );
+    expect(CONTACTS.find((c) => c.icon === 'linkedin')?.href).toMatch(
+      /^https:\/\/www\.linkedin\.com\/in\//
+    );
   });
 
   it('every live href is https or mailto; every entry has a non-empty label', () => {

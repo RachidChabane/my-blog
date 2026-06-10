@@ -42,9 +42,9 @@ const title = `${s.title} · rachid chabane`;
 
     <section class="rc-sec">
       <h2 class="rc-sec__h">{s.bioH}</h2>
-      <div class="rc-ph">
-        <span class="rc-ph__label">{s.bioLabel}</span>
-        <span class="rc-ph__text">{s.bioText}</span>
+      <div class="rc-bio">
+        <p class="rc-bio__p">{s.bioP1}</p>
+        <p class="rc-bio__p">{s.bioP2}</p>
       </div>
     </section>
 
@@ -155,28 +155,18 @@ const title = `${s.title} · rachid chabane`;
     color: var(--fg);
   }
 
-  /* owner-fill placeholder block (screens.css .rc-ph). */
-  .rc-ph {
-    border: 1px dashed var(--border);
-    border-radius: var(--radius);
-    background: var(--fill-subtle);
-    padding: 16px 18px;
+  /* finished bio prose (replaces the former owner-fill placeholder block). */
+  .rc-bio {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 16px;
   }
-  .rc-ph__label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--fg-subtle);
-  }
-  .rc-ph__text {
+  .rc-bio__p {
+    margin: 0;
     font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--fg-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--fg);
   }
 
   /* contact list — quiet plain links, no form (screens.css .rc-contact*). The

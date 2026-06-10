@@ -50,7 +50,6 @@ export const INTENTIONAL_LOW_CONTRAST: string[] = [
   '.rc-proj__n', // project-card eyebrow / index
   '.rc-pn__dir', // prev/next direction label
   '.rc-pn__topic', // prev/next shared-topic label
-  '.rc-ph__label', // about owner-fill placeholder label
   '.rc-howit__lbl', // about "how it works" label
   '.footer__small', // footer fine print
   '.footer__credit', // footer autonomous-maintenance credit
