@@ -75,6 +75,11 @@ def test_source_quality_golden_entries_present():
     }
 
 
+def test_independence_golden_entry_present():
+    # task 6: the G4 source-independence archetype (cross-outlet syndication).
+    assert "independence-cross-outlet-syndication" in {e.id for e in _BANK}
+
+
 def test_seeded_live_split_is_correct():
     # The two judge-backed defects carry a live block; the deterministic ones do not. (Later
     # tasks ADD live entries -- a subset assertion, so appending one needs no edit here.)
@@ -136,6 +141,11 @@ def test_golden_mechanism_blocks_and_names_defect(entry: BankEntry, tmp_path):
 # --- LIVE adversarial artifacts are structurally clean (so a live block is the VERDICT) ---
 
 def test_live_adversarial_artifacts_are_clean_and_isolating():
+    from urllib.parse import urlsplit
+
+    from pipeline.stages.research import CandidatesDoc
+    from pipeline.stages.select import parse_brief
+
     for entry in _LIVE:
         assert entry.live is not None
         for target, source in entry.live.adversarial_artifacts.items():
@@ -149,6 +159,24 @@ def test_live_adversarial_artifacts_are_clean_and_isolating():
                     f"{entry.id}: adversarial draft must be emoji-free "
                     "so the live block is the verdict"
                 )
+        if entry.gate == "independence":
+            # backstop must PASS on the adversarial set so the live block is the judge's
+            # single_origin verdict (NOT the domain backstop). hosts here must ALSO be distinct
+            # REGISTRABLE domains (review#2): a future sub-domain fixture (a.x / b.x) would pass
+            # this >=2-hosts guard yet trip _registrable_domain, silently shifting the block.
+            files = {
+                t.rpartition("/")[2]: artifact_path(s)
+                for t, s in entry.live.adversarial_artifacts.items()
+            }
+            doc = CandidatesDoc.load_path(files["candidates.json"])
+            doc.validate()
+            chosen = parse_brief(files["brief.md"].read_text(encoding="utf-8")).chosen_topic_id
+            cand = next(c for c in doc.candidates if c.topic_id == chosen)
+            hosts = {urlsplit(s.url).hostname for s in cand.sources}
+            assert len(hosts) >= 2, (
+                f"{entry.id}: adversarial candidate must span >= 2 hosts so the live block is "
+                "the judge's single_origin verdict, not the domain backstop"
+            )
 
 
 # --- LIVE-ONLY: the fresh judge's verdict must independently BLOCK (bring-up) -----

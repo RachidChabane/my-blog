@@ -141,5 +141,25 @@
       },
       "expect_contains": ["source-quality verdict is"]
     }
+  },
+  {
+    "id": "independence-cross-outlet-syndication",
+    "gate": "independence",
+    "args": [],
+    "artifacts": {
+      "task-select/brief.md": "golden/artifacts/independence-brief.syndication.md",
+      "task-research/candidates.json": "golden/artifacts/candidates.syndication.json",
+      "independence.json": "golden/artifacts/independence.single-origin.json"
+    },
+    "expect_contains": ["source-independence verdict is", "single_origin"],
+    "why": "The chosen candidate's two cited sources are two syndications of ONE press release: distinct outlets and hosts (techcrunch.example vs venturebeat.example) so the distinct-domain backstop PASSES, but a single origin. The independence judge returns 'single_origin'. The G4 gate must BLOCK before the topic is drafted bilingually -- the 'two cited sources' COUNT vs 'two INDEPENDENT origins' distinction. CADENCE-SAFETY: validate the LIVE judgment at bring-up so an over-aggressive judge does not burn the fallback shortlist.",
+    "live": {
+      "produces": "independence.json",
+      "adversarial_artifacts": {
+        "task-select/brief.md": "golden/artifacts/independence-brief.syndication.md",
+        "task-research/candidates.json": "golden/artifacts/candidates.syndication.json"
+      },
+      "expect_contains": ["source-independence verdict is"]
+    }
   }
 ]

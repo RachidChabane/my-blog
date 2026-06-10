@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "candidates": [
+    {
+      "topic_id": "wire-syndicated-launch",
+      "dedup_key": "vendor x model y launch benchmark",
+      "title": "Vendor X launches model Y",
+      "summary": "Vendor X announced model Y with a vendor-reported benchmark gain.",
+      "why_relevant": "The engineering relevance rests entirely on the launch's claimed benchmark numbers.",
+      "tags": ["llm"],
+      "sources": [
+        {"source_id": "s1", "label": "TechCrunch: Vendor X launches model Y",
+         "url": "https://techcrunch.example/vendor-x-model-y", "retrieved_at": "2026-02-01",
+         "source_date": "2026-01-15",
+         "excerpt": "Vendor X today announced model Y, claiming a 40% gain on its internal benchmark."},
+        {"source_id": "s2", "label": "VentureBeat: Vendor X unveils model Y",
+         "url": "https://venturebeat.example/vendor-x-model-y", "retrieved_at": "2026-02-01",
+         "source_date": "2026-01-15",
+         "excerpt": "Vendor X unveiled model Y, claiming a 40% gain on its internal benchmark."}
+      ]
+    }
+  ]
+}

@@ -39,11 +39,13 @@ BANK_PATH = GOLDEN_DIR / "bank.json"
 # Gate modules the bank may drive. Tasks 3-6 EXTEND this as they add gates
 # (argument, editorial, source_quality, independence). A bank entry naming any other gate
 # is malformed (fail-closed in _entry_from_dict).
-KNOWN_GATES = ("factcheck", "grounding", "style", "argument", "editorial", "source_quality")
+KNOWN_GATES = (
+    "factcheck", "grounding", "style", "argument", "editorial", "source_quality", "independence",
+)
 
 # Floor for the seeded retro-proof. A truncated bank => fewer entries => the floor test fails
 # rather than silently parametrizing zero defects. Tasks may raise it as they add entries.
-EXPECTED_MIN_ENTRIES = 10
+EXPECTED_MIN_ENTRIES = 11
 
 # Most gates read plans/task-draft/; the argue (G1) gate -- and task 6's independence (G4)
 # -- read plans/task-argue/. The bank stays purely additive (no new bank.json field): the
@@ -51,7 +53,7 @@ EXPECTED_MIN_ENTRIES = 10
 # CADENCE-SAFETY (task 8 bring-up note): argue now gates cadence; an over-aggressive judge
 # could block every fallback candidate and burn the whole shortlist. The argue golden-LIVE
 # entries are the calibration signal -- validate them at bring-up (DEPLOY.md section 3).
-GATE_ARTIFACT_SUBDIR: dict[str, str] = {"argument": "task-argue"}
+GATE_ARTIFACT_SUBDIR: dict[str, str] = {"argument": "task-argue", "independence": "task-argue"}
 
 
 class BankError(AssertionError):
@@ -108,9 +110,17 @@ def _validate_artifacts(artifacts: object, where: str) -> dict[str, str]:
         f"{where}: artifacts must be a non-empty object",
     )
     assert isinstance(artifacts, dict)
+    _ALLOWED_SUBDIRS = ("task-select", "task-research", "task-argue", "task-draft")
     for target, source in artifacts.items():
+        name = target
+        if isinstance(target, str) and "/" in target:
+            prefix, _, name = target.rpartition("/")
+            _require(
+                prefix in _ALLOWED_SUBDIRS,
+                f"{where}: target subdir must be one of {_ALLOWED_SUBDIRS} (got {target!r})",
+            )
         _require(
-            isinstance(target, str) and "/" not in target and target not in ("", ".", ".."),
+            isinstance(name, str) and "/" not in name and name not in ("", ".", ".."),
             f"{where}: bad artifact target filename {target!r}",
         )
         _require(
@@ -200,14 +210,18 @@ def load_bank(path: Path | None = None) -> list[BankEntry]:
 
 
 def materialize(artifacts: dict[str, str], run_dir: Path, *, subdir: str = "task-draft") -> Path:
-    """Copy each (target_filename -> source_rel) into run_dir/plans/<subdir> (mirrors
-    test_gate.py:_make_draft_run). ``subdir`` DEFAULTS to ``task-draft`` (keeps every
-    existing call site/entry unchanged); a cross-dir gate (argue G1) passes its own subdir
-    derived from GATE_ARTIFACT_SUBDIR. Returns run_dir (the gate's --run-dir)."""
-    dest_dir = run_dir / "plans" / subdir
-    dest_dir.mkdir(parents=True, exist_ok=True)
+    """Copy each (target -> source_rel) into run_dir/plans/. ``target`` is either a BARE filename
+    (-> the default ``subdir``, keeping every existing call site/entry unchanged) or a single
+    ``<subdir>/<name>`` qualified key (task 6's cross-dir independence gate, whose backstop reads
+    task-select/ + task-research/ while its findings live in task-argue/). Returns run_dir."""
     for target, source in artifacts.items():
-        shutil.copyfile(artifact_path(source), dest_dir / target)
+        if "/" in target:
+            rel_subdir, _, name = target.rpartition("/")
+            dest = run_dir / "plans" / rel_subdir / name
+        else:
+            dest = run_dir / "plans" / subdir / target
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(artifact_path(source), dest)
     return run_dir
 
 
