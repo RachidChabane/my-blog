@@ -427,6 +427,11 @@ def test_apply_fallback_retry(tmp_path):
     (argue_dir / "argument.json").write_text(
         '{"verdict": "defensible", "reason": "stale (killed topic)"}', encoding="utf-8"
     )
+    # task 6: a SURVIVING independence.json from the KILLED topic must also be cleared, else the
+    # re-argued fallback topic could pass G4 on the wrong topic's stale single_origin/independent.
+    (argue_dir / "independence.json").write_text(
+        '{"verdict": "single_origin", "reason": "stale (killed topic)"}', encoding="utf-8"
+    )
     ensure_cpe_importable()
     from claude_plan_execute.state import State
 
@@ -454,6 +459,7 @@ def test_apply_fallback_retry(tmp_path):
     # topic's strengthened_argument.
     assert state.get("argue")["status"] == "pending"           # argue reset for the new thesis
     assert not (argue_dir / "argument.json").exists()          # stale argue artifact cleared
+    assert not (argue_dir / "independence.json").exists()  # task 6: stale G4 findings cleared
 
 
 def test_apply_fallback_dry_skips_and_alerts(tmp_path):

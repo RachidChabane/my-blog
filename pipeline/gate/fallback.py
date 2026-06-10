@@ -44,10 +44,11 @@ _STALE_DRAFT_ARTIFACTS = (
     "review.json",
 )
 
-# Stale argue artifacts removed on a retry so a re-argued fallback topic cannot pass on
-# the KILLED topic's verdict (the task-draft loop below only unlinks from task-draft/).
-# Task 6 appends independence.json here.
-_STALE_ARGUE_ARTIFACTS = ("argument.json",)
+# Stale argue artifacts removed on a retry so a re-argued fallback topic cannot pass on the
+# KILLED topic's verdict (the task-draft loop below only unlinks from task-draft/). A fallback
+# re-drive picks a NEW topic, so a surviving independence.json from the killed topic would let
+# the re-argued fallback pass G4 on the wrong topic's stale verdict.
+_STALE_ARGUE_ARTIFACTS = ("argument.json", "independence.json")  # task 6 adds independence.json
 
 
 @dataclass(frozen=True)
