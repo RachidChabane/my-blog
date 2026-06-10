@@ -1,5 +1,5 @@
 **Purpose:** The design of the autonomous writing engine — the specialized-agent crew that takes a scheduled run from "search the news" to "a fact-checked bilingual post is live," and how the roles hand off. This is the detailed design behind `content-pipeline.md` §2/§7 and the `M-3`/`M-4` build; it resolves the roster question ([OQ-14]). Read after `content-pipeline.md`.
-**Status:** draft — last revised 02-06-2026.
+**Status:** draft — last revised 10-06-2026.
 
 ## §1 Why this doc, and what it is modeled on
 
