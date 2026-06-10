@@ -113,6 +113,7 @@ tasks:
         style-fr,
         style-en,
         editorial-quality,
+        source-quality,
       ]
   - id: publish
     phase: publish

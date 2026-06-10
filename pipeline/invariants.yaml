@@ -83,6 +83,19 @@
   timeout_minutes: 5
   comment: 'G3 editorial-quality: a fresh judge rates the finished EN article; BLOCK on a thin verdict.'
 
+# G2 SOURCE-QUALITY (task 5) -- scoped to the `draft` task via draft.gates_extra, ALONGSIDE the
+# M-4 factcheck gates (not replacing them). SINGLE gate, NO --lang: the cited source SET is
+# identical fr/en (review.py set-equality), so authority/primacy is judged once. The empty tail
+# after `--run-dir .` (no --lang) is what the golden bank's `args: []` extends.
+- name: source-quality
+  kind: shell
+  command: 'PYTHONPATH=../../.. python3 -m pipeline.gate.source_quality --run-dir .'
+  on_failure: block
+  when: [always] # scoped to the draft task via draft.gates_extra
+  parallel_safe: true # the gate only READS the artifact the draft phase wrote
+  timeout_minutes: 5
+  comment: 'G2 source-quality: a fresh judge rates the cited source set; BLOCK on an unsound verdict.'
+
 # G1 ARGUMENT-RIGOR (task 3) -- scoped to the `argue` task via argue.gates_extra, NOT draft.
 # Single gate, NO --lang: the brief's claim_skeleton is language-neutral, so the thesis is
 # judged once, before the bilingual draft is paid for. The empty tail after `--run-dir .`
