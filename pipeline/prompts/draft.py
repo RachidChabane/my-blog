@@ -33,6 +33,7 @@ def _draft_paths(run_dir: Path) -> dict[str, Path]:
         "factcheck_fr": draft_dir / "factcheck-fr.json",
         "factcheck_en": draft_dir / "factcheck-en.json",
         "editorial": draft_dir / "editorial.json",
+        "source_quality": draft_dir / "source_quality.json",   # task 5: G2 findings
     }
 
 
@@ -250,6 +251,59 @@ def _editorial_section(repo_root: Path, run_dir: Path) -> str:
     )
 
 
+def _source_quality_section(repo_root: Path, run_dir: Path) -> str:
+    """The G2 source-quality PRODUCER step (writing-rigor task 5; closes G2).
+
+    ALONGSIDE (not replacing) factcheck: factcheck judges ENTAILMENT (does the excerpt support
+    the claim); this judges whether the SOURCE is actually sound -- primary vs secondary,
+    authority of origin, independent corroboration among the OTHER cited sources. The judge is
+    handed ONLY the claim->source map's sources[] + {claim, source_id} pairs -- NOT the prose
+    (the DEFAULT build_judge_dispatch excludes withholds the draft, exactly as factcheck does;
+    unlike the editorial judge, which overrides excludes to READ the finished draft).
+
+    SINGLE gate, NO --lang: the cited source SET is identical fr/en (review.py set-equality), so
+    authority/primacy is judged once. build_judge_dispatch is imported LAZILY (keep this module
+    import-light) -- mirrors _editorial_section + the lazy humanize import.
+    """
+    from ..gate.judge import build_judge_dispatch  # lazy: keep prompts import-light
+
+    p = _draft_paths(run_dir)
+    sq_gate = _cmd(repo_root, f"pipeline.gate.source_quality --run-dir {run_dir}")
+    dispatch = build_judge_dispatch(
+        role="source-quality judge",
+        inputs_desc=(
+            "the claim->source map's sources[] (each source's label, url, excerpt, and "
+            "source_date) and the list of {claim, source_id} pairs"
+        ),
+        out_path=p["source_quality"],
+        verdict_schema=(
+            '{"verdict": "sound"|"unsound", "claims": [{"source_id", "primary": <bool>, '
+            '"authoritative": <bool>, "corroborated": <bool>, "note": "..."}], "reason": "..."}'
+        ),
+    )
+    return (
+        "8. SOURCE-QUALITY judgment (G2 -- writing-rigor) -- ALONGSIDE the fact-check, the\n"
+        "   same judge != author separation. Fact-check asks 'does this excerpt SUPPORT this\n"
+        "   claim'; this asks whether the SOURCE is actually right. A confidently-wrong but\n"
+        "   faithfully-cited source passes fact-check and must fail HERE.\n"
+        + dispatch
+        + "   - The judge sees the SOURCES, not how they are written up. For each load-bearing\n"
+        "     source it assesses: primary vs secondary; authority of the origin; and whether\n"
+        "     the claim has INDEPENDENT corroboration among the OTHER cited sources. It records\n"
+        "     per source_id: primary, authoritative, corroborated (booleans) + a note.\n"
+        "   - The verdict is \"unsound\" iff a load-bearing claim rests on a non-authoritative\n"
+        "     / confidently-wrong / single-origin source with no corroboration; otherwise\n"
+        "     \"sound\". The booleans are DESCRIPTIVE, not a checklist: a sound SECONDARY source\n"
+        "     (primary=false, authoritative=true, corroborated=true) is legitimately sound and\n"
+        "     PASSES -- only the verdict blocks the gate.\n"
+        "   - SINGLE gate on the cited source SET: it is identical fr/en (review.py\n"
+        "     set-equality), so authority/primacy is judged once, not per language.\n"
+        "   - Then the blocking source-quality gate parses it and BLOCKS on an 'unsound'\n"
+        "     verdict (and on a missing source_quality.json -- the pass must have run):\n"
+        f"       {sq_gate}\n"
+    )
+
+
 def build_draft_prompt(
     *,
     repo_root: Path,
@@ -289,16 +343,20 @@ def build_draft_prompt(
         + "\n"
         + _editorial_section(repo_root, run_dir)
         + "\n"
-        "8. Use no emojis anywhere (D-007). PRIVACY / SECRET HYGIENE (FR-D3): no secrets,\n"
+        + _source_quality_section(repo_root, run_dir)
+        + "\n"
+        "9. Use no emojis anywhere (D-007). PRIVACY / SECRET HYGIENE (FR-D3): no secrets,\n"
         "   private-repo internals, internal codenames, or third-party personal data in\n"
         "   either draft or in any field.\n"
         "\n"
-        "Seven gates BLOCK this task (publish never runs while draft is blocked): the six\n"
+        "Eight gates BLOCK this task (publish never runs while draft is blocked): the six\n"
         "per-language M-4 gates -- factcheck-fr, factcheck-en, grounding-fr, grounding-en,\n"
         "style-fr, style-en (fact-check provenance + supported verdict; source-grounding\n"
         "citations + reachable sources; style no-emoji + 'clean') -- plus editorial-quality\n"
         "(G3, a fresh judge on the EN draft: non-obvious / sound structure / earns its\n"
-        "length). Write so they pass on the first try.\n"
+        "length) and source-quality (G2, a fresh judge on the cited source SET: primary vs\n"
+        "secondary / authority / independent corroboration). Write so they pass on the first\n"
+        "try.\n"
     )
 
 

@@ -310,8 +310,16 @@ def test_draft_prompt_substrings():
         '"publishable"',  # verdict vocab (in verdict_schema)
         "editorial judge",  # the dispatched role
         "judge the article's CRAFT",  # the G3 != G1 mandate boundary bullet
+        # G2 source-quality PRODUCER step (task 5) -- judge != author, sources-only (no prose)
+        "/abs/repo/pipeline/runs/run-1/plans/task-draft/source_quality.json",  # out_path
+        "python3 -m pipeline.gate.source_quality",  # the gate shell-out
+        "source-quality judge",  # the dispatched role
+        '"unsound"',  # verdict vocab (in verdict_schema, on one line: "sound"|"unsound")
+        "ALONGSIDE the fact-check",  # the G2-alongside-factcheck framing
+        "INDEPENDENT corroboration",  # the corroboration dimension
     ]:
         assert needle in p, f"draft prompt missing {needle!r}"
+    assert "Eight gates BLOCK this task" in p  # task 5: 6 M-4 + editorial + source-quality
     # the round cap is interpolated into the humanize section (asserted in context, not
     # as a bare '2' which would also match paths / 's2'). Use a distinctive value.
     p7 = build_draft_prompt(repo_root=_ABS_REPO, run_dir=_ABS_RUN, max_humanize_rounds=7)
