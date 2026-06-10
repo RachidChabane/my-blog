@@ -9,22 +9,27 @@ The design is modelled on `claude-plan-execute` (see `inventory/02-claude-plan-e
 
 ## §2 The stages
 
-A scheduled run flows through six stages. Each stage's output is a committed artifact that feeds the next, so a run is resumable mid-pipeline.
+A scheduled run flows through seven stages. Each stage's output is a committed artifact that feeds the next, so a run is resumable mid-pipeline.
 
 1. **Source** (`FR-B1`). Search recent developments in cutting-edge AI engineering (`D-006`) — agentic AI/coding, frontier + OSS LLMs, building-with-AI — using **Claude Code's native web-search tools** (optionally specialized search sub-agents); per [OQ-13]. No external search-API or RSS infrastructure is required, which keeps cost/ops low. Output: a ranked candidate list, each item with source URL(s) + date.
 2. **Select** (`FR-B2`). Pick one candidate that isn't too semantically similar to an already-published post (similarity-based dedup, no fixed time window; [OQ-8]), consulting topic memory (`FR-G1`), preferring topics that best showcase engineering depth (`D-006`). Output: the chosen topic + its sources + an angle.
-3. **Draft** (`FR-B3`). Write the full article in **both French and English** (`D-004`) in house style (`FR-G2`), with ≥ 2 cited sources and topic tags. The two language versions are the same topic and sources, authored as parallel outputs (not a raw machine translation of one). Output: a FR draft + an EN draft.
-4. **Review** (`FR-B4`). A review agent issues a verdict (APPROVED / NEEDS_REVISION); a revise agent edits until approved or the round cap is hit. This is `claude-plan-execute`'s Phase-2 review loop with an editorial prompt. Output: an approved draft, or a terminal "blocked" state.
-5. **Gate** (`FR-C1`, `FR-C2`). The mandatory pre-publish quality gate (§3), run **independently on each language version**. Output: both languages pass → proceed; either fails → block + alert, nothing publishes.
-6. **Publish** (`FR-B5`). Commit both language versions to the repo at parallel URLs; the build + deploy runs; the post goes live. The commit is authored by the pipeline. No manual step exists in this path.
+3. **Argue.** Pressure-test the chosen thesis *as a claim* — steelman it, mount the strongest attack (wrong / weak / trivially-true / aging-badly / says-nothing-non-obvious), then reconcile — with a **fresh judge (judge != author)** that does not know who picked the angle, **before** paying to draft it in both languages. A *weak* verdict blocks and the run falls back to the next-ranked topic (§3 fallback). The same pre-draft stage runs the **source-independence** check (distinct-origin sources, no cross-outlet syndication). Output: `argument.json` (steelman/attack/reconcile + the strengthened argument) and `independence.json`. [Full design: `writing-flow.md` §7.]
+4. **Draft** (`FR-B3`). Write the full article in **both French and English** (`D-004`) in house style (`FR-G2`), with ≥ 2 cited sources and topic tags. The two language versions are the same topic and sources, authored as parallel outputs (not a raw machine translation of one). Output: a FR draft + an EN draft.
+5. **Review** (`FR-B4`). A review agent issues a verdict (APPROVED / NEEDS_REVISION); a revise agent edits until approved or the round cap is hit. This is `claude-plan-execute`'s Phase-2 review loop with an editorial prompt. Output: an approved draft, or a terminal "blocked" state.
+6. **Gate** (`FR-C1`, `FR-C2`). The mandatory pre-publish quality gate (§3), run **independently on each language version**. Output: both languages pass → proceed; either fails → block + alert, nothing publishes.
+7. **Publish** (`FR-B5`). Commit both language versions to the repo at parallel URLs; the build + deploy runs; the post goes live. The commit is authored by the pipeline. No manual step exists in this path.
 
 ## §3 The quality gate — the load-bearing stage
 
-The gate (`M-4`) is the only thing between a hallucination and the public site, so it is mandatory infrastructure, not polish. It runs after review and **blocks publish on any failure** (`NFR-3`). It has at least three checks, each modelled on `claude-plan-execute`'s Claude-agent gates (which emit machine-readable findings and can trigger a repair loop):
+The gate (`M-4`) is the only thing between a hallucination and the public site, so it is mandatory infrastructure, not polish. It runs after review and **blocks publish on any failure** (`NFR-3`). Its checks, each modelled on `claude-plan-execute`'s Claude-agent gates (which emit machine-readable findings and can trigger a repair loop):
 
 - **Fact-check** (`FR-C1`). Every load-bearing claim is verified against the cited sources. Unsupported claims block publication. This is the single most important check — it is what makes auto-publish defensible.
 - **Source-grounding.** Every factual statement traces to a cited, reachable source; no uncited claims; no dead links.
 - **Style / brand** (`FR-C2`). A style auditor flags AI-tells and off-voice prose. The `ijtihad` style-auditor agent (from `trucIkram`, see `inventory/07-research-and-non-ai.md`) is a concrete candidate to reuse here (parking-lot item in `roadmap.md`).
+- **Source-quality.** A fresh judge rates the *cited source set* — primary-vs-secondary, source authority, and independent corroboration — distinct from fact-check's *entailment* ("supported by this text" vs "the source is actually right"). An *unsound* verdict blocks.
+- **Editorial-quality.** A fresh judge rates the *realized* article — non-obviousness, angle soundness, structure (is it more than coverage?). A *thin* verdict blocks.
+
+Two further checks run **before drafting**, on the `argue` stage (§2), so a weak angle is killed before the bilingual draft is paid for: **argument-rigor** (the thesis pressure-test) and **source-independence** (distinct-origin sourcing). Every gate is **judge != author** and **fails closed** — a missing or ambiguous verdict blocks, never passes.
 
 A failed gate retains the draft + the gate's findings as artifacts and alerts the owner (`FR-C3`, `FR-F2`); the run does not publish. A gate that wants a fix can re-dispatch to a revise step (the gate-repair loop pattern) before giving up.
 
@@ -52,15 +57,16 @@ Auto-publish means defects *will* occasionally reach production. The owner's rec
 
 ## §7 The writing flow — agent roster (first sketch, [OQ-14])
 
-The six stages in §2 are *what* happens; the *agents* that carry them — their hand-off artifacts, round caps, and failure behavior — are now designed in detail in **`writing-flow.md`** (which resolves the core of [OQ-14]). The crew is a multi-agent slate modeled on `claude-plan-execute`'s role separation: the same `claude` agent with role-specific prompt builders, chained by `depends_on`. The roles and their stage mapping (full design in `writing-flow.md`):
+The seven stages in §2 are *what* happens; the *agents* that carry them — their hand-off artifacts, round caps, and failure behavior — are now designed in detail in **`writing-flow.md`** (which resolves the core of [OQ-14]). The crew is a multi-agent slate modeled on `claude-plan-execute`'s role separation: the same `claude` agent with role-specific prompt builders, chained by `depends_on`. The roles and their stage mapping (full design in `writing-flow.md`):
 
 | Role (sketch) | Stage (§2) | Notes |
 |---|---|---|
 | **Research** | Source | Native web-search sweep; gathers sources + dates (`FR-B1`). |
 | **Planning** | Select | Picks the angle/outline; consults topic memory + semantic dedup (`FR-B2`, `FR-G1`). |
+| **Argument-rigor** | Argue | Steelman -> strongest attack -> reconcile the thesis *as a claim*; a weak verdict blocks -> fallback to next topic. Also runs source-independence. Judge != author. (Full design in writing-flow.md §7.) |
 | **Writing** | Draft | Drafts FR + EN in house style with citations (`FR-B3`). |
 | **Quality review** | Review | APPROVED / NEEDS_REVISION verdict + revise loop (`FR-B4`). |
-| **Fact-checking** | Gate | Verifies every load-bearing claim against sources; blocking (`FR-C1`). |
+| **Fact-checking** | Gate | Verifies every load-bearing claim against sources; blocking (`FR-C1`). The Gate also bundles **source-quality** + **editorial-quality** (§3). |
 | **Humanizing / style** | Draft↔Gate | De-AI-tells the prose, enforces voice + the no-emoji rule (`FR-C2`, `D-007`). **Reuse candidate:** the global **`style-auditor`** agent already available in this environment (audits prose for AI-generation tells) — prefer reusing it over building one from scratch. (Reconciles the earlier "ijtihad style-auditor" reference in §3 — `style-auditor` is the concrete global agent to use.) |
 
 `writing-flow.md` details the hand-off artifacts, the **fact-check provenance chain** (research captures source excerpts → draft carries an explicit claim→source map → gate verifies each claim against the captured text), the `style-auditor`-as-auditor humanizing loop (flag → revise → re-check), FR/EN parallelization, and the terminal-failure fallback-to-next-topic policy. Residual build-time sub-questions remain (OQ-14a/b/c + the shared [OQ-5] embedder).
