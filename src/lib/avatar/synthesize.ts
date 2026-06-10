@@ -12,7 +12,7 @@ import {
 } from './guard';
 
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
-const DEFAULT_MODEL = 'anthropic/claude-3.5-haiku'; // Haiku-tier; swappable at the seam
+const DEFAULT_MODEL = 'google/gemini-3-flash-preview'; // Gemini 3 Flash (OpenRouter); swappable at the seam
 const DEFAULT_TEMPERATURE = 0.2;
 
 /** Localized refusal message for the idk branch. */
