@@ -126,7 +126,8 @@ secret (save to a file, don't paste it in chat):
 
 > **HANDBACK TRIGGER — Group 2:** once the runner is chosen + `claude` is authed in `tmux` (and, if
 > you want alerts, the webhook file exists), say **"runner ready."** I will then run a **supervised**
-> first pipeline pass (regenerates the corpus → activates Option 2 sidenotes + the new voice),
+> first pipeline pass (regenerates the corpus → activates Option 2 sidenotes + the new voice; now also
+> runs the writing-rigor **golden-set judgment proof** + **dedup-threshold calibration** — DEPLOY.md §3),
 > verify the M-4 quality gate + that provenance sidecars are written, then install the daily schedule
 > and force one failure to confirm alerts fire.
 
@@ -150,9 +151,12 @@ do this, add **Zone · DNS : Edit** to the O1 token (step 4) and tell me the dom
    GH/Pages secrets from the files → `build:index --push` (seed Vectorize + D1) →
    `wrangler pages deploy` → verify bindings + one grounded answer → **gate recalibration (4b)** →
    Option 3 map. **Outcome: live site + live avatar (corner + scoped) + map.**
-2. **"runner ready"** → supervised `python -m pipeline.schedule.cron run` → verify M-4 + sidecars →
-   install `crontab` schedule → test an alert. **Outcome: daily articles, with Option 2 sidenotes +
-   the Tier-0 voice now live in real content.**
+2. **"runner ready"** → **golden-set judgment proof** (`GOLDEN_LIVE=1`: confirm every gate —
+   factcheck, style, argument-rigor, editorial-quality, source-quality, source-independence — catches
+   its planted defect) → supervised `python -m pipeline.schedule.cron run` (gated on that proof; first
+   push-enabled run) → **calibrate the dedup threshold** (OQ-8, from the run's scores) → verify M-4 +
+   sidecars → install `crontab` schedule → test an alert. (Detail: DEPLOY.md §3 5a/5b/5c.) **Outcome:
+   daily articles, with Option 2 sidenotes + the Tier-0 voice now live in real content.**
 
 I re-run the full gate suite (vitest / pytest / astro check / lint / e2e) after each step and keep
 `DEPLOY.md`, `engagement-findings.md`, and `RUN-LOG.md` current.
