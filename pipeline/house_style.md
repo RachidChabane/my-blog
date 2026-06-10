@@ -122,6 +122,13 @@ pass:
   a French sentence reads like the English with French words swapped in, rewrite it.
   The two languages share the argument, the numbers, and the source ids, not the
   sentence shapes.
+- French diacritics are mandatory and load-bearing. Every accented character keeps
+  its accent (é è ê ë, à â, ç, ï î, ô, û ù) in the title, the section headings, and
+  the body alike. A bare ASCII vowel where French needs an accent ("modele" for
+  "modèle", "fenetre" for "fenêtre", "probleme" for "problème", "decouper" for
+  "découper") is a misspelling that the deterministic style gate now blocks. The
+  `slug` is the one field that is intentionally ASCII; everything a reader sees keeps
+  its accents.
 - The FR and EN pair share an identical `translationKey` (the bilingual join key).
   The `slug`, `title`, and `tags` are localized; the `translationKey` is not.
 - Claim coverage is parallel: both languages cite the same set of skeleton source ids,

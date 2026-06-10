@@ -412,23 +412,24 @@ export function notFoundStrings(lang: Locale): NotFoundStrings {
 }
 
 /**
- * About (S8) copy. Sibling table to ARTICLE_DETAIL / NOT_FOUND. Bio + tagline are
- * owner-fill PLACEHOLDERS (the build never fabricates first-person facts); the
- * how-it-works note is REAL — it describes the autonomous pipeline (a P2
- * credibility asset), carries no personal data/secrets, and is lifted verbatim
- * from the design `T` (about.jsx). `howLbl` intentionally matches
- * ARTICLE_DETAIL.maintained.
+ * About (S8) copy. Sibling table to ARTICLE_DETAIL / NOT_FOUND. The tagline + bio
+ * are REAL first-person copy, grounded in the owner's public résumé (no fabricated
+ * facts); the how-it-works note is REAL too, describing the autonomous pipeline (a
+ * P2 credibility asset, no secrets), lifted verbatim from the design `T`
+ * (about.jsx). `howLbl` intentionally matches ARTICLE_DETAIL.maintained. The bio
+ * deliberately does NOT re-narrate the pipeline mechanics; that is the
+ * how-it-works box's job, the section right below it.
  */
 export interface AboutStrings {
   metaDesc: string; // <meta name="description"> (site-level, safe)
   eyebrow: string; // mono eyebrow
   title: string; // h1
-  tagline: string; // owner-fill placeholder (bracketed)
+  tagline: string; // one-line role/field strap under the h1
   bioH: string; // "Bio"
-  bioLabel: string; // owner-fill label
-  bioText: string; // owner-fill placeholder (bracketed)
+  bioP1: string; // bio paragraph 1 (identity + day work + the applied-AI thread)
+  bioP2: string; // bio paragraph 2 (open source + research + this site; the thread)
   contactH: string; // "Contact"
-  contactPh: string; // owner-fill hint shown as the value of placeholder rows
+  contactPh: string; // hint shown as the value of any future owner-fill row
   howH: string; // "Comment ce site fonctionne" / "How this site works"
   howLbl: string; // "maintenu par l’agent" / "agent-maintained"
   howText: string; // REAL credibility paragraph (verbatim from about.jsx)
@@ -441,11 +442,12 @@ export const ABOUT: Record<Locale, AboutStrings> = {
     eyebrow: 'À propos',
     title: 'À propos',
     tagline:
-      '[une ligne, qui vous êtes, en bref : rôle, terrain, ce qui vous tient à cœur]',
+      'Ingénieur logiciel à l’intersection du cloud et de l’IA appliquée, du besoin métier à la production. Basé à Lille.',
     bioH: 'Bio',
-    bioLabel: 'à compléter, première personne',
-    bioText:
-      '[bio courte, première personne, parcours, ce que vous construisez, et le fil qui relie vos projets et vos écrits. Deux ou trois phrases suffisent.]',
+    bioP1:
+      'Je suis Rachid Chabane, ingénieur full-stack et cloud basé à Lille. Le jour, je livre des services Java et Spring Boot sur Google Cloud, de bout en bout : du recueil du besoin métier à l’infrastructure, la CI/CD et l’astreinte en production. En parallèle, je conçois des systèmes d’IA agentique sur la stack Claude : orchestration multi-agents, outils MCP, récupération d’information et le context engineering qui garde un agent fiable sur la durée.',
+    bioP2:
+      'Ce versant de mon travail est publié en open source, dont un serveur MCP et une marketplace de plugins pour Claude Code, et prend aussi la forme de plateformes privées, parmi lesquelles un moteur de recherche autonome à l’origine de deux preprints avec DOI. Ce carnet est l’un de ces systèmes, écrit et maintenu par un agent plutôt que par moi. Le fil reste le même partout : bâtir des systèmes autonomes, et les rendre assez fiables pour les laisser tourner seuls.',
     contactH: 'Contact',
     contactPh: 'à compléter',
     howH: 'Comment ce site fonctionne',
@@ -459,11 +461,12 @@ export const ABOUT: Record<Locale, AboutStrings> = {
     eyebrow: 'About',
     title: 'About',
     tagline:
-      '[one line, who you are, in brief: role, field, what you care about]',
+      'Software engineer working where cloud meets applied AI, from business requirements to production. Based in Lille, France.',
     bioH: 'Bio',
-    bioLabel: 'owner-filled, first person',
-    bioText:
-      '[short bio, first person, background, what you build, and the thread that ties your projects to your writing. Two or three sentences are enough.]',
+    bioP1:
+      'I’m Rachid Chabane, a full-stack and cloud engineer based in Lille. By day I ship Java and Spring Boot services on Google Cloud, owning the path from business requirements through infrastructure, CI/CD, and on-call production. Outside that work I build agentic-AI systems on the Claude stack: multi-agent orchestration, MCP tools, retrieval, and the context engineering that keeps long-running agents reliable.',
+    bioP2:
+      'That side of my work ships as open source, including a published MCP server and a Claude Code plugin marketplace, and as larger private platforms, among them an autonomous research engine behind two preprints with DOIs. This notebook is another of those systems, written and maintained by an agent rather than by me. The thread across all of it is the same: building autonomous systems, and making them reliable enough to leave running.',
     contactH: 'Contact',
     contactPh: 'owner-filled',
     howH: 'How this site works',
@@ -479,11 +482,12 @@ export function aboutStrings(lang: Locale): AboutStrings {
 
 /**
  * Contact destinations (S8). Locale-neutral: hrefs and proper-noun labels are the
- * same in FR/EN. ONLY verifiably-public links are committed live (GitHub = the repo
- * remote). Email + LinkedIn are owner-fill (href: null) — publishing a personal
- * address/handle is a privacy-gated owner decision (CLAUDE.md #3 / FR-D3 / NFR-6),
- * not a build default. Fill them by adding `value` + `href` here (one line); the page
- * promotes any entry with a non-null href to a live <a>. No backend form (W-2).
+ * same in FR/EN. All three are verifiably-public and live: GitHub (repo remote),
+ * LinkedIn (public profile), and email. Publishing the email + LinkedIn is the
+ * owner's decision, made by populating them from the public résumé (the privacy
+ * gate noted in CLAUDE.md #3 / FR-D3 / NFR-6). The page promotes any entry with a
+ * non-null href to a live <a>; any href:null entry degrades to a non-interactive
+ * owner-fill row. No backend form (W-2).
  */
 export type ContactIconName = 'mail' | 'github' | 'linkedin';
 
@@ -501,14 +505,24 @@ export interface ContactPlaceholder {
 export type Contact = ContactLink | ContactPlaceholder;
 
 export const CONTACTS: Contact[] = [
-  { icon: 'mail', label: 'Email', href: null },
+  {
+    icon: 'mail',
+    label: 'Email',
+    value: 'rachid.chabane59@gmail.com',
+    href: 'mailto:rachid.chabane59@gmail.com',
+  },
   {
     icon: 'github',
     label: 'GitHub',
     value: 'RachidChabane',
     href: 'https://github.com/RachidChabane',
   },
-  { icon: 'linkedin', label: 'LinkedIn', href: null },
+  {
+    icon: 'linkedin',
+    label: 'LinkedIn',
+    value: 'rachid-chabane',
+    href: 'https://www.linkedin.com/in/rachid-chabane-35a2a420a',
+  },
 ];
 
 /**

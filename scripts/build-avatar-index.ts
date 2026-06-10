@@ -11,7 +11,11 @@
 //
 // Full rebuild + full replace every run: the corpus is small (one article/day) and
 // bge-m3 re-embedding is ~$0, so there is no incremental prior. The daily refresh runs
-// `build:index --push` (see .github/workflows/reindex.yml).
+// `build:index --push` (see .github/workflows/reindex.yml). On --push, after the
+// Vectorize upsert + D1 full-replace, any vector for a slug that was removed since the
+// last run is purged from Vectorize (UPSERT never deletes; D1 is full-replaced and so
+// is already clean) — otherwise a pruned article leaves orphan vectors the avatar
+// could cite at a now-404 URL. The purge is fail-open: a deploy never breaks on it.
 
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -21,7 +25,11 @@ import {
   buildIndex,
   loadPublishedSources,
 } from '../src/lib/avatar/index-build';
-import { toVectorizeNdjson, toD1Sql } from '../src/lib/avatar/index-sink';
+import {
+  toVectorizeNdjson,
+  toD1Sql,
+  computeOrphanIds,
+} from '../src/lib/avatar/index-sink';
 import { FakeEmbedder } from '../src/lib/avatar/fakes';
 import { createWorkersAiRestEmbedder } from '../src/lib/avatar/embedder';
 import type { Embedder } from '../src/lib/avatar/contracts';
@@ -75,12 +83,100 @@ function createEmbedder(kind: string): Embedder {
 }
 
 /**
- * UNTESTED-UNTIL-BRING-UP: the live wrangler shell-out. Upserts the vectors into
- * Vectorize and runs the full-replace SQL on the REMOTE D1. Needs
- * CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID and the index/DB created by
- * scripts/cf-provision.sh. `--remote --yes` so D1 runs non-interactively.
+ * Read the live D1 chunk ids (== the live Vectorize id set: both are written from the
+ * same artifact each run) so removed slugs can be purged from Vectorize. FAIL-OPEN:
+ * any failure (D1 unavailable, an unexpected `--json` shape) returns [] and logs a
+ * warning, so the orphan purge is skipped rather than wedging the deploy. Captures
+ * stdout (not `inherit`) to parse the `--json` result.
  */
-function pushIndex(ndjsonPath: string, sqlPath: string, args: CliArgs): void {
+function fetchPriorChunkIds(args: CliArgs): string[] {
+  try {
+    const out = execFileSync(
+      'npx',
+      [
+        'wrangler',
+        'd1',
+        'execute',
+        args.dbName,
+        '--remote',
+        '--json',
+        '--command',
+        'SELECT id FROM chunks',
+      ],
+      { encoding: 'utf8' }
+    );
+    const parsed = JSON.parse(out) as Array<{
+      results?: Array<{ id?: unknown }>;
+    }>;
+    return parsed
+      .flatMap((r) => r.results ?? [])
+      .map((row) => row.id)
+      .filter((id): id is string => typeof id === 'string');
+  } catch (err) {
+    console.warn(
+      '  WARN: could not read prior D1 chunk ids; skipping Vectorize orphan ' +
+        `purge (${err instanceof Error ? err.message : String(err)})`
+    );
+    return [];
+  }
+}
+
+/**
+ * Delete orphaned Vectorize vectors (removed slugs' dense vectors that UPSERT leaves
+ * behind). Batched (wrangler caps the `--ids` list) and FAIL-OPEN: a failure leaves
+ * the orphans for the next clean reindex rather than breaking the deploy. No metadata
+ * indexes exist, so delete-by-id is clean (no recreate).
+ */
+function deleteVectorizeOrphans(orphanIds: string[], args: CliArgs): void {
+  if (orphanIds.length === 0) {
+    console.log('==> no Vectorize orphans to purge');
+    return;
+  }
+  console.log(
+    `==> wrangler vectorize delete-vectors ${args.indexName} ` +
+      `(${orphanIds.length} orphan${orphanIds.length === 1 ? '' : 's'})`
+  );
+  const BATCH = 100;
+  try {
+    for (let i = 0; i < orphanIds.length; i += BATCH) {
+      execFileSync(
+        'npx',
+        [
+          'wrangler',
+          'vectorize',
+          'delete-vectors',
+          args.indexName,
+          '--ids',
+          ...orphanIds.slice(i, i + BATCH),
+        ],
+        { stdio: 'inherit' }
+      );
+    }
+  } catch (err) {
+    console.warn(
+      '  WARN: Vectorize orphan delete failed; orphans remain until the next ' +
+        `clean reindex (${err instanceof Error ? err.message : String(err)})`
+    );
+  }
+}
+
+/**
+ * UNTESTED-UNTIL-BRING-UP: the live wrangler shell-out. Reads the prior D1 ids,
+ * upserts the current vectors into Vectorize, runs the full-replace SQL on the REMOTE
+ * D1, then purges Vectorize orphans (vectors for slugs removed since the last run).
+ * Needs CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID and the index/DB created by
+ * scripts/cf-provision.sh. `--remote --yes` so D1 runs non-interactively. The
+ * orphan-purge steps are fail-open: a deploy never breaks because cleanup failed.
+ */
+function pushIndex(
+  ndjsonPath: string,
+  sqlPath: string,
+  currentIds: readonly string[],
+  args: CliArgs
+): void {
+  // Read prior ids BEFORE the full-replace wipes D1 (so we can diff for orphans).
+  const priorIds = fetchPriorChunkIds(args);
+
   console.log(`==> wrangler vectorize upsert ${args.indexName}`);
   execFileSync(
     'npx',
@@ -102,6 +198,8 @@ function pushIndex(ndjsonPath: string, sqlPath: string, args: CliArgs): void {
     ],
     { stdio: 'inherit' }
   );
+  // D1 is now the current set; prune Vectorize down to it (fail-open).
+  deleteVectorizeOrphans(computeOrphanIds(priorIds, currentIds), args);
 }
 
 async function main(): Promise<void> {
@@ -127,7 +225,13 @@ async function main(): Promise<void> {
       `model ${artifact.embeddingModel}) -> ${ndjsonPath} + ${sqlPath}`
   );
 
-  if (args.push) pushIndex(ndjsonPath, sqlPath, args);
+  if (args.push)
+    pushIndex(
+      ndjsonPath,
+      sqlPath,
+      artifact.chunks.map((c) => c.id),
+      args
+    );
   else
     console.log(
       '  (dry run — pass --push to upsert Vectorize + execute D1 via wrangler)'

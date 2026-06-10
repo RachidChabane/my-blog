@@ -42,6 +42,57 @@ MAX_HUMANIZE_ROUNDS = 2
 # findall yields one entry per emoji. Deliberately excludes BMP symbols (zero-FP).
 _EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF]")
 
+# Em-dash hard rule (D-007, house_style.md section 3): the em-dash (U+2014) is banned
+# outright in prose, headings, and frontmatter. A single BMP codepoint -> FULL
+# deterministic recall, ZERO false positives (hyphen U+002D and en-dash U+2013 are
+# NOT flagged). Backstop to the style-auditor's fuzzy em_dash flag.
+_EM_DASH_RE = re.compile("—")
+
+# FR diacritics hard rule (D-007, house_style.md section 6): deaccented word forms
+# that are NEVER valid French AND never standard English words, so flagging them is
+# false-positive free even when a French article quotes English source titles. Each
+# maps to its correct accented spelling. Deliberately EXCLUDES forms that are valid
+# English (precision, reference, debut, inference, degradation, entree, economies,
+# refutation, decoupage) or a valid unaccented French word (calibre), since those can
+# legitimately appear in bilingual technical prose.
+_FR_DEACCENTED: dict[str, str] = {
+    "fenetre": "fenêtre",
+    "modele": "modèle",
+    "probleme": "problème",
+    "decouper": "découper",
+    "piege": "piège",
+    "ecart": "écart",
+    "reduit": "réduit",
+    "evalue": "évalue",
+    "demontre": "démontre",
+    "deplace": "déplace",
+    "affichee": "affichée",
+    "operationnel": "opérationnel",
+    "reellement": "réellement",
+    "desormais": "désormais",
+    "moitie": "moitié",
+    "penalite": "pénalité",
+    "defaillance": "défaillance",
+    "economie": "économie",
+    "ecriture": "écriture",
+    "repercute": "répercute",
+    "elaguer": "élaguer",
+    "plantees": "plantées",
+}
+_FR_DEACCENTED_RE = re.compile(
+    r"\b(" + "|".join(sorted(_FR_DEACCENTED)) + r")\b", re.IGNORECASE
+)
+
+# FR scan scoping: read the frontmatter ``title`` + the body, never the rest of the
+# frontmatter (``slug`` / ``translationKey`` are intentionally ASCII; source labels
+# may be English). URLs are stripped from the body (a deaccented word can appear in a
+# path/slug). These mirror publish.py's frontmatter split, kept local to stay
+# import-light [MEM: pipeline-stages-import-light-runpy].
+_FRONTMATTER_SPLIT_RE = re.compile(r"\A---\n(.*?)\n---\n?(.*)\Z", re.DOTALL)
+_FM_TITLE_RE = re.compile(r"^title:\s*(.+?)\s*$", re.MULTILINE)
+_URL_RE = re.compile(r"https?://\S+")
+_MD_LINK_TARGET_RE = re.compile(r"\]\([^)]*\)")
+
 # The style-auditor's verdict vocabulary (distinct from the editorial APPROVED /
 # NEEDS_REVISION in review.py — never conflate them; plan section 2.3).
 _STYLE_VERDICTS = ("clean", "suspicious", "revision_needed")
@@ -138,11 +189,54 @@ def find_emoji(text: str) -> list[str]:
     return _EMOJI_RE.findall(text)
 
 
+def find_em_dash(text: str) -> list[str]:
+    """Every em-dash (U+2014) in ``text`` (in order; see ``_EM_DASH_RE``)."""
+    return _EM_DASH_RE.findall(text)
+
+
+def _fr_scannable(text: str) -> str:
+    """The prose a reader sees, for the FR-diacritics scan: the frontmatter ``title``
+    plus the body with URLs stripped. The rest of the frontmatter (``slug`` /
+    ``translationKey`` are intentionally ASCII; source labels may be English) is
+    EXCLUDED so the scan never false-positives on a deaccented-by-design slug."""
+    match = _FRONTMATTER_SPLIT_RE.match(text)
+    if match:
+        front, body = match.group(1), match.group(2)
+        title_match = _FM_TITLE_RE.search(front)
+        title = title_match.group(1) if title_match else ""
+    else:
+        title, body = "", text
+    body = _MD_LINK_TARGET_RE.sub("]", body)
+    body = _URL_RE.sub("", body)
+    return f"{title}\n{body}"
+
+
+def fr_diacritic_violations(text: str) -> list[str]:
+    """FR-only deterministic hard rule (D-007): flag deaccented word forms that are
+    never valid French (and never English), so a dropped-accent draft BLOCKs. Scans
+    the title + body prose only (see ``_fr_scannable``); empty == clean. Backstop to
+    the draft-prompt instruction and the style-auditor."""
+    problems: list[str] = []
+    seen: set[str] = set()
+    for match in _FR_DEACCENTED_RE.finditer(_fr_scannable(text)):
+        word = match.group(0).lower()
+        if word in seen:
+            continue
+        seen.add(word)
+        problems.append(
+            f"fr-diacritics (D-007): {match.group(0)!r} is missing its accent "
+            f"(should be {_FR_DEACCENTED[word]!r})"
+        )
+    return problems
+
+
 def house_style_violations(text: str) -> list[str]:
     """Deterministic house-style problems (empty == clean).
 
-    v1 is the no-emoji hard rule (D-007): one problem per DISTINCT emoji found. Fuzzy
-    voice / AI-tell judgments are the style-auditor's job, not this scan's.
+    The lang-agnostic hard rules (D-007): one problem per DISTINCT emoji (no-emoji)
+    and one per DISTINCT em-dash U+2014 (no-em-dash). Fuzzy voice / AI-tell judgments
+    are the style-auditor's job, not this scan's; FR diacritics are a separate,
+    lang-scoped check (``fr_diacritic_violations``).
     """
     problems: list[str] = []
     seen: set[str] = set()
@@ -151,6 +245,13 @@ def house_style_violations(text: str) -> list[str]:
             continue
         seen.add(char)
         problems.append(f"no-emoji (D-007): found emoji {char!r} (U+{ord(char):04X})")
+    for char in find_em_dash(text):
+        if char in seen:
+            continue
+        seen.add(char)
+        problems.append(
+            f"no-em-dash (D-007): found em-dash {char!r} (U+{ord(char):04X})"
+        )
     return problems
 
 
@@ -229,5 +330,7 @@ __all__ = [
     "parse_style_findings",
     "style_passes",
     "find_emoji",
+    "find_em_dash",
+    "fr_diacritic_violations",
     "house_style_violations",
 ]

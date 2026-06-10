@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
 // deliberate, unit-tested privacy decision (ui.test.ts CONTACTS).
 
 test.describe('S8 About — renders in both locales (FR-A6)', () => {
-  test('FR: url, lang, h1, three section headings, tagline, bio placeholder, real how-it-works', async ({
+  test('FR: url, lang, h1, three section headings, tagline, real bio prose, real how-it-works', async ({
     page,
   }) => {
     await page.goto('/fr/about/');
@@ -21,7 +21,11 @@ test.describe('S8 About — renders in both locales (FR-A6)', () => {
     await expect(heads.nth(2)).toHaveText('Comment ce site fonctionne');
 
     await expect(page.locator('.rc-about__tagline')).toBeVisible();
-    await expect(page.locator('.rc-ph')).toBeVisible(); // bio owner-fill block
+    // finished bio: two real prose paragraphs, no leftover bracketed placeholder.
+    const bio = page.locator('.rc-bio__p');
+    await expect(bio).toHaveCount(2);
+    await expect(bio.first()).toContainText('Lille');
+    await expect(page.locator('.rc-bio')).not.toContainText('[');
     await expect(page.locator('.rc-howit__text')).toContainText(
       'sans intervention humaine'
     );
@@ -43,7 +47,7 @@ test.describe('S8 About — renders in both locales (FR-A6)', () => {
 });
 
 test.describe('contact links present (mailto/external — no backend form, W-2)', () => {
-  test('FR: GitHub is a real external link; no <form>; 2 owner-fill rows', async ({
+  test('FR: GitHub + LinkedIn are external links, email is a mailto; no <form>; no owner-fill rows', async ({
     page,
   }) => {
     await page.goto('/fr/about/');
@@ -53,11 +57,19 @@ test.describe('contact links present (mailto/external — no backend form, W-2)'
     await expect(gh).toBeVisible();
     await expect(gh).toHaveAttribute('target', '_blank');
     await expect(gh).toHaveAttribute('rel', /noopener/);
+    // LinkedIn: the second external link, populated from the public résumé.
+    const li = page.locator('a.rc-contact__row[href*="linkedin.com/in/"]');
+    await expect(li).toBeVisible();
+    await expect(li).toHaveAttribute('target', '_blank');
+    await expect(li).toHaveAttribute('rel', /noopener/);
+    // Email: a mailto (not external → no target/rel).
+    await expect(
+      page.locator('a.rc-contact__row[href^="mailto:"]')
+    ).toBeVisible();
     await expect(page.locator('form')).toHaveCount(0);
-    // email + linkedin are present as non-link placeholder rows.
-    // NOTE: this count drops by one per entry the owner later fills (handoff).
+    // every contact is now a live link → zero owner-fill placeholder rows.
     await expect(page.locator('.rc-contact__row.is-placeholder')).toHaveCount(
-      2
+      0
     );
   });
 });
