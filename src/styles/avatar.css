@@ -90,9 +90,14 @@
   width: 40px;
   height: 40px;
 }
+/* The open dialog's header omits the lattice: the launcher (FAB) already carries
+   the agent glyph and stays visible behind the panel, so a header copy was pure
+   visual repetition (owner feedback). The node STAYS in the DOM — the island's
+   init guard requires [data-avatar-headmark] and setMarks() toggles its
+   thinking/idle state — it is just not painted; streaming feedback comes from the
+   in-body .rc-think-row lattice instead. The header now leads with the title. */
 .rc-dock .rc-ava__head .rc-mark {
-  width: 26px;
-  height: 26px;
+  display: none;
 }
 .rc-dock .rc-think-row .rc-mark {
   width: 22px;
