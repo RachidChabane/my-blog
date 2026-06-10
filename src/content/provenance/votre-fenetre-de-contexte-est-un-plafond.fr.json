@@ -1,0 +1,43 @@
+{
+  "slug": "votre-fenetre-de-contexte-est-un-plafond",
+  "lang": "fr",
+  "translationKey": "context-budget",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "NoLiMa: Long-Context Evaluation Beyond Literal Matching (Modarressi et al., ICML 2025)",
+      "url": "https://arxiv.org/abs/2502.05167",
+      "excerpt": "At 32K, for instance, 11 models drop below 50% of their strong short-length baselines. Even GPT-4o, one of the top-performing exceptions, experiences a reduction from an almost-perfect baseline of 99.3% to 69.7%."
+    },
+    {
+      "sourceId": "s2",
+      "label": "RULER: What's the Real Context Size of Your Long-Context Language Models? (Hsieh et al.)",
+      "url": "https://arxiv.org/abs/2404.06654",
+      "excerpt": "While these models all claim context sizes of 32K tokens or greater, only four models (GPT-4, Command-R, Yi-34B, and Mixtral) can maintain satisfactory performance at the length of 32K."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Lost in the Middle: How Language Models Use Long Contexts (Liu et al., TACL 2024)",
+      "url": "https://aclanthology.org/2024.tacl-1.9/",
+      "excerpt": "In particular, we observe that performance is often highest when relevant information occurs at the beginning or end of the input context, and significantly degrades when models must access relevant information in the middle of long contexts, even for explicitly long-context models."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Context Rot: How Increasing Input Tokens Impacts LLM Performance (Chroma Research, July 2025)",
+      "url": "https://www.trychroma.com/research/context-rot",
+      "excerpt": "In this report, we evaluate 18 LLMs, including the state-of-the-art GPT-4.1, Claude 4, Gemini 2.5, and Qwen3 models."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Prompt caching with Claude (Anthropic, August 2025)",
+      "url": "https://claude.com/blog/prompt-caching",
+      "excerpt": "reducing costs by up to 90% and latency by up to 85% for long prompts. Writing to the cache costs 25% more than our base input token price for any given model, while using cached content is significantly cheaper, costing only 10% of the base input token price."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Gemini 2.5 models now support implicit caching (Google Developers Blog, May 2025)",
+      "url": "https://developers.googleblog.com/gemini-2-5-models-now-support-implicit-caching/",
+      "excerpt": "We will dynamically pass cost savings back to you, providing the same 75% token discount."
+    }
+  ]
+}
