@@ -25,6 +25,7 @@ export const articleFrontmatterSchema = z.object({
   title: z.string().min(1),
   publishDate: z.string().regex(/^\d{2}-\d{2}-\d{4}$/),
   tags: z.array(z.string().min(1)).min(1),
+  category: z.enum(['essays', 'explainers', 'briefings']).default('explainers'),
   sources: z.array(sourceSchema).min(2),
   contentHash: z.string().min(1),
   publishState: z.enum(['published', 'draft']),
@@ -45,6 +46,14 @@ export const projectFrontmatterSchema = z.object({
 });
 
 export const tagSchema = z.object({
+  slug: z.string().min(1),
+  label: z.object({
+    fr: z.string().min(1),
+    en: z.string().min(1),
+  }),
+});
+
+export const categorySchema = z.object({
   slug: z.string().min(1),
   label: z.object({
     fr: z.string().min(1),
@@ -79,4 +88,5 @@ export const provenanceSchema = z.object({
 export type ArticleFrontmatter = z.infer<typeof articleFrontmatterSchema>;
 export type ProjectFrontmatter = z.infer<typeof projectFrontmatterSchema>;
 export type Tag = z.infer<typeof tagSchema>;
+export type Category = z.infer<typeof categorySchema>;
 export type Provenance = z.infer<typeof provenanceSchema>;

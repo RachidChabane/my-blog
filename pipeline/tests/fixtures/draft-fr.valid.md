@@ -3,6 +3,7 @@ lang: fr
 translationKey: agentic-coding-harness-eval
 slug: evaluer-harnais-codage-agentique
 title: Évaluer les harnais de codage agentique
+category: explainers
 tags:
   - agentic
   - evaluation

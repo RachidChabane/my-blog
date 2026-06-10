@@ -4,6 +4,7 @@ import {
   articleFrontmatterSchema,
   projectFrontmatterSchema,
   tagSchema,
+  categorySchema,
   provenanceSchema,
 } from './content/schemas';
 
@@ -19,6 +20,10 @@ export const collections = {
   tags: defineCollection({
     loader: file('./src/content/tags/index.json'),
     schema: tagSchema,
+  }),
+  categories: defineCollection({
+    loader: file('./src/content/categories/index.json'),
+    schema: categorySchema,
   }),
   // Grounded-citation provenance sidecars (Option B), written by the publish stage.
   // Empty until the pipeline runs; the renderer no-ops for articles with no entry.

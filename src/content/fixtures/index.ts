@@ -7,6 +7,7 @@ export const ARTICLE_FR: ArticleFrontmatter = {
   title: 'Introduction aux agents IA',
   publishDate: '01-06-2026',
   tags: ['agents-ia', 'llm'],
+  category: 'explainers',
   sources: [
     {
       label: 'Anthropic — Building effective agents',
@@ -30,6 +31,7 @@ export const ARTICLE_EN: ArticleFrontmatter = {
   title: 'Introduction to AI Agents',
   publishDate: '01-06-2026',
   tags: ['agents-ia', 'llm'],
+  category: 'explainers',
   sources: [
     {
       label: 'Anthropic — Building effective agents',

@@ -25,7 +25,6 @@ export interface Template {
 export const TEMPLATES: Template[] = [
   { name: 'home', fr: '/fr/', en: '/en/' },
   { name: 'blog-index', fr: '/fr/blog/', en: '/en/blog/' },
-  { name: 'blog-page-2', fr: '/fr/blog/2/', en: '/en/blog/2/' },
   {
     name: 'article',
     fr: '/fr/blog/rag-hybride-fusion-rang-reciproque/',
@@ -102,18 +101,21 @@ export const TAG_SLUGS = [
 ] as const;
 
 /**
- * All 60 localized routes for `lang`, in a stable order:
- * home, blog index, blog page 2, articles, work index, works, about, search,
- * tags directory, tag details, 404. The non-localized root `/` redirect stub and
- * the bare `/404` are intentionally EXCLUDED (plan §1/§5.5): the root is a
- * meta-refresh stub with no `<h1>`, and the bare 404 duplicates the localized ones.
+ * All localized routes for `lang`, in a stable order:
+ * home, blog index, articles, work index, works, about, search, tags directory,
+ * tag details, 404. The non-localized root `/` redirect stub and the bare `/404`
+ * are intentionally EXCLUDED (plan §1/§5.5): the root is a meta-refresh stub with
+ * no `<h1>`, and the bare 404 duplicates the localized ones.
+ *
+ * NOTE: the blog index is now a SINGLE page grouped by category — `/blog/2/` no
+ * longer builds (paginate() was removed when the index gained category sections),
+ * so the former `blog page 2` route is gone from this crawl (and from TEMPLATES).
  */
 export function allRoutes(lang: Lang): string[] {
   const at = (path: string): string => `/${lang}/${path}`;
   return [
     at(''),
     at('blog/'),
-    at('blog/2/'),
     ...ARTICLE_SLUGS[lang].map((s) => at(`blog/${s}/`)),
     at('work/'),
     ...WORK_SLUGS[lang].map((s) => at(`work/${s}/`)),

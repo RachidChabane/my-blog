@@ -36,7 +36,7 @@ import yaml
 
 from ..contracts.claim_source_map import ClaimSourceMap, ContractError
 from ..memory.topic_memory import TopicMemory, TopicRecord
-from .draft import DraftDoc, validate_draft_pair
+from .draft import VALID_CATEGORIES, DraftDoc, validate_draft_pair
 from .research import CandidatesDoc
 from .select import parse_brief
 
@@ -162,7 +162,7 @@ def build_article(draft: DraftDoc, sources: list[dict], *, publish_date: str) ->
     """Compose the full published-article text (frontmatter fence + body).
 
     Frontmatter keys in schemas.ts order: ``translationKey, lang, slug, title, publishDate,
-    tags, sources, contentHash, publishState``. ``publishState`` is always ``published``;
+    tags, category, sources, contentHash, publishState``. ``publishState`` is always ``published``;
     ``contentHash`` via ``content_hash(translation_key, lang, body)``. ``draft.body`` already
     has the leading fence stripped.
     """
@@ -173,6 +173,7 @@ def build_article(draft: DraftDoc, sources: list[dict], *, publish_date: str) ->
         "title": draft.title,
         "publishDate": publish_date,
         "tags": list(draft.tags),
+        "category": draft.category,
         "sources": [dict(source) for source in sources],
         "contentHash": content_hash(draft.translation_key, draft.lang, draft.body),
         "publishState": "published",
@@ -189,8 +190,9 @@ def validate_published(article_text: str) -> list[str]:
     ``DD-MM-YYYY``; ``sources`` is a list of length >= 2, each ``{label: non-empty str, url:
     http(s), date: DD-MM-YYYY}``; ``contentHash`` a non-empty str; ``publishState ==
     'published'``. The author-time keys are already covered upstream by
-    ``validate_draft_pair``; this only guards the publish-time projection so a bad one is
-    caught in Python before Astro/zod fails the build.
+    ``validate_draft_pair``; this guards the publish-time projection -- plus a fail-fast
+    re-check of ``category`` against the taxonomy enum -- so a bad one is caught in Python
+    before Astro/zod fails the build.
     """
     match = _FRONTMATTER_RE.match(article_text)
     if not match:
@@ -232,6 +234,14 @@ def validate_published(article_text: str) -> list[str]:
     publish_state = fm.get("publishState")
     if publish_state != "published":
         problems.append(f"publishState must be 'published' (got {publish_state!r})")
+
+    # Fail-fast on the 3-way taxonomy: a bad/missing `category` dies HERE in Python, not
+    # later at the Astro/zod build (the schema enum). REQUIRED for pipeline articles.
+    category = fm.get("category")
+    if category not in VALID_CATEGORIES:
+        problems.append(
+            f"category must be one of {list(VALID_CATEGORIES)} (got {category!r})"
+        )
     return problems
 
 

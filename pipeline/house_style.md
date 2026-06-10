@@ -96,8 +96,15 @@ pass:
   one. Uniform sentence length and the repeated claim -> expansion -> restatement
   paragraph shape are the strongest rhythm tells; break the pattern at least once per
   section.
-- Aim for a focused mid-length article: enough to develop the angle with real
-  engineering depth, not padded to a word count.
+- Hit a category-aware length, and EARN it by substance:
+  - Essays and Explainers are substantial: typically 1200-1800 words across several
+    sections, developing the argument with real engineering depth.
+  - Briefings are tighter: typically 500-800 words.
+- Depth mandate (every article, whatever its length): a genuinely contestable thesis;
+  at least one steelmanned counter-position you then answer (state the strongest case
+  against your take fairly, then refute it); concrete mechanisms, commands, and at
+  least one named failure mode; every load-bearing number cited. Length must be EARNED
+  by what the piece argues and demonstrates, never padded to a word count.
 
 ## 6. Bilingual parity (NFR-11, writing-flow section 6)
 

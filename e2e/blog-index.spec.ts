@@ -2,18 +2,29 @@ import { test, expect } from '@playwright/test';
 
 // S2 — Article index. Selectors use CLASSES (language-robust). Forward-referenced
 // links (article <slug> pages → task 8, tag <slug> pages → task 9) are asserted by
-// href and NEVER clicked — same convention as e2e/shell.spec.ts. Navigation stays
-// within task-7 routes (/fr/blog/ ⇄ /fr/blog/2/, /en/blog/), which exist.
+// href and NEVER clicked — same convention as e2e/shell.spec.ts.
+//
+// The index is now a SINGLE page that renders ALL published articles grouped by the
+// 3-way `category` taxonomy (Essays / Explainers / Briefings), one <section> + <h2>
+// per non-empty category, in CATEGORY_ORDER. Pagination was removed (category groups
+// don't compose with page boundaries), so `/blog/2/` no longer exists. The 8 seed
+// articles all default to `explainers`, so today the index shows ONE section
+// ("Explainers" / "Décryptages") with all 8 rows.
 
 test.describe('S2 list renders', () => {
-  test('FR: newest-first, 5 items, per-item meta/dek/title-link', async ({
+  test('FR: newest-first, all 8 items grouped by category, per-item meta/dek/title-link', async ({
     page,
   }) => {
     await page.goto('/fr/blog/');
     await expect(page.locator('h1')).toHaveText('Articles');
 
+    // Category section heading (vocab label, FR). The seed corpus is all-explainers.
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'Décryptages' })
+    ).toBeVisible();
+
     const rows = page.locator('article.rc-arow');
-    await expect(rows).toHaveCount(5);
+    await expect(rows).toHaveCount(8);
 
     // newest-first: the 30-05-2026 post leads
     const firstTitle = rows.first().locator('.rc-arow__title a');
@@ -29,12 +40,16 @@ test.describe('S2 list renders', () => {
     await expect(first.locator('.rc-arow__dek')).toBeVisible();
   });
 
-  test('EN: parallel list, English titles, /en/ title-link hrefs', async ({
+  test('EN: parallel list, English titles, /en/ title-link hrefs, category heading', async ({
     page,
   }) => {
     await page.goto('/en/blog/');
     await expect(page.locator('h1')).toHaveText('Articles');
-    await expect(page.locator('article.rc-arow')).toHaveCount(5);
+    // Category section heading (vocab label, EN).
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'Explainers' })
+    ).toBeVisible();
+    await expect(page.locator('article.rc-arow')).toHaveCount(8);
     await expect(
       page.locator('article.rc-arow .rc-arow__title a').first()
     ).toHaveAttribute('href', /^\/en\/blog\/.+\/$/);
@@ -44,51 +59,41 @@ test.describe('S2 list renders', () => {
   });
 });
 
-test.describe('pagination', () => {
-  test('FR: page-2 link, disabled edges, disjoint pages union to 8', async ({
+test.describe('category grouping (single page, no pagination)', () => {
+  test('FR: all 8 published posts on one page, no pager, no duplicates', async ({
     page,
   }) => {
     await page.goto('/fr/blog/');
 
-    const pager = page.locator('nav.rc-pager');
-    await expect(pager).toBeVisible();
-    // numbered page-2 link (distinct from the "next" edge that shares the href)
-    await expect(
-      pager.locator('a.rc-pager__btn:not(.rc-pager__edge)[href="/fr/blog/2/"]')
-    ).toHaveCount(1);
-    // prev edge disabled on page 1 → a <span>, never a dead <a>
-    await expect(
-      pager.locator('span.rc-pager__edge[aria-disabled="true"]')
-    ).toHaveCount(1);
-    await expect(pager.locator('a.rc-pager__edge')).toHaveCount(1); // only "next" is a link
+    // No pagination control any more — the single page carries every published post.
+    await expect(page.locator('nav.rc-pager')).toHaveCount(0);
 
-    const titlesP1 = (
+    const titles = (
       await page.locator('article.rc-arow .rc-arow__title a').allInnerTexts()
     ).map((t) => t.trim());
-    expect(titlesP1).toHaveLength(5);
+    expect(titles).toHaveLength(8);
+    // No article is rendered twice across the grouped sections.
+    expect(new Set(titles).size).toBe(8);
 
-    await page.goto('/fr/blog/2/');
-    await expect(page.locator('article.rc-arow')).toHaveCount(3);
-    // next edge disabled on the last page; numbered page-1 link points home to /fr/blog/
-    await expect(
-      page.locator('nav.rc-pager span.rc-pager__edge[aria-disabled="true"]')
-    ).toHaveCount(1);
-    await expect(
-      page.locator(
-        'nav.rc-pager a.rc-pager__btn:not(.rc-pager__edge)[href="/fr/blog/"]'
-      )
-    ).toHaveCount(1);
+    // The count meta reflects the full corpus, not a page slice.
+    await expect(page.locator('.rc-pagehd__meta')).toContainText('8');
+  });
 
-    const titlesP2 = (
-      await page.locator('article.rc-arow .rc-arow__title a').allInnerTexts()
-    ).map((t) => t.trim());
-    expect(titlesP2).toHaveLength(3);
-
-    // p1 and p2 are disjoint and together cover the 8 published posts
-    const set1 = new Set(titlesP1);
-    const set2 = new Set(titlesP2);
-    for (const t of set2) expect(set1.has(t)).toBe(false);
-    expect(new Set([...set1, ...set2]).size).toBe(8);
+  test('headings precede their rows in CATEGORY_ORDER (essays → explainers → briefings)', async ({
+    page,
+  }) => {
+    await page.goto('/en/blog/');
+    // Each category <section> is a region named by its <h2>; the first article row
+    // appears AFTER the (single, seed-corpus) "Explainers" heading in DOM order.
+    const headingThenRow = await page.evaluate(() => {
+      const h2 = document.querySelector('.rc-catsec__title');
+      const row = document.querySelector('article.rc-arow');
+      if (!h2 || !row) return false;
+      return Boolean(
+        h2.compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING
+      );
+    });
+    expect(headingThenRow).toBe(true);
   });
 });
 

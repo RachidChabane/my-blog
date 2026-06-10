@@ -27,6 +27,7 @@ import {
   readingLabel,
   excerpt,
   tagLabel,
+  categoryLabel,
 } from '@/lib/content';
 import type { PrevNextNav, SourceView } from '@/lib/content';
 import Base from '@/layouts/Base.astro';
@@ -38,12 +39,18 @@ import ProvenanceSidenotes from '@/components/ProvenanceSidenotes.astro';
 import type { ProvenanceCitation } from '@/lib/avatar/sidenotes';
 
 export const getStaticPaths = (async () => {
-  const [articles, tagEntries, provenance] = await Promise.all([
-    getCollection('articles'),
-    getCollection('tags'),
-    getCollection('provenance'),
-  ]);
+  const [articles, tagEntries, provenance, categoryEntries] = await Promise.all(
+    [
+      getCollection('articles'),
+      getCollection('tags'),
+      getCollection('provenance'),
+      getCollection('categories'),
+    ]
+  );
   const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
+  const categories = categoryEntries.map(
+    (c: CollectionEntry<'categories'>) => c.data
+  );
   return LOCALES.flatMap((lang) =>
     getPublishedArticles(articles, lang).map((entry) => {
       const prov = provenance.find(
@@ -58,6 +65,7 @@ export const getStaticPaths = (async () => {
           sources: toSourceViews(entry.data.sources),
           prevNext: getPrevNextByTag(articles, entry, lang, tags),
           slugMap: buildSlugMap(articles, entry.data.translationKey),
+          categoryName: categoryLabel(entry.data.category, lang, categories),
           metaTags: entry.data.tags.map((t) => tagLabel(t, lang, tags)),
           provenanceCitations: prov?.data.citations ?? [],
         },
@@ -72,6 +80,7 @@ const {
   sources,
   prevNext,
   slugMap,
+  categoryName,
   metaTags,
   provenanceCitations,
 } = Astro.props as {
@@ -80,6 +89,7 @@ const {
   sources: SourceView[];
   prevNext: PrevNextNav;
   slugMap: Partial<Record<Locale, string>>;
+  categoryName: string;
   metaTags: string[];
   provenanceCitations: ProvenanceCitation[];
 };
@@ -87,7 +97,9 @@ const {
 const s = articleDetailStrings(lang);
 const { Content } = await render(entry); // ← the load-bearing call (plan G1)
 const dek = excerpt(entry.body);
-const eyebrow = `${metaTags[0]} · ${s.maintained}`;
+// Eyebrow leads with the localized CATEGORY (the 3-way taxonomy), then the first
+// tag, then the agent-maintained tail. `·` is typographic punctuation (INV-9 safe).
+const eyebrow = `${categoryName} · ${metaTags[0]} · ${s.maintained}`;
 const askSeed = s.askSeed.replace('{topic}', metaTags[0]);
 const hasBoth = Boolean(slugMap.fr && slugMap.en);
 const metaItems = [

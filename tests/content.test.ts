@@ -70,6 +70,7 @@ function entry(
       title: 'T',
       publishDate: '01-01-2026',
       tags: ['agents'],
+      category: 'explainers',
       sources: [
         { label: 'a', url: 'https://a.example', date: '01-01-2024' },
         { label: 'b', url: 'https://b.example', date: '01-01-2024' },

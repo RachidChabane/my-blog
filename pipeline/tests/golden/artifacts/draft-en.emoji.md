@@ -3,6 +3,7 @@ lang: en
 translationKey: agentic-coding-harness-eval
 slug: agentic-coding-harness-eval
 title: Evaluating agentic coding harnesses
+category: explainers
 tags:
   - agentic
   - evaluation

@@ -103,6 +103,16 @@ def test_translation_key_parity_enforced():
     assert any("translationkey" in p.lower() for p in problems)
 
 
+def test_category_parity_enforced():
+    fr = _fixture_text("draft-fr.valid.md")
+    # both valid categories, but DIFFERENT -> fr/en would land in different buckets
+    en = _fixture_text("draft-en.valid.md").replace(
+        "category: explainers", "category: essays", 1
+    )
+    problems = validate_draft_pair(fr, en)
+    assert any("category" in p.lower() and "parity" in p.lower() for p in problems)
+
+
 def test_leading_fence_not_confused_by_body_rule():
     doc = DraftDoc.parse(_fixture_text("draft-en.valid.md"))
     # frontmatter parsed from the LEADING fence only

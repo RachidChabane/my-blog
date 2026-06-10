@@ -26,7 +26,11 @@ import yaml
 
 from ..contracts.claim_source_map import ClaimSourceMap, ContractError
 
-REQUIRED_FRONTMATTER = ("lang", "translationKey", "slug", "title", "tags")
+REQUIRED_FRONTMATTER = ("lang", "translationKey", "slug", "title", "tags", "category")
+
+# The 3-way article taxonomy (single-valued `category` field, distinct from free-form
+# `tags`). Display/grouping order: essays, then explainers, then briefings.
+VALID_CATEGORIES = ("essays", "explainers", "briefings")
 
 # Leading frontmatter fence only: anchored at start, non-greedy body so the FIRST
 # closing `---` line ends it (markdown bodies contain `---` rules). A deliberate small
@@ -67,6 +71,7 @@ class DraftDoc:
     title: str
     tags: list[str]
     body: str
+    category: str = ""
 
     def validate(self) -> list[str]:
         """Return structural problems (empty == valid)."""
@@ -87,6 +92,10 @@ class DraftDoc:
                     problems.append(f"tags[{i}] must be a non-empty string")
         if not self.body.strip():
             problems.append("body must be non-empty")
+        if self.category not in VALID_CATEGORIES:
+            problems.append(
+                f"category must be one of {list(VALID_CATEGORIES)} (got {self.category!r})"
+            )
         return problems
 
     @classmethod
@@ -101,6 +110,7 @@ class DraftDoc:
             title=_str_field(fm.get("title")),
             tags=tags if isinstance(tags, list) else [],
             body=_strip_frontmatter(text),
+            category=_str_field(fm.get("category")),
         )
 
 
@@ -123,6 +133,12 @@ def validate_draft_pair(fr_text: str, en_text: str) -> list[str]:
         problems.append(
             "translationKey parity (NFR-11): fr "
             f"{fr.translation_key!r} != en {en.translation_key!r}"
+        )
+    if fr.category != en.category:
+        problems.append(
+            "category parity: fr "
+            f"{fr.category!r} != en {en.category!r} "
+            "(fr/en are the same article and must share one category bucket)"
         )
     return problems
 
@@ -187,6 +203,7 @@ if __name__ == "__main__":
 
 __all__ = [
     "REQUIRED_FRONTMATTER",
+    "VALID_CATEGORIES",
     "DraftDoc",
     "validate_draft_pair",
     "validate_draft_run",

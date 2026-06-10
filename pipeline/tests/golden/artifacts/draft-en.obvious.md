@@ -3,6 +3,7 @@ lang: en
 translationKey: ai-changing-software-engineering
 slug: ai-changing-software-engineering
 title: How AI Is Changing Software Engineering
+category: explainers
 tags:
   - ai
   - software-engineering

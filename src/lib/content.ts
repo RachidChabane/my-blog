@@ -19,6 +19,7 @@ import type {
   ArticleFrontmatter,
   ProjectFrontmatter,
   Tag,
+  Category,
 } from '@/content/schemas';
 
 /** 8 seeds → pages of 5 + 3 (exercises pagination); reused by task 9. */
@@ -55,6 +56,7 @@ export interface ArticleCard {
   dek: string;
   dateDisplay: string; // DD-MM-YYYY (already stored that way)
   readingLabel: string; // "N min"
+  category: ArticleFrontmatter['category']; // 'essays' | 'explainers' | 'briefings' (schema default applied)
   tags: { slug: string; label: string; href: string }[]; // href → /<lang>/tags/<slug>/
 }
 
@@ -159,6 +161,15 @@ export function tagLabel(slug: string, lang: Locale, tags: Tag[]): string {
   return tags.find((t) => t.slug === slug)?.label[lang] ?? slug;
 }
 
+/** Localized category label with a slug fallback so a missing vocab entry never breaks render. */
+export function categoryLabel(
+  slug: string,
+  lang: Locale,
+  categories: Category[]
+): string {
+  return categories.find((c) => c.slug === slug)?.label[lang] ?? slug;
+}
+
 /** Assemble the list-item view-model for one entry. */
 export function toArticleCard(
   entry: ArticleEntryLike,
@@ -174,6 +185,7 @@ export function toArticleCard(
     dek: excerpt(entry.body),
     dateDisplay: publishDate,
     readingLabel: readingLabel(entry.body),
+    category: entry.data.category,
     tags: entry.data.tags.map((s) => ({
       slug: s,
       label: tagLabel(s, lang, tags),
@@ -371,6 +383,49 @@ export function getArticlesByTag(
   return getPublishedArticles(entries, lang).filter((e) =>
     e.data.tags.includes(slug)
   );
+}
+
+/* ------------------------------------------------ Category grouping (blog index) */
+
+/**
+ * Display/grouping order of the 3-way `category` taxonomy. `category` is a closed
+ * `z.enum`, so every article value is guaranteed to be one of these — there are no
+ * "extras" to append (unlike free-form tags). Order is fixed by the design.
+ */
+export const CATEGORY_ORDER = ['essays', 'explainers', 'briefings'] as const;
+
+/** One category section on the blog index: the slug + its published articles (raw entries). */
+export interface CategoryGroup {
+  category: string;
+  articles: ArticleEntryLike[]; // same item type getPublishedArticles returns
+}
+
+/**
+ * Group `lang`'s published articles by `category`, in CATEGORY_ORDER. Each group's
+ * articles inherit getPublishedArticles' ordering (newest-first, slug tiebreak) and
+ * its published+lang filter. The schema's `.default('explainers')` already populated
+ * `e.data.category`, so no fallback is needed here. Empty categories are OMITTED, so
+ * the index never renders a heading with no posts. Returns raw entries; the route
+ * maps each through toArticleCard.
+ */
+export function getArticlesByCategory(
+  entries: ArticleEntryLike[],
+  lang: Locale
+): CategoryGroup[] {
+  const published = getPublishedArticles(entries, lang); // filtered + newest-first
+  const buckets = new Map<string, ArticleEntryLike[]>();
+  for (const e of published) {
+    const cat = e.data.category;
+    const list = buckets.get(cat);
+    if (list) list.push(e);
+    else buckets.set(cat, [e]);
+  }
+  const out: CategoryGroup[] = [];
+  for (const category of CATEGORY_ORDER) {
+    const articles = buckets.get(category);
+    if (articles && articles.length > 0) out.push({ category, articles });
+  }
+  return out;
 }
 
 /**

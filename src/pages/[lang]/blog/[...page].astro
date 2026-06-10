@@ -1,55 +1,82 @@
 ---
 /**
- * S2 — Article index. `/[lang]/blog/` (page 1) + `/[lang]/blog/2/`, … via Astro's
- * paginate() on a `[...page]` rest route (plan decision #2): idiomatic, SEO/deep-
- * linkable, no client JS. The rest route is required — a rest segment cannot be
- * named index.astro, and `[page].astro` (single segment) would collide with task
- * 8's `[slug].astro`; `[...page]` only risks a slug literally named "2".
+ * S2 — Article index. `/[lang]/blog/` on a `[...page]` rest route. The route was
+ * historically paginated (`/[lang]/blog/2/`, …); it now renders ALL published
+ * articles on a SINGLE page, GROUPED BY the 3-way `category` taxonomy (Essays,
+ * Explainers, Briefings — fixed CATEGORY_ORDER). Category sections do not compose
+ * with pagination (a category would otherwise split across a page boundary, with a
+ * duplicate heading), so paginate() was dropped: getStaticPaths now emits one path
+ * per locale (`{ page: undefined }`), keeping `[...page].astro` valid for both
+ * /fr/blog/ and /en/blog/. The rest route is still required — a rest segment cannot
+ * be index.astro, and `[page].astro` would collide with task 8's `[slug].astro`.
  *
- * View-models + ordering come from src/lib/content.ts; copy from src/i18n/ui.ts;
- * chrome (masthead/footer/avatar/skip-link) from Base. No slugMap → the language
- * switcher falls back to the localized home (plan decision #6; NFR-11 holds since
- * both /fr/blog/ and /en/blog/ exist).
+ * View-models + ordering come from src/lib/content.ts (getArticlesByCategory does
+ * the published+lang filter and newest-first sort; the route maps each raw entry
+ * through toArticleCard and resolves the localized category label). Copy from
+ * src/i18n/ui.ts; chrome (masthead/footer/avatar/skip-link) from Base. No slugMap →
+ * the language switcher falls back to the localized home (plan decision #6; NFR-11
+ * holds since both /fr/blog/ and /en/blog/ exist).
+ *
+ * LANDMARK SAFETY: category groups are `<section aria-labelledby>` + `<h2>` only —
+ * no new <header>/<nav>/<form>/<main>/<footer>. A named <section> is a `region`,
+ * which the landmark-scoped a11y specs do not count (banner/main/contentinfo/nav).
  */
-import type { GetStaticPaths, Page } from 'astro';
+import type { GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { LOCALES, localePath } from '@/i18n/index';
 import type { Locale } from '@/i18n/index';
 import { articleIndexStrings } from '@/i18n/ui';
 import {
-  ARTICLES_PER_PAGE,
-  getPublishedArticles,
+  getArticlesByCategory,
   toArticleCard,
+  categoryLabel,
   tagRail,
 } from '@/lib/content';
 import type { ArticleCard, RailTag } from '@/lib/content';
 import Base from '@/layouts/Base.astro';
 import ArticleListItem from '@/components/ArticleListItem.astro';
 import TagChips from '@/components/TagChips.astro';
-import Pagination from '@/components/Pagination.astro';
 
-export const getStaticPaths = (async ({ paginate }) => {
-  const [articles, tagEntries] = await Promise.all([
+/** One category section's rendered view-data: localized heading + its cards. */
+interface CategorySection {
+  category: string; // slug — feeds the stable section/heading id
+  label: string; // localized category label (from the categories vocab)
+  cards: ArticleCard[];
+}
+
+export const getStaticPaths = (async () => {
+  const [articles, tagEntries, categoryEntries] = await Promise.all([
     getCollection('articles'),
     getCollection('tags'),
+    getCollection('categories'),
   ]);
   const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
-  return LOCALES.flatMap((lang) => {
-    const cards = getPublishedArticles(articles, lang).map((e) =>
-      toArticleCard(e, lang, tags)
-    );
-    return paginate(cards, {
-      params: { lang },
-      props: { lang, rail: tagRail(tags, lang) },
-      pageSize: ARTICLES_PER_PAGE,
-    });
+  const categories = categoryEntries.map(
+    (c: CollectionEntry<'categories'>) => c.data
+  );
+  return LOCALES.map((lang) => {
+    const sections: CategorySection[] = getArticlesByCategory(
+      articles,
+      lang
+    ).map((group) => ({
+      category: group.category,
+      label: categoryLabel(group.category, lang, categories),
+      cards: group.articles.map((e) => toArticleCard(e, lang, tags)),
+    }));
+    const total = sections.reduce((n, s) => n + s.cards.length, 0);
+    // `page: undefined` ⇒ the rest route emits the base path (/<lang>/blog/) only.
+    return {
+      params: { lang, page: undefined },
+      props: { lang, sections, total, rail: tagRail(tags, lang) },
+    };
   });
 }) satisfies GetStaticPaths;
 
-const { page, lang, rail } = Astro.props as {
-  page: Page<ArticleCard>;
+const { lang, sections, total, rail } = Astro.props as {
   lang: Locale;
+  sections: CategorySection[];
+  total: number;
   rail: RailTag[];
 };
 const s = articleIndexStrings(lang);
@@ -62,7 +89,7 @@ const title = `${s.title} — rachid chabane`;
     <header class="rc-pagehd">
       <span class="t-eyebrow">{s.eyebrow}</span>
       <h1 class="rc-pagehd__title">{s.title}</h1>
-      <span class="rc-pagehd__meta">{page.total} {s.countSuffix}</span>
+      <span class="rc-pagehd__meta">{total} {s.countSuffix}</span>
     </header>
 
     <div class="rc-filterbar">
@@ -76,27 +103,26 @@ const title = `${s.title} — rachid chabane`;
     </div>
 
     {
-      page.data.length > 0 ? (
-        <div class="rc-arows">
-          {page.data.map((card) => (
-            <ArticleListItem card={card} readCta={s.readCta} />
-          ))}
-        </div>
+      sections.length > 0 ? (
+        sections.map((section) => (
+          <section
+            class="rc-catsec"
+            aria-labelledby={`rc-cat-${section.category}`}
+          >
+            <h2 class="rc-catsec__title" id={`rc-cat-${section.category}`}>
+              {section.label}
+            </h2>
+            <div class="rc-arows">
+              {section.cards.map((card) => (
+                <ArticleListItem card={card} readCta={s.readCta} />
+              ))}
+            </div>
+          </section>
+        ))
       ) : (
         <p class="rc-empty-note">{s.empty}</p>
       )
     }
-
-    <Pagination
-      currentPage={page.currentPage}
-      lastPage={page.lastPage}
-      baseUrl={blogBase}
-      prevUrl={page.url.prev}
-      nextUrl={page.url.next}
-      prevLabel={s.prev}
-      nextLabel={s.next}
-      ariaLabel={s.pagerAria}
-    />
   </div>
 </Base>
 
@@ -150,6 +176,23 @@ const title = `${s.title} — rachid chabane`;
     flex-wrap: wrap;
     border-bottom: 1px solid var(--hairline);
     padding-bottom: 22px;
+  }
+
+  /* Category section: the localized <h2> heading + its article rows. The gap on
+     .rc-index already spaces sections; the heading sits flush above its rows. */
+  .rc-catsec {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .rc-catsec__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: var(--text-h2);
+    line-height: 1.15;
+    letter-spacing: var(--tracking-tight);
+    color: var(--fg);
   }
 
   .rc-arows {

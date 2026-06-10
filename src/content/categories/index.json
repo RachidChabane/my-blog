@@ -1,0 +1,17 @@
+[
+  {
+    "id": "essays",
+    "slug": "essays",
+    "label": { "fr": "Essais", "en": "Essays" }
+  },
+  {
+    "id": "explainers",
+    "slug": "explainers",
+    "label": { "fr": "Décryptages", "en": "Explainers" }
+  },
+  {
+    "id": "briefings",
+    "slug": "briefings",
+    "label": { "fr": "Brèves", "en": "Briefings" }
+  }
+]
