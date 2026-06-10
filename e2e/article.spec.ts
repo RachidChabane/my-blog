@@ -52,17 +52,22 @@ test.describe('sources resolve and open out', () => {
 });
 
 test.describe('prev / next by shared tag', () => {
-  test('EN: one prev card (RAG tag-mate), no next', async ({ page }) => {
+  test('EN: prev + next cards, each a shared-tag neighbour', async ({
+    page,
+  }) => {
     await page.goto(EN);
 
     await expect(page.locator('nav.rc-pn')).toBeVisible();
-    // nearest older RAG-mate (skips non-sharers) — deterministic for this post.
+    // nearest OLDER shared-tag post (shares `retrieval`; skips non-sharers).
     await expect(page.locator('a.rc-pn__card--prev')).toHaveAttribute(
       'href',
-      '/en/blog/indexing-code-ast-retrieval/'
+      '/en/blog/serving-oss-llm-production/'
     );
-    // the only newer post shares no tag → no next card.
-    await expect(page.locator('a.rc-pn__card--next')).toHaveCount(0);
+    // nearest NEWER shared-tag post (the context-budget briefing shares `retrieval`).
+    await expect(page.locator('a.rc-pn__card--next')).toHaveAttribute(
+      'href',
+      '/en/blog/your-context-window-is-a-ceiling/'
+    );
   });
 });
 

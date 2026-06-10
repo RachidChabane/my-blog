@@ -103,5 +103,117 @@
     ],
     "published_at": "2026-06-10",
     "embedding": null
+  },
+  {
+    "translation_key": "ast-code-chunking",
+    "topic_id": "ast-code-chunking",
+    "dedup_key": "ast structure aware code chunking versus fixed size and sliding window for retrieval augmented code generation",
+    "title": "Chunk on the Syntax Tree, or Don't Bother? What the Benchmarks Say",
+    "slugs": {
+      "fr": "decouper-sur-larbre-syntaxique",
+      "en": "chunk-on-the-syntax-tree-or-not"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "cAST: Enhancing Code RAG with Structural Chunking via Abstract Syntax Tree (Zhang et al., EMNLP 2025 Findings)",
+        "url": "https://arxiv.org/abs/2506.15655",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "This approach generates self-contained, semantically coherent units across programming languages and tasks, improving performance on diverse code generation tasks, e.g., boosting Recall@5 by 4.3 points on RepoEval retrieval and Pass@1 by 2.67 points on SWE-bench generation."
+      },
+      {
+        "source_id": "s2",
+        "label": "How Does Chunking Affect Retrieval-Augmented Code Completion? A Controlled Empirical Study (Wu, Gong, Jahangirova, Zhang, 2026)",
+        "url": "https://arxiv.org/abs/2605.04763",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "Contrary to intuition, chunking based on functions underperforms all other strategies by 3.57--5.64 percentage points on RepoEval (Cliff's delta = -1.0), while the remaining chunking strategies perform comparably. We also find that cross-file context length is the dominant parameter: doubling from 2,048 to 8,192 tokens yields up to 4.2 percentage points of improvement, whereas chunk size has a weaker, non-monotonic effect. On the cost--quality Pareto front, Sliding Window and cAST dominate both benchmarks; Function chunking is never Pareto-optimal."
+      },
+      {
+        "source_id": "s3",
+        "label": "CodeRAG-Bench: Can Retrieval Augment Code Generation? (Wang et al., NAACL 2025 Findings)",
+        "url": "https://arxiv.org/abs/2406.14497",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "Notably, GPT-4o shows a 27.4% increase when using gold documents on SWE-bench, indicating that retrieval significantly enhances performance when paired with strong core generation capabilities, even in highly challenging coding tasks. All models show gains of 7.5-17.2 points with canonical snippets in RepoEval."
+      },
+      {
+        "source_id": "s4",
+        "label": "CodeXEmbed: A Generalist Embedding Model Family for Multilingual and Multi-task Code Retrieval (Liu et al.)",
+        "url": "https://arxiv.org/abs/2411.12644",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "When averaged over all 10 datasets in the CoIR benchmark, CodeXEmbed7B model achieves the best results, exceeding the SOTA code-domain specific model Voyage-Code-002 by over 20%."
+      },
+      {
+        "source_id": "s5",
+        "label": "Tree-sitter, official documentation (Introduction)",
+        "url": "https://tree-sitter.github.io/tree-sitter/",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "Tree-sitter is a parser generator tool and an incremental parsing library. It can build a concrete syntax tree for a source file and efficiently update the syntax tree as the source file is edited."
+      },
+      {
+        "source_id": "s6",
+        "label": "RepoCoder: Repository-Level Code Completion Through Iterative Retrieval and Generation (Zhang et al., EMNLP 2023), origin of RepoEval",
+        "url": "https://arxiv.org/abs/2303.12570",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "Experimental results indicate that RepoCoder significantly improves the In-File completion baseline by over 10% in all settings and consistently outperforms the vanilla retrieval-augmented code completion approach."
+      }
+    ],
+    "published_at": "2026-06-10",
+    "embedding": null
+  },
+  {
+    "translation_key": "context-budget",
+    "topic_id": "context-budget-not-window",
+    "dedup_key": "advertised context window is a marketing ceiling not a usable budget long context degrades before it fills as caching made overfilling cheap",
+    "title": "Your Context Window Is a Ceiling, Not a Budget",
+    "slugs": {
+      "fr": "votre-fenetre-de-contexte-est-un-plafond",
+      "en": "your-context-window-is-a-ceiling"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "NoLiMa: Long-Context Evaluation Beyond Literal Matching (Modarressi et al., ICML 2025)",
+        "url": "https://arxiv.org/abs/2502.05167",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "At 32K, for instance, 11 models drop below 50% of their strong short-length baselines. Even GPT-4o, one of the top-performing exceptions, experiences a reduction from an almost-perfect baseline of 99.3% to 69.7%."
+      },
+      {
+        "source_id": "s2",
+        "label": "RULER: What's the Real Context Size of Your Long-Context Language Models? (Hsieh et al.)",
+        "url": "https://arxiv.org/abs/2404.06654",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "While these models all claim context sizes of 32K tokens or greater, only four models (GPT-4, Command-R, Yi-34B, and Mixtral) can maintain satisfactory performance at the length of 32K."
+      },
+      {
+        "source_id": "s3",
+        "label": "Lost in the Middle: How Language Models Use Long Contexts (Liu et al., TACL 2024)",
+        "url": "https://aclanthology.org/2024.tacl-1.9/",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "In particular, we observe that performance is often highest when relevant information occurs at the beginning or end of the input context, and significantly degrades when models must access relevant information in the middle of long contexts, even for explicitly long-context models."
+      },
+      {
+        "source_id": "s4",
+        "label": "Context Rot: How Increasing Input Tokens Impacts LLM Performance (Chroma Research, July 2025)",
+        "url": "https://www.trychroma.com/research/context-rot",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "In this report, we evaluate 18 LLMs, including the state-of-the-art GPT-4.1, Claude 4, Gemini 2.5, and Qwen3 models."
+      },
+      {
+        "source_id": "s5",
+        "label": "Prompt caching with Claude (Anthropic, August 2025)",
+        "url": "https://claude.com/blog/prompt-caching",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "reducing costs by up to 90% and latency by up to 85% for long prompts. Writing to the cache costs 25% more than our base input token price for any given model, while using cached content is significantly cheaper, costing only 10% of the base input token price."
+      },
+      {
+        "source_id": "s6",
+        "label": "Gemini 2.5 models now support implicit caching (Google Developers Blog, May 2025)",
+        "url": "https://developers.googleblog.com/gemini-2-5-models-now-support-implicit-caching/",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "We will dynamically pass cost savings back to you, providing the same 75% token discount."
+      }
+    ],
+    "published_at": "2026-06-10",
+    "embedding": null
   }
 ]
