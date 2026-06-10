@@ -42,12 +42,15 @@ launcher + the scoped per-article button). Done autonomously this bring-up:
    domain — un-migrated records break on cutover); then point the IONOS nameservers at the CF pair.
    Tell me when the zone is Active → I attach the Pages custom domain + DNS record and flip `SITE_URL`
    (build + reseed + GH/Pages) to the apex.
-2. **Pipeline first run (§3 step 5) — owner DECISION, intentionally NOT run.** The owner's in-flight
-   `docs/writing-rigor-handoff-prompt.md` targets the pipeline's argument/source-quality/editorial
-   gaps and says "reconcile with DEPLOY.md §3", so running step 5 now would publish content with
-   prompts under active revision. Options: **(a)** run AFTER the writing-rigor slate lands
-   (recommended); or **(b)** a no-push throwaway run now to de-risk the cpe harness mechanics
-   (findings §3 flagged it as never run green end-to-end) — inspected, then discarded, never promoted.
+2. **Pipeline first run (§3 step 5) — owner DECISION.** The writing-rigor slate
+   (`docs/tasks-writing-rigor.yaml`) is now **complete**, so the "run after the writing-rigor slate lands"
+   path is unblocked. Step 5 now **gates the first push-enabled run on the golden-set judgment proof (5a)**
+   — the live proof that every gate's *judgment* (not just its fail-closed mechanism) catches a planted
+   defect — and that first run then feeds the **dedup-threshold calibration (5b)** and an optional **live
+   link-reachability pass (5c)**, all before the daily schedule is enabled. It is still owner-gated: it
+   **publishes real content**, and `PIPELINE_GIT_PUSH=1` fires the CI deploy + reindex — so run it
+   **supervised** when ready. (To de-risk the cpe harness mechanics first, a no-push throwaway run —
+   `PIPELINE_GIT_PUSH` unset — is still an option: inspect, then discard.)
 3. **Option 3 embedding map — ready to build (autonomous), greenlight when wanted.** Lowest-value /
    owner-questioned; best timed once the corpus is finalized (auto-updates on reindex). Build plan +
    guardrails (empty-map fallback; emit in the build:index/deploy path, not `reindex.yml`):
@@ -171,9 +174,45 @@ pnpm build && npx wrangler pages deploy dist --project-name=my-blog --branch=mai
 #        floor and the off-topic ceiling. Confirm off-topic -> honest "I don't know".
 
 # 5. Runner (daily pipeline): on the O5 machine, install deps + cpe + claude(tmux-authed), then:
-export PIPELINE_EMBEDDER=real EMBEDDINGS_API_KEY=$CLOUDFLARE_API_TOKEN PIPELINE_GIT_PUSH=1
+export PIPELINE_EMBEDDER=real EMBEDDINGS_API_KEY=$CLOUDFLARE_API_TOKEN   # (PIPELINE_GIT_PUSH set in 5a-gate below)
 export ALERT_WEBHOOK_URL=...  UPTIME_PING_URL=...      # from O6
-python -m pipeline.schedule.cron run                   # SUPERVISED first live run — verify M-4 gate + provenance
+
+# 5a. GOLDEN-SET JUDGMENT PROOF -- run BEFORE the first push-enabled run and GATE that run on it (the
+#     writing-rigor judgment proof). The semantic gates fail CLOSED on a bad mechanism (proven green in
+#     CI), but their JUDGMENT is unproven until a REAL judge runs -- and this is independent of any
+#     pipeline run (it dispatches judges on the golden BANK fixtures). Dispatch a fresh judge on each
+#     planted defect, drop its output under $GOLDEN_LIVE_DIR/<entry-id>/<produces>, then:
+GOLDEN_LIVE=1 GOLDEN_LIVE_DIR=/path/to/judge-outputs pytest -q pipeline/tests/test_golden.py
+#     Confirm EVERY gate blocks its defect. The SIX judge-gates a fresh judge is dispatched on: factcheck,
+#     style, argument-rigor, editorial-quality, source-quality, source-independence. (grounding dead-link
+#     and style-emoji carry live:None -- they are proven by the DETERMINISTIC layer in this SAME pytest
+#     invocation, not by a judge dispatch; the whole-file run still confirms the dead-link block.)
+#     Do NOT enable PIPELINE_GIT_PUSH or the schedule until this is green.
+#     CADENCE-SAFETY: argument-rigor's strictness gates cadence -- an over-aggressive thesis judge can
+#     exhaust the fallback shortlist (writing-flow.md section 7). Treat its calibration as cadence-safety.
+
+# --- 5a green: only NOW enable push, for the first real auto-publish ---
+export PIPELINE_GIT_PUSH=1
+python -m pipeline.schedule.cron run                   # SUPERVISED first live run -- verify M-4 gate + provenance
+
+# 5b. DEDUP-THRESHOLD (OQ-8) CALIBRATION -- runs AFTER the run (it reads the run's output); analogous to the
+#     avatar gate's 4b. DEDUP_SIMILARITY_THRESHOLD (=0.82) is a FAKE-tuned placeholder: a module CONSTANT in
+#     pipeline/stages/select.py:37, NOT an env var. The run above already wrote plans/task-select/dedup.json
+#     with the per-candidate cosine scores vs prior posts. Read those, set the cut-point BETWEEN the
+#     too-similar floor and the distinct-enough ceiling, then re-run dedup with the candidate cut-point:
+#       python3 -m pipeline.stages.select dedup --run-dir <run> --threshold <v>
+#     or update the constant. (5b stays after the run by necessity -- `select dedup` needs a --run-dir to
+#     read -- and it is a dedup/topic-selection DIAL, not a publish-safety gate: a wrong cut-point only
+#     changes which NEXT topic is judged too-similar, never whether bad content publishes. Calibrating it
+#     from the first run's real scores for SUBSEQUENT runs is sufficient.)
+
+# 5c. LIVE LINK-REACHABILITY (optional, after the run) -- task 7 implemented the real checker behind the
+#     seam. CI keeps the default `--link-check fake`; do ONE supervised real pass over the run's article's
+#     cited URLs:
+#       python3 -m pipeline.gate.grounding --run-dir <run> --lang en --link-check real
+#     Optional because research captures excerpts up front (writing-flow.md section 4), so a live re-fetch
+#     is a FALLBACK, not the primary provenance mechanism.
+
 #   then install the schedule: `python -m pipeline.schedule.cron render --resolve | crontab -`
 #   force one failure to confirm alerts fire.
 ```
@@ -221,3 +260,5 @@ execute --remote`): the NDJSON/SQL generation is tested; the wrangler invocation
 | `PIPELINE_GIT_PUSH`     | runner deploy-on-success                                                | `1`                                |
 | `ALERT_WEBHOOK_URL`     | `WebhookAlertSink`                                                      | O6                                 |
 | `UPTIME_PING_URL`       | external dead-man's-switch                                              | O6 (optional)                      |
+| `GOLDEN_LIVE`           | golden-set judgment proof (bring-up, test-only)                         | `1` to run the live judge proof (default unset = skip) |
+| `GOLDEN_LIVE_DIR`       | golden-set judgment proof — dir of real-judge outputs                   | path to `<entry-id>/<produces>` files (bring-up)       |
