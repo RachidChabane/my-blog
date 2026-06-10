@@ -417,7 +417,8 @@ def test_apply_fallback_retry(tmp_path):
     )
     stale = _make_draft_run(
         run_dir,
-        {"claim_source_map.json": "{stale}", "editorial.json": '{"verdict":"thin"}'},
+        {"claim_source_map.json": "{stale}", "editorial.json": '{"verdict":"thin"}',
+         "source_quality.json": '{"verdict":"unsound"}'},
     )
     # a SURVIVING argument.json + a 'done' argue state from the KILLED topic: the re-driven
     # draft must NOT consume the killed topic's strengthened_argument (the bug task 3 fixes).
@@ -445,6 +446,8 @@ def test_apply_fallback_retry(tmp_path):
     assert not (stale / "plans" / "task-draft" / "claim_source_map.json").exists()
     # task 4: stale G3 editorial findings cleared too -- a re-draft must re-dispatch the judge
     assert not (run_dir / "plans" / "task-draft" / "editorial.json").exists()
+    # task 5: stale G2 source-quality findings cleared too (same re-dispatch rationale)
+    assert not (run_dir / "plans" / "task-draft" / "source_quality.json").exists()
     assert not (run_dir / "plans" / "ALERT.json").exists()
     # MUST-KEEP (review-1 C1): the SOLE guard for argue-reset-on-blocked-draft. Without the
     # _STALE_ARGUE_ARTIFACTS clear, a re-driven fallback draft silently consumes the KILLED

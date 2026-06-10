@@ -40,6 +40,7 @@ _STALE_DRAFT_ARTIFACTS = (
     "style-fr.json",
     "style-en.json",
     "editorial.json",  # task 4: G3 editorial findings -- a re-draft must re-dispatch the judge
+    "source_quality.json",  # task 5: G2 source-quality findings -- re-draft must re-dispatch
     "review.json",
 )
 
