@@ -396,3 +396,39 @@ Pages secrets set: `OPENROUTER_API_KEY`, `AVATAR_SIMILARITY_THRESHOLD`. GH Actio
 custom domain `rachid-chabane.com` (owner DNS migration off IONOS) · pipeline first run (owner
 DECISION — reconcile with the in-flight writing-rigor slate, not run) · Option 3 map (ready
 fast-follow). Pipeline NOT run this session by design.
+
+---
+
+## 2026-06-10 22:30 — UI feedback round deploy + SAFETY-CRITICAL gate recalibration
+
+UI feedback round merged to `main` (`b59f63f`): clickable project cards, About profile photo,
+rescaled agent icon, article reading-progress + copy tools, richer project pages with architecture
+diagrams/metrics, and internal codename removal (slugs renamed: `sterna-ai-platform` ->
+`multi-model-ai-platform`, `bayan-rag-platform` -> `arabic-scholarship-rag`, `ijtihad-engine` ->
+`autonomous-research-engine`, plus FR equivalents). CI lint caught a prettier overflow (fixed
+`5533b3b`); deploy then went green.
+
+- **Vectorize orphan-purge fired for real (first live exercise).** The slug renames orphaned 6
+  vectors; `build:index --push` reported `delete-vectors my-blog-avatar (6 orphans)` ->
+  `Successfully enqueued 6 vectors for deletion` (81 upserted). No `WARN: could not read prior D1
+  chunk ids` — the purge read the prior D1 ids cleanly. The avatar can no longer cite a 404'd
+  project URL.
+- **Gate RECALIBRATED — band tracked, drift collapsed (NOT a regression).** First the live gate was
+  checked against the running endpoint (the `done` frame echoes the live threshold): it was at `0.49`
+  and **already SAFE** — gibberish topSim `0.4635` -> idk, cross-lingual FR on-topic `0.5377` ->
+  grounded. The richer project bodies + renamed `arabic-scholarship-rag` slug had shifted the band UP
+  (off-topic ceiling 0.4430 -> **0.4635**, gibberish now top-matching that project chunk; on-topic
+  floor 0.5095 -> **0.5377**; stable across 3 runs). The live `0.49` matched neither the script nor
+  any record (the docs/memory had silently drifted across `0.46`/`0.48`/`0.49`). Reset
+  `AVATAR_SIMILARITY_THRESHOLD` -> **0.508** (the script's lean-safe pick for the new band
+  `(0.4635, 0.5377]`) via `wrangler pages secret put` (production) to recenter and align all three
+  records, then redeployed so the running Function captures it.
+- **Re-verified against the LIVE endpoint post-redeploy:** the `done` frame reads `threshold:0.508`;
+  gibberish -> honest idk; cross-lingual FR on-topic (the 0.5377 floor) -> grounded. The `done`-frame
+  threshold echo is the direct live confirmation (no discriminating probe needed).
+- **Process rule recorded:** this value must be set ONLY from `scripts/calibrate-avatar-gate.ts` and
+  all three records (DEPLOY.md, this log, the `avatar-gate-calibration-fake-tuned` memory) updated in
+  the same commit, or it drifts (as it did to the undocumented `0.49`).
+- **Old codename URLs**: 404 in the new deployment (confirmed via cache-buster), but stale edge-cache
+  200s linger (CF token lacks zone Cache-Purge scope). Owner can purge via the dashboard; they expire
+  on the 7-day s-maxage regardless and nothing links to them.

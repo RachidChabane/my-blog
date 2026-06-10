@@ -20,13 +20,23 @@ launcher + the scoped per-article button). Done autonomously this bring-up:
   30 slugs, FR+EN). Deployed via `wrangler pages deploy`.
 - Secrets: Pages → `OPENROUTER_API_KEY`, `AVATAR_SIMILARITY_THRESHOLD`. GH Actions →
   `CLOUDFLARE_API_TOKEN`, `EMBEDDINGS_API_KEY`, `OPENROUTER_API_KEY`, `SITE_URL`.
-- **Gate calibrated (§3 step 4b, SAFETY-CRITICAL): `AVATAR_SIMILARITY_THRESHOLD = 0.46`**, cosine
-  direction confirmed NOT inverted. Live `done`-frame: on-topic → grounded (topSim 0.77),
-  off-topic → honest idk (0.32). Tool: `scripts/calibrate-avatar-gate.ts` (re-run on every regen).
+- **Gate calibrated (§3 step 4b, SAFETY-CRITICAL): `AVATAR_SIMILARITY_THRESHOLD = 0.508`**, cosine
+  direction confirmed NOT inverted. Tool: `scripts/calibrate-avatar-gate.ts` (re-run on every regen).
+  - **Recalibrated 2026-06-10** after the project-page rework (richer bodies + renamed slugs changed
+    the corpus). The live gate was at `0.49` and **verified SAFE** first (the `done` frame echoes the
+    live threshold): gibberish topSim `0.4635` -> idk, cross-lingual FR on-topic topSim `0.5377` ->
+    grounded. No regression. But the band had shifted UP (off-topic ceiling 0.4430 -> **0.4635**,
+    on-topic floor 0.5095 -> **0.5377**), and `0.49` matched neither the script nor any record (the
+    docs/memory had drifted across `0.46`/`0.48`/`0.49`). Reset to the script's lean-safe pick `0.508`
+    (safe band `(0.4635, 0.5377]`) to recenter on the new band and collapse the drift into the tool's
+    own number. Re-verified live post-redeploy: `done` frame `threshold:0.508`, gibberish -> idk,
+    FR on-topic -> grounded. **Rule: set this ONLY from the script's recommendation, and update all
+    three records (this file, RUN-LOG, the `avatar-gate-calibration-fake-tuned` memory) in the same
+    commit — any project/article slug or body change requires a re-run.**
 - **Scoped per-article gate verified live** (Option 4): scoped to an article + an on-article
-  question → grounds (0.73); scoped to an article + a different corpus topic → honest idk (0.37,
-  vs 0.54 corpus-wide) — the in-scope-`topSimilarity` fix prevents the "pass the gate, nothing in
-  scope" landmine. So 0.46 holds for the user-facing scoped button too.
+  question grounds; scoped to an article + a different corpus topic gives an honest idk. The
+  in-scope-`topSimilarity` fix prevents the "pass the gate, nothing in scope" landmine, and the
+  single shared threshold (now 0.508) governs the user-facing scoped button too.
 - Two live-only runtime bugs fixed (commit `55a99e4`): Workers `fetch.bind(globalThis)`; D1
   `toD1Sql` drops file-level `BEGIN/COMMIT`. See the `avatar-worker-runtime-gotchas` memory.
 - **`SITE_URL` is `https://my-blog-4uk.pages.dev` for the interim** (until the custom domain is on
