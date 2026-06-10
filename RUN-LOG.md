@@ -413,22 +413,28 @@ diagrams/metrics, and internal codename removal (slugs renamed: `sterna-ai-platf
   `Successfully enqueued 6 vectors for deletion` (81 upserted). No `WARN: could not read prior D1
   chunk ids` — the purge read the prior D1 ids cleanly. The avatar can no longer cite a 404'd
   project URL.
-- **Gate RECALIBRATED — band tracked, drift collapsed (NOT a regression).** First the live gate was
-  checked against the running endpoint (the `done` frame echoes the live threshold): it was at `0.49`
-  and **already SAFE** — gibberish topSim `0.4635` -> idk, cross-lingual FR on-topic `0.5377` ->
-  grounded. The richer project bodies + renamed `arabic-scholarship-rag` slug had shifted the band UP
-  (off-topic ceiling 0.4430 -> **0.4635**, gibberish now top-matching that project chunk; on-topic
-  floor 0.5095 -> **0.5377**; stable across 3 runs). The live `0.49` matched neither the script nor
-  any record (the docs/memory had silently drifted across `0.46`/`0.48`/`0.49`). Reset
-  `AVATAR_SIMILARITY_THRESHOLD` -> **0.508** (the script's lean-safe pick for the new band
-  `(0.4635, 0.5377]`) via `wrangler pages secret put` (production) to recenter and align all three
-  records, then redeployed so the running Function captures it.
-- **Re-verified against the LIVE endpoint post-redeploy:** the `done` frame reads `threshold:0.508`;
-  gibberish -> honest idk; cross-lingual FR on-topic (the 0.5377 floor) -> grounded. The `done`-frame
-  threshold echo is the direct live confirmation (no discriminating probe needed).
-- **Process rule recorded:** this value must be set ONLY from `scripts/calibrate-avatar-gate.ts` and
-  all three records (DEPLOY.md, this log, the `avatar-gate-calibration-fake-tuned` memory) updated in
-  the same commit, or it drifts (as it did to the undocumented `0.49`).
+- **Gate checked, briefly raised, then KEPT at 0.49 — the scoped path is the binding constraint.**
+  The live gate was checked against the running endpoint first (the `done` frame echoes the live
+  threshold): it was at `0.49` and SAFE — gibberish topSim `0.4635` -> idk, cross-lingual FR on-topic
+  `0.5377` -> grounded. The project-page rework had shifted the corpus-wide band up (off-topic ceiling
+  0.4430 -> **0.4635**; corpus-wide on-topic floor 0.5095 -> **0.5377**; stable across 3 runs). It was
+  briefly reset to the calibration script's pick **0.508** to recenter on that band — but a live check
+  of the **scoped per-article button** (Option 4) caught a false-refusal: scoping the canon essay and
+  asking its OWN headline thesis ("what splits the canon?") scored **0.5026** -> refused under 0.508
+  (1 of 5 scoped on-article probes; the other 4 ground at 0.52-0.71). The SCOPED path retrieves from
+  one article's chunks, so its on-topic floor is LOWER than the corpus-wide one the script measures.
+  The binding band across BOTH paths is `(0.4635, 0.5026]`; `0.49` is inside it, `0.508` is not.
+  **Reverted the secret to `0.49`** and redeployed.
+- **Re-verified LIVE post-redeploy** (both paths, both `done` frames echo `threshold:0.49`): the
+  previously-failing scoped "what splits the canon?" query -> **grounded**; corpus-wide gibberish ->
+  **idk**. The corner launcher and the scoped `scopeSlug` path both behave correctly.
+- **Process rule (CORRECTED — the earlier "set only from the script" rule is what produced the broken
+  0.508):** `scripts/calibrate-avatar-gate.ts` is corpus-wide-only (never exercises `scopeSlug`), so
+  treat its recommendation as an UPPER BOUND — cap the threshold BELOW the scoped on-article floor
+  (~0.50) and verify BOTH the launcher AND the scoped path against the live `done` frame before
+  finalizing. Update DEPLOY.md + this log + the `avatar-gate-calibration-fake-tuned` memory together.
+  Durable follow-up (non-trivial, NOT done): teach the script to replicate `scopeSlug` filtering so
+  its number stops over-shooting the scoped floor.
 - **Old codename URLs**: 404 in the new deployment (confirmed via cache-buster), but stale edge-cache
   200s linger (CF token lacks zone Cache-Purge scope). Owner can purge via the dashboard; they expire
   on the 7-day s-maxage regardless and nothing links to them.

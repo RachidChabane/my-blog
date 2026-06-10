@@ -20,23 +20,31 @@ launcher + the scoped per-article button). Done autonomously this bring-up:
   30 slugs, FR+EN). Deployed via `wrangler pages deploy`.
 - Secrets: Pages → `OPENROUTER_API_KEY`, `AVATAR_SIMILARITY_THRESHOLD`. GH Actions →
   `CLOUDFLARE_API_TOKEN`, `EMBEDDINGS_API_KEY`, `OPENROUTER_API_KEY`, `SITE_URL`.
-- **Gate calibrated (§3 step 4b, SAFETY-CRITICAL): `AVATAR_SIMILARITY_THRESHOLD = 0.508`**, cosine
+- **Gate calibrated (§3 step 4b, SAFETY-CRITICAL): `AVATAR_SIMILARITY_THRESHOLD = 0.49`**, cosine
   direction confirmed NOT inverted. Tool: `scripts/calibrate-avatar-gate.ts` (re-run on every regen).
   - **Recalibrated 2026-06-10** after the project-page rework (richer bodies + renamed slugs changed
-    the corpus). The live gate was at `0.49` and **verified SAFE** first (the `done` frame echoes the
-    live threshold): gibberish topSim `0.4635` -> idk, cross-lingual FR on-topic topSim `0.5377` ->
-    grounded. No regression. But the band had shifted UP (off-topic ceiling 0.4430 -> **0.4635**,
-    on-topic floor 0.5095 -> **0.5377**), and `0.49` matched neither the script nor any record (the
-    docs/memory had drifted across `0.46`/`0.48`/`0.49`). Reset to the script's lean-safe pick `0.508`
-    (safe band `(0.4635, 0.5377]`) to recenter on the new band and collapse the drift into the tool's
-    own number. Re-verified live post-redeploy: `done` frame `threshold:0.508`, gibberish -> idk,
-    FR on-topic -> grounded. **Rule: set this ONLY from the script's recommendation, and update all
-    three records (this file, RUN-LOG, the `avatar-gate-calibration-fake-tuned` memory) in the same
-    commit — any project/article slug or body change requires a re-run.**
+    the corpus). The live gate was at `0.49`, verified SAFE first (the `done` frame echoes the live
+    threshold): gibberish topSim `0.4635` -> idk, cross-lingual FR on-topic `0.5377` -> grounded.
+    The band had shifted up (off-topic ceiling 0.4430 -> **0.4635**, corpus-wide on-topic floor
+    0.5095 -> **0.5377**). It was briefly raised to the script's pick `0.508`, but that **broke the
+    user-facing scoped per-article button**: the SCOPED path retrieves from ONE article's chunks, so
+    its on-topic floor is LOWER than the corpus-wide one. A live scoped probe of this essay's own
+    headline thesis ("what splits the canon?") scored **0.5026** -> refused under 0.508. So the
+    binding band across BOTH paths is `(0.4635, 0.5026]`, and `0.49` sits inside it (all 5 scoped
+    on-article probes ground at 0.49; gibberish still refused). **Kept at `0.49`.** Re-verified live:
+    the scoped "what splits the canon?" query -> grounded and corpus-wide gibberish -> idk, both
+    `done` frames echoing `threshold:0.49`.
+  - **Rule (corrected): `scripts/calibrate-avatar-gate.ts` is corpus-wide-only — it never exercises
+    `scopeSlug`, so its recommendation is an UPPER BOUND. Cap the threshold BELOW the scoped
+    on-article floor (~0.50), and verify BOTH the corner launcher AND the scoped `scopeSlug` path
+    against the live `done` frame before finalizing.** Update all three records (this file, RUN-LOG,
+    the `avatar-gate-calibration-fake-tuned` memory) together. Follow-up (non-trivial, not yet done):
+    teach the script to probe the scoped path so its number stops over-shooting.
 - **Scoped per-article gate verified live** (Option 4): scoped to an article + an on-article
-  question grounds; scoped to an article + a different corpus topic gives an honest idk. The
-  in-scope-`topSimilarity` fix prevents the "pass the gate, nothing in scope" landmine, and the
-  single shared threshold (now 0.508) governs the user-facing scoped button too.
+  question grounds; scoped to an article + a different corpus topic gives an honest idk (0.30). The
+  in-scope-`topSimilarity` fix prevents the "pass the gate, nothing in scope" landmine. The single
+  shared threshold (`0.49`) governs this button too, which is exactly why it is the BINDING
+  constraint on the threshold (its on-topic floor ~0.5026 is below the corpus-wide floor 0.5377).
 - Two live-only runtime bugs fixed (commit `55a99e4`): Workers `fetch.bind(globalThis)`; D1
   `toD1Sql` drops file-level `BEGIN/COMMIT`. See the `avatar-worker-runtime-gotchas` memory.
 - **`SITE_URL` is `https://my-blog-4uk.pages.dev` for the interim** (until the custom domain is on
