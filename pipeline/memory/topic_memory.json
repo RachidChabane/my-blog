@@ -103,5 +103,61 @@
     ],
     "published_at": "2026-06-10",
     "embedding": null
+  },
+  {
+    "translation_key": "ast-code-chunking",
+    "topic_id": "ast-code-chunking",
+    "dedup_key": "ast structure aware code chunking versus fixed size and sliding window for retrieval augmented code generation",
+    "title": "Chunk on the Syntax Tree, or Don't Bother? What the Benchmarks Say",
+    "slugs": {
+      "fr": "decouper-sur-larbre-syntaxique",
+      "en": "chunk-on-the-syntax-tree-or-not"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "cAST: Enhancing Code RAG with Structural Chunking via Abstract Syntax Tree (Zhang et al., EMNLP 2025 Findings)",
+        "url": "https://arxiv.org/abs/2506.15655",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "This approach generates self-contained, semantically coherent units across programming languages and tasks, improving performance on diverse code generation tasks, e.g., boosting Recall@5 by 4.3 points on RepoEval retrieval and Pass@1 by 2.67 points on SWE-bench generation."
+      },
+      {
+        "source_id": "s2",
+        "label": "How Does Chunking Affect Retrieval-Augmented Code Completion? A Controlled Empirical Study (Wu, Gong, Jahangirova, Zhang, 2026)",
+        "url": "https://arxiv.org/abs/2605.04763",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "Contrary to intuition, chunking based on functions underperforms all other strategies by 3.57--5.64 percentage points on RepoEval (Cliff's delta = -1.0), while the remaining chunking strategies perform comparably. We also find that cross-file context length is the dominant parameter: doubling from 2,048 to 8,192 tokens yields up to 4.2 percentage points of improvement, whereas chunk size has a weaker, non-monotonic effect. On the cost--quality Pareto front, Sliding Window and cAST dominate both benchmarks; Function chunking is never Pareto-optimal."
+      },
+      {
+        "source_id": "s3",
+        "label": "CodeRAG-Bench: Can Retrieval Augment Code Generation? (Wang et al., NAACL 2025 Findings)",
+        "url": "https://arxiv.org/abs/2406.14497",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "Notably, GPT-4o shows a 27.4% increase when using gold documents on SWE-bench, indicating that retrieval significantly enhances performance when paired with strong core generation capabilities, even in highly challenging coding tasks. All models show gains of 7.5-17.2 points with canonical snippets in RepoEval."
+      },
+      {
+        "source_id": "s4",
+        "label": "CodeXEmbed: A Generalist Embedding Model Family for Multilingual and Multi-task Code Retrieval (Liu et al.)",
+        "url": "https://arxiv.org/abs/2411.12644",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "When averaged over all 10 datasets in the CoIR benchmark, CodeXEmbed7B model achieves the best results, exceeding the SOTA code-domain specific model Voyage-Code-002 by over 20%."
+      },
+      {
+        "source_id": "s5",
+        "label": "Tree-sitter, official documentation (Introduction)",
+        "url": "https://tree-sitter.github.io/tree-sitter/",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "Tree-sitter is a parser generator tool and an incremental parsing library. It can build a concrete syntax tree for a source file and efficiently update the syntax tree as the source file is edited."
+      },
+      {
+        "source_id": "s6",
+        "label": "RepoCoder: Repository-Level Code Completion Through Iterative Retrieval and Generation (Zhang et al., EMNLP 2023), origin of RepoEval",
+        "url": "https://arxiv.org/abs/2303.12570",
+        "retrieved_at": "2026-06-10",
+        "excerpt": "Experimental results indicate that RepoCoder significantly improves the In-File completion baseline by over 10% in all settings and consistently outperforms the vanilla retrieval-augmented code completion approach."
+      }
+    ],
+    "published_at": "2026-06-10",
+    "embedding": null
   }
 ]
