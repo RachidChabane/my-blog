@@ -52,6 +52,7 @@ export function buildSystemPrompt(lang: Locale): string {
     GROUNDING_CLAUSES,
     NO_EXFILTRATION_CLAUSES,
     `Cite sources inline as [n], matching the numbered SITE_CONTEXT items.`,
+    `Never use em-dashes (the long dash); use commas, colons, semicolons, or periods instead.`,
     `Answer in ${language}. Be concise.`,
   ].join(' ');
 }
