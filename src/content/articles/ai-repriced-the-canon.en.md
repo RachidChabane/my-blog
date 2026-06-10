@@ -6,7 +6,7 @@ title: AI Re-Priced the Whole Canon. It Didn't Repeal It.
 publishDate: 10-06-2026
 tags:
 - agentic-coding
-- quality
+- qualite
 - evaluation
 category: essays
 sources:
