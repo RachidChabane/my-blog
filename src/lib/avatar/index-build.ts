@@ -23,7 +23,7 @@ import type { ChunkSeed } from './chunk';
 import type { Embedder, IndexArtifact, IndexChunk } from './contracts';
 
 /** Mirrors astro.config.mjs `site` default so baked citation origins never drift. */
-const DEFAULT_SITE_URL = 'https://rachidchabane.dev';
+const DEFAULT_SITE_URL = 'https://rachid-chabane.com';
 
 export type SourceKind = 'article' | 'project';
 

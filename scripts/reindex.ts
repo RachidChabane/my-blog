@@ -39,7 +39,7 @@ import type { Embedder, IndexArtifact } from '../src/lib/avatar/contracts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const DEFAULT_SITE_URL = 'https://rachidchabane.dev'; // mirror astro.config / index-build
+const DEFAULT_SITE_URL = 'https://rachid-chabane.com'; // mirror astro.config / index-build
 
 interface CliArgs {
   mode?: ReindexMode; // explicit override (dispatch / local)

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rachidchabane.dev/sitemap-index.xml
+Sitemap: https://rachid-chabane.com/sitemap-index.xml
