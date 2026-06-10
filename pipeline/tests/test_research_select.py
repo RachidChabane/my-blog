@@ -385,6 +385,17 @@ def test_24_research_prompt_substrings_deterministic_no_emoji():
         "schema_version",
     ]:
         assert needle in prompt, f"research prompt missing {needle!r}"
+    # task 6: the broadened multi-angle ask wraps across lines, so assert the multi-word
+    # needles against the flattened prompt (mirrors test_argue.py's flatten).
+    flat = " ".join(prompt.split())
+    for needle in [
+        "INDEPENDENT corroboration",
+        "different origin",
+        "skeptical or contrarian",
+        "PRIMARY or origin source",
+        "NOT two independent sources",
+    ]:
+        assert needle in flat, f"research prompt missing broadening needle {needle!r}"
     assert "no emoji" in prompt.lower()
     assert prompt.isascii()  # ASCII-only => no emoji in the prompt itself
 
