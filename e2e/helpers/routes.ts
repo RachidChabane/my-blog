@@ -46,24 +46,24 @@ export const TEMPLATES: Template[] = [
 /** Published article slugs per lang (matches dist/<lang>/blog/<slug>/). */
 export const ARTICLE_SLUGS: Record<Lang, readonly string[]> = {
   fr: [
-    'contexte-budget-tokens-latence',
+    'decouper-sur-larbre-syntaxique',
     'evaluer-agent-outille',
     'garde-fous-publication-fact-checking',
-    'indexer-code-ast-recuperation',
     'orchestrer-agents-code-deterministes',
     'quantifier-modele-ouvert',
     'rag-hybride-fusion-rang-reciproque',
     'servir-llm-open-source-production',
+    'votre-fenetre-de-contexte-est-un-plafond',
   ],
   en: [
-    'context-token-budget-latency',
+    'chunk-on-the-syntax-tree-or-not',
     'deterministic-coding-agent-workflows',
     'evaluating-tool-using-agent',
     'hybrid-rag-reciprocal-rank-fusion',
-    'indexing-code-ast-retrieval',
     'publication-guardrails-fact-checking',
     'quantizing-open-model',
     'serving-oss-llm-production',
+    'your-context-window-is-a-ceiling',
   ],
 };
 
