@@ -15,12 +15,16 @@ DIRECTLY from ``pipeline.gate.{factcheck,grounding,style,fallback}`` -- never vi
 """
 from __future__ import annotations
 
+import email.message
 import io
 import json
 import os
 import shutil
+import socket
 import subprocess
 import sys
+import urllib.error
+import urllib.request
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
@@ -35,6 +39,7 @@ from pipeline import (
 )
 from pipeline.config import ensure_cpe_importable
 from pipeline.contracts.claim_source_map import ClaimSourceMap, ContractError
+from pipeline.gate import grounding
 from pipeline.gate.factcheck import (
     factcheck_passes,
     parse_factcheck_findings,
@@ -218,6 +223,57 @@ def test_factcheck_cli(tmp_path):
 # ---------------------------------------------------------------------------
 
 
+class _StubResp:
+    """Minimal OpenerDirector.open() return for a 2xx: a context manager with .status/.headers."""
+
+    def __init__(self, status: int) -> None:
+        self.status = status
+        self.headers: dict[str, str] = {}            # a 2xx carries no Location
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_exc):
+        return False
+
+
+def _http_error(url: str, code: int, location: str | None = None) -> urllib.error.HTTPError:
+    hdrs = email.message.Message()
+    if location:
+        hdrs["Location"] = location
+    return urllib.error.HTTPError(url, code, f"HTTP {code}", hdrs, None)
+
+
+class _RouteOpener:
+    """Injectable opener mirroring urllib for HttpLinkChecker tests. ``route(method, url)`` returns:
+      - an int 2xx          -> a _StubResp (reachable),
+      - an int 4xx/5xx      -> raises HTTPError (no Location),
+      - ("redirect", code, location) -> raises a 3xx HTTPError carrying Location,
+      - "timeout"           -> raises TimeoutError,
+      - "dns"               -> raises URLError(gaierror).
+    Records ``calls`` as (method, url) and the raw ``requests`` (to assert the ranged GET)."""
+
+    def __init__(self, route) -> None:
+        self._route = route
+        self.calls: list[tuple[str, str]] = []
+        self.requests: list[urllib.request.Request] = []
+
+    def __call__(self, request, timeout=None):
+        self.requests.append(request)
+        self.calls.append((request.get_method(), request.full_url))
+        outcome = self._route(request.get_method(), request.full_url)
+        if outcome == "timeout":
+            raise TimeoutError("timed out")
+        if outcome == "dns":
+            raise urllib.error.URLError(socket.gaierror("name resolution failed"))
+        if isinstance(outcome, tuple):                 # ("redirect", code, location)
+            _, code, location = outcome
+            raise _http_error(request.full_url, code, location)
+        if 200 <= outcome < 300:
+            return _StubResp(outcome)
+        raise _http_error(request.full_url, outcome)   # 4xx / 5xx
+
+
 def test_fake_link_checker():
     checker = FakeLinkChecker(frozenset({"https://dead.example"}))
     assert checker.reachable("https://live.example") is True
@@ -252,7 +308,7 @@ def test_check_grounding_dangling_citation():
     assert any("dangling citation [s9]" in p for p in problems)
 
 
-def test_grounding_cli(tmp_path):
+def test_grounding_cli(tmp_path, monkeypatch):
     run_dir = _make_draft_run(
         tmp_path,
         {
@@ -270,12 +326,25 @@ def test_grounding_cli(tmp_path):
     assert dead.returncode == 1
     assert "dead link" in dead.stdout
 
-    real = _cli(
-        ["pipeline.gate.grounding", "--run-dir", str(run_dir), "--lang", "en",
-         "--link-check", "real"]
-    )
-    assert real.returncode == 1
-    assert "real link checker" in real.stderr  # NotImplementedError surfaced
+    # G5a closed: --link-check real now WORKS (no NotImplementedError). A subprocess can't inject a
+    # stub opener, so drive _main IN-PROCESS with a stubbed opener; real network is bring-up
+    # (DEPLOY.md section 3 / task 8). Reachable opener -> exit 0; unreachable -> dead-link exit 1.
+    monkeypatch.setattr(grounding, "_build_opener", lambda: _RouteOpener(lambda m, u: 200))
+    out_ok = io.StringIO()
+    with redirect_stdout(out_ok):
+        rc_ok = grounding._main(
+            ["--run-dir", str(run_dir), "--lang", "en", "--link-check", "real"]
+        )
+    assert rc_ok == 0, out_ok.getvalue()
+
+    monkeypatch.setattr(grounding, "_build_opener", lambda: _RouteOpener(lambda m, u: 404))
+    out_dead = io.StringIO()
+    with redirect_stdout(out_dead):
+        rc_dead = grounding._main(
+            ["--run-dir", str(run_dir), "--lang", "en", "--link-check", "real"]
+        )
+    assert rc_dead == 1
+    assert "dead link" in out_dead.getvalue()
 
 
 # ---------------------------------------------------------------------------
