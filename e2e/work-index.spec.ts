@@ -23,7 +23,7 @@ test.describe('S6 portfolio renders', () => {
 
     // a known localized FR slug is present (FR/EN slugs differ)
     await expect(
-      page.locator('a[href="/fr/work/bayan-plateforme-rag/"]')
+      page.locator('a[href="/fr/work/rag-erudition-arabe/"]')
     ).toHaveCount(1);
 
     // per-card anatomy on the first card: status text, ≥1 stack chip, a dek
@@ -43,7 +43,7 @@ test.describe('S6 portfolio renders', () => {
       page.locator('article.rc-proj .rc-proj__title a').first()
     ).toHaveAttribute('href', /^\/en\/work\/.+\/$/);
     await expect(
-      page.locator('a[href="/en/work/bayan-rag-platform/"]')
+      page.locator('a[href="/en/work/arabic-scholarship-rag/"]')
     ).toHaveCount(1);
   });
 });

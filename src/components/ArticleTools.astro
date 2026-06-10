@@ -1,0 +1,208 @@
+---
+/**
+ * Article tools (useful UX, zero external JS -> perf-exempt):
+ *  1. a copy-permalink control revealed on each section heading (h2/h3 with an id);
+ *  2. a copy button on each code block.
+ * Inline island. All injected DOM is built with createElement + cloned inert
+ * <template> SVGs (never innerHTML); every control is a real, labelled, focusable
+ * <button>. Styles are :global because the targets live inside the Prose-rendered
+ * body (.rc-pf-body), outside this component's scoped DOM.
+ */
+interface Props {
+  copyLink: string; // "Copy link to this section"
+  copyCode: string; // "Copy code"
+  copied: string; // transient confirmation
+}
+const { copyLink, copyCode, copied } = Astro.props;
+---
+
+<div
+  data-article-tools
+  data-l-link={copyLink}
+  data-l-code={copyCode}
+  data-l-done={copied}
+  hidden
+>
+  <template data-tpl-link>
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+      ></path>
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+      ></path>
+    </svg>
+  </template>
+  <template data-tpl-copy>
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.9"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    </svg>
+  </template>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-article-tools]');
+  const body = document.querySelector<HTMLElement>('.rc-pf-body');
+  if (root && body) {
+    const lLink = root.dataset.lLink ?? 'Copy link';
+    const lCode = root.dataset.lCode ?? 'Copy code';
+    const lDone = root.dataset.lDone ?? 'Copied';
+    const linkTpl = root.querySelector<HTMLTemplateElement>('[data-tpl-link]');
+    const copyTpl = root.querySelector<HTMLTemplateElement>('[data-tpl-copy]');
+
+    const icon = (tpl: HTMLTemplateElement | null): Node | null =>
+      tpl?.content.firstElementChild?.cloneNode(true) ?? null;
+
+    const flash = (
+      btn: HTMLButtonElement,
+      restore: string,
+      done: string
+    ): void => {
+      btn.classList.add('is-copied');
+      btn.setAttribute('aria-label', done);
+      window.setTimeout(() => {
+        btn.classList.remove('is-copied');
+        btn.setAttribute('aria-label', restore);
+      }, 1400);
+    };
+
+    const copyText = (
+      text: string,
+      btn: HTMLButtonElement,
+      restore: string
+    ): void => {
+      if (!navigator.clipboard) return;
+      navigator.clipboard.writeText(text).then(
+        () => flash(btn, restore, lDone),
+        () => {}
+      );
+    };
+
+    body.querySelectorAll<HTMLHeadingElement>('h2[id], h3[id]').forEach((h) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'rc-anchor';
+      btn.setAttribute('aria-label', lLink);
+      const ic = icon(linkTpl);
+      if (ic) btn.append(ic);
+      h.classList.add('rc-h-anchored');
+      h.append(btn);
+      btn.addEventListener('click', () => {
+        history.replaceState(null, '', `#${h.id}`);
+        copyText(`${location.origin}${location.pathname}#${h.id}`, btn, lLink);
+      });
+    });
+
+    body.querySelectorAll<HTMLPreElement>('pre').forEach((pre) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'rc-codewrap';
+      pre.parentNode?.insertBefore(wrap, pre);
+      wrap.append(pre);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'rc-copy';
+      btn.setAttribute('aria-label', lCode);
+      const ic = icon(copyTpl);
+      if (ic) btn.append(ic);
+      wrap.append(btn);
+      btn.addEventListener('click', () => {
+        const code =
+          pre.querySelector('code')?.textContent ?? pre.textContent ?? '';
+        copyText(code, btn, lCode);
+      });
+    });
+  }
+</script>
+
+<style>
+  /* section-permalink control — inline at the end of the heading, revealed on
+     hover/focus so it never clutters the reading column. */
+  :global(.rc-h-anchored) {
+    position: relative;
+  }
+  :global(.rc-anchor) {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    margin-left: 0.4em;
+    padding: 2px;
+    vertical-align: middle;
+    color: var(--fg-subtle);
+    cursor: pointer;
+    opacity: 0;
+    transition:
+      opacity var(--dur-hover) var(--ease-soft),
+      color var(--dur-hover) var(--ease-soft);
+  }
+  :global(.rc-h-anchored:hover .rc-anchor),
+  :global(.rc-anchor:focus-visible) {
+    opacity: 1;
+  }
+  :global(.rc-anchor:hover),
+  :global(.rc-anchor.is-copied) {
+    color: var(--accent);
+  }
+  :global(.rc-anchor svg) {
+    display: block;
+  }
+
+  /* code block + copy button */
+  :global(.rc-codewrap) {
+    position: relative;
+  }
+  :global(.rc-copy) {
+    appearance: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--fg-muted);
+    cursor: pointer;
+    opacity: 0;
+    transition:
+      opacity var(--dur-hover) var(--ease-soft),
+      color var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft);
+  }
+  :global(.rc-codewrap:hover .rc-copy),
+  :global(.rc-copy:focus-visible) {
+    opacity: 1;
+  }
+  :global(.rc-copy:hover) {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  :global(.rc-copy.is-copied) {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  :global(.rc-copy svg) {
+    display: block;
+  }
+</style>

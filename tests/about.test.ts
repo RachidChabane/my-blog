@@ -70,9 +70,15 @@ describe('about.astro — structure, brand, link safety, no form (W-2)', () => {
   const src = read('src/pages/[lang]/about.astro');
   it('has exactly one h1 (one-heading-per-page contract)', () =>
     expect((src.match(/<h1/g) ?? []).length).toBe(1));
-  it('renders the non-figurative AvatarMark, no <img>/face/rc-avatar', () => {
+  it('keeps the abstract AvatarMark and adds exactly one profile photo with alt text', () => {
+    // D-007 split (owner decision): a real portrait identifies the author on the
+    // About page, while the abstract lattice still stands in for the AI agent in
+    // the how-it-works note (and the avatar dock). Guard narrowed from "no <img>"
+    // to "exactly one <img>, with alt" so no other figurative content sneaks in.
     expect(src).toContain('AvatarMark');
-    expect(src).not.toMatch(/<img/);
+    const imgs = src.match(/<img\b[^>]*>/g) ?? [];
+    expect(imgs.length).toBe(1);
+    expect(imgs[0]).toMatch(/\balt="[^"]+"/);
     expect(src).not.toMatch(/\bface\b/i);
     expect(src).not.toContain('rc-avatar');
   });

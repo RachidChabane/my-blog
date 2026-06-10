@@ -49,6 +49,7 @@ const { card, ordinal, ordinalWord, viewCta } = Astro.props;
      .rc-tag is ported from ArticleListItem (chip pill), minus its :hover — chips
      here are static <span>, not interactive. Tokens only. */
   .rc-proj {
+    position: relative; /* containing block for the stretched-link overlay */
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -114,6 +115,15 @@ const { card, ordinal, ordinalWord, viewCta } = Astro.props;
   }
   .rc-proj__title a {
     color: inherit; /* the title is the sole link; inherit the hover→accent shift */
+  }
+  /* Stretched-link: the single title anchor covers the whole card, so the entire
+     surface — including the decorative "View →" footer — is clickable. The CTA
+     stays a decorative aria-hidden <span> (one anchor per card; e2e-pinned). */
+  .rc-proj__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
   }
   .rc-proj:hover .rc-proj__title,
   .rc-proj.is-hover .rc-proj__title {

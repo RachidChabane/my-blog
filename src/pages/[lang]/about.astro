@@ -1,17 +1,17 @@
 ---
 /**
- * S8 — About / contact. `/[lang]/about/` (FR + EN). A short owner-fill bio block,
- * a quiet contact list (plain links, NO backend form per W-2), and a REAL
- * "how this site works" credibility note. Honors D-007 (non-figurative: the
- * AvatarMark lattice stands in for a portrait — strictly no photo, no likeness).
+ * S8 — About / contact. `/[lang]/about/` (FR + EN). A real first-person bio + tagline
+ * (grounded in the owner's résumé), a quiet contact list (plain links, NO backend
+ * form per W-2), and a REAL "how this site works" credibility note. D-007 split: a
+ * profile photo identifies the author here, while the abstract AvatarMark lattice
+ * still stands in for the AI agent in the how-it-works note and the avatar dock.
  *
  * Copy + contact data from src/i18n/ui.ts (ABOUT / CONTACTS); chrome
- * (masthead/footer/avatar/skip-link) from Base. No slugMap → the language switcher
+ * (masthead/footer/avatar/skip-link) from Base. No slugMap, so the language switcher
  * falls back to the localized home (blog/work decision #6; NFR-11 holds since both
- * /fr/about/ and /en/about/ exist). GitHub is the one live, verifiably-public link
- * (repo remote); email + LinkedIn are owner-fill placeholder rows (a privacy-gated
- * owner decision — CLAUDE.md #3 / FR-D3 / NFR-6), promoted to live <a> the moment a
- * non-null href is set in CONTACTS.
+ * /fr/about/ and /en/about/ exist). GitHub, LinkedIn, and email are all live,
+ * verifiably-public contacts (email + LinkedIn published from the public résumé; the
+ * privacy gate noted in CLAUDE.md #3 / FR-D3 / NFR-6).
  */
 import type { GetStaticPaths } from 'astro';
 import { LOCALES } from '@/i18n/index';
@@ -36,7 +36,17 @@ const title = `${s.title} · rachid chabane`;
 <Base title={title} description={s.metaDesc} lang={lang}>
   <section class="rc-about rc-enter">
     <span class="rc-about__eyebrow t-eyebrow">{s.eyebrow}</span>
-    <div class="rc-about__mark"><AvatarMark size={64} /></div>
+    <div class="rc-about__mark">
+      <img
+        class="rc-about__photo"
+        src="/profile.jpg"
+        alt="Rachid Chabane"
+        width="96"
+        height="96"
+        loading="eager"
+        decoding="async"
+      />
+    </div>
     <h1 class="rc-about__title">{s.title}</h1>
     <p class="rc-about__tagline">{s.tagline}</p>
 
@@ -116,9 +126,21 @@ const title = `${s.title} · rachid chabane`;
 
   /* eyebrow uses the global .t-eyebrow role class (mono/uppercase/--fg-subtle). */
 
-  /* non-figurative mark — portrait stand-in (screens.css .rc-about__mark). */
+  /* Profile photo (owner decision: a real portrait here; the abstract AvatarMark
+     stays as the AI-agent glyph in the how-it-works note below and in the avatar
+     dock). Circular crop keeps the portrait centred; the scenic background corners
+     fall away. A hairline ring keeps it deliberate against the page. */
   .rc-about__mark {
-    margin: 6px 0 2px;
+    margin: 6px 0 4px;
+  }
+  .rc-about__photo {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 28%;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
   }
   .rc-about__title {
     margin: 12px 0 0;

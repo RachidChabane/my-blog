@@ -71,21 +71,21 @@ export const ARTICLE_SLUGS: Record<Lang, readonly string[]> = {
 export const WORK_SLUGS: Record<Lang, readonly string[]> = {
   fr: [
     'atelier-marketplace-plugins',
-    'bayan-plateforme-rag',
     'claude-plan-execute-fr',
     'coffre-secrets-mcp',
-    'moteur-ijtihad',
-    'plateforme-ia-sterna',
+    'moteur-recherche-autonome',
+    'plateforme-ia-multi-modeles',
+    'rag-erudition-arabe',
     'suivi-athletique',
   ],
   en: [
+    'arabic-scholarship-rag',
     'atelier-plugin-marketplace',
     'athletic-tracker',
-    'bayan-rag-platform',
+    'autonomous-research-engine',
     'claude-plan-execute',
-    'ijtihad-engine',
     'mcp-secrets-vault',
-    'sterna-ai-platform',
+    'multi-model-ai-platform',
   ],
 };
 

@@ -1,0 +1,639 @@
+{
+  "sterna-ai-platform": {
+    "year": "2025",
+    "en": {
+      "slug": "multi-model-ai-platform",
+      "name": "Multi-Model AI Platform",
+      "summary": "A production-grade, multi-model AI chat and agent platform with sandboxed code execution, a RAG knowledge base, MCP integrations, and Stripe billing, built autonomously by a homegrown Claude Code orchestrator.",
+      "body": "The platform is a full-stack AI product: a Django/DRF backend hosting eleven domain apps (multi-LLM via OpenRouter, coding assistant, sandboxed code execution, pgvector RAG, MCP connectors, AI voice rooms, Stripe billing, GDPR/rate-limiting hardening) paired with a React 19 + TypeScript frontend. The entire codebase was driven by an autonomous Claude Code task-runner that enforced per-task quality gates, gate-repair loops, and structured failure records, making the development process itself a case study in agentic software engineering.",
+      "highlights": [
+        "Django/DRF backend hosting eleven domain apps, from multi-LLM via OpenRouter to Stripe billing",
+        "React 19 + TypeScript frontend paired with the backend for a full-stack AI product",
+        "pgvector RAG, sandboxed code execution, MCP connectors, and AI voice rooms among the domain apps",
+        "Entire codebase driven by an autonomous Claude Code task-runner with per-task quality gates and gate-repair loops"
+      ],
+      "metrics": [
+        { "value": "11", "label": "domain apps" },
+        { "value": "React 19", "label": "+ TypeScript frontend" }
+      ],
+      "architecture": {
+        "caption": "Full-stack AI product driven by an autonomous Claude Code task-runner",
+        "layers": [
+          { "label": "Frontend", "nodes": ["React 19", "TypeScript"] },
+          { "label": "Backend", "nodes": ["Django/DRF"] },
+          {
+            "label": "Domain apps",
+            "nodes": [
+              "OpenRouter multi-LLM",
+              "coding assistant",
+              "sandboxed code execution",
+              "MCP connectors",
+              "AI voice rooms"
+            ]
+          },
+          {
+            "label": "RAG and billing",
+            "nodes": [
+              "pgvector RAG",
+              "Stripe billing",
+              "GDPR / rate-limiting hardening"
+            ]
+          },
+          {
+            "label": "Agentic build process",
+            "nodes": [
+              "Claude Code task-runner",
+              "per-task quality gates",
+              "gate-repair loops",
+              "structured failure records"
+            ]
+          }
+        ]
+      }
+    },
+    "fr": {
+      "slug": "plateforme-ia-multi-modeles",
+      "name": "Plateforme IA Multi-Modèles",
+      "summary": "Une plateforme de chat et d'agents IA multi-modèles de niveau production, avec exécution de code en sandbox, base de connaissances RAG, intégrations MCP et facturation Stripe, construite de manière autonome par un orchestrateur Claude Code maison.",
+      "body": "La plateforme est un produit IA full-stack : un backend Django/DRF hébergeant onze applications métier (multi-LLM via OpenRouter, assistant de codage, exécution de code en sandbox, RAG pgvector, connecteurs MCP, salles vocales IA, facturation Stripe, durcissement RGPD/limitation de débit) couplé à un frontend React 19 + TypeScript. L'ensemble du code a été piloté par un task-runner Claude Code autonome appliquant des portes de qualité par tâche, des boucles de réparation de portes et des enregistrements d'échecs structurés, faisant du processus de développement lui-même une étude de cas en ingénierie logicielle agentique.",
+      "highlights": [
+        "Backend Django/DRF hébergeant onze applications métier, du multi-LLM via OpenRouter à la facturation Stripe",
+        "Frontend React 19 + TypeScript couplé au backend pour un produit IA full-stack",
+        "RAG pgvector, exécution de code en sandbox, connecteurs MCP et salles vocales IA parmi les applications métier",
+        "Ensemble du code piloté par un task-runner Claude Code autonome avec portes de qualité par tâche et boucles de réparation"
+      ],
+      "metrics": [
+        { "value": "11", "label": "applications métier" },
+        { "value": "React 19", "label": "+ frontend TypeScript" }
+      ],
+      "architecture": {
+        "caption": "Produit IA full-stack piloté par un task-runner Claude Code autonome",
+        "layers": [
+          { "label": "Frontend", "nodes": ["React 19", "TypeScript"] },
+          { "label": "Backend", "nodes": ["Django/DRF"] },
+          {
+            "label": "Applications métier",
+            "nodes": [
+              "multi-LLM OpenRouter",
+              "assistant de codage",
+              "exécution de code en sandbox",
+              "connecteurs MCP",
+              "salles vocales IA"
+            ]
+          },
+          {
+            "label": "RAG et facturation",
+            "nodes": [
+              "RAG pgvector",
+              "facturation Stripe",
+              "durcissement RGPD / limitation de débit"
+            ]
+          },
+          {
+            "label": "Processus de build agentique",
+            "nodes": [
+              "task-runner Claude Code",
+              "portes de qualité par tâche",
+              "boucles de réparation",
+              "enregistrements d'échecs structurés"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "ijtihad-engine": {
+    "year": "2026",
+    "en": {
+      "slug": "autonomous-research-engine",
+      "name": "Autonomous Research Engine",
+      "summary": "A self-improving, multi-agent LLM orchestration system that autonomously attacks open problems in mathematics and science, verifying claims formally and producing publication-ready research papers.",
+      "body": "The engine runs ~16 specialized Claude Code subagents across an 8-phase cycle: divergence, claim extraction, friction, evidence-quality audit, evidence-sufficiency gate, synthesis, meta-evolution, and formal construction. At its core is a SQLite-backed epistemic claim graph that tracks atomic claims through a confidence lifecycle (conjectured, supported, replicated, contested, refuted) with typed victory conditions: Lean proof, SymPy verification, or simulation fragility threshold. The engine has produced compiled, submission-ready research papers as real outputs.",
+      "highlights": [
+        "Runs roughly 16 specialized Claude Code subagents across a single 8-phase research cycle",
+        "A SQLite-backed epistemic claim graph tracks atomic claims through a confidence lifecycle (conjectured, supported, replicated, contested, refuted)",
+        "Claims resolve via typed victory conditions: a Lean proof, a SymPy verification, or a simulation fragility threshold",
+        "Has produced compiled, submission-ready research papers as real outputs"
+      ],
+      "metrics": [
+        { "value": "~16", "label": "specialized subagents" },
+        { "value": "8", "label": "cycle phases" },
+        { "value": "5", "label": "confidence states" }
+      ],
+      "architecture": {
+        "caption": "Claim flow from subagent divergence to submission-ready papers",
+        "layers": [
+          {
+            "label": "Agent orchestration",
+            "nodes": ["~16 Claude Code subagents"]
+          },
+          {
+            "label": "8-phase cycle",
+            "nodes": [
+              "Divergence",
+              "Claim extraction",
+              "Friction",
+              "Evidence-quality audit",
+              "Synthesis"
+            ]
+          },
+          {
+            "label": "Epistemic claim graph (SQLite)",
+            "nodes": [
+              "Atomic claims",
+              "Confidence lifecycle",
+              "Evidence-sufficiency gate"
+            ]
+          },
+          {
+            "label": "Typed victory conditions",
+            "nodes": [
+              "Lean proof",
+              "SymPy verification",
+              "Simulation fragility threshold"
+            ]
+          },
+          { "label": "Output", "nodes": ["Compiled submission-ready papers"] }
+        ]
+      }
+    },
+    "fr": {
+      "slug": "moteur-recherche-autonome",
+      "name": "Moteur de Recherche Autonome",
+      "summary": "Un système d'orchestration multi-agents LLM auto-améliorant qui attaque de manière autonome des problèmes ouverts en mathématiques et en science, vérifiant les affirmations formellement et produisant des articles de recherche prêts à soumettre.",
+      "body": "Le moteur fait tourner ~16 sous-agents Claude Code spécialisés sur 8 phases cycliques : divergence, extraction de claims, friction, audit de qualité des preuves, porte de suffisance des preuves, synthèse, méta-évolution et construction formelle. Son cœur est un graphe de claims épistémiques sur SQLite qui suit des claims atomiques dans un cycle de confiance (conjectured, supported, replicated, contested, refuted) avec des conditions de victoire typées : preuve Lean, vérification SymPy ou seuil de fragilité de simulation. Le moteur a produit des articles de recherche compilés et prêts à soumettre comme résultats réels.",
+      "highlights": [
+        "Fait tourner environ 16 sous-agents Claude Code spécialisés sur un seul cycle de recherche en 8 phases",
+        "Un graphe de claims épistémiques sur SQLite suit des claims atomiques dans un cycle de confiance (conjecturé, soutenu, répliqué, contesté, réfuté)",
+        "Les claims se résolvent via des conditions de victoire typées : une preuve Lean, une vérification SymPy ou un seuil de fragilité de simulation",
+        "A produit des articles de recherche compilés et prêts à soumettre comme sorties réelles"
+      ],
+      "metrics": [
+        { "value": "~16", "label": "sous-agents spécialisés" },
+        { "value": "8", "label": "phases du cycle" },
+        { "value": "5", "label": "états de confiance" }
+      ],
+      "architecture": {
+        "caption": "Flux des claims, de la divergence des sous-agents aux articles prêts à soumettre",
+        "layers": [
+          {
+            "label": "Orchestration des agents",
+            "nodes": ["~16 sous-agents Claude Code"]
+          },
+          {
+            "label": "Cycle en 8 phases",
+            "nodes": [
+              "Divergence",
+              "Extraction de claims",
+              "Friction",
+              "Audit de qualité des preuves",
+              "Synthèse"
+            ]
+          },
+          {
+            "label": "Graphe de claims épistémiques (SQLite)",
+            "nodes": [
+              "Claims atomiques",
+              "Cycle de confiance",
+              "Porte de suffisance des preuves"
+            ]
+          },
+          {
+            "label": "Conditions de victoire typées",
+            "nodes": [
+              "Preuve Lean",
+              "Vérification SymPy",
+              "Seuil de fragilité de simulation"
+            ]
+          },
+          {
+            "label": "Sortie",
+            "nodes": ["Articles compilés prêts à soumettre"]
+          }
+        ]
+      }
+    }
+  },
+  "bayan-rag-platform": {
+    "en": {
+      "slug": "arabic-scholarship-rag",
+      "name": "Arabic Scholarship RAG Platform",
+      "summary": "A multi-user platform for citation-exact answers over classical Arabic books, powered by a hybrid BM25 + pgvector retrieval pipeline with cross-encoder reranking, verifier-loop recursion, and a precision \"I don't know\" threshold gate.",
+      "body": "The platform delivers citation-exact answers (page, line, hadith number, bayt number, folio) from private or shared classical Arabic knowledge bases. Its retrieval stack runs two parallel legs, lexical GIN tsvector and pgvector cosine HNSW, fused with Reciprocal Rank Fusion, then reranked by a cross-encoder. A threshold gate refuses synthesis when top cosine similarity falls below the knowledge-base threshold, returning near-misses rather than hallucinating. A verifier recursion loop (depth-capped, SSE-streamed) iterates sub-queries until the retrieval is judged sufficient. The stack was built autonomously and passes a seven-gate MVP scorecard including 100% citation recall.",
+      "highlights": [
+        "Returns citation-exact answers (page, line, hadith number, bayt number, folio) from classical Arabic knowledge bases",
+        "Hybrid retrieval runs two parallel legs, lexical GIN tsvector and pgvector cosine HNSW, fused with Reciprocal Rank Fusion and reranked by a cross-encoder",
+        "A threshold gate refuses synthesis below the knowledge-base threshold, returning near-misses instead of hallucinating",
+        "A depth-capped, SSE-streamed verifier recursion loop iterates sub-queries until retrieval is judged sufficient"
+      ],
+      "metrics": [
+        { "value": "2", "label": "parallel retrieval legs" },
+        { "value": "7", "label": "MVP gates passed" },
+        { "value": "100%", "label": "citation recall" }
+      ],
+      "architecture": {
+        "caption": "Citation-exact retrieval flow, from query to grounded answer",
+        "layers": [
+          { "label": "Interface", "nodes": ["React", "SSE stream"] },
+          {
+            "label": "Parallel retrieval",
+            "nodes": ["GIN tsvector (lexical)", "pgvector cosine HNSW"]
+          },
+          {
+            "label": "Fusion and rerank",
+            "nodes": ["Reciprocal Rank Fusion", "cross-encoder"]
+          },
+          {
+            "label": "Gate and verify",
+            "nodes": ["threshold gate", "verifier recursion loop"]
+          },
+          {
+            "label": "Storage and infra",
+            "nodes": ["PostgreSQL", "pgvector", "FastAPI", "Docker"]
+          }
+        ]
+      }
+    },
+    "fr": {
+      "slug": "rag-erudition-arabe",
+      "name": "Plateforme RAG pour l'Érudition Arabe",
+      "summary": "Une plateforme multi-utilisateurs pour des réponses à citations exactes sur des livres arabes classiques, alimentée par un pipeline de récupération hybride BM25 + pgvector avec reclassement cross-encoder, récursion par boucle de vérification et une porte de seuil \"je ne sais pas\" de précision.",
+      "body": "La plateforme fournit des réponses à citations exactes (page, ligne, numéro de hadith, numéro de bayt, folio) depuis des bases de connaissances arabes classiques privées ou partagées. Son stack de récupération exécute deux branches en parallèle, tsvector GIN lexical et cosinus pgvector HNSW, fusionnées par Reciprocal Rank Fusion, puis reclassées par un cross-encoder. Une porte de seuil refuse la synthèse si la similarité cosinus maximale est inférieure au seuil de la base de connaissances, retournant des quasi-correspondances plutôt qu'halluciner. Une boucle de récursion vérificateur (profondeur plafonnée, diffusée en SSE) itère des sous-requêtes jusqu'à juger la récupération suffisante. Le stack a été construit de manière autonome et passe un scorecard MVP à sept portes, dont 100 % de rappel de citations.",
+      "highlights": [
+        "Fournit des réponses à citations exactes (page, ligne, numéro de hadith, numéro de bayt, folio) depuis des bases de connaissances arabes classiques",
+        "La récupération hybride exécute deux branches en parallèle, tsvector GIN lexical et cosinus pgvector HNSW, fusionnées par Reciprocal Rank Fusion et reclassées par un cross-encoder",
+        "Une porte de seuil refuse la synthèse sous le seuil de la base de connaissances, retournant des quasi-correspondances au lieu d'halluciner",
+        "Une boucle de récursion vérificateur (profondeur plafonnée, diffusée en SSE) itère des sous-requêtes jusqu'à juger la récupération suffisante"
+      ],
+      "metrics": [
+        { "value": "2", "label": "branches de récupération" },
+        { "value": "7", "label": "portes MVP validées" },
+        { "value": "100 %", "label": "rappel de citations" }
+      ],
+      "architecture": {
+        "caption": "Flux de récupération à citations exactes, de la requête à la réponse fondée",
+        "layers": [
+          { "label": "Interface", "nodes": ["React", "flux SSE"] },
+          {
+            "label": "Récupération parallèle",
+            "nodes": ["GIN tsvector (lexical)", "pgvector cosinus HNSW"]
+          },
+          {
+            "label": "Fusion et reclassement",
+            "nodes": ["Reciprocal Rank Fusion", "cross-encoder"]
+          },
+          {
+            "label": "Porte et vérification",
+            "nodes": ["porte de seuil", "boucle de récursion vérificateur"]
+          },
+          {
+            "label": "Stockage et infra",
+            "nodes": ["PostgreSQL", "pgvector", "FastAPI", "Docker"]
+          }
+        ]
+      }
+    }
+  },
+  "claude-plan-execute": {
+    "year": "2025",
+    "en": {
+      "name": "Claude Plan Execute: Autonomous Task Orchestrator",
+      "body": "Claude Plan Execute runs a fixed lifecycle for every task: Plan agent writes a structured plan; a Review loop checks it (APPROVED / NEEDS_REVISION) and iterates a revise agent up to the configured round cap; only an approved plan reaches the Implement agent, which works in committed chunks with a resumable progress checklist. Role specialization is prompt-swapping, not separate binaries. A dual-backend driver lets the same code run either the `claude -p` print backend or a real interactive Claude TUI inside tmux; the latter keeps usage on the Claude subscription pool rather than the metered API. The project dogfoods itself: its own roadmap is the tasks.yaml it executes.",
+      "highlights": [
+        "Every task runs a fixed lifecycle: Plan writes a structured plan, a Review loop iterates a revise agent until approval, then Implement builds it",
+        "Only an APPROVED plan reaches the Implement agent, which works in committed chunks with a resumable progress checklist",
+        "Role specialization is prompt-swapping, not separate binaries: the same code becomes Plan, Review, or Implement",
+        "A dual-backend driver runs either the claude -p print backend or an interactive Claude TUI in tmux, keeping usage on the subscription pool"
+      ],
+      "metrics": [
+        { "value": "2", "label": "driver backends" },
+        { "value": "3", "label": "agent roles (plan, review, implement)" }
+      ],
+      "architecture": {
+        "caption": "Fixed per-task lifecycle over a dual-backend driver",
+        "layers": [
+          { "label": "Roadmap (dogfooded)", "nodes": ["tasks.yaml"] },
+          { "label": "Plan", "nodes": ["Plan agent", "structured plan"] },
+          {
+            "label": "Review loop",
+            "nodes": ["APPROVED / NEEDS_REVISION", "revise agent", "round cap"]
+          },
+          {
+            "label": "Implement",
+            "nodes": [
+              "Implement agent",
+              "committed chunks",
+              "resumable checklist"
+            ]
+          },
+          {
+            "label": "Driver backend",
+            "nodes": ["claude -p", "tmux Claude TUI", "subscription pool"]
+          }
+        ]
+      }
+    },
+    "fr": {
+      "name": "Claude Plan Execute: Orchestrateur de Tâches Autonome",
+      "body": "Claude Plan Execute exécute un cycle fixe pour chaque tâche : l'agent Plan écrit un plan structuré ; une boucle de révision le contrôle (APPROVED / NEEDS_REVISION) et itère un agent de révision jusqu'au plafond configuré de rounds ; seul un plan approuvé atteint l'agent Implement, qui travaille par commits avec une checklist de progression reprise. La spécialisation de rôle est du swap de prompt, non des binaires séparés. Un pilote double backend permet au même code d'utiliser soit le backend print `claude -p`, soit un vrai TUI Claude interactif dans tmux ; ce dernier maintient l'usage sur le pool d'abonnement Claude plutôt que l'API facturée. Le projet se dogfoode lui-même : sa propre roadmap est le tasks.yaml qu'il exécute.",
+      "highlights": [
+        "Chaque tâche suit un cycle fixe : Plan écrit un plan structuré, une boucle de révision itère un agent de révision jusqu'à approbation, puis Implement le construit",
+        "Seul un plan APPROVED atteint l'agent Implement, qui travaille par commits avec une checklist de progression reprise",
+        "La spécialisation de rôle est du swap de prompt, pas des binaires séparés : le même code devient Plan, Review ou Implement",
+        "Un pilote double backend utilise soit le backend print claude -p, soit un TUI Claude interactif dans tmux, maintenant l'usage sur le pool d'abonnement"
+      ],
+      "metrics": [
+        { "value": "2", "label": "backends du pilote" },
+        {
+          "value": "3",
+          "label": "rôles d'agent (plan, révision, implémentation)"
+        }
+      ],
+      "architecture": {
+        "caption": "Cycle fixe par tâche sur un pilote double backend",
+        "layers": [
+          { "label": "Roadmap (dogfoodée)", "nodes": ["tasks.yaml"] },
+          { "label": "Plan", "nodes": ["Plan agent", "plan structuré"] },
+          {
+            "label": "Boucle de révision",
+            "nodes": [
+              "APPROVED / NEEDS_REVISION",
+              "revise agent",
+              "plafond de rounds"
+            ]
+          },
+          {
+            "label": "Implement",
+            "nodes": ["Implement agent", "commits", "checklist reprise"]
+          },
+          {
+            "label": "Backend du pilote",
+            "nodes": ["claude -p", "TUI Claude tmux", "pool d'abonnement"]
+          }
+        ]
+      }
+    }
+  },
+  "athletic-tracker": {
+    "year": "2026",
+    "en": {
+      "name": "Athletic Tracker: Autonomous Strength Program Manager",
+      "body": "Athletic Tracker runs three gated cron tasks. Weekly sync pulls workouts from Hevy and appends them to an Excel log. The mid-block task rewrites next-week routines (applying % progression and auto-regulation bumps), then layers a constrained LLM judgment on top: a cloud Claude agent receives an observations brief and must return typed, schema-validated JSON overrides; it can react to injury or fatigue signals but cannot touch the program outside that surface. Two safety properties define the design: a shadow mode that emits proposals to files for the first two blocks before ever writing to the API (autonomy is earned, not assumed), and collision detection that diffs every planned write against the last committed snapshot and aborts on unexpected changes: no blind overwrite.",
+      "highlights": [
+        "Three gated cron tasks: weekly Hevy sync into an Excel log, plus a mid-block routine rewrite",
+        "The mid-block task applies % progression and auto-regulation bumps, then layers a constrained LLM judgment on top",
+        "A cloud Claude agent returns typed, schema-validated JSON overrides; it reacts to injury or fatigue but cannot touch the program outside that surface",
+        "Two safety properties: shadow mode (proposals to files for the first two blocks before any API write) and collision detection (diffs every write against the last snapshot)"
+      ],
+      "metrics": [
+        { "value": "3", "label": "gated cron tasks" },
+        { "value": "2", "label": "safety properties" },
+        { "value": "2", "label": "shadow-mode blocks first" }
+      ],
+      "architecture": {
+        "caption": "From cron triggers down to safety-gated writes",
+        "layers": [
+          {
+            "label": "Gated cron tasks",
+            "nodes": ["Weekly sync", "Mid-block task"]
+          },
+          {
+            "label": "Sync and rewrite",
+            "nodes": [
+              "Hevy API",
+              "Excel log",
+              "% progression",
+              "auto-regulation bumps"
+            ]
+          },
+          {
+            "label": "Constrained LLM judgment",
+            "nodes": [
+              "cloud Claude agent",
+              "observations brief",
+              "schema-validated JSON overrides"
+            ]
+          },
+          {
+            "label": "Safety gates",
+            "nodes": [
+              "shadow mode",
+              "collision detection",
+              "last committed snapshot"
+            ]
+          }
+        ]
+      }
+    },
+    "fr": {
+      "name": "Athletic Tracker: Gestionnaire Autonome de Programme de Force",
+      "body": "Athletic Tracker exécute trois tâches cron à portes. Le sync hebdomadaire récupère les entraînements depuis Hevy et les ajoute à un journal Excel. La tâche mid-block réécrit les routines de la semaine suivante (appliquant la progression en % et les ajustements d'auto-régulation), puis superpose un jugement LLM contraint : un agent Claude cloud reçoit un brief d'observations et doit retourner des overrides JSON typés et validés par schéma ; il peut réagir aux signaux de blessure ou de fatigue, mais ne peut pas toucher au programme en dehors de cette surface. Deux propriétés de sécurité définissent la conception : un mode shadow qui émet des propositions dans des fichiers pendant les deux premiers blocs avant d'écrire sur l'API (l'autonomie se mérite, elle n'est pas supposée), et une détection de collision qui compare chaque écriture planifiée au dernier snapshot commité et s'arrête en cas de modifications inattendues : aucun écrasement aveugle.",
+      "highlights": [
+        "Trois tâches cron à portes : sync Hevy hebdomadaire vers un journal Excel, plus une réécriture des routines mid-block",
+        "La tâche mid-block applique progression en % et auto-régulation, puis superpose un jugement LLM contraint",
+        "Un agent Claude cloud retourne des overrides JSON typés et validés par schéma ; il réagit à la blessure ou à la fatigue mais ne touche pas au programme au-delà de cette surface",
+        "Deux propriétés de sécurité : mode shadow (propositions dans des fichiers pendant les deux premiers blocs avant toute écriture API) et détection de collision (compare chaque écriture au dernier snapshot)"
+      ],
+      "metrics": [
+        { "value": "3", "label": "tâches cron à portes" },
+        { "value": "2", "label": "propriétés de sécurité" },
+        { "value": "2", "label": "blocs en mode shadow d'abord" }
+      ],
+      "architecture": {
+        "caption": "Des déclencheurs cron aux écritures sous portes de sécurité",
+        "layers": [
+          {
+            "label": "Tâches cron à portes",
+            "nodes": ["Sync hebdomadaire", "Tâche mid-block"]
+          },
+          {
+            "label": "Sync et réécriture",
+            "nodes": [
+              "Hevy API",
+              "journal Excel",
+              "progression en %",
+              "auto-régulation"
+            ]
+          },
+          {
+            "label": "Jugement LLM contraint",
+            "nodes": [
+              "agent Claude cloud",
+              "brief d'observations",
+              "overrides JSON validés par schéma"
+            ]
+          },
+          {
+            "label": "Portes de sécurité",
+            "nodes": [
+              "mode shadow",
+              "détection de collision",
+              "dernier snapshot commité"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "mcp-secrets-vault": {
+    "year": "2025",
+    "en": {
+      "name": "MCP Secrets Vault: AI-Safe Secret Management",
+      "summary": "A published npm MCP server that lets AI assistants use secrets (API keys, tokens, credentials) to perform authorized actions without ever exposing the secret values.",
+      "body": "MCP Secrets Vault sits between an AI assistant (Claude Desktop or any MCP-compatible client) and the secret store. When the assistant needs to call an API, it invokes a vault tool by name; the server resolves the secret from environment variables, injects it into the request, and returns only the sanitized response; the raw secret value never appears in the model context. Policy-based access control, configurable rate limiting, and an audit log are built in. The package is MIT-licensed, published on npm, and ships with CI coverage badges and a demo walkthrough.",
+      "highlights": [
+        "Sits between an AI assistant (Claude Desktop or any MCP-compatible client) and the secret store, invoked as a vault tool by name",
+        "Resolves the secret from environment variables, injects it into the request, and returns only the sanitized response",
+        "The raw secret value never appears in the model context",
+        "Policy-based access control, configurable rate limiting, and an audit log are built in"
+      ],
+      "metrics": [
+        { "value": "3", "label": "built-in controls" },
+        { "value": "MIT", "label": "license" },
+        { "value": "npm", "label": "published" }
+      ],
+      "architecture": {
+        "caption": "Request flow, client to sanitized response",
+        "layers": [
+          {
+            "label": "Client",
+            "nodes": ["Claude Desktop", "MCP-compatible client"]
+          },
+          { "label": "Tool invocation", "nodes": ["vault tool by name"] },
+          {
+            "label": "Secret resolution",
+            "nodes": ["environment variables", "inject into request"]
+          },
+          {
+            "label": "Controls",
+            "nodes": [
+              "policy-based access control",
+              "configurable rate limiting",
+              "audit log"
+            ]
+          },
+          { "label": "Response", "nodes": ["sanitized response"] }
+        ]
+      }
+    },
+    "fr": {
+      "name": "MCP Secrets Vault: Gestion de Secrets pour l'IA",
+      "summary": "Un serveur MCP publié sur npm qui permet aux assistants IA d'utiliser des secrets (clés d'API, tokens, identifiants) pour réaliser des actions autorisées sans jamais exposer les valeurs secrètes.",
+      "body": "MCP Secrets Vault se place entre un assistant IA (Claude Desktop ou tout client compatible MCP) et le dépôt de secrets. Quand l'assistant doit appeler une API, il invoque un outil vault par son nom ; le serveur résout le secret depuis les variables d'environnement, l'injecte dans la requête et retourne uniquement la réponse assainie ; la valeur brute du secret n'apparaît jamais dans le contexte du modèle. Le contrôle d'accès basé sur les politiques, la limitation de débit configurable et un journal d'audit sont intégrés. Le package est sous licence MIT, publié sur npm, et inclut des badges CI de couverture et une démonstration détaillée.",
+      "highlights": [
+        "Se place entre un assistant IA (Claude Desktop ou tout client compatible MCP) et le dépôt de secrets, invoqué comme outil vault par son nom",
+        "Résout le secret depuis les variables d'environnement, l'injecte dans la requête et retourne uniquement la réponse assainie",
+        "La valeur brute du secret n'apparaît jamais dans le contexte du modèle",
+        "Contrôle d'accès par politiques, limitation de débit configurable et journal d'audit intégrés"
+      ],
+      "metrics": [
+        { "value": "3", "label": "contrôles intégrés" },
+        { "value": "MIT", "label": "licence" },
+        { "value": "npm", "label": "publié" }
+      ],
+      "architecture": {
+        "caption": "Flux de requête, du client à la réponse assainie",
+        "layers": [
+          {
+            "label": "Client",
+            "nodes": ["Claude Desktop", "client compatible MCP"]
+          },
+          {
+            "label": "Invocation d'outil",
+            "nodes": ["outil vault par son nom"]
+          },
+          {
+            "label": "Résolution du secret",
+            "nodes": ["variables d'environnement", "injection dans la requête"]
+          },
+          {
+            "label": "Contrôles",
+            "nodes": [
+              "contrôle d'accès par politiques",
+              "limitation de débit configurable",
+              "journal d'audit"
+            ]
+          },
+          { "label": "Réponse", "nodes": ["réponse assainie"] }
+        ]
+      }
+    }
+  },
+  "atelier": {
+    "year": "2025",
+    "en": {
+      "name": "Atelier: Claude Code Plugin Marketplace",
+      "summary": "A personal Claude Code plugin marketplace shipping opinionated, reusable workflow skills (from project bootstrapping to interactive-Claude migration) as installable plugins with a consistent structure and resume-aware execution.",
+      "highlights": [
+        "Packages complex Claude Code workflows as installable plugins under a strict convention: kebab-case name, one skill per directory, a SKILL.md frontmatter definition, and a references/ folder",
+        "project-bootstrap drives a repo through a 5-stage planning workflow that produces a complete, cross-referenced docs/ slate, resume-aware so it continues rather than restarts",
+        "migrate-to-interactive-claude moves a project off the metered claude -p API onto the tmux interactive backend to preserve subscription-pool usage after the 2026 billing split",
+        "Two plugins ship at v0.1.0, installed via the Claude Code native /plugin system"
+      ],
+      "metrics": [
+        { "value": "2", "label": "plugins shipping" },
+        { "value": "v0.1.0", "label": "release" },
+        { "value": "5", "label": "planning stages" }
+      ],
+      "architecture": {
+        "caption": "From install surface down to plugin convention",
+        "layers": [
+          {
+            "label": "Install surface",
+            "nodes": ["Claude Code /plugin system"]
+          },
+          {
+            "label": "Plugins (v0.1.0)",
+            "nodes": ["project-bootstrap", "migrate-to-interactive-claude"]
+          },
+          {
+            "label": "Plugin convention",
+            "nodes": [
+              "kebab-case name",
+              "one skill per directory",
+              "SKILL.md frontmatter",
+              "references/ folder"
+            ]
+          }
+        ]
+      }
+    },
+    "fr": {
+      "name": "Atelier: Marketplace de Plugins Claude Code",
+      "summary": "Un marketplace personnel de plugins Claude Code proposant des skills de workflow réutilisables et opinionés (du bootstrapping de projet à la migration vers Claude interactif) sous forme de plugins installables avec une structure cohérente et une exécution consciente de la reprise.",
+      "highlights": [
+        "Conditionne des workflows Claude Code complexes en plugins installables selon une convention stricte : nom en kebab-case, un skill par répertoire, une définition frontmatter SKILL.md et un dossier references/",
+        "project-bootstrap pilote un dépôt à travers un workflow de planification en 5 étapes produisant un slate docs/ complet et inter-référencé, conscient de la reprise (il continue plutôt que de recommencer)",
+        "migrate-to-interactive-claude migre un projet hors de l'API claude -p facturée vers le backend tmux interactif pour préserver le pool d'abonnement après la scission de facturation 2026",
+        "Deux plugins en v0.1.0, installés via le système /plugin natif de Claude Code"
+      ],
+      "metrics": [
+        { "value": "2", "label": "plugins livrés" },
+        { "value": "v0.1.0", "label": "version" },
+        { "value": "5", "label": "étapes de planification" }
+      ],
+      "architecture": {
+        "caption": "De la surface d'installation à la convention des plugins",
+        "layers": [
+          {
+            "label": "Surface d'installation",
+            "nodes": ["système /plugin de Claude Code"]
+          },
+          {
+            "label": "Plugins (v0.1.0)",
+            "nodes": ["project-bootstrap", "migrate-to-interactive-claude"]
+          },
+          {
+            "label": "Convention des plugins",
+            "nodes": [
+              "nom en kebab-case",
+              "un skill par répertoire",
+              "frontmatter SKILL.md",
+              "dossier references/"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

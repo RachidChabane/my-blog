@@ -1,0 +1,56 @@
+---
+/**
+ * Reading-progress bar (article delight). A 2px hairline pinned to the very top of
+ * the viewport that fills with --accent as the reader moves through the article.
+ * Inline island (zero external JS -> perf-exempt). Decorative: aria-hidden, not a
+ * landmark, never focusable. The fill is a transform: scaleX (compositor-only, no
+ * layout) updated on a passive scroll listener; prefers-reduced-motion drops the
+ * smoothing transition but keeps the indicator.
+ */
+---
+
+<div class="rc-rp" aria-hidden="true">
+  <span class="rc-rp__fill" data-rp-fill></span>
+</div>
+
+<script>
+  const fill = document.querySelector<HTMLElement>('[data-rp-fill]');
+  const article = document.querySelector<HTMLElement>('.rc-article');
+  if (fill && article) {
+    const update = (): void => {
+      const span = article.offsetHeight - window.innerHeight;
+      const scrolled = window.scrollY - article.offsetTop;
+      const pct = span > 0 ? Math.min(1, Math.max(0, scrolled / span)) : 0;
+      fill.style.transform = `scaleX(${pct})`;
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+  }
+</script>
+
+<style>
+  .rc-rp {
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 2px;
+    z-index: 30; /* over the masthead (20), under the skip-link (100) */
+    pointer-events: none;
+    background: transparent;
+  }
+  .rc-rp__fill {
+    display: block;
+    height: 100%;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: var(--accent);
+    will-change: transform;
+    transition: transform 80ms linear;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rc-rp__fill {
+      transition: none;
+    }
+  }
+</style>

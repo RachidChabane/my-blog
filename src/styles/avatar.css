@@ -57,22 +57,29 @@
    classes layer ONLY animation on top. */
 .rc-dock .rc-mark {
   display: inline-grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  place-items: center;
+  /* minmax(0, 1fr) (NOT 1fr) so the tracks are driven by the container size, not the
+     nodes' min-content — otherwise cell-filling nodes create a circular track-sizing
+     loop that blows the box up far past its set width. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  place-items: stretch;
   gap: 2px;
-  padding: 14%;
+  /* FIXED px padding, never a percentage: % padding resolves against the PARENT
+     width (~380px in the panel head), which forces the box ~76px wide regardless of
+     the set 26/40/22px. border-box keeps this 2px inside the set width. */
+  padding: 2px;
   border-radius: var(--radius);
-  background: color-mix(in srgb, var(--accent) 13%, transparent);
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
 }
+/* Nodes fill their grid cell -> a dense, intentional lattice rather than tiny dots
+   floating in a padded square. Reads cleanly at every context size (launcher 40 /
+   panel 26 / thinking 22). */
 .rc-dock .rc-mark__node {
-  width: 11%;
-  height: 11%;
-  min-width: 3px;
-  min-height: 3px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   background: var(--accent);
-  opacity: 0.62;
+  opacity: 0.7;
 }
 .rc-dock .rc-mark__node:nth-child(6),
 .rc-dock .rc-mark__node:nth-child(11) {
@@ -84,8 +91,8 @@
   height: 40px;
 }
 .rc-dock .rc-ava__head .rc-mark {
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
 }
 .rc-dock .rc-think-row .rc-mark {
   width: 22px;
@@ -411,7 +418,7 @@
     animation: none !important;
   }
   .rc-dock .rc-mark__node {
-    opacity: 0.62;
+    opacity: 0.7;
   }
   .rc-dock .rc-mark__node:nth-child(6),
   .rc-dock .rc-mark__node:nth-child(11) {
