@@ -54,10 +54,13 @@ pass:
 - No stock LLM lead-ins: "It is worth noting that", "Importantly,", "Notably,", "In
   conclusion,", "Let's dive in", "delve into", "in the realm of", "a tapestry of".
   If deleting the lead-in leaves the sentence intact, it was filler -- do not write it.
-- No em-dash clusters. At most one dash per ~80 words, and never two in one sentence;
-  stacked-clause dashes ("X -- which does Y -- and thus Z") read as machine output.
-  Reach for a period, a colon, or parentheses before a second dash. Judged per
-  language: French tiret cadence is held to the same bar as English.
+- No em-dashes, ever. The em-dash (the long dash, U+2014) is banned outright in
+  prose, headings, frontmatter, and source labels alike -- not as a parenthetical,
+  not as a clause break, not for emphasis. It is one of the strongest LLM tells, so
+  the house has zero tolerance, not a budget. Replace by grammar: an appositive or
+  aside takes commas; a comma-bearing aside takes parentheses; a break between two
+  independent clauses takes a semicolon or a period; a list or elaboration that
+  follows takes a colon. Same bar in both languages -- no French tiret cadence either.
 - No hedging stacks: "seems to suggest", "might potentially", "arguably". Make the
   claim or cut it.
 - No over-signposting: avoid "First, we... Next, we... Finally, we..." cadences and

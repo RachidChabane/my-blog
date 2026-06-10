@@ -142,8 +142,10 @@ def _humanize_section(
         "     Hand it a context label and point it at the house style so it does not\n"
         "     stall asking for context:\n"
         '       context: "personal practitioner AI-engineering blog post; no emoji;\n'
-        '       voice per pipeline/house_style.md. Flag specifically: flat definitional\n'
-        '       or textbook leads (X is/does Y openers, field-describing intros); a\n'
+        '       no em-dashes (U+2014, the long dash, banned outright).\n'
+        '       voice per pipeline/house_style.md. Flag specifically: any em-dash; flat\n'
+        '       definitional or textbook leads (X is/does Y openers, field-describing\n'
+        '       intros); a\n'
         '       missing opinionated stance (neutral explainer prose with no take); the\n'
         '       absence of a concrete number, command, or named failure mode in the\n'
         '       argument; and, for the FR draft, French that reads like a translation of\n'
