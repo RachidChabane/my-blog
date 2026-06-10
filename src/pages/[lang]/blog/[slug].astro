@@ -36,6 +36,8 @@ import SourceList from '@/components/SourceList.astro';
 import PrevNext from '@/components/PrevNext.astro';
 import ArticleAskButton from '@/components/ArticleAskButton.astro';
 import ProvenanceSidenotes from '@/components/ProvenanceSidenotes.astro';
+import ReadingProgress from '@/components/ReadingProgress.astro';
+import ArticleTools from '@/components/ArticleTools.astro';
 import type { ProvenanceCitation } from '@/lib/avatar/sidenotes';
 
 export const getStaticPaths = (async () => {
@@ -113,6 +115,7 @@ const title = `${entry.data.title} · rachid chabane`;
 
 <Base title={title} description={dek} lang={lang} slugMap={slugMap}>
   <article class="rc-article rc-enter">
+    <ReadingProgress />
     <a class="rc-back" href={localePath(lang, 'blog')}>← {s.back}</a>
     {
       /* S9 search corpus (task 15): data-pagefind-body restricts Pagefind to the
@@ -159,6 +162,11 @@ const title = `${entry.data.title} · rachid chabane`;
         <ProvenanceSidenotes citations={provenanceCitations} />
       )
     }
+    <ArticleTools
+      copyLink={s.copyLink}
+      copyCode={s.copyCode}
+      copied={s.copied}
+    />
   </article>
 </Base>
 

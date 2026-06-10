@@ -74,13 +74,20 @@ test.describe('contact links present (mailto/external — no backend form, W-2)'
   });
 });
 
-test.describe('brand — non-figurative (D-007)', () => {
-  test('the about mark is the abstract lattice; no photo/figure in <main>', async ({
+test.describe('brand — portrait + abstract agent glyph (D-007 split)', () => {
+  test('the portrait is a real photo; the abstract lattice still marks the AI agent', async ({
     page,
   }) => {
     await page.goto('/fr/about/');
-    await expect(page.locator('.rc-about__mark .avatar-glyph')).toBeVisible();
-    await expect(page.locator('main img')).toHaveCount(0); // launcher lives outside <main>
+    // Owner decision: a real profile photo identifies the author at the top.
+    const photo = page.locator('.rc-about__mark img');
+    await expect(photo).toBeVisible();
+    await expect(photo).toHaveAttribute('alt', /.+/);
+    // Exactly one image in <main> (the portrait); the avatar launcher is outside it.
+    await expect(page.locator('main img')).toHaveCount(1);
+    // The abstract lattice is NOT gone — it still stands in for the agent in the
+    // how-it-works note (the non-figurative mark for the AI, not the human).
+    await expect(page.locator('.rc-howit__mark .avatar-glyph')).toBeVisible();
   });
 });
 

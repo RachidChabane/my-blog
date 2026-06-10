@@ -148,6 +148,9 @@ export interface ArticleDetailStrings {
   askPrompt: string; // quiet lead-in above the "ask the agent" entry button
   askLabel: string; // entry-button text + aria-label (opens the avatar panel)
   askSeed: string; // seed question template; "{topic}" is filled in the page
+  copyLink: string; // aria-label for the per-heading copy-permalink button
+  copyCode: string; // aria-label/text for the copy-code-block button
+  copied: string; // transient "copied" confirmation (both link + code)
 }
 
 export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
@@ -162,6 +165,9 @@ export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
     askPrompt: 'Envie d’aller plus loin ?',
     askLabel: 'Interroger l’agent sur cet article',
     askSeed: 'Que dit cet article sur {topic} ?',
+    copyLink: 'Copier le lien vers cette section',
+    copyCode: 'Copier le code',
+    copied: 'Copié',
   },
   en: {
     back: 'All articles',
@@ -174,6 +180,9 @@ export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
     askPrompt: 'Want to go deeper?',
     askLabel: 'Ask the agent about this article',
     askSeed: 'What does this article say about {topic}?',
+    copyLink: 'Copy link to this section',
+    copyCode: 'Copy code',
+    copied: 'Copied',
   },
 };
 
@@ -439,7 +448,7 @@ export const ABOUT: Record<Locale, AboutStrings> = {
   fr: {
     metaDesc:
       'À propos de Rachid Chabane et de ce carnet d’ingénierie IA maintenu de façon autonome.',
-    eyebrow: 'À propos',
+    eyebrow: 'Rachid Chabane',
     title: 'À propos',
     tagline:
       'Ingénieur logiciel à l’intersection du cloud et de l’IA appliquée, du besoin métier à la production. Basé à Lille.',
@@ -458,7 +467,7 @@ export const ABOUT: Record<Locale, AboutStrings> = {
   en: {
     metaDesc:
       'About Rachid Chabane and this autonomously maintained AI engineering notebook.',
-    eyebrow: 'About',
+    eyebrow: 'Rachid Chabane',
     title: 'About',
     tagline:
       'Software engineer working where cloud meets applied AI, from business requirements to production. Based in Lille, France.',
