@@ -51,7 +51,7 @@ from pipeline.gate.fallback import (
     rewrite_brief_for_fallback,
     write_alert,
 )
-from pipeline.gate.grounding import FakeLinkChecker, check_grounding
+from pipeline.gate.grounding import FakeLinkChecker, HttpLinkChecker, check_grounding
 from pipeline.gate.style import check_style
 from pipeline.stages.research import CandidatesDoc
 from pipeline.stages.review import review_claim_source_map
@@ -306,6 +306,93 @@ def test_check_grounding_dangling_citation():
     body = _fixture_text("draft-en.valid.md") + "\nA stray citation [s9].\n"
     problems = check_grounding(csm, body, "en", FakeLinkChecker())
     assert any("dangling citation [s9]" in p for p in problems)
+
+
+def _checker(route, **kw):
+    opener = _RouteOpener(route)
+    return HttpLinkChecker(opener=opener, **kw), opener
+
+
+def test_http_link_checker_2xx_reachable():
+    chk, op = _checker(lambda m, u: 200)
+    assert chk.reachable("https://ok.example/a") is True
+    assert op.calls == [("HEAD", "https://ok.example/a")]      # HEAD only; no GET fallback
+
+
+def test_http_link_checker_head_405_falls_back_to_ranged_get():
+    chk, op = _checker(lambda m, u: 200 if m == "GET" else 405)
+    assert chk.reachable("https://x.example/p") is True
+    assert op.calls == [("HEAD", "https://x.example/p"), ("GET", "https://x.example/p")]
+    assert op.requests[1].get_header("Range") == "bytes=0-0"   # the GET fallback is ranged
+
+
+def test_http_link_checker_4xx_unreachable():
+    chk, op = _checker(lambda m, u: 404)
+    assert chk.reachable("https://x.example/missing") is False
+    assert op.calls == [("HEAD", "https://x.example/missing")]  # no GET retry for a plain 404
+
+
+def test_http_link_checker_5xx_unreachable():
+    chk, _ = _checker(lambda m, u: 503)
+    assert chk.reachable("https://x.example/boom") is False
+
+
+def test_http_link_checker_timeout_unreachable():
+    chk, _ = _checker(lambda m, u: "timeout")
+    assert chk.reachable("https://slow.example/x") is False
+
+
+def test_http_link_checker_dns_failure_unreachable():
+    chk, _ = _checker(lambda m, u: "dns")
+    assert chk.reachable("https://nope.invalid/x") is False
+
+
+def test_http_link_checker_locationless_3xx_is_reachable():
+    # a 3xx with no Location (e.g. 304) -> reachable per the "treat 3xx as reachable" rule
+    chk, op = _checker(lambda m, u: 304)
+    assert chk.reachable("https://x.example/cached") is True
+    assert len(op.calls) == 1
+
+
+def test_http_link_checker_follows_redirect_to_2xx():
+    def route(m, u):
+        return ("redirect", 301, "https://x.example/final") if u.endswith("/start") else 200
+    chk, op = _checker(route)
+    assert chk.reachable("https://x.example/start") is True
+    assert op.calls == [("HEAD", "https://x.example/start"), ("HEAD", "https://x.example/final")]
+
+
+def test_http_link_checker_redirect_to_dead_is_unreachable():
+    # following surfaces a terminal 404 -> dead (the value of following)
+    def route(m, u):
+        return ("redirect", 302, "https://x.example/gone") if u.endswith("/start") else 404
+    chk, _ = _checker(route)
+    assert chk.reachable("https://x.example/start") is False
+
+
+def test_http_link_checker_redirect_bound_is_capped():
+    # an infinite self-redirect: the LOAD-BEARING assertion is the bounded request count (no hang).
+    chk, op = _checker(lambda m, u: ("redirect", 302, u), max_redirects=3)
+    result = chk.reachable("https://loop.example/x")
+    assert len(op.calls) == 3 + 1                  # max_redirects + 1: bounded, never loops forever
+    assert result is True                          # lenient-by-design (secondary; see contract)
+
+
+def test_http_link_checker_caches_per_url():
+    chk, op = _checker(lambda m, u: 200)
+    url = "https://x.example/cited-many-times"
+    assert chk.reachable(url) is True
+    assert chk.reachable(url) is True
+    assert op.calls == [("HEAD", url)]             # fetched once; 2nd call is a cache hit
+
+
+def test_make_link_checker_real_returns_http_checker():
+    # G5a closed: --link-check real no longer raises; it returns the real backend.
+    assert isinstance(grounding._make_link_checker("real", None), HttpLinkChecker)
+    # dead_urls is a fake-only concept -> ignored for real (still an HttpLinkChecker)
+    assert isinstance(
+        grounding._make_link_checker("real", "https://whatever.example"), HttpLinkChecker
+    )
 
 
 def test_grounding_cli(tmp_path, monkeypatch):
