@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "candidates": [
+    {
+      "topic_id": "canon-repriced",
+      "dedup_key": "ai reprices the software engineering canon wedge between legibility and change cost",
+      "title": "AI Re-Priced the Whole Canon, It Didn't Repeal It",
+      "summary": "Every engineering convention bet that the binding cost of software is editing code a human must read; AI drives a wedge between legibility and change-cost, so the canon splits into a substrate-independent economic core that binds harder and a freed human-cognition layer that gets cheaper, flips into a liability, or has no analog.",
+      "why_relevant": "Sorts the established software-engineering canon (SOLID, DRY, the design patterns, the testing pyramid, code review) by what each practice optimized for, change-cost economics versus human cognition, under agentic authorship. Anchored in 2025-2026 empirical studies (the lines-of-code-to-architectural-smell law, robustness deficits, the class-level generation gap) and institutional facts (the AGENTS.md standard, spec-driven tooling, MIT concepts-and-synchronizations). First-person, self-referential to the pipeline that ships it.",
+      "tags": [
+        "agentic-coding",
+        "qualite",
+        "evaluation"
+      ],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Kent Beck — coupling and cohesion (Tidy First?)",
+          "url": "https://tidyfirst.substack.com/p/tldr-coupling-and-later-cohesion",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "If I change this element & as a result I have to also change that element, those two elements are coupled with respect to that change. Coupling cascades. Most changes are small. When the avalanche starts, tho, the changes, while initially small, compound to become enormous compared to “ordinary” changes."
+        },
+        {
+          "source_id": "s2",
+          "label": "Google Cloud / DORA — 2025 State of AI-assisted Software Development",
+          "url": "https://cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "AI doesn't fix a team; it amplifies what's already there. Strong teams use AI to become even better and more efficient. Struggling teams will find that AI only highlights and intensifies their existing problems. Teams working in loosely coupled architectures with fast feedback loops see gains, while those constrained by tightly coupled systems and slow processes see little or no benefit."
+        },
+        {
+          "source_id": "s3",
+          "label": "AI-Generated Smells (Concordia) — LoC-to-architectural-decay",
+          "url": "https://arxiv.org/html/2605.02741",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "Most significantly, TLoC exhibited a near-perfect positive correlation with architectural smells (ρ=0.94, p<0.001). Counter-intuitively, the specificity of requirements (Stage) had no statistical impact on any smell category (p>0.8)."
+        },
+        {
+          "source_id": "s4",
+          "label": "Enhancing the Robustness of LLM-Generated Code (Li et al.)",
+          "url": "https://arxiv.org/abs/2503.20197",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "Evaluating four state-of-the-art code LLMs, we find that 35.2% of their outputs are less robust than human-written code, with over 90% of deficiencies caused by missing conditional checks."
+        },
+        {
+          "source_id": "s5",
+          "label": "Peter Norvig — Design Patterns in Dynamic Languages",
+          "url": "https://norvig.com/design-patterns/",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "16 of 23 patterns are either invisible or simpler, due to: First-class types (6): Abstract-Factory, Flyweight, Factory-Method, State, Proxy, Chain-Of-Responsibility. First-class functions (4): Command, Strategy, Template-Method, Visitor."
+        },
+        {
+          "source_id": "s6",
+          "label": "Do Code LLMs Understand Design Patterns? (Pan et al.)",
+          "url": "https://arxiv.org/html/2501.04835v1",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "The classification results indicate that even the best-performing models, GPT-4o and Llama-31-70B, achieved only 38.81% overall accuracy, highlighting substantial room for improvement."
+        },
+        {
+          "source_id": "s7",
+          "label": "ClassEval — class-level code generation benchmark (Du et al.)",
+          "url": "https://arxiv.org/abs/2308.01861",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "All existing LLMs show much worse performance on class-level code generation compared to on standalone method-level code generation benchmarks like HumanEval."
+        },
+        {
+          "source_id": "s8",
+          "label": "AGENTS.md — open agent-instruction standard",
+          "url": "https://agents.md/",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "AGENTS.md is a simple, open format used by over 60k open-source projects. One AGENTS.md works across many agents. AGENTS.md is now stewarded by the Agentic AI Foundation under the Linux Foundation."
+        },
+        {
+          "source_id": "s9",
+          "label": "GitHub Blog — spec-driven development / Spec Kit",
+          "url": "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "We're moving from 'code is the source of truth' to 'intent is the source of truth.' With AI the specification becomes the source of truth and determines what gets built."
+        },
+        {
+          "source_id": "s10",
+          "label": "MIT News — concepts and synchronizations (Daniel Jackson)",
+          "url": "https://news.mit.edu/2025/mit-researchers-propose-new-model-for-legible-modular-software-1106",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "Because synchronizations are explicit and declarative, they can be analyzed, verified, and of course generated by an LLM. This opens the door to safer, more automated software development, where AI assistants can propose new features without introducing hidden side effects."
+        },
+        {
+          "source_id": "s11",
+          "label": "Will It Survive? — AI code modification rate (arXiv 2601.16809)",
+          "url": "https://arxiv.org/abs/2601.16809",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "At the line level, it exhibits a 15.8 percentage-point lower modification rate and 16% lower hazard of modification."
+        },
+        {
+          "source_id": "s12",
+          "label": "AI architectural erosion (Amasanti & Jahic, Cambridge)",
+          "url": "https://arxiv.org/abs/2506.17833",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "When solving larger and more complex problems, AI tools generate solutions of a lower quality, indicating the need for architects to perform problem decomposition and solution integration."
+        },
+        {
+          "source_id": "s13",
+          "label": "GitClear — AI Copilot Code Quality 2025",
+          "url": "https://www.gitclear.com/ai_assistant_code_quality_2025_research",
+          "retrieved_at": "2026-06-09",
+          "excerpt": "Lines classified as 'copy/pasted' (cloned) rose from 8.3% to 12.3% in the same period. The percentage of changed code lines (associated with refactoring) sunk from 25% of changed lines in 2021, to less than 10% in 2024."
+        }
+      ]
+    }
+  ]
+}
