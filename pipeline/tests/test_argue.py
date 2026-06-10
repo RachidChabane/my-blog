@@ -98,8 +98,17 @@ def test_argue_prompt_substrings():
         "do NOT override its verdict",           # spans a newline in dispatch -> needs the flatten
         "PYTHONPATH=/abs/repo",
         "python3 -m pipeline.gate.argument",
+        # G4 source-independence PRODUCER step (task 6) -- a SECOND judge, argue-scoped
+        "/abs/repo/pipeline/runs/run-1/plans/task-argue/independence.json",  # independence out_path
+        "/abs/repo/pipeline/runs/run-1/plans/task-research/candidates.json",  # candidates read
+        "source-independence judge",                 # the dispatched role
+        '"verdict": "independent"',                  # the independence verdict vocabulary
+        "single_origin",                             # the blocking verdict word
+        "distinct registrable domains",              # the deterministic backstop framing
+        "python3 -m pipeline.gate.independence",     # the second gate shell-out
     ]:
         assert needle in flat, f"argue prompt missing {needle!r}"
+    assert "TWO gates BLOCK this task" in flat  # task 6: argument-rigor + source-independence
 
 
 def test_editorial_descriptions_binds_argue():
