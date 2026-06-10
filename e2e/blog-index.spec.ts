@@ -12,25 +12,28 @@ import { test, expect } from '@playwright/test';
 // ("Explainers" / "Décryptages") with all 8 rows.
 
 test.describe('S2 list renders', () => {
-  test('FR: newest-first, all 8 items grouped by category, per-item meta/dek/title-link', async ({
+  test('FR: items grouped by category, per-item meta/dek/title-link', async ({
     page,
   }) => {
     await page.goto('/fr/blog/');
     await expect(page.locator('h1')).toHaveText('Articles');
 
-    // Category section heading (vocab label, FR). The seed corpus is all-explainers.
+    // Category section headings (vocab labels, FR): the flagship Essay's section and
+    // the Explainers section both render. (Corpus-robust: assert presence, not counts.)
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'Essais' })
+    ).toBeVisible();
     await expect(
       page.getByRole('heading', { level: 2, name: 'Décryptages' })
     ).toBeVisible();
 
     const rows = page.locator('article.rc-arow');
-    await expect(rows).toHaveCount(8);
+    await expect(rows.first()).toBeVisible();
+    // at least the known corpus renders; robust to future pipeline publishes
+    expect(await rows.count()).toBeGreaterThanOrEqual(9);
 
-    // newest-first: the 30-05-2026 post leads
+    // the leading row is a valid article link (exact ordering is covered by unit tests)
     const firstTitle = rows.first().locator('.rc-arow__title a');
-    await expect(firstTitle).toHaveText(
-      'Orchestrer des agents de code avec des workflows déterministes'
-    );
     await expect(firstTitle).toHaveAttribute('href', /^\/fr\/blog\/.+\/$/);
 
     // per-item: date (DD-MM-YYYY) + reading-time in the meta, plus a dek
@@ -45,11 +48,17 @@ test.describe('S2 list renders', () => {
   }) => {
     await page.goto('/en/blog/');
     await expect(page.locator('h1')).toHaveText('Articles');
-    // Category section heading (vocab label, EN).
+    // Category section headings (vocab labels, EN): Essays (flagship) + Explainers.
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'Essays' })
+    ).toBeVisible();
     await expect(
       page.getByRole('heading', { level: 2, name: 'Explainers' })
     ).toBeVisible();
-    await expect(page.locator('article.rc-arow')).toHaveCount(8);
+    await expect(page.locator('article.rc-arow').first()).toBeVisible();
+    expect(
+      await page.locator('article.rc-arow').count()
+    ).toBeGreaterThanOrEqual(9);
     await expect(
       page.locator('article.rc-arow .rc-arow__title a').first()
     ).toHaveAttribute('href', /^\/en\/blog\/.+\/$/);
@@ -60,7 +69,7 @@ test.describe('S2 list renders', () => {
 });
 
 test.describe('category grouping (single page, no pagination)', () => {
-  test('FR: all 8 published posts on one page, no pager, no duplicates', async ({
+  test('FR: all published posts on one page, no pager, no duplicates', async ({
     page,
   }) => {
     await page.goto('/fr/blog/');
@@ -71,12 +80,14 @@ test.describe('category grouping (single page, no pagination)', () => {
     const titles = (
       await page.locator('article.rc-arow .rc-arow__title a').allInnerTexts()
     ).map((t) => t.trim());
-    expect(titles).toHaveLength(8);
+    expect(titles.length).toBeGreaterThanOrEqual(9);
     // No article is rendered twice across the grouped sections.
-    expect(new Set(titles).size).toBe(8);
+    expect(new Set(titles).size).toBe(titles.length);
 
     // The count meta reflects the full corpus, not a page slice.
-    await expect(page.locator('.rc-pagehd__meta')).toContainText('8');
+    await expect(page.locator('.rc-pagehd__meta')).toContainText(
+      String(titles.length)
+    );
   });
 
   test('headings precede their rows in CATEGORY_ORDER (essays → explainers → briefings)', async ({

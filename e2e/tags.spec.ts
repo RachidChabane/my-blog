@@ -52,13 +52,16 @@ test.describe('S4 → S5 navigation (the headline flow)', () => {
 });
 
 test.describe('S5 tag index — scope + shared chip rail', () => {
-  test('FR: qualite holds exactly 1 article (singular count form)', async ({
+  test('FR: qualite tag page lists its articles (plural count form)', async ({
     page,
   }) => {
     await page.goto('/fr/tags/qualite/');
     await expect(page.locator('h1')).toHaveText('qualité');
-    await expect(page.locator('article.rc-arow')).toHaveCount(1);
-    await expect(page.locator('.rc-pagehd__meta')).toHaveText('1 écrit');
+    const rows = page.locator('article.rc-arow');
+    await expect(rows.first()).toBeVisible();
+    const n = await rows.count();
+    expect(n).toBeGreaterThanOrEqual(2);
+    await expect(page.locator('.rc-pagehd__meta')).toHaveText(`${n} écrits`);
   });
 
   test('EN: the chip-rail "All" returns to the blog index (unfiltered), not a dead end', async ({
