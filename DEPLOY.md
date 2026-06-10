@@ -45,7 +45,7 @@ launcher + the scoped per-article button). Done autonomously this bring-up:
 2. **Pipeline first run (§3 step 5) — owner DECISION.** The writing-rigor slate
    (`docs/tasks-writing-rigor.yaml`) is now **complete**, so the "run after the writing-rigor slate lands"
    path is unblocked. Step 5 now **gates the first push-enabled run on the golden-set judgment proof (5a)**
-   — the live proof that every gate's *judgment* (not just its fail-closed mechanism) catches a planted
+   — the live proof that every gate's _judgment_ (not just its fail-closed mechanism) catches a planted
    defect — and that first run then feeds the **dedup-threshold calibration (5b)** and an optional **live
    link-reachability pass (5c)**, all before the daily schedule is enabled. It is still owner-gated: it
    **publishes real content**, and `PIPELINE_GIT_PUSH=1` fires the CI deploy + reindex — so run it
@@ -249,16 +249,16 @@ execute --remote`): the NDJSON/SQL generation is tested; the wrangler invocation
 
 ## 5 · Env var reference
 
-| Var                     | Used by                                                                 | Value                              |
-| ----------------------- | ----------------------------------------------------------------------- | ---------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | wrangler (provision, deploy, reindex)                                   | O1 rotated token                   |
-| `CLOUDFLARE_ACCOUNT_ID` | wrangler + Workers AI REST                                              | `b80b576d7908f66d87478b739446ae55` |
-| `OPENROUTER_API_KEY`    | avatar LLM (Function + CI)                                              | O3                                 |
-| `EMBEDDINGS_API_KEY`    | build:index / reindex / pipeline embedder (= CF token, Workers AI REST) | = `CLOUDFLARE_API_TOKEN`           |
-| `SITE_URL`              | reindex prior-fetch, RSS, canonical URLs                                | deployed URL                       |
-| `PIPELINE_EMBEDDER`     | pipeline live runs                                                      | `real`                             |
-| `PIPELINE_GIT_PUSH`     | runner deploy-on-success                                                | `1`                                |
-| `ALERT_WEBHOOK_URL`     | `WebhookAlertSink`                                                      | O6                                 |
-| `UPTIME_PING_URL`       | external dead-man's-switch                                              | O6 (optional)                      |
+| Var                     | Used by                                                                 | Value                                                  |
+| ----------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------ |
+| `CLOUDFLARE_API_TOKEN`  | wrangler (provision, deploy, reindex)                                   | O1 rotated token                                       |
+| `CLOUDFLARE_ACCOUNT_ID` | wrangler + Workers AI REST                                              | `b80b576d7908f66d87478b739446ae55`                     |
+| `OPENROUTER_API_KEY`    | avatar LLM (Function + CI)                                              | O3                                                     |
+| `EMBEDDINGS_API_KEY`    | build:index / reindex / pipeline embedder (= CF token, Workers AI REST) | = `CLOUDFLARE_API_TOKEN`                               |
+| `SITE_URL`              | reindex prior-fetch, RSS, canonical URLs                                | deployed URL                                           |
+| `PIPELINE_EMBEDDER`     | pipeline live runs                                                      | `real`                                                 |
+| `PIPELINE_GIT_PUSH`     | runner deploy-on-success                                                | `1`                                                    |
+| `ALERT_WEBHOOK_URL`     | `WebhookAlertSink`                                                      | O6                                                     |
+| `UPTIME_PING_URL`       | external dead-man's-switch                                              | O6 (optional)                                          |
 | `GOLDEN_LIVE`           | golden-set judgment proof (bring-up, test-only)                         | `1` to run the live judge proof (default unset = skip) |
 | `GOLDEN_LIVE_DIR`       | golden-set judgment proof — dir of real-judge outputs                   | path to `<entry-id>/<produces>` files (bring-up)       |

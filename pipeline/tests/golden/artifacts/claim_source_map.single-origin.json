@@ -1,18 +1,42 @@
 {
   "claims": [
-    { "lang": "en", "claim": "Technique Y doubles throughput in production LLM serving.", "source_id": "s1" },
-    { "lang": "fr", "claim": "La technique Y double le debit en production LLM.", "source_id": "s1" },
-    { "lang": "en", "claim": "LLM serving is latency-bound at the decode step.", "source_id": "s2" },
-    { "lang": "fr", "claim": "Le service LLM est limite par la latence a l'etape de decodage.", "source_id": "s2" }
+    {
+      "lang": "en",
+      "claim": "Technique Y doubles throughput in production LLM serving.",
+      "source_id": "s1"
+    },
+    {
+      "lang": "fr",
+      "claim": "La technique Y double le debit en production LLM.",
+      "source_id": "s1"
+    },
+    {
+      "lang": "en",
+      "claim": "LLM serving is latency-bound at the decode step.",
+      "source_id": "s2"
+    },
+    {
+      "lang": "fr",
+      "claim": "Le service LLM est limite par la latence a l'etape de decodage.",
+      "source_id": "s2"
+    }
   ],
   "sources": [
-    { "source_id": "s1", "label": "Vendor whitepaper (single origin)",
-      "url": "https://vendor.example/whitepaper-technique-y", "retrieved_at": "2026-02-01",
+    {
+      "source_id": "s1",
+      "label": "Vendor whitepaper (single origin)",
+      "url": "https://vendor.example/whitepaper-technique-y",
+      "retrieved_at": "2026-02-01",
       "source_date": "2026-01-10",
-      "excerpt": "Our technique Y doubles throughput in production LLM serving." },
-    { "source_id": "s2", "label": "Systems paper on LLM serving",
-      "url": "https://arxiv.example/abs/llm-serving-latency", "retrieved_at": "2026-02-01",
+      "excerpt": "Our technique Y doubles throughput in production LLM serving."
+    },
+    {
+      "source_id": "s2",
+      "label": "Systems paper on LLM serving",
+      "url": "https://arxiv.example/abs/llm-serving-latency",
+      "retrieved_at": "2026-02-01",
       "source_date": "2026-01-05",
-      "excerpt": "LLM serving is latency-bound at the decode step under typical batch sizes." }
+      "excerpt": "LLM serving is latency-bound at the decode step under typical batch sizes."
+    }
   ]
 }

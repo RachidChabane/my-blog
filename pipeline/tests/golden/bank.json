@@ -38,12 +38,20 @@
   {
     "id": "grounding-dead-link",
     "gate": "grounding",
-    "args": ["--lang", "en", "--dead-urls", "https://arxiv.example/abs/agentic-harness"],
+    "args": [
+      "--lang",
+      "en",
+      "--dead-urls",
+      "https://arxiv.example/abs/agentic-harness"
+    ],
     "artifacts": {
       "claim_source_map.json": "fixtures/claim_source_map.complete.json",
       "draft-en.md": "fixtures/draft-en.valid.md"
     },
-    "expect_contains": ["dead link", "https://arxiv.example/abs/agentic-harness"],
+    "expect_contains": [
+      "dead link",
+      "https://arxiv.example/abs/agentic-harness"
+    ],
     "why": "A cited source URL is unreachable (FakeLinkChecker dead-url). The M-4 source-grounding gate must BLOCK and name the dead link. Deterministic-only: grounding has no judge sub-agent; the real HTTP checker is task 7."
   },
   {
@@ -66,7 +74,9 @@
     "why": "A trivially-true / unfalsifiable thesis ('AI is transforming software engineering'). The argument-rigor judge returns 'weak' (the thesis says nothing a reader could disagree with). The G1 gate must BLOCK before the topic is drafted bilingually. CADENCE-SAFETY: validate the LIVE judgment at bring-up so an over-aggressive judge does not burn the fallback shortlist.",
     "live": {
       "produces": "argument.json",
-      "adversarial_artifacts": { "argue-brief.md": "golden/artifacts/argue-brief.trivial.md" },
+      "adversarial_artifacts": {
+        "argue-brief.md": "golden/artifacts/argue-brief.trivial.md"
+      },
       "expect_contains": ["argument verdict is"]
     }
   },
@@ -79,7 +89,9 @@
     "why": "A thesis pinned to a transient fact (a current model ranking) that ages badly. The judge returns 'weak'. The G1 gate must BLOCK.",
     "live": {
       "produces": "argument.json",
-      "adversarial_artifacts": { "argue-brief.md": "golden/artifacts/argue-brief.aging.md" },
+      "adversarial_artifacts": {
+        "argue-brief.md": "golden/artifacts/argue-brief.aging.md"
+      },
       "expect_contains": ["argument verdict is"]
     }
   },
@@ -92,7 +104,9 @@
     "why": "An overstated central claim a single counterexample refutes: the strongest attack wins. The judge returns 'weak'. The G1 gate must BLOCK.",
     "live": {
       "produces": "argument.json",
-      "adversarial_artifacts": { "argue-brief.md": "golden/artifacts/argue-brief.attack.md" },
+      "adversarial_artifacts": {
+        "argue-brief.md": "golden/artifacts/argue-brief.attack.md"
+      },
       "expect_contains": ["argument verdict is"]
     }
   },
@@ -116,7 +130,9 @@
     "id": "source-quality-confidently-wrong",
     "gate": "source_quality",
     "args": [],
-    "artifacts": { "source_quality.json": "golden/artifacts/source_quality.wrong.json" },
+    "artifacts": {
+      "source_quality.json": "golden/artifacts/source_quality.wrong.json"
+    },
     "expect_contains": ["source-quality verdict is", "unsound"],
     "why": "A faithfully-cited but confidently-wrong / non-authoritative source: the s2 excerpt literally states the 92% claim (fact-check PASSES), but the origin is a self-reported personal blog no primary/authoritative source corroborates. The G2 source-quality gate must BLOCK with an 'unsound' verdict -- the 'supported by this text' vs 'the source is actually right' distinction. CADENCE-SAFETY: validate the LIVE judgment at bring-up so an over-aggressive judge does not burn the fallback shortlist.",
     "live": {
@@ -131,7 +147,9 @@
     "id": "source-quality-single-origin",
     "gate": "source_quality",
     "args": [],
-    "artifacts": { "source_quality.json": "golden/artifacts/source_quality.single-origin.json" },
+    "artifacts": {
+      "source_quality.json": "golden/artifacts/source_quality.single-origin.json"
+    },
     "expect_contains": ["source-quality verdict is", "unsound"],
     "why": "A load-bearing claim resting on a single origin (a vendor whitepaper) with no independent corroboration among the other cited sources. Fact-check PASSES (the lone excerpt supports the claim), but a single-origin extraordinary claim is not sound. The G2 source-quality gate must BLOCK with an 'unsound' verdict.",
     "live": {

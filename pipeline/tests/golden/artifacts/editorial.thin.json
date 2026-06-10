@@ -1,8 +1,14 @@
 {
   "verdict": "thin",
   "issues": [
-    {"dimension": "non_obviousness", "note": "The angle restates the consensus every practitioner already holds; a reader learns nothing they could disagree with."},
-    {"dimension": "structure", "note": "Two flat explainer sections with no load-bearing through-line; the piece does not earn its length."}
+    {
+      "dimension": "non_obviousness",
+      "note": "The angle restates the consensus every practitioner already holds; a reader learns nothing they could disagree with."
+    },
+    {
+      "dimension": "structure",
+      "note": "Two flat explainer sections with no load-bearing through-line; the piece does not earn its length."
+    }
   ],
   "reason": "Obvious angle plus an incoherent two-section structure: thin as a finished article."
 }

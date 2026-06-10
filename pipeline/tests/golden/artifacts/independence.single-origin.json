@@ -1,5 +1,7 @@
 {
   "verdict": "single_origin",
-  "origins": ["a single Vendor X press release (2026-01-15) re-run across both outlets"],
+  "origins": [
+    "a single Vendor X press release (2026-01-15) re-run across both outlets"
+  ],
   "reason": "Both cited sources are syndications of one Vendor X press release -- distinct outlets and hosts, but a single origin with no independent corroboration."
 }
