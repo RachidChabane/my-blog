@@ -83,8 +83,9 @@ tasks:
     key_files: [pipeline/prompts/argue.py, pipeline/gate/argument.py]
     commit_message: 'content(argue): argument.json (steelman/attack/reconcile)'
     depends_on: [select]
-    # G1 gate (task 3): single gate, no fr/en split (the claim skeleton is language-neutral).
-    gates_extra: [argument-rigor]
+    # G1 + G4 gates: single gates, no fr/en split (the claim skeleton + source set are
+    # language-neutral, judged once before the bilingual draft is paid for).
+    gates_extra: [argument-rigor, source-independence]
   - id: draft
     phase: draft
     title: 'Draft FR+EN with claim->source map (review loop + M-4 gates apply here)'

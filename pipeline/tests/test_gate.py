@@ -66,7 +66,7 @@ _DRAFT_GATE_NAMES = [
     "editorial-quality",  # task 4: G3, a draft gate -> precedes the argue gate in load order
     "source-quality",     # task 5: G2 -- draft gate; precedes the argue gate in load order
 ]
-_ARGUE_GATE_NAMES = ["argument-rigor"]
+_ARGUE_GATE_NAMES = ["argument-rigor", "source-independence"]  # task 6 adds source-independence
 _ALL_GATE_NAMES = _DRAFT_GATE_NAMES + _ARGUE_GATE_NAMES  # invariants.yaml load order
 _S1_URL = "https://arxiv.example/abs/agentic-harness"  # source s1 in the complete map
 
@@ -555,7 +555,7 @@ def test_run_fallback_blocked_argue_dry_skip_names_argue(config):
 # ---------------------------------------------------------------------------
 
 
-def test_invariants_load_as_nine_blocking_shell_gates():
+def test_invariants_load_as_ten_blocking_shell_gates():
     ensure_cpe_importable()
     from claude_plan_execute.gates import GateRegistry
     from claude_plan_execute.gates.invariants import (
@@ -566,8 +566,9 @@ def test_invariants_load_as_nine_blocking_shell_gates():
     out, err = io.StringIO(), io.StringIO()
     with redirect_stdout(out), redirect_stderr(err):
         pairs = load_invariants(_PIPELINE_DIR / "invariants.yaml")
-    # load order == _DRAFT_GATE_NAMES + _ARGUE_GATE_NAMES: the 6 M-4 + editorial-quality
-    # (task 4) + source-quality (task 5) precede argument-rigor (task 3), appended LAST.
+    # load order == _DRAFT_GATE_NAMES + _ARGUE_GATE_NAMES: the 6 M-4 + editorial-quality (task 4)
+    # + source-quality (task 5) + argument-rigor (task 3) precede source-independence (task 6),
+    # appended LAST.
     assert [name for name, _ in pairs] == _ALL_GATE_NAMES
     assert all(gate.kind == "shell" for _, gate in pairs)
     assert all(gate.on_failure == "block" for _, gate in pairs)
@@ -577,7 +578,7 @@ def test_invariants_load_as_nine_blocking_shell_gates():
     registry = GateRegistry()  # a LOCAL registry, not the singleton
     register_invariants_on(registry, pairs)
     resolved, unknown = registry.resolve(_ALL_GATE_NAMES)
-    assert len(resolved) == 9
+    assert len(resolved) == 10
     assert unknown == []
 
 
@@ -601,7 +602,10 @@ def test_gate_clis_have_no_runpy_double_import_warning():
     # -W error::RuntimeWarning the runpy double-import warning becomes a nonzero exit, so
     # a future re-export of a gate CLI from pipeline/__init__.py would fail here.
     env = {**os.environ, "PYTHONPATH": str(_REPO_ROOT)}
-    for mod in ("factcheck", "grounding", "style", "argument", "editorial", "source_quality"):
+    for mod in (
+        "factcheck", "grounding", "style", "argument", "editorial", "source_quality",
+        "independence",
+    ):
         proc = subprocess.run(
             [sys.executable, "-W", "error::RuntimeWarning", "-m",
              f"pipeline.gate.{mod}", "--help"],
