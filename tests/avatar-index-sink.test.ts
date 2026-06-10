@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { toVectorizeNdjson, toD1Sql } from '@/lib/avatar/index-sink';
+import {
+  toVectorizeNdjson,
+  toD1Sql,
+  computeOrphanIds,
+} from '@/lib/avatar/index-sink';
 import { buildFixtureArtifact, FakeEmbedder } from '@/lib/avatar/fakes';
 import type { IndexArtifact } from '@/lib/avatar/contracts';
 
@@ -97,5 +101,25 @@ describe('toD1Sql', () => {
     for (const line of sql.split('\n')) {
       expect((line.match(/'/g) ?? []).length % 2).toBe(0);
     }
+  });
+});
+
+describe('computeOrphanIds', () => {
+  it('returns prior ids absent from the current set (the slugs to purge)', () => {
+    const prior = ['a#i#0', 'a#i#1', 'gone#i#0', 'gone#i#1'];
+    const current = ['a#i#0', 'a#i#1', 'new#i#0'];
+    expect(computeOrphanIds(prior, current)).toEqual(['gone#i#0', 'gone#i#1']);
+  });
+
+  it('returns [] when nothing was removed (no over-deletion of current vectors)', () => {
+    const ids = ['a#i#0', 'b#i#0'];
+    expect(computeOrphanIds(ids, ids)).toEqual([]);
+    // a pure superset in current (a fresh article added) also yields no orphans
+    expect(computeOrphanIds(ids, [...ids, 'c#i#0'])).toEqual([]);
+  });
+
+  it('handles an empty prior (first deploy) and dedupes the prior set', () => {
+    expect(computeOrphanIds([], ['a#i#0'])).toEqual([]);
+    expect(computeOrphanIds(['x#i#0', 'x#i#0'], [])).toEqual(['x#i#0']);
   });
 });

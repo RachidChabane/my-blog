@@ -179,5 +179,27 @@
       },
       "expect_contains": ["source-independence verdict is"]
     }
+  },
+  {
+    "id": "style-em-dash",
+    "gate": "style",
+    "args": ["--lang", "en"],
+    "artifacts": {
+      "draft-en.md": "golden/artifacts/draft-en.emdash.md",
+      "style-en.json": "fixtures/style_findings.clean.json"
+    },
+    "expect_contains": ["no-em-dash", "U+2014"],
+    "why": "An em-dash (U+2014) in the body (D-007, house_style.md section 3). Paired with a CLEAN style verdict so the ONLY block cause is the deterministic no-em-dash scan. The M-4 style gate must BLOCK. Deterministic-only: the no-em-dash rule needs no judge."
+  },
+  {
+    "id": "style-fr-diacritics",
+    "gate": "style",
+    "args": ["--lang", "fr"],
+    "artifacts": {
+      "draft-fr.md": "golden/artifacts/draft-fr.unaccented.md",
+      "style-fr.json": "fixtures/style_findings.clean.json"
+    },
+    "expect_contains": ["fr-diacritics", "modele"],
+    "why": "A deaccented French word in the body ('modele' should carry its grave accent) (D-007, house_style.md section 6). The slug is intentionally ASCII and must NOT trip the scan; only the title + body prose are checked. Paired with a CLEAN style verdict so the ONLY block cause is the deterministic FR-diacritics scan. The M-4 style-fr gate must BLOCK."
   }
 ]

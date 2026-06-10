@@ -45,7 +45,8 @@ KNOWN_GATES = (
 
 # Floor for the seeded retro-proof. A truncated bank => fewer entries => the floor test fails
 # rather than silently parametrizing zero defects. Tasks may raise it as they add entries.
-EXPECTED_MIN_ENTRIES = 11
+# 11 retro-proof seeds + style-em-dash + style-fr-diacritics (deterministic D-007 backstops).
+EXPECTED_MIN_ENTRIES = 13
 
 # Most gates read plans/task-draft/; the argue (G1) gate -- and task 6's independence (G4)
 # -- read plans/task-argue/. The bank stays purely additive (no new bank.json field): the

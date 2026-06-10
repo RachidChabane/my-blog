@@ -451,6 +451,44 @@ def test_check_style_emoji():
     assert any("emoji" in p.lower() for p in problems)
 
 
+def test_check_style_em_dash():
+    findings = _fixture_text("style_findings.clean.json")
+    problems = check_style("A clause — and an aside — here.", findings, "en")
+    assert any("no-em-dash" in p and "U+2014" in p for p in problems)
+
+
+def test_check_style_fr_diacritics_blocks_deaccented_word():
+    findings = _fixture_text("style_findings.clean.json")
+    problems = check_style("Le modele de langage compte peu.", findings, "fr")
+    assert any("fr-diacritics" in p and "modele" in p for p in problems)
+
+
+def test_check_style_fr_diacritics_skips_ascii_slug_and_clean_prose():
+    # FP guard: a correctly-accented FR draft whose SLUG is deaccented BY DESIGN (it
+    # contains 'fenetre' and 'modele') must NOT trip the FR-diacritics scan -- only
+    # the frontmatter title + the body are read, never slug/translationKey.
+    findings = _fixture_text("style_findings.clean.json")
+    draft = (
+        "---\n"
+        "lang: fr\n"
+        "slug: la-fenetre-et-le-modele\n"
+        "translationKey: fenetre-modele\n"
+        "title: La fenêtre et le modèle\n"
+        "---\n\n"
+        "La fenêtre de contexte n'est pas un budget. Le modèle évalue chaque entrée "
+        "et la mécanique du problème reste la même.\n"
+    )
+    problems = check_style(draft, findings, "fr")
+    assert not any("fr-diacritics" in p for p in problems), problems
+
+
+def test_check_style_fr_diacritics_is_french_only():
+    # The FR scan is lang-scoped: an EN draft is never checked for FR diacritics.
+    findings = _fixture_text("style_findings.clean.json")
+    problems = check_style("The modele token appears here.", findings, "en")
+    assert not any("fr-diacritics" in p for p in problems)
+
+
 def test_check_style_revision_needed():
     body = _fixture_text("draft-en.valid.md")
     findings = _fixture_text("style_findings.revision_needed.json")

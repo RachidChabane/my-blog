@@ -20,6 +20,24 @@ export function toVectorizeNdjson(artifact: IndexArtifact): string {
     .join('\n');
 }
 
+/**
+ * Vector ids present BEFORE a run (the live D1 `chunks.id` set, which equals the live
+ * Vectorize id set — both are written from the same artifact each run) but ABSENT
+ * from the current artifact. These are the orphans the deploy must delete from
+ * Vectorize: UPSERT replaces by id but never removes a slug that disappeared, while
+ * D1 is full-replaced (`toD1Sql`) and so is already clean. Without this, a pruned
+ * article leaves dense vectors the avatar could cite at a now-404 URL. Pure + order-
+ * stable; dedupes the prior set. (`scripts/build-avatar-index.ts` owns the fail-open
+ * wrangler shell-out that reads the prior ids and issues the deletes.)
+ */
+export function computeOrphanIds(
+  priorIds: readonly string[],
+  currentIds: readonly string[]
+): string[] {
+  const current = new Set(currentIds);
+  return [...new Set(priorIds)].filter((id) => !current.has(id));
+}
+
 /** SQLite single-quote escaping for a string literal. */
 function sqlStr(value: string): string {
   return `'${value.replace(/'/g, "''")}'`;
