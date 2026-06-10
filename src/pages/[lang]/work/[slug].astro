@@ -51,6 +51,7 @@ import {
 import type { RelatedArticleVM } from '@/lib/content';
 import Base from '@/layouts/Base.astro';
 import Prose from '@/components/Prose.astro';
+import ArchitectureDiagram from '@/components/ArchitectureDiagram.astro';
 
 export const getStaticPaths = (async () => {
   const [projects, articles] = await Promise.all([
@@ -103,13 +104,25 @@ const stackHead = entry.data.stack.slice(0, 3).join(' · ');
 const eyebrow = `${s.ordinalWord} · ${ordinal} · ${s.maintained}`;
 const title = `${entry.data.name} · rachid chabane`;
 
-// Running ordinals for the conditional sections 05/06 (sections 01-04 are
-// unconditional). No gaps when one is omitted: if links are absent, related
-// takes 05. Decorative only (not e2e-pinned).
-const hasLinks = entry.data.links.length > 0;
+// Running ordinals over the sections actually present, so the numbering has no gaps
+// when an optional section (architecture / highlights / links / related) is omitted.
+// What + Engineering + Stack + Status are unconditional. Decorative (not e2e-pinned).
+const d = entry.data;
+const hasMetrics = Boolean(d.metrics?.length);
+const hasArch = Boolean(d.architecture);
+const hasHighlights = Boolean(d.highlights?.length);
+const hasLinks = d.links.length > 0;
 const hasRelated = related.length > 0;
-const linksNo = hasLinks ? '05' : null;
-const relatedNo = hasRelated ? (hasLinks ? '06' : '05') : null;
+let runningNo = 0;
+const nextNo = (): string => String(++runningNo).padStart(2, '0');
+const noWhat = nextNo();
+const noEng = nextNo();
+const noArch = hasArch ? nextNo() : null;
+const noHighlights = hasHighlights ? nextNo() : null;
+const noStack = nextNo();
+const noStatus = nextNo();
+const noLinks = hasLinks ? nextNo() : null;
+const noRelated = hasRelated ? nextNo() : null;
 ---
 
 <Base title={title} description={entry.data.summary} lang={lang}>
@@ -122,6 +135,14 @@ const relatedNo = hasRelated ? (hasLinks ? '06' : '05') : null;
       <span class:list={['rc-pstatus', { 'is-live': isLive }]}>
         <span class="rc-pstatus__dot"></span>{entry.data.status}
       </span>
+      {
+        d.year && (
+          <>
+            <span class="rc-meta__dot" />
+            <span class="rc-projd__bi">{d.year}</span>
+          </>
+        )
+      }
       <span class="rc-meta__dot"></span>
       <span class="rc-projd__stackmeta">{stackHead}</span>
       {
@@ -135,22 +156,73 @@ const relatedNo = hasRelated ? (hasLinks ? '06' : '05') : null;
     </div>
 
     {
+      /* at-a-glance metrics (optional) — a stat-card band above the sections */
+      hasMetrics && (
+        <div class="rc-metrics">
+          {(d.metrics ?? []).map((m: { value: string; label: string }) => (
+            <div class="rc-metric">
+              <span class="rc-metric__v">{m.value}</span>
+              <span class="rc-metric__l">{m.label}</span>
+            </div>
+          ))}
+        </div>
+      )
+    }
+
+    {
       /* 01 — the plain summary (the shallow what-it-is), NOT wrapped in Prose */
     }
     <section class="rc-sec">
-      <h2 class="rc-sec__h"><span class="rc-sec__n">01</span>{s.hWhat}</h2>
+      <h2 class="rc-sec__h">
+        <span class="rc-sec__n">{noWhat}</span>{s.hWhat}
+      </h2>
       <p class="rc-projd__what">{entry.data.summary}</p>
     </section>
 
     {/* 02 — the body depth (the substance) */}
     <section class="rc-sec">
-      <h2 class="rc-sec__h"><span class="rc-sec__n">02</span>{s.hEng}</h2>
+      <h2 class="rc-sec__h"><span class="rc-sec__n">{noEng}</span>{s.hEng}</h2>
       <Prose><Content /></Prose>
     </section>
 
+    {/* Architecture (optional) — the interactive layered diagram */}
+    {
+      noArch && (
+        <section class="rc-sec">
+          <h2 class="rc-sec__h">
+            <span class="rc-sec__n">{noArch}</span>
+            {s.hArch}
+          </h2>
+          <ArchitectureDiagram
+            layers={d.architecture?.layers ?? []}
+            caption={d.architecture?.caption}
+          />
+        </section>
+      )
+    }
+
+    {/* Highlights (optional) — scannable key points */}
+    {
+      noHighlights && (
+        <section class="rc-sec">
+          <h2 class="rc-sec__h">
+            <span class="rc-sec__n">{noHighlights}</span>
+            {s.hHighlights}
+          </h2>
+          <ul class="rc-hl">
+            {(d.highlights ?? []).map((h: string) => (
+              <li class="rc-hl__item">{h}</li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
     {/* 03 — Stack */}
     <section class="rc-sec">
-      <h2 class="rc-sec__h"><span class="rc-sec__n">03</span>{s.hStack}</h2>
+      <h2 class="rc-sec__h">
+        <span class="rc-sec__n">{noStack}</span>{s.hStack}
+      </h2>
       <div class="rc-stack">
         {
           entry.data.stack.map((tech: string) => (
@@ -162,7 +234,9 @@ const relatedNo = hasRelated ? (hasLinks ? '06' : '05') : null;
 
     {/* 04 — Status: the pill only (no invented status line) */}
     <section class="rc-sec">
-      <h2 class="rc-sec__h"><span class="rc-sec__n">04</span>{s.hStatus}</h2>
+      <h2 class="rc-sec__h">
+        <span class="rc-sec__n">{noStatus}</span>{s.hStatus}
+      </h2>
       <p class="rc-statusline">
         <span class:list={['rc-pstatus', { 'is-live': isLive }]}>
           <span class="rc-pstatus__dot"></span>{entry.data.status}
@@ -170,12 +244,12 @@ const relatedNo = hasRelated ? (hasLinks ? '06' : '05') : null;
       </p>
     </section>
 
-    {/* 05 — Links: real resolving out-links; omit when none */}
+    {/* Links: real resolving out-links; omit when none */}
     {
-      linksNo && (
+      noLinks && (
         <section class="rc-sec">
           <h2 class="rc-sec__h">
-            <span class="rc-sec__n">{linksNo}</span>
+            <span class="rc-sec__n">{noLinks}</span>
             {s.hLinks}
           </h2>
           <div class="rc-links">
@@ -197,12 +271,12 @@ const relatedNo = hasRelated ? (hasLinks ? '06' : '05') : null;
       )
     }
 
-    {/* 06 — Related articles: resolved relatedArticles; omit when none */}
+    {/* Related articles: resolved relatedArticles; omit when none */}
     {
-      relatedNo && (
+      noRelated && (
         <section class="rc-sec">
           <h2 class="rc-sec__h">
-            <span class="rc-sec__n">{relatedNo}</span>
+            <span class="rc-sec__n">{noRelated}</span>
             {s.hRelated}
           </h2>
           <div class="rc-rel">
@@ -347,6 +421,67 @@ const relatedNo = hasRelated ? (hasLinks ? '06' : '05') : null;
     font-size: var(--text-body-lg);
     line-height: 1.6;
     color: var(--fg-muted);
+  }
+
+  /* at-a-glance metrics (optional) — stat cards */
+  .rc-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 30px;
+  }
+  .rc-metric {
+    flex: 1 1 130px;
+    min-width: 118px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 16px 18px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .rc-metric__v {
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: 28px;
+    line-height: 1;
+    color: var(--fg);
+  }
+  .rc-metric__l {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--fg-muted); /* AA: the stat label is load-bearing, not de-emphasis */
+  }
+
+  /* highlights (optional) — accent-bulleted key points */
+  .rc-hl {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rc-hl__item {
+    position: relative;
+    padding-left: 22px;
+    font-family: var(--font-body);
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--fg-muted);
+  }
+  .rc-hl__item::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0.55em;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
   }
 
   /* 03 — stack chips (ported from ProjectCard .rc-tag; static spans, no hover) */

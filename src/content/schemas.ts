@@ -18,6 +18,24 @@ const linkSchema = z.object({
   url: httpUrl,
 });
 
+// Optional project enrichment (S7 richer detail pages). All fields are OPTIONAL so
+// existing generated projects stay valid; gen-portfolio.ts authors them from the
+// project's own body (no fabrication). `metrics` -> stat cards; `highlights` -> a
+// key-points list; `architecture` -> the layered ArchitectureDiagram (a top-to-bottom
+// flow of labelled layers, each holding component nodes).
+const metricSchema = z.object({
+  value: z.string().min(1), // "11", "100%", "156"
+  label: z.string().min(1), // "domain apps", "citation recall"
+});
+const architectureLayerSchema = z.object({
+  label: z.string().min(1), // "Frontend", "Retrieval", "Storage"
+  nodes: z.array(z.string().min(1)).min(1), // component names
+});
+const architectureSchema = z.object({
+  caption: z.string().min(1).optional(),
+  layers: z.array(architectureLayerSchema).min(2),
+});
+
 export const articleFrontmatterSchema = z.object({
   translationKey: z.string().min(1),
   lang: z.enum(['fr', 'en']),
@@ -43,6 +61,12 @@ export const projectFrontmatterSchema = z.object({
   relatedArticles: z.array(z.string()).optional(),
   derivedFrom: z.string().optional(),
   publishState: z.enum(['published', 'draft']),
+  // optional enrichment (richer S7 pages) — see the schemas above
+  year: z.string().min(1).optional(),
+  role: z.string().min(1).optional(),
+  highlights: z.array(z.string().min(1)).min(1).optional(),
+  metrics: z.array(metricSchema).min(1).optional(),
+  architecture: architectureSchema.optional(),
 });
 
 export const tagSchema = z.object({

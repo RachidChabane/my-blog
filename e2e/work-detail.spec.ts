@@ -115,14 +115,15 @@ test.describe('FR parallel', () => {
 });
 
 test.describe('conditional sections (omit when empty)', () => {
-  test('EN: a project with no links and no related shows only sections 01-04', async ({
+  test('EN: a project with no links and no related omits those sections; enrichment still renders', async ({
     page,
   }) => {
-    // sterna-ai-platform has links: [] and no relatedArticles
-    await page.goto('/en/work/sterna-ai-platform/');
-    await expect(page.locator('a.rc-linkchip')).toHaveCount(0); // Liens omitted
-    await expect(page.locator('.rc-rel')).toHaveCount(0); // Articles liés omitted
-    await expect(page.locator('.rc-sec')).toHaveCount(4); // only What/Eng/Stack/Status
+    // multi-model-ai-platform has links: [] and no relatedArticles
+    await page.goto('/en/work/multi-model-ai-platform/');
+    await expect(page.locator('a.rc-linkchip')).toHaveCount(0); // Links omitted
+    await expect(page.locator('.rc-rel')).toHaveCount(0); // Related omitted
+    // the optional enrichment renders: the interactive architecture diagram present
+    await expect(page.locator('.rc-arch')).toBeVisible();
   });
 });
 

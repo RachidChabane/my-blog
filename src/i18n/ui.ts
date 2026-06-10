@@ -206,6 +206,8 @@ export interface ProjectDetailStrings {
   bilingualNote: string; // "FR / EN"
   hWhat: string; // "Ce que c’est" / "What it is"
   hEng: string; // "Ingénierie" / "Engineering"
+  hArch: string; // "Architecture" (optional section)
+  hHighlights: string; // "Points clés" / "Highlights" (optional section)
   hStack: string; // "Stack" / "Stack"
   hStatus: string; // "Statut" / "Status"
   hLinks: string; // "Liens" / "Links"
@@ -220,6 +222,8 @@ export const PROJECT_DETAIL: Record<Locale, ProjectDetailStrings> = {
     bilingualNote: 'FR / EN',
     hWhat: 'Ce que c’est',
     hEng: 'Ingénierie',
+    hArch: 'Architecture',
+    hHighlights: 'Points clés',
     hStack: 'Stack',
     hStatus: 'Statut',
     hLinks: 'Liens',
@@ -232,6 +236,8 @@ export const PROJECT_DETAIL: Record<Locale, ProjectDetailStrings> = {
     bilingualNote: 'FR / EN',
     hWhat: 'What it is',
     hEng: 'Engineering',
+    hArch: 'Architecture',
+    hHighlights: 'Highlights',
     hStack: 'Stack',
     hStatus: 'Status',
     hLinks: 'Links',

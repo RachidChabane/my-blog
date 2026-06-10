@@ -1,0 +1,173 @@
+---
+/**
+ * ArchitectureDiagram (S7) — renders a project's optional `architecture` field as a
+ * top-to-bottom flow of labelled layers, each holding component nodes. Visual +
+ * lightly interactive: nodes lift on hover; the layers cascade in when the diagram
+ * scrolls into view (IntersectionObserver, reduced-motion safe). Inline island, zero
+ * external JS (perf-exempt). The layer labels and node names are REAL text (read in
+ * order by assistive tech); only the connector chevrons are aria-hidden. Tokens only.
+ */
+interface Layer {
+  label: string;
+  nodes: string[];
+}
+interface Props {
+  layers: Layer[];
+  caption?: string;
+}
+const { layers, caption } = Astro.props;
+---
+
+<figure class="rc-arch" data-arch>
+  <div class="rc-arch__flow">
+    {
+      layers.map((layer, i) => (
+        <div class="rc-arch__layer" style={`--i: ${i}`}>
+          <div class="rc-arch__card">
+            <span class="rc-arch__label">{layer.label}</span>
+            <div class="rc-arch__row">
+              {layer.nodes.map((n) => (
+                <span class="rc-arch__node">{n}</span>
+              ))}
+            </div>
+          </div>
+          {i < layers.length - 1 && (
+            <span class="rc-arch__conn" aria-hidden="true" />
+          )}
+        </div>
+      ))
+    }
+  </div>
+  {caption && <figcaption class="rc-arch__cap">{caption}</figcaption>}
+</figure>
+
+<script>
+  const figs = document.querySelectorAll<HTMLElement>('[data-arch]');
+  if (figs.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-in');
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    figs.forEach((f) => io.observe(f));
+  } else {
+    figs.forEach((f) => f.classList.add('is-in'));
+  }
+</script>
+
+<style>
+  .rc-arch {
+    margin: 0;
+  }
+  .rc-arch__flow {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .rc-arch__layer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* cascade-in start state; .is-in releases it (reduced-motion neutralizes below) */
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.5s var(--ease-out),
+      transform 0.5s var(--ease-out);
+    transition-delay: calc(var(--i) * 90ms);
+  }
+  .rc-arch.is-in .rc-arch__layer {
+    opacity: 1;
+    transform: none;
+  }
+  .rc-arch__card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 18px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rc-arch__label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rc-arch__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .rc-arch__node {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    background: var(--fill-subtle);
+    color: var(--fg-muted);
+    border: 1px solid var(--border-subtle);
+    transition:
+      transform var(--dur-hover) var(--ease-soft),
+      color var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft),
+      background var(--dur-hover) var(--ease-soft);
+  }
+  .rc-arch__node:hover {
+    transform: translateY(-2px);
+    color: var(--fg);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  /* connector: a short vertical line + a downward chevron between layers */
+  .rc-arch__conn {
+    display: block;
+    width: 1px;
+    height: 26px;
+    margin: 4px 0;
+    background: linear-gradient(var(--border), var(--border));
+    position: relative;
+  }
+  .rc-arch__conn::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 6px;
+    height: 6px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transform: translate(-50%, -1px) rotate(45deg);
+  }
+  .rc-arch__cap {
+    margin-top: 14px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--fg-muted); /* AA on the diagram caption */
+    text-align: center;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rc-arch__layer {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .rc-arch__node {
+      transition: none;
+    }
+  }
+</style>

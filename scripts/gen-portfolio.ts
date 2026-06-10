@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ProjectFrontmatter } from '../src/content/schemas';
@@ -28,11 +28,30 @@ export const FLAGGED_TERMS: string[] = [
   'RESEND_API_KEY',
 ];
 
+export interface Metric {
+  value: string;
+  label: string;
+}
+export interface ArchLayer {
+  label: string;
+  nodes: string[];
+}
+export interface Architecture {
+  caption?: string;
+  layers: ArchLayer[];
+}
+
 export interface LocalizedCopy {
   slug: string;
   name: string;
   summary: string;
   body: string;
+  // Optional enrichment (richer S7 pages). Authored from this project's own body
+  // (no fabrication); each locale carries its own labels.
+  role?: string;
+  highlights?: string[];
+  metrics?: Metric[];
+  architecture?: Architecture;
 }
 
 export interface PortfolioEntry {
@@ -43,6 +62,7 @@ export interface PortfolioEntry {
   relatedArticles?: string[];
   derivedFrom?: string;
   publishState: 'draft' | 'published';
+  year?: string; // locale-neutral
   fr: LocalizedCopy;
   en: LocalizedCopy;
 }
@@ -406,6 +426,50 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
   },
 ];
 
+// Authoritative override layer (scripts/_enrichment-data.json, keyed by translationKey).
+// It (a) replaces the former internal codenames in the RENDERED fields (slug / name /
+// body) of the three flagged projects with their descriptive names, (b) supplies the
+// em-dash-free name/summary/body for projects whose inline copy above still carried
+// em-dashes, and (c) attaches the richer-page enrichment (year / highlights / metrics /
+// architecture). Kept as data so the bulky enrichment stays out of the entry table; this
+// is the single source a regen reads, so `tsx gen-portfolio.ts` cannot regress the copy.
+interface OverrideCopy {
+  slug?: string;
+  name?: string;
+  summary?: string;
+  body?: string;
+  highlights?: string[];
+  metrics?: Metric[];
+  architecture?: Architecture;
+}
+interface ProjectOverride {
+  year?: string;
+  en?: OverrideCopy;
+  fr?: OverrideCopy;
+}
+
+const overrides = JSON.parse(
+  readFileSync(join(__dirname, '_enrichment-data.json'), 'utf-8')
+) as Record<string, ProjectOverride>;
+
+for (const entry of PORTFOLIO_PROJECTS) {
+  const o = overrides[entry.translationKey];
+  if (!o) continue;
+  if (o.year) entry.year = o.year;
+  for (const lang of ['fr', 'en'] as Locale[]) {
+    const oc = o[lang];
+    if (!oc) continue;
+    const copy = entry[lang];
+    if (oc.slug) copy.slug = oc.slug;
+    if (oc.name) copy.name = oc.name;
+    if (oc.summary) copy.summary = oc.summary;
+    if (oc.body) copy.body = oc.body;
+    if (oc.highlights) copy.highlights = oc.highlights;
+    if (oc.metrics) copy.metrics = oc.metrics;
+    if (oc.architecture) copy.architecture = oc.architecture;
+  }
+}
+
 function yamlStr(s: string): string {
   return `'${s.replace(/'/g, "''")}'`;
 }
@@ -421,6 +485,29 @@ function yamlLinkArr(links: Array<{ label: string; url: string }>): string {
   return links
     .map((l) => `\n  - label: ${yamlStr(l.label)}\n    url: ${yamlStr(l.url)}`)
     .join('');
+}
+
+function yamlMetricArr(metrics: Metric[]): string {
+  if (metrics.length === 0) return ' []';
+  return metrics
+    .map(
+      (m) => `\n  - value: ${yamlStr(m.value)}\n    label: ${yamlStr(m.label)}`
+    )
+    .join('');
+}
+
+function yamlArchitectureLines(arch: Architecture): string[] {
+  const lines: string[] = ['architecture:'];
+  if (arch.caption) lines.push(`  caption: ${yamlStr(arch.caption)}`);
+  lines.push('  layers:');
+  for (const layer of arch.layers) {
+    lines.push(`    - label: ${yamlStr(layer.label)}`);
+    lines.push('      nodes:');
+    for (const node of layer.nodes) {
+      lines.push(`        - ${yamlStr(node)}`);
+    }
+  }
+  return lines;
 }
 
 export function buildFrontmatter(
@@ -442,6 +529,11 @@ export function buildFrontmatter(
       : {}),
     ...(entry.derivedFrom ? { derivedFrom: entry.derivedFrom } : {}),
     publishState: entry.publishState,
+    ...(entry.year ? { year: entry.year } : {}),
+    ...(copy.role ? { role: copy.role } : {}),
+    ...(copy.highlights ? { highlights: copy.highlights } : {}),
+    ...(copy.metrics ? { metrics: copy.metrics } : {}),
+    ...(copy.architecture ? { architecture: copy.architecture } : {}),
   };
 }
 
@@ -467,6 +559,11 @@ export function renderMarkdown(entry: PortfolioEntry, lang: Locale): string {
     ...(relYaml ? [`relatedArticles:${relYaml}`] : []),
     ...(fm.derivedFrom ? [`derivedFrom: ${yamlStr(fm.derivedFrom)}`] : []),
     `publishState: ${yamlStr(fm.publishState)}`,
+    ...(fm.year ? [`year: ${yamlStr(fm.year)}`] : []),
+    ...(fm.role ? [`role: ${yamlStr(fm.role)}`] : []),
+    ...(fm.highlights ? [`highlights:${yamlStrArr(fm.highlights)}`] : []),
+    ...(fm.metrics ? [`metrics:${yamlMetricArr(fm.metrics)}`] : []),
+    ...(fm.architecture ? yamlArchitectureLines(fm.architecture) : []),
     '---',
   ].join('\n');
 
