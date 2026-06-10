@@ -156,6 +156,37 @@ export function slugifyHeading(headingMarkdown: string): string {
   return new GithubSlugger().slug(toPlainText(headingMarkdown).trim());
 }
 
+const CHUNK_ID_MAX_BYTES = 64; // Cloudflare Vectorize vector-id + D1 chunks.id limit.
+
+const byteLen = (s: string): number => new TextEncoder().encode(s).length;
+
+/** Truncate `s` to at most `maxBytes` UTF-8 bytes, never splitting a character. */
+function truncateToBytes(s: string, maxBytes: number): string {
+  if (byteLen(s) <= maxBytes) return s;
+  let out = '';
+  for (const ch of s) {
+    if (byteLen(out + ch) > maxBytes) break;
+    out += ch;
+  }
+  return out;
+}
+
+/**
+ * `${slug}#${anchor}#${ordinal}` capped at 64 bytes (the Vectorize vector-id / D1
+ * chunks.id limit). The trailing `#${ordinal}` is ALWAYS preserved — it is parsed
+ * downstream (ordinalOf / index-sink) and alone makes the id unique within a document
+ * (chunkDocument's `ordinal` is a per-doc running counter) — so only the descriptive
+ * `slug#anchor` prefix is truncated to fit. Short ids (the common case) pass through
+ * verbatim, and the FULL anchor is still carried in sourceUrl/headingAnchor.
+ */
+function fitChunkId(slug: string, anchorSeg: string, ordinal: number): string {
+  const suffix = `#${ordinal}`;
+  const prefix = `${slug}#${anchorSeg}`;
+  if (byteLen(`${prefix}${suffix}`) <= CHUNK_ID_MAX_BYTES)
+    return `${prefix}${suffix}`;
+  return `${truncateToBytes(prefix, CHUNK_ID_MAX_BYTES - byteLen(suffix))}${suffix}`;
+}
+
 /**
  * Chunk one source document into ordered ChunkSeeds. Lead section first
  * (project summary prepended), then each `#…` section in document order. A fresh
@@ -199,7 +230,7 @@ export function chunkDocument(input: ChunkInput): ChunkSeed[] {
       seeds.push({
         // `intro` placeholder for the anchorless lead; `ordinal` guarantees the
         // id is unique regardless. Matches the fixture's `…#intro#0` convention.
-        id: `${input.slug}#${anchor || 'intro'}#${ordinal}`,
+        id: fitChunkId(input.slug, anchor || 'intro', ordinal),
         slug: input.slug,
         lang: input.lang,
         sourceUrl: anchor ? `${input.pageUrl}#${anchor}` : input.pageUrl,
