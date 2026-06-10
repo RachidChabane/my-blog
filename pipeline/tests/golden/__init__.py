@@ -39,11 +39,11 @@ BANK_PATH = GOLDEN_DIR / "bank.json"
 # Gate modules the bank may drive. Tasks 3-6 EXTEND this as they add gates
 # (argument, editorial, source_quality, independence). A bank entry naming any other gate
 # is malformed (fail-closed in _entry_from_dict).
-KNOWN_GATES = ("factcheck", "grounding", "style", "argument", "editorial")
+KNOWN_GATES = ("factcheck", "grounding", "style", "argument", "editorial", "source_quality")
 
 # Floor for the seeded retro-proof. A truncated bank => fewer entries => the floor test fails
 # rather than silently parametrizing zero defects. Tasks may raise it as they add entries.
-EXPECTED_MIN_ENTRIES = 8
+EXPECTED_MIN_ENTRIES = 10
 
 # Most gates read plans/task-draft/; the argue (G1) gate -- and task 6's independence (G4)
 # -- read plans/task-argue/. The bank stays purely additive (no new bank.json field): the

@@ -68,6 +68,13 @@ def test_editorial_golden_entry_present():
     assert "editorial-thin-obvious" in {e.id for e in _BANK}
 
 
+def test_source_quality_golden_entries_present():
+    # task 5: the two G2 source-quality archetypes (confidently-wrong / single-origin).
+    assert {"source-quality-confidently-wrong", "source-quality-single-origin"} <= {
+        e.id for e in _BANK
+    }
+
+
 def test_seeded_live_split_is_correct():
     # The two judge-backed defects carry a live block; the deterministic ones do not. (Later
     # tasks ADD live entries -- a subset assertion, so appending one needs no edit here.)

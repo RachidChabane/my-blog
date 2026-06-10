@@ -1,0 +1,10 @@
+{
+  "verdict": "unsound",
+  "claims": [
+    { "source_id": "s1", "primary": false, "authoritative": true, "corroborated": false,
+      "note": "single vendor whitepaper; the extraordinary throughput claim has no independent corroboration among the other cited sources" },
+    { "source_id": "s2", "primary": true, "authoritative": true, "corroborated": true,
+      "note": "systems paper; supports a different, background claim" }
+  ],
+  "reason": "the load-bearing throughput claim rests on a single origin with no independent corroboration"
+}

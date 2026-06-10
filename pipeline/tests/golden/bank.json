@@ -111,5 +111,35 @@
       },
       "expect_contains": ["editorial verdict is"]
     }
+  },
+  {
+    "id": "source-quality-confidently-wrong",
+    "gate": "source_quality",
+    "args": [],
+    "artifacts": { "source_quality.json": "golden/artifacts/source_quality.wrong.json" },
+    "expect_contains": ["source-quality verdict is", "unsound"],
+    "why": "A faithfully-cited but confidently-wrong / non-authoritative source: the s2 excerpt literally states the 92% claim (fact-check PASSES), but the origin is a self-reported personal blog no primary/authoritative source corroborates. The G2 source-quality gate must BLOCK with an 'unsound' verdict -- the 'supported by this text' vs 'the source is actually right' distinction. CADENCE-SAFETY: validate the LIVE judgment at bring-up so an over-aggressive judge does not burn the fallback shortlist.",
+    "live": {
+      "produces": "source_quality.json",
+      "adversarial_artifacts": {
+        "claim_source_map.json": "golden/artifacts/claim_source_map.wrong-source.json"
+      },
+      "expect_contains": ["source-quality verdict is"]
+    }
+  },
+  {
+    "id": "source-quality-single-origin",
+    "gate": "source_quality",
+    "args": [],
+    "artifacts": { "source_quality.json": "golden/artifacts/source_quality.single-origin.json" },
+    "expect_contains": ["source-quality verdict is", "unsound"],
+    "why": "A load-bearing claim resting on a single origin (a vendor whitepaper) with no independent corroboration among the other cited sources. Fact-check PASSES (the lone excerpt supports the claim), but a single-origin extraordinary claim is not sound. The G2 source-quality gate must BLOCK with an 'unsound' verdict.",
+    "live": {
+      "produces": "source_quality.json",
+      "adversarial_artifacts": {
+        "claim_source_map.json": "golden/artifacts/claim_source_map.single-origin.json"
+      },
+      "expect_contains": ["source-quality verdict is"]
+    }
   }
 ]

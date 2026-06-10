@@ -1,0 +1,10 @@
+{
+  "verdict": "unsound",
+  "claims": [
+    { "source_id": "s1", "primary": true, "authoritative": true, "corroborated": true,
+      "note": "primary arXiv survey; sound" },
+    { "source_id": "s2", "primary": false, "authoritative": false, "corroborated": false,
+      "note": "self-reported pass-rate from a personal blog; no primary or authoritative source backs the 92% figure" }
+  ],
+  "reason": "the load-bearing 92% pass-rate claim rests on a non-authoritative, self-reported source with no corroboration"
+}

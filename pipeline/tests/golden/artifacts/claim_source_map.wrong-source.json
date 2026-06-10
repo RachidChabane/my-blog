@@ -1,0 +1,18 @@
+{
+  "claims": [
+    { "lang": "en", "claim": "Harness X reaches a 92% pass rate on SWE-bench Verified.", "source_id": "s2" },
+    { "lang": "fr", "claim": "Le harnais X atteint 92% de reussite sur SWE-bench Verified.", "source_id": "s2" },
+    { "lang": "en", "claim": "Agentic coding harnesses decompose a task into tool-calls.", "source_id": "s1" },
+    { "lang": "fr", "claim": "Les harnais de codage agentiques decomposent une tache en appels d'outils.", "source_id": "s1" }
+  ],
+  "sources": [
+    { "source_id": "s1", "label": "arXiv survey of agentic coding harnesses",
+      "url": "https://arxiv.example/abs/agentic-harness", "retrieved_at": "2026-02-01",
+      "source_date": "2026-01-15",
+      "excerpt": "Agentic coding harnesses decompose a task into a sequence of tool-calls and verify each step." },
+    { "source_id": "s2", "label": "Personal blog: my harness numbers",
+      "url": "https://blog.example/my-harness-numbers", "retrieved_at": "2026-02-01",
+      "source_date": "2026-01-20",
+      "excerpt": "In my own testing, harness X reaches a 92% pass rate on SWE-bench Verified." }
+  ]
+}
