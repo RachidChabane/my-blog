@@ -1,5 +1,5 @@
 ---
-# SEED — bootstrap corpus (task 7); replaced by the content pipeline (tasks 23-28). Safe to delete.
+# SEED, bootstrap corpus (task 7); replaced by the content pipeline (tasks 23-28). Safe to delete.
 translationKey: evaluating-tool-using-agents
 lang: en
 slug: evaluating-tool-using-agent
@@ -9,10 +9,10 @@ tags:
   - agents
   - evaluation
 sources:
-  - label: 'Anthropic — Building effective agents'
+  - label: 'Anthropic, Building effective agents'
     url: 'https://www.anthropic.com/research/building-effective-agents'
     date: '12-12-2024'
-  - label: 'arXiv — ReAct: Synergizing Reasoning and Acting'
+  - label: 'arXiv, ReAct: Synergizing Reasoning and Acting'
     url: 'https://arxiv.org/abs/2210.03629'
     date: '06-10-2022'
 contentHash: 'seed-evaluating-tool-using-agents-en'
@@ -23,7 +23,7 @@ An agent that completes the task but wrecks the state hasn’t succeeded.
 
 Success rate alone hides the failures that matter most in production. An agent can
 return the right answer while deleting a file, leaving a half-applied migration, or
-burning ten times the necessary tokens — and a binary pass/fail score will happily
+burning ten times the necessary tokens, and a binary pass/fail score will happily
 call that a win.
 
 A useful evaluation scores the trajectory, not just the destination: did it respect

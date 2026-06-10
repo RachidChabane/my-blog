@@ -37,7 +37,7 @@ export const getStaticPaths = (async () => {
 
 const { lang, cards } = Astro.props as { lang: Locale; cards: ProjectCardVM[] };
 const s = portfolioIndexStrings(lang);
-const title = `${s.title} — rachid chabane`;
+const title = `${s.title} · rachid chabane`;
 ---
 
 <Base title={title} lang={lang}>

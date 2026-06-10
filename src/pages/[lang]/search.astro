@@ -22,7 +22,7 @@ export const getStaticPaths = (() =>
 
 const { lang } = Astro.props as { lang: Locale };
 const s = searchStrings(lang);
-const title = `${s.title} — rachid chabane`;
+const title = `${s.title} · rachid chabane`;
 ---
 
 <Base title={title} description={s.title} lang={lang}>

@@ -36,7 +36,7 @@ const { lang, entries } = Astro.props as {
   entries: TagDirEntry[];
 };
 const t = tagStrings(lang);
-const title = `${t.dirTitle} — rachid chabane`;
+const title = `${t.dirTitle} · rachid chabane`;
 ---
 
 <Base title={title} description={t.dirMeta} lang={lang}>
@@ -55,7 +55,7 @@ const title = `${t.dirTitle} — rachid chabane`;
               <a
                 class="rc-tagcard"
                 href={e.href}
-                aria-label={`${e.label} — ${formatCount(e.count, t.countOne, t.countMany)}`}
+                aria-label={`${e.label}, ${formatCount(e.count, t.countOne, t.countMany)}`}
               >
                 <span class="rc-tagcard__label">{e.label}</span>
                 <span class="rc-tagcard__count">{e.count}</span>
@@ -73,7 +73,7 @@ const title = `${t.dirTitle} — rachid chabane`;
 <style>
   /* Inner content column (Base provides <main>). Same 824px column + header block
      as the article index; a responsive auto-fill grid of topic cards. Tokens only.
-     The accessible name is the anchor's aria-label ("agents — 3 posts"); the inner
+     The accessible name is the anchor's aria-label ("agents, 3 posts"); the inner
      spans render the visual label + count. */
   .rc-tagdir-page {
     width: 100%;

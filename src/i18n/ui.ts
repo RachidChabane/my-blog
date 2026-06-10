@@ -29,7 +29,7 @@ export interface ChromeStrings {
 export const CHROME: Record<Locale, ChromeStrings> = {
   fr: {
     skipToContent: 'Aller au contenu',
-    homeAria: 'rachid chabane — accueil',
+    homeAria: 'rachid chabane, accueil',
     navAria: 'Navigation principale',
     navArticles: 'Articles',
     navWork: 'Projets',
@@ -47,7 +47,7 @@ export const CHROME: Record<Locale, ChromeStrings> = {
   },
   en: {
     skipToContent: 'Skip to content',
-    homeAria: 'rachid chabane — home',
+    homeAria: 'rachid chabane, home',
     navAria: 'Main navigation',
     navArticles: 'Articles',
     navWork: 'Projects',
@@ -238,13 +238,13 @@ export function projectDetailStrings(lang: Locale): ProjectDetailStrings {
  * Portfolio index (S6) copy. Dedicated table — sibling to ARTICLE_INDEX, kept out
  * of ChromeStrings per this file's header. Copy lifted verbatim from the design `T`
  * (projects.jsx). `ordinalWord` is rendered uppercased via CSS ("PROJET · 01") and
- * `viewCta` as a decorative "<viewCta> →". The em-dash `—` in `meta` and the `·`/`→`
+ * `viewCta` as a decorative "<viewCta> →". The `·`/`→` and the `meta` separator
  * are typographic punctuation, not emoji (INV-9 safe).
  */
 export interface PortfolioIndexStrings {
   eyebrow: string; // "Travaux" / "Work"
   title: string; // "Projets" / "Projects" (the <h1>)
-  meta: string; // "Sélection — code et systèmes" / "Selection — code and systems"
+  meta: string; // "Sélection · code et systèmes" / "Selection · code and systems"
   ordinalWord: string; // "Projet" / "Project" (rendered uppercased via CSS → "PROJET · 01")
   viewCta: string; // "Voir" / "View" (rendered "<viewCta> →", decorative)
   empty: string; // empty-state line
@@ -254,7 +254,7 @@ export const PORTFOLIO_INDEX: Record<Locale, PortfolioIndexStrings> = {
   fr: {
     eyebrow: 'Travaux',
     title: 'Projets',
-    meta: 'Sélection — code et systèmes',
+    meta: 'Sélection · code et systèmes',
     ordinalWord: 'Projet',
     viewCta: 'Voir',
     empty: 'Aucun projet pour le moment.',
@@ -262,7 +262,7 @@ export const PORTFOLIO_INDEX: Record<Locale, PortfolioIndexStrings> = {
   en: {
     eyebrow: 'Work',
     title: 'Projects',
-    meta: 'Selection — code and systems',
+    meta: 'Selection · code and systems',
     ordinalWord: 'Project',
     viewCta: 'View',
     empty: 'No projects yet.',
@@ -279,7 +279,7 @@ export function portfolioIndexStrings(lang: Locale): PortfolioIndexStrings {
  * verbatim from the design `T` (home.jsx). `metaTitle` leads with the brand so
  * the existing `toHaveTitle(/Rachid Chabane/)` e2e assertions stay green after
  * the home stubs are removed. NO arrows in the strings — the template appends
- * ` →` (mirrors ArticleListItem). The em-dash `—` is typographic, FR apostrophes
+ * ` →` (mirrors ArticleListItem). The `·` separator is typographic, FR apostrophes
  * use U+2019 `’` (file convention; Prettier-stable, INV-9 safe). `projectsTitle`
  * intentionally equals `PORTFOLIO_INDEX.title` (no cross-table uniqueness rule).
  */
@@ -297,12 +297,12 @@ export interface HomeStrings {
 
 export const HOME: Record<Locale, HomeStrings> = {
   fr: {
-    metaTitle: 'Rachid Chabane — Ingénieur IA',
-    heroEyebrow: 'Ingénieur IA — Paris',
+    metaTitle: 'Rachid Chabane · Ingénieur IA',
+    heroEyebrow: 'Ingénieur IA · Lille',
     heroLine:
-      'J’écris sur l’ingénierie de l’IA de pointe — et ce site s’en charge tout seul.',
+      'J’écris sur l’ingénierie de l’IA de pointe, et ce site s’en charge tout seul.',
     heroSub:
-      'Évaluations, agents outillés, garde-fous. Un carnet tenu — et publié — par un agent, sous revue humaine.',
+      'Évaluations, agents outillés, garde-fous. Un carnet tenu et publié par un agent, sous revue humaine.',
     heroCta: 'Lire les écrits',
     latestTitle: 'Derniers articles',
     latestAll: 'Tout voir',
@@ -310,12 +310,12 @@ export const HOME: Record<Locale, HomeStrings> = {
     projectsAll: 'Voir le portfolio',
   },
   en: {
-    metaTitle: 'Rachid Chabane — AI engineer',
-    heroEyebrow: 'AI engineer — Paris',
+    metaTitle: 'Rachid Chabane · AI engineer',
+    heroEyebrow: 'AI engineer · Lille',
     heroLine:
-      'I write about cutting-edge AI engineering — and this site runs itself.',
+      'I write about cutting-edge AI engineering, and this site runs itself.',
     heroSub:
-      'Evaluations, tool-using agents, guardrails. A notebook kept — and published — by an agent, under human review.',
+      'Evaluations, tool-using agents, guardrails. A notebook kept and published by an agent, under human review.',
     heroCta: 'Read the writing',
     latestTitle: 'Latest articles',
     latestAll: 'See all',
@@ -441,17 +441,17 @@ export const ABOUT: Record<Locale, AboutStrings> = {
     eyebrow: 'À propos',
     title: 'À propos',
     tagline:
-      '[une ligne — qui vous êtes, en bref : rôle, terrain, ce qui vous tient à cœur]',
+      '[une ligne, qui vous êtes, en bref : rôle, terrain, ce qui vous tient à cœur]',
     bioH: 'Bio',
-    bioLabel: 'à compléter — première personne',
+    bioLabel: 'à compléter, première personne',
     bioText:
-      '[bio courte, première personne — parcours, ce que vous construisez, et le fil qui relie vos projets et vos écrits. Deux ou trois phrases suffisent.]',
+      '[bio courte, première personne, parcours, ce que vous construisez, et le fil qui relie vos projets et vos écrits. Deux ou trois phrases suffisent.]',
     contactH: 'Contact',
     contactPh: 'à compléter',
     howH: 'Comment ce site fonctionne',
     howLbl: 'maintenu par l’agent',
     howText:
-      'Ce carnet n’a pas de rédacteur humain au quotidien. Un agent explore la littérature et les dépôts, rédige chaque note en français et en anglais, vérifie ses affirmations contre des sources citées, puis publie — sans intervention humaine dans la boucle. Les erreurs restent possibles ; chaque page expose ses sources pour qu’on puisse la contredire.',
+      'Ce carnet n’a pas de rédacteur humain au quotidien. Un agent explore la littérature et les dépôts, rédige chaque note en français et en anglais, vérifie ses affirmations contre des sources citées, puis publie, sans intervention humaine dans la boucle. Les erreurs restent possibles ; chaque page expose ses sources pour qu’on puisse la contredire.',
   },
   en: {
     metaDesc:
@@ -459,17 +459,17 @@ export const ABOUT: Record<Locale, AboutStrings> = {
     eyebrow: 'About',
     title: 'About',
     tagline:
-      '[one line — who you are, in brief: role, field, what you care about]',
+      '[one line, who you are, in brief: role, field, what you care about]',
     bioH: 'Bio',
-    bioLabel: 'owner-filled — first person',
+    bioLabel: 'owner-filled, first person',
     bioText:
-      '[short bio, first person — background, what you build, and the thread that ties your projects to your writing. Two or three sentences are enough.]',
+      '[short bio, first person, background, what you build, and the thread that ties your projects to your writing. Two or three sentences are enough.]',
     contactH: 'Contact',
     contactPh: 'owner-filled',
     howH: 'How this site works',
     howLbl: 'agent-maintained',
     howText:
-      'This notebook has no day-to-day human editor. An agent surveys the literature and repositories, drafts each note in French and English, checks its claims against cited sources, then publishes — with no human in the loop. Errors remain possible; every page exposes its sources so it can be challenged.',
+      'This notebook has no day-to-day human editor. An agent surveys the literature and repositories, drafts each note in French and English, checks its claims against cited sources, then publishes, with no human in the loop. Errors remain possible; every page exposes its sources so it can be challenged.',
   },
 };
 

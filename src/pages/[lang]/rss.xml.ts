@@ -7,12 +7,12 @@ import { getFeedItems } from '@/lib/content';
 
 const FEED_META: Record<Locale, { title: string; description: string }> = {
   fr: {
-    title: 'Rachid Chabane — Articles',
-    description: "Blog d'ingénierie IA — agents, RAG, systèmes",
+    title: 'Rachid Chabane · Articles',
+    description: "Blog d'ingénierie IA · agents, RAG, systèmes",
   },
   en: {
-    title: 'Rachid Chabane — Articles',
-    description: 'AI engineering blog — agents, RAG, systems',
+    title: 'Rachid Chabane · Articles',
+    description: 'AI engineering blog · agents, RAG, systems',
   },
 };
 

@@ -1,5 +1,5 @@
 ---
-# SEED — bootstrap corpus (task 7); replaced by the content pipeline (tasks 23-28). Safe to delete.
+# SEED, bootstrap corpus (task 7); replaced by the content pipeline (tasks 23-28). Safe to delete.
 translationKey: quantizing-open-models
 lang: en
 slug: quantizing-open-model
@@ -8,10 +8,10 @@ publishDate: '19-05-2026'
 tags:
   - llm-oss
 sources:
-  - label: 'Hugging Face — Quantization overview'
+  - label: 'Hugging Face, Quantization overview'
     url: 'https://huggingface.co/docs/transformers/main/en/quantization/overview'
     date: '15-04-2024'
-  - label: 'vLLM — Documentation'
+  - label: 'vLLM, Documentation'
     url: 'https://docs.vllm.ai/en/latest/'
     date: '01-06-2024'
 contentHash: 'seed-quantizing-open-models-en'

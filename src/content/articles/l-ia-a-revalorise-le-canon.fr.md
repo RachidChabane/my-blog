@@ -10,43 +10,43 @@ tags:
 - evaluation
 category: essays
 sources:
-- label: Kent Beck — coupling and cohesion (Tidy First?)
+- label: Kent Beck, coupling and cohesion (Tidy First?)
   url: https://tidyfirst.substack.com/p/tldr-coupling-and-later-cohesion
   date: 09-06-2026
-- label: Google Cloud / DORA — 2025 State of AI-assisted Software Development
+- label: Google Cloud / DORA, 2025 State of AI-assisted Software Development
   url: https://cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report
   date: 09-06-2026
-- label: AI-Generated Smells (Concordia) — LoC-to-architectural-decay
+- label: AI-Generated Smells (Concordia), LoC-to-architectural-decay
   url: https://arxiv.org/html/2605.02741
   date: 09-06-2026
 - label: Enhancing the Robustness of LLM-Generated Code (Li et al.)
   url: https://arxiv.org/abs/2503.20197
   date: 09-06-2026
-- label: Peter Norvig — Design Patterns in Dynamic Languages
+- label: Peter Norvig, Design Patterns in Dynamic Languages
   url: https://norvig.com/design-patterns/
   date: 09-06-2026
 - label: Do Code LLMs Understand Design Patterns? (Pan et al.)
   url: https://arxiv.org/html/2501.04835v1
   date: 09-06-2026
-- label: ClassEval — class-level code generation benchmark (Du et al.)
+- label: ClassEval, class-level code generation benchmark (Du et al.)
   url: https://arxiv.org/abs/2308.01861
   date: 09-06-2026
-- label: AGENTS.md — open agent-instruction standard
+- label: AGENTS.md, open agent-instruction standard
   url: https://agents.md/
   date: 09-06-2026
-- label: GitHub Blog — spec-driven development / Spec Kit
+- label: GitHub Blog, spec-driven development / Spec Kit
   url: https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/
   date: 09-06-2026
-- label: MIT News — concepts and synchronizations (Daniel Jackson)
+- label: MIT News, concepts and synchronizations (Daniel Jackson)
   url: https://news.mit.edu/2025/mit-researchers-propose-new-model-for-legible-modular-software-1106
   date: 09-06-2026
-- label: Will It Survive? — AI code modification rate (arXiv 2601.16809)
+- label: Will It Survive? AI code modification rate (arXiv 2601.16809)
   url: https://arxiv.org/abs/2601.16809
   date: 09-06-2026
 - label: AI architectural erosion (Amasanti & Jahic, Cambridge)
   url: https://arxiv.org/abs/2506.17833
   date: 09-06-2026
-- label: GitClear — AI Copilot Code Quality 2025
+- label: GitClear, AI Copilot Code Quality 2025
   url: https://www.gitclear.com/ai_assistant_code_quality_2025_research
   date: 09-06-2026
 contentHash: sha256:daffea203ac97868

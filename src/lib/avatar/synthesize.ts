@@ -17,8 +17,8 @@ const DEFAULT_TEMPERATURE = 0.2;
 
 /** Localized refusal message for the idk branch. */
 export const IDK_MESSAGE: Record<Locale, string> = {
-  en: "I don't know — I couldn't find anything about that in the site content.",
-  fr: "Je ne sais pas — je n'ai rien trouvé à ce sujet dans le contenu du site.",
+  en: "I don't know. I couldn't find anything about that in the site content.",
+  fr: "Je ne sais pas. Je n'ai rien trouvé à ce sujet dans le contenu du site.",
 };
 
 /** Map retrieved candidates → a numbered context block + the citation list. */

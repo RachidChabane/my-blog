@@ -2,8 +2,8 @@
 translationKey: 'atelier'
 lang: 'en'
 slug: 'atelier-plugin-marketplace'
-name: 'Atelier — Claude Code Plugin Marketplace'
-summary: 'A personal Claude Code plugin marketplace shipping opinionated, reusable workflow skills — from project bootstrapping to interactive-Claude migration — as installable plugins with a consistent structure and resume-aware execution.'
+name: 'Atelier: Claude Code Plugin Marketplace'
+summary: 'A personal Claude Code plugin marketplace shipping opinionated, reusable workflow skills (from project bootstrapping to interactive-Claude migration) as installable plugins with a consistent structure and resume-aware execution.'
 stack:
   - 'JSON'
   - 'Markdown'

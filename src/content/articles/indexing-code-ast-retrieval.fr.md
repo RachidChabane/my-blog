@@ -1,5 +1,5 @@
 ---
-# SEED — bootstrap corpus (task 7); replaced by the content pipeline (tasks 23-28). Safe to delete.
+# SEED, bootstrap corpus (task 7); replaced by the content pipeline (tasks 23-28). Safe to delete.
 translationKey: code-indexing-ast-retrieval
 lang: fr
 slug: indexer-code-ast-recuperation
@@ -9,10 +9,10 @@ tags:
   - rag
   - agentic-coding
 sources:
-  - label: 'Pinecone — Hybrid search intro'
+  - label: 'Pinecone, Hybrid search intro'
     url: 'https://www.pinecone.io/learn/hybrid-search-intro/'
     date: '01-03-2024'
-  - label: 'OpenAI — Embeddings guide'
+  - label: 'OpenAI, Embeddings guide'
     url: 'https://platform.openai.com/docs/guides/embeddings'
     date: '25-01-2024'
 contentHash: 'seed-code-indexing-ast-retrieval-fr'
@@ -29,5 +29,5 @@ fonction, classe ou bloc entier.
 Les fragments conscients de la structure portent aussi de meilleures métadonnées : le
 symbole englobant, le chemin du fichier, le langage. Ce contexte permet au
 récupérateur de classer une unité nommée et complète au-dessus d’une tranche de texte
-isolée — c’est l’essentiel de la différence entre un extrait utile et un extrait
+isolée, c’est l’essentiel de la différence entre un extrait utile et un extrait
 déroutant.

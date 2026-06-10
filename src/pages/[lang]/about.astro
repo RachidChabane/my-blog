@@ -30,7 +30,7 @@ export const getStaticPaths = (() =>
 const { lang } = Astro.props as { lang: Locale };
 const s = aboutStrings(lang);
 const isExternal = (href: string): boolean => href.startsWith('http');
-const title = `${s.title} — rachid chabane`;
+const title = `${s.title} · rachid chabane`;
 ---
 
 <Base title={title} description={s.metaDesc} lang={lang}>

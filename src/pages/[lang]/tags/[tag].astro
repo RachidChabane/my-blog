@@ -80,10 +80,10 @@ const ai = articleIndexStrings(lang);
 const blogBase = localePath(lang, 'blog'); // chip "All" → unfiltered list
 const tagsDir = localePath(lang, 'tags'); // back-link → S4 directory
 const countLabel = formatCount(cards.length, t.countOne, t.countMany);
-const title = `${label} — rachid chabane`;
+const title = `${label} · rachid chabane`;
 ---
 
-<Base title={title} description={`${label} — ${countLabel}`} lang={lang}>
+<Base title={title} description={`${label} · ${countLabel}`} lang={lang}>
   <div class="rc-index rc-enter">
     <a class="rc-back" href={tagsDir}>← {t.allTopics}</a>
     <header class="rc-pagehd">
