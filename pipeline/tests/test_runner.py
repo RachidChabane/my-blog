@@ -182,6 +182,27 @@ def test_stage_descriptions_injection(config):
     assert by_id["select"]["description"] != "X"  # untouched placeholder
 
 
+def test_run_injects_rich_editorial_prompts(config):
+    """INT-1 regression guard: a fresh (non-resume) run MUST inject the rich editorial
+    prompt builders, not drive the thin tasks-template.yaml placeholders.
+
+    ``editorial_stage_descriptions`` once had ZERO production callers, so a live run
+    drove ~500-char placeholders that omit every interestingness instruction; the only
+    reason the proven runs were good is the opus agent chased a file pointer. This pins
+    the wiring so it cannot silently re-orphan."""
+    run("run-int1", config, FakeClaudeDriver(config))
+    raw = yaml.safe_load(
+        (config.runs_root / "run-int1" / "tasks.yaml").read_text(encoding="utf-8")
+    )
+    by_id = {str(t["id"]): t for t in raw["tasks"]}
+    # the rich argue prompt steelmans/attacks a thesis; the placeholder does not
+    assert "steelman" in by_id["argue"]["description"].lower()
+    # the rich draft prompt carries the claim-source / citation convention
+    assert "claim" in by_id["draft"]["description"].lower()
+    # and these are the rich builders, not the substrate placeholders
+    assert "substrate placeholder" not in by_id["argue"]["description"].lower()
+
+
 # ---------------------------------------------------------------------------
 # B. Production driver — CpeLoopDriver (M-6 + NFR-8)
 # ---------------------------------------------------------------------------

@@ -366,6 +366,34 @@ def resume_point(slate: AssembledSlate, config: PipelineConfig) -> ResumePlan:
     )
 
 
+def _editorial_descriptions(run_id: str, config: PipelineConfig) -> dict[str, str]:
+    """Build the rich per-stage prompt descriptions for a fresh (non-resume) run.
+
+    INT-1 wiring: ``editorial_stage_descriptions`` (the steelman/falsifiable/
+    concrete-number/independent-sourcing prompt bodies) had no production caller, so
+    a live run drove the THIN ``tasks-template.yaml`` placeholders. This builds them
+    and the ``AVOID`` list from the committed topic memory so ``assemble_slate`` injects
+    the real spec. The summary is advisory (the research ``AVOID`` list): a malformed
+    store degrades it to empty rather than failing the run -- ``select`` dedup reads the
+    same file and surfaces genuine corruption.
+    """
+    from .memory.topic_memory import TopicMemory
+    from .prompts import editorial_stage_descriptions
+
+    run_dir = config.runs_root / run_id
+    mem_path = config.repo_root / "pipeline" / "memory" / "topic_memory.json"
+    try:
+        records = TopicMemory.load(mem_path).records()
+    except Exception:  # advisory AVOID list only — never gate the run on it
+        records = []
+    summary = "\n".join(
+        f"- {r.title} :: {r.dedup_key}" for r in records if r.dedup_key
+    )
+    return editorial_stage_descriptions(
+        config, run_dir, topic_memory_summary=summary
+    )
+
+
 def run(
     run_id: str,
     config: PipelineConfig,
@@ -386,7 +414,15 @@ def run(
     loop is skipped (cron's generic-block alert handles it); existing resume/interrupt
     behavior is unchanged.
     """
-    slate = load_slate(run_id, config) if resume else assemble_slate(run_id, config)
+    slate = (
+        load_slate(run_id, config)
+        if resume
+        else assemble_slate(
+            run_id,
+            config,
+            stage_descriptions=_editorial_descriptions(run_id, config),
+        )
+    )
     result = driver.run_slate(slate, resume=resume)
     plan = resume_point(slate, config)
 

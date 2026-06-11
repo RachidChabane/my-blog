@@ -171,6 +171,12 @@ class PipelineConfig:
             loop_bin=discover_loop_bin(),
             cpe_home=discover_cpe_home(),
             claude_backend=backend,
+            # Editorial model override (ORCH-3): the scheduled run otherwise resolves
+            # to the dataclass default 'sonnet', but the reference-bar articles were
+            # produced on opus. The installed schedule exports PIPELINE_MODEL=opus so
+            # the daily autonomous run matches the proven quality. Default stays
+            # 'sonnet' so tests/direct construction are unaffected.
+            model=os.environ.get("PIPELINE_MODEL") or "sonnet",
             alert_webhook_url=os.environ.get("ALERT_WEBHOOK_URL") or None,
             uptime_ping_url=os.environ.get("UPTIME_PING_URL") or None,
             git_push=_env_truthy(os.environ.get("PIPELINE_GIT_PUSH")),
