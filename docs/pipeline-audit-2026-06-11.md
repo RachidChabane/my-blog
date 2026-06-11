@@ -30,6 +30,37 @@ FR-diacritics, citation resolution, distinct-domain) are golden-bank-proven.
 
 ---
 
+## Update — what landed 2026-06-11 (owner: do-everything + opus + autonomous push)
+
+Code fixes implemented + committed (pytest 293 green / ruff clean; **all INERT until the
+schedule is installed — see the proving-run gate below**):
+
+- **INT-1 / ORCH-3** (`3c6dea4`) — `runner.run()` now injects the rich editorial prompts +
+  the topic-memory AVOID list (they were orphaned dead code); `config.from_env` reads
+  `PIPELINE_MODEL`. Regression test pins the wiring.
+- **CI-1 / CI-2** (`92a7949`) — a secret-gated `pipeline` job (pytest + ruff over a pinned
+  private-cpe checkout) is added to `ci.yml`; green-skips until `CPE_REPO_TOKEN` is set.
+- **SCHED-2/3/4, ORCH-6** (`837255a`) — the rendered install now bakes the deploy env
+  (`PIPELINE_GIT_PUSH=1 PIPELINE_EMBEDDER=real PIPELINE_MODEL=opus`) onto the RUN command
+  only, and the monitor hour moved 12→18 local so the dead-man's-switch actually fires in
+  Europe/Paris. `render --resolve` confirmed deploy-ready.
+
+Deferred to the proving run (per advisor: new BLOCK gates are speculative until seen against
+real drafts, and should not ship before the CI ratchet is live): the reliability gates
+**link-check real (REL-1), number-trace (REL-3), excerpt-verify (REL-2), factcheck-coverage
+(REL-4)**, the **topic backlog (INT-2)** and **interestingness floor (INT-3)**. Code sketches
+for each are in the gap ledger below.
+
+> **HARD GATE before activation — do NOT install the schedule first.** The install now bakes
+> `PIPELINE_GIT_PUSH=1`, and the autonomous research→select path has NEVER run live (ORCH-2,
+> verified). So installing first would auto-publish the first-ever unseeded run to the live
+> public site via an unproven path. Required sequence: **(1) one supervised, push-free run with
+> `PIPELINE_MODEL=opus PIPELINE_EMBEDDER=real` and NO seed → (2) read the output end to end (it
+> is also the first real exercise of the INT-1 rich-prompt wiring) → (3) only then install the
+> autonomous-push schedule.**
+
+---
+
 ## Architecture as it actually runs
 
 ### 1) End-to-end editorial flow (the cpe slate)
