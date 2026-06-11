@@ -148,13 +148,40 @@ def _cron_weekday(pywd: int) -> int:
     return (pywd + 1) % 7
 
 
+# Deploy-ready run env baked into the rendered install (audit SCHED-2/3, ORCH-3/6):
+#   PIPELINE_GIT_PUSH=1  -> the published commit is pushed so CI (Pages deploy + reindex)
+#                           fires; without it the article never leaves local main.
+#   PIPELINE_EMBEDDER=real-> select dedups with the multilingual embedder, not the fake.
+#   PIPELINE_MODEL=opus   -> the daily run matches the model that produced the reference
+#                           articles (owner decision 2026-06-11).
+# Owner-supplied notification URLs (ALERT_WEBHOOK_URL / UPTIME_PING_URL) are emitted as
+# commented TODO lines, not baked, because they are secrets the renderer cannot invent.
+DEPLOY_RUN_ENV: tuple[tuple[str, str], ...] = (
+    ("PIPELINE_GIT_PUSH", "1"),
+    ("PIPELINE_EMBEDDER", "real"),
+    ("PIPELINE_MODEL", "opus"),
+)
+# Dead-man's-switch monitor hour, LOCAL (audit SCHED-4). The Cadence fire is UTC-framed
+# (hour=9); the monitor must run at >= cadence_hour_UTC + grace(6h) = 15:00 UTC for MISSED
+# to fire. In Europe/Paris (UTC+1/+2) that means a LOCAL hour >= 16/17; 18:00 local
+# (16:00-17:00 UTC, 7-8h after the fire) clears the 6h grace year-round including DST.
+# The shipped 12:00 ran INSIDE the grace and never fired MISSED. If the cadence, grace,
+# or owner timezone changes, re-derive this.
+DEFAULT_MONITOR_HOUR = 18
+
+
+def _run_env_prefix() -> str:
+    """`VAR=val VAR=val ` prefix for the cron run command (empty tuple -> '')."""
+    return "".join(f"{k}={v} " for k, v in DEPLOY_RUN_ENV)
+
+
 def render_crontab(
     *,
     repo_root: str = "<REPO_ROOT>",
     state_dir: str = "<STATE_DIR>",
     python: str = "python3",
     cadence: Cadence = DEFAULT_CADENCE,
-    monitor_hour: int = 12,
+    monitor_hour: int = DEFAULT_MONITOR_HOUR,
 ) -> str:
     """Render the reference crontab (placeholder form by default; pure + deterministic)."""
     # A full week collapses to cron's "*" (every day); a subset stays an explicit list.
@@ -162,15 +189,20 @@ def render_crontab(
     days = "*" if full_week else ",".join(str(_cron_weekday(wd)) for wd in cadence.weekdays)
     days_desc = "daily" if full_week else f"weekdays {days}"
     hh, mm, mh = cadence.hour, cadence.minute, monitor_hour
-    base = f"cd {repo_root} && {python} -m pipeline.schedule.cron"
+    cd = f"cd {repo_root} &&"
     log = f"{state_dir}/cron.log"
-    run_line = f"{mm} {hh} * * {days}  {base} run    >> {log} 2>&1"
-    mon_line = f"{mm} {mh} * * *   {base} monitor >> {log} 2>&1"
+    # The deploy env rides the RUN command only (the monitor neither publishes nor pushes).
+    run_cmd = f"{cd} {_run_env_prefix()}{python} -m pipeline.schedule.cron run"
+    mon_cmd = f"{cd} {python} -m pipeline.schedule.cron monitor"
+    run_line = f"{mm} {hh} * * {days}  {run_cmd}    >> {log} 2>&1"
+    mon_line = f"{mm} {mh} * * *   {mon_cmd} >> {log} 2>&1"
     lines = [
         "# my-blog content engine - editorial run (M-5). Times below are LOCAL.",
         f"# NOTE: local cron HOUR is wall-clock; the heartbeat Cadence is UTC-framed (hour={hh}).",
         "#   Reconciled by run_id/calendar-day matching (see heartbeat.check_heartbeat).",
-        "# LIVE runs: set PIPELINE_EMBEDDER=real or select dedups on the fake.",
+        "# The RUN line carries the deploy env (PIPELINE_GIT_PUSH/_EMBEDDER/_MODEL); to be",
+        "# notified of failures, ALSO add at the top of the crontab (owner secrets):",
+        "#   ALERT_WEBHOOK_URL=https://...   UPTIME_PING_URL=https://...",
         f"# RUN: {days_desc} at {hh:02d}:{mm:02d} local - drive one editorial slate.",
         run_line,
         f"# MONITOR: daily {mh:02d}:{mm:02d} local dead-man's-switch (alert on missed/stalled).",
@@ -189,8 +221,25 @@ def _cal_dict(*, weekday: int | None = None, hour: int, minute: int, indent: str
     return "\n".join(parts)
 
 
+def _env_dict_block(env: tuple[tuple[str, str], ...]) -> list[str]:
+    """`<key>EnvironmentVariables</key><dict>...</dict>` lines (empty -> [])."""
+    if not env:
+        return []
+    out = ["  <key>EnvironmentVariables</key>", "  <dict>"]
+    for k, v in env:
+        out.append(f"    <key>{k}</key><string>{v}</string>")
+    out.append("  </dict>")
+    return out
+
+
 def _launch_agent(
-    *, label: str, subcommand: str, intervals: str, repo_root: str, python: str
+    *,
+    label: str,
+    subcommand: str,
+    intervals: str,
+    repo_root: str,
+    python: str,
+    env: tuple[tuple[str, str], ...] = (),
 ) -> str:
     log = f"{repo_root}/pipeline/schedule/state/cron.log"
     lines = [
@@ -198,6 +247,7 @@ def _launch_agent(
         "<dict>",
         f"  <key>Label</key><string>{label}</string>",
         f"  <key>WorkingDirectory</key><string>{repo_root}</string>",
+        *_env_dict_block(env),
         "  <key>ProgramArguments</key>",
         "  <array>",
         f"    <string>{python}</string>",
@@ -222,7 +272,7 @@ def render_launchd_plist(
     repo_root: str = "<REPO_ROOT>",
     python: str = "python3",
     cadence: Cadence = DEFAULT_CADENCE,
-    monitor_hour: int = 12,
+    monitor_hour: int = DEFAULT_MONITOR_HOUR,
 ) -> str:
     """Render the reference launchd plists (two LaunchAgents; placeholder form by default)."""
     # A full week = one weekday-less interval (launchd fires it daily); a subset = one
@@ -241,7 +291,9 @@ def render_launchd_plist(
         "<!-- my-blog content engine - scheduling (M-5). TWO LaunchAgents: save each\n"
         "     as ~/Library/LaunchAgents/<Label>.plist and `launchctl load` it. Edit\n"
         "     <REPO_ROOT>; times are LOCAL (reconciled to the UTC Cadence by run_id/\n"
-        "     calendar-day matching). LIVE runs: export PIPELINE_EMBEDDER=real. -->"
+        "     calendar-day matching). The RUN agent carries the deploy env\n"
+        "     (PIPELINE_GIT_PUSH/_EMBEDDER/_MODEL); add ALERT_WEBHOOK_URL +\n"
+        "     UPTIME_PING_URL to its EnvironmentVariables for failure alerts. -->"
     )
     run_agent = _launch_agent(
         label="com.rachidchabane.myblog.run",
@@ -249,6 +301,7 @@ def render_launchd_plist(
         intervals=run_intervals,
         repo_root=repo_root,
         python=python,
+        env=DEPLOY_RUN_ENV,
     )
     mon_agent = _launch_agent(
         label="com.rachidchabane.myblog.monitor",

@@ -1,7 +1,9 @@
 <!-- my-blog content engine - scheduling (M-5). TWO LaunchAgents: save each
      as ~/Library/LaunchAgents/<Label>.plist and `launchctl load` it. Edit
      <REPO_ROOT>; times are LOCAL (reconciled to the UTC Cadence by run_id/
-     calendar-day matching). LIVE runs: export PIPELINE_EMBEDDER=real. -->
+     calendar-day matching). The RUN agent carries the deploy env
+     (PIPELINE_GIT_PUSH/_EMBEDDER/_MODEL); add ALERT_WEBHOOK_URL +
+     UPTIME_PING_URL to its EnvironmentVariables for failure alerts. -->
 
 <!-- 1/2 - RUN -->
 <?xml version="1.0" encoding="UTF-8"?>
@@ -10,6 +12,12 @@
 <dict>
   <key>Label</key><string>com.rachidchabane.myblog.run</string>
   <key>WorkingDirectory</key><string><REPO_ROOT></string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PIPELINE_GIT_PUSH</key><string>1</string>
+    <key>PIPELINE_EMBEDDER</key><string>real</string>
+    <key>PIPELINE_MODEL</key><string>opus</string>
+  </dict>
   <key>ProgramArguments</key>
   <array>
     <string>python3</string>
@@ -46,7 +54,7 @@
   <key>StartCalendarInterval</key>
   <array>
     <dict>
-      <key>Hour</key><integer>12</integer>
+      <key>Hour</key><integer>18</integer>
       <key>Minute</key><integer>0</integer>
     </dict>
   </array>

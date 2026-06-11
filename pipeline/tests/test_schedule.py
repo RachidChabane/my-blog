@@ -634,6 +634,45 @@ def test_G_rendered_plist_daily_both_agents():
     assert "pipeline.schedule.cron" in out
 
 
+def test_G_rendered_crontab_deploy_env_on_run_only():
+    """SCHED-2/3 + ORCH-3/6: the deploy env (push/embedder/model) rides the RUN command,
+    NOT the monitor, so a daily article actually pushes+deploys and dedups on the real
+    embedder. Regression guard for the orphaned-env bug (install never deployed)."""
+    out = cron.render_crontab()
+    run_line = next(line for line in out.splitlines() if " run    " in line)
+    mon_line = next(line for line in out.splitlines() if " monitor " in line)
+    for var in ("PIPELINE_GIT_PUSH=1", "PIPELINE_EMBEDDER=real", "PIPELINE_MODEL=opus"):
+        assert var in run_line, var
+        assert var not in mon_line, f"{var} must not ride the monitor command"
+
+
+def test_G_monitor_hour_clears_grace_window():
+    """SCHED-4: the dead-man's-switch monitor must run AFTER the UTC cadence fire + grace,
+    in local terms, or it never emits MISSED. The shipped 12:00 ran INSIDE the 6h grace.
+    Worst case for the owner is Europe/Paris summer (CEST = UTC+2): the monitor's local
+    hour minus 2 must still clear cadence.hour(UTC) + 6h grace."""
+    PARIS_MAX_OFFSET = 2  # CEST; winter (CET) is +1, a looser bound
+    GRACE_HOURS = 6  # config.schedule_grace_hours default
+    monitor_utc_worst_case = cron.DEFAULT_MONITOR_HOUR - PARIS_MAX_OFFSET
+    assert monitor_utc_worst_case >= DEFAULT_CADENCE.hour + GRACE_HOURS
+    cron_out = cron.render_crontab()
+    assert f"0 {cron.DEFAULT_MONITOR_HOUR} * * *" in cron_out
+    plist_out = cron.render_launchd_plist()
+    assert (
+        f"<key>Hour</key><integer>{cron.DEFAULT_MONITOR_HOUR}</integer>" in plist_out
+    )
+
+
+def test_G_rendered_plist_env_on_run_agent_only():
+    """The launchd RUN agent carries EnvironmentVariables with the deploy env; the MONITOR
+    agent does not (it neither publishes nor pushes)."""
+    out = cron.render_launchd_plist()
+    run_half, mon_half = out.split("2/2")  # the header splits the two agents
+    assert "<key>EnvironmentVariables</key>" in run_half
+    assert "PIPELINE_GIT_PUSH" in run_half
+    assert "<key>EnvironmentVariables</key>" not in mon_half
+
+
 # ---------------------------------------------------------------------------
 # H. CLI dispatch (the _main -> _cmd_* wiring; FR-F4 round-trip)
 # ---------------------------------------------------------------------------
