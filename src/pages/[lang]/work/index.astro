@@ -17,25 +17,38 @@ import { getCollection } from 'astro:content';
 import { LOCALES } from '@/i18n/index';
 import type { Locale } from '@/i18n/index';
 import { portfolioIndexStrings } from '@/i18n/ui';
-import { getPublishedProjects, toProjectCard } from '@/lib/content';
+import {
+  getPublishedProjects,
+  toProjectCard,
+  toProjectFeature,
+} from '@/lib/content';
 import type { ProjectCardVM } from '@/lib/content';
 import Base from '@/layouts/Base.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 
 export const getStaticPaths = (async () => {
   const projects = await getCollection('projects');
-  return LOCALES.map((lang) => ({
-    params: { lang },
-    props: {
-      lang,
-      cards: getPublishedProjects(projects, lang).map((e) =>
-        toProjectCard(e, lang)
-      ),
-    },
-  }));
+  return LOCALES.map((lang) => {
+    const published = getPublishedProjects(projects, lang);
+    // The flagship (curated PROJECT_ORDER[0]) renders as the wide, enriched feature
+    // card; the rest stay uniform. Splitting here keeps the route declarative.
+    return {
+      params: { lang },
+      props: {
+        lang,
+        featured:
+          published.length > 0 ? toProjectFeature(published[0], lang) : null,
+        cards: published.slice(1).map((e) => toProjectCard(e, lang)),
+      },
+    };
+  });
 }) satisfies GetStaticPaths;
 
-const { lang, cards } = Astro.props as { lang: Locale; cards: ProjectCardVM[] };
+const { lang, featured, cards } = Astro.props as {
+  lang: Locale;
+  featured: ProjectCardVM | null;
+  cards: ProjectCardVM[];
+};
 const s = portfolioIndexStrings(lang);
 const title = `${s.title} · rachid chabane`;
 ---
@@ -49,14 +62,25 @@ const title = `${s.title} · rachid chabane`;
     </header>
 
     {
-      cards.length > 0 ? (
+      featured || cards.length > 0 ? (
         <div class="rc-projgrid">
+          {featured && (
+            <ProjectCard
+              card={featured}
+              ordinal="01"
+              ordinalWord={s.ordinalWord}
+              viewCta={s.viewCta}
+              feature
+              reveal
+            />
+          )}
           {cards.map((card, i) => (
             <ProjectCard
               card={card}
-              ordinal={String(i + 1).padStart(2, '0')}
+              ordinal={String(i + 2).padStart(2, '0')}
               ordinalWord={s.ordinalWord}
               viewCta={s.viewCta}
+              reveal
             />
           ))}
         </div>

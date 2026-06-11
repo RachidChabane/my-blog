@@ -22,26 +22,73 @@ interface Props {
   ordinalWord: string; // strings.ordinalWord — uppercased via CSS → "PROJET · 01"
   viewCta: string; // strings.viewCta — rendered "<viewCta> →" (decorative)
   reveal?: boolean; // opt the card into the scroll-reveal (data-reveal); see src/lib/reveal.ts
+  feature?: boolean; // the wide flagship variant: 2-column, enriched (year/highlights/metrics)
 }
 
-const { card, ordinal, ordinalWord, viewCta, reveal = false } = Astro.props;
+const {
+  card,
+  ordinal,
+  ordinalWord,
+  viewCta,
+  reveal = false,
+  feature = false,
+} = Astro.props;
+
+// Enrichment is read only in feature mode (undefined on uniform cards). Cards still
+// degrade to plain anatomy if a flagship happens to lack any of these.
+const highlights = feature ? (card.highlights ?? []) : [];
+const metrics = feature ? (card.metrics ?? []) : [];
 ---
 
-<article class="rc-proj" data-reveal={reveal ? '' : undefined}>
-  <div class="rc-proj__top">
-    <span class="rc-proj__n">{ordinalWord} · {ordinal}</span>
-    <span class:list={['rc-pstatus', { 'is-live': card.isLive }]}>
-      <span class="rc-pstatus__dot"></span>{card.status}
-    </span>
+<article
+  class:list={['rc-proj', { 'rc-proj--feature': feature }]}
+  data-reveal={reveal ? '' : undefined}
+>
+  {
+    /* The .rc-proj__main wrapper is `display:contents` on uniform cards (it vanishes
+      from layout — the children flow in .rc-proj exactly as before), and becomes the
+      left text column on the feature card. */
+  }
+  <div class="rc-proj__main">
+    <div class="rc-proj__top">
+      <span class="rc-proj__n">{ordinalWord} · {ordinal}</span>
+      <span class="rc-proj__meta-end">
+        {feature && card.year && <span class="rc-proj__year">{card.year}</span>}
+        <span class:list={['rc-pstatus', { 'is-live': card.isLive }]}>
+          <span class="rc-pstatus__dot"></span>{card.status}
+        </span>
+      </span>
+    </div>
+    <h3 class="rc-proj__title"><a href={card.href}>{card.name}</a></h3>
+    <p class="rc-proj__desc">{card.summary}</p>
+    {
+      highlights.length > 0 && (
+        <ul class="rc-proj__hl">
+          {highlights.map((h) => (
+            <li class="rc-proj__hl-item">{h}</li>
+          ))}
+        </ul>
+      )
+    }
+    <div class="rc-proj__chips">
+      {card.stack.map((s) => <span class="rc-tag">{s}</span>)}
+    </div>
+    <div class="rc-proj__foot">
+      <span class="rc-proj__link" aria-hidden="true">{viewCta} →</span>
+    </div>
   </div>
-  <h3 class="rc-proj__title"><a href={card.href}>{card.name}</a></h3>
-  <p class="rc-proj__desc">{card.summary}</p>
-  <div class="rc-proj__chips">
-    {card.stack.map((s) => <span class="rc-tag">{s}</span>)}
-  </div>
-  <div class="rc-proj__foot">
-    <span class="rc-proj__link" aria-hidden="true">{viewCta} →</span>
-  </div>
+  {
+    metrics.length > 0 && (
+      <div class="rc-proj__stats">
+        {metrics.map((m) => (
+          <div class="rc-proj__metric">
+            <span class="rc-proj__metric-v">{m.value}</span>
+            <span class="rc-proj__metric-l">{m.label}</span>
+          </div>
+        ))}
+      </div>
+    )
+  }
 </article>
 
 <style>
@@ -73,11 +120,28 @@ const { card, ordinal, ordinalWord, viewCta, reveal = false } = Astro.props;
     transform: translateY(-3px);
     border-color: var(--border);
   }
+  /* Transparent on uniform cards: the wrapper generates no box, so its children
+     flow directly in .rc-proj's flex column exactly as before. Becomes the left
+     text column only on the feature card (overridden below). */
+  .rc-proj__main {
+    display: contents;
+  }
   .rc-proj__top {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+  }
+  .rc-proj__meta-end {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .rc-proj__year {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--fg-subtle);
   }
   .rc-proj__n {
     font-family: var(--font-mono);
@@ -186,5 +250,124 @@ const { card, ordinal, ordinalWord, viewCta, reveal = false } = Astro.props;
     background: var(--fill-subtle);
     color: var(--fg-muted);
     border: 1px solid var(--border-subtle);
+  }
+
+  /* ===========================================================================
+     FEATURE variant — the single flagship card (PROJECT_ORDER[0]). Spans the full
+     grid width and splits into a text column + a stat panel; surfaces enrichment
+     (year, highlights, metrics) the uniform cards omit. All within the design
+     language (tokens only; accent reserved for the live dot + hover + the bullets).
+     =========================================================================== */
+  .rc-proj--feature {
+    grid-column: 1 / -1; /* span every column of the auto-fill grid */
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    gap: 30px;
+    min-height: 0; /* the uniform 232px floor doesn't apply to the wide card */
+    padding: 30px 30px 26px;
+    /* a whisper of accent so the flagship reads as primary without shouting */
+    background: linear-gradient(
+      180deg,
+      var(--accent-soft) 0%,
+      var(--surface) 42%
+    );
+  }
+  .rc-proj--feature .rc-proj__main {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+  .rc-proj--feature .rc-proj__n {
+    color: var(--accent); /* accent ordinal marks the flagship */
+  }
+  .rc-proj--feature .rc-proj__title {
+    font-size: 27px;
+    color: var(
+      --fg
+    ); /* start at full ink (vs the uniform card's muted title) */
+  }
+  /* The feature summary is the lede, not a clamped teaser — show it in full. */
+  .rc-proj--feature .rc-proj__desc {
+    flex: none;
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+  .rc-proj--feature .rc-proj__foot {
+    margin-top: auto; /* pin the CTA to the bottom of the text column */
+  }
+
+  /* accent-bulleted key points (mirrors the detail page's .rc-hl language) */
+  .rc-proj__hl {
+    list-style: none;
+    margin: 2px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .rc-proj__hl-item {
+    position: relative;
+    padding-left: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--fg-muted);
+  }
+  .rc-proj__hl-item::before {
+    content: '';
+    position: absolute;
+    left: 1px;
+    top: 0.5em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* stat panel — vertical stack of metric cards on var(--surface) (proven AA).
+     Centered in the row so the panel's breathing room reads as intentional rather
+     than as a bottom-heavy void (the text column is taller than two stat cards). */
+  .rc-proj__stats {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+    align-self: stretch;
+  }
+  .rc-proj__metric {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 16px 18px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .rc-proj__metric-v {
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: 30px;
+    line-height: 1;
+    color: var(--fg);
+  }
+  .rc-proj__metric-l {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--fg-muted); /* load-bearing label, not de-emphasis (AA) */
+  }
+
+  /* Collapse to a single column on narrow viewports (stats below the text). */
+  @media (max-width: 720px) {
+    .rc-proj--feature {
+      grid-template-columns: 1fr;
+      gap: 22px;
+      padding: 24px 22px 20px;
+    }
   }
 </style>

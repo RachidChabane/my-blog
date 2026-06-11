@@ -504,6 +504,12 @@ export interface ProjectEntryLike {
   data: ProjectFrontmatter;
 }
 
+/** One at-a-glance stat on the featured card / detail page (verbatim frontmatter). */
+export interface ProjectMetricVM {
+  value: string;
+  label: string;
+}
+
 /** View-model the project card renders (named `…VM` to avoid colliding with the component). */
 export interface ProjectCardVM {
   slug: string;
@@ -514,6 +520,11 @@ export interface ProjectCardVM {
   stack: string[];
   status: string; // localized free-text status, rendered verbatim
   isLive: boolean; // derived → accent status dot
+  // ---- enrichment (populated only by toProjectFeature for the flagship "feature"
+  // card; undefined on the uniform cards, which never read these). ----
+  year?: string;
+  highlights?: string[]; // key points (capped)
+  metrics?: ProjectMetricVM[]; // stat cards (capped)
 }
 
 /**
@@ -669,6 +680,31 @@ export function toProjectCard(
     status,
     href: localePath(lang, `work/${slug}`), // /<lang>/work/<slug>/ (matches task-13 route)
     isLive: isLiveStatus(status),
+  };
+}
+
+/** How many enrichment items the feature card surfaces (kept tight so it stays scannable). */
+export const FEATURE_MAX_HIGHLIGHTS = 3;
+export const FEATURE_MAX_METRICS = 3;
+
+/**
+ * Enriched view-model for the single flagship "feature" card on the portfolio index
+ * (PROJECT_ORDER[0]). Extends the uniform card with the optional frontmatter
+ * enrichment — year, key highlights, stat metrics — capped so the bigger card stays
+ * scannable. Falls back gracefully: a flagship lacking any enrichment renders the same
+ * anatomy as a uniform card, just wider. Pure (no astro:content import).
+ */
+export function toProjectFeature(
+  entry: ProjectEntryLike,
+  lang: Locale
+): ProjectCardVM {
+  const base = toProjectCard(entry, lang);
+  const { year, highlights, metrics } = entry.data;
+  return {
+    ...base,
+    year,
+    highlights: highlights?.slice(0, FEATURE_MAX_HIGHLIGHTS),
+    metrics: metrics?.slice(0, FEATURE_MAX_METRICS),
   };
 }
 

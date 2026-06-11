@@ -18,6 +18,7 @@ import {
   isLiveStatus,
   getPublishedProjects,
   toProjectCard,
+  toProjectFeature,
   formatCount,
   tagCounts,
   getArticlesByTag,
@@ -922,6 +923,53 @@ describe('toProjectCard', () => {
     expect(card.href).toBe('/en/work/mcp-secrets-vault/');
     expect(card.isLive).toBe(true);
     expect(card.isLive).toBe(isLiveStatus(e.data.status));
+  });
+
+  it('leaves the enrichment fields undefined (uniform cards omit them)', () => {
+    const card = toProjectCard(
+      projectEntry({ year: '2025', highlights: ['h'], metrics: [] }),
+      'fr'
+    );
+    expect(card.year).toBeUndefined();
+    expect(card.highlights).toBeUndefined();
+    expect(card.metrics).toBeUndefined();
+  });
+});
+
+/* ------------------------------------------- toProjectFeature (S6 feature card) */
+describe('toProjectFeature', () => {
+  it('extends the base card with year + capped highlights/metrics', () => {
+    const e = projectEntry({
+      slug: 'flagship',
+      year: '2025',
+      highlights: ['a', 'b', 'c', 'd'],
+      metrics: [
+        { value: '11', label: 'apps' },
+        { value: '2', label: 'langs' },
+        { value: '3', label: 'envs' },
+        { value: '4', label: 'extra' },
+      ],
+    });
+    const f = toProjectFeature(e, 'fr');
+    // base card fields preserved
+    expect(f.href).toBe('/fr/work/flagship/');
+    expect(f.name).toBe('N');
+    // enrichment, capped to FEATURE_MAX_* (3 each)
+    expect(f.year).toBe('2025');
+    expect(f.highlights).toEqual(['a', 'b', 'c']);
+    expect(f.metrics).toEqual([
+      { value: '11', label: 'apps' },
+      { value: '2', label: 'langs' },
+      { value: '3', label: 'envs' },
+    ]);
+  });
+
+  it('degrades gracefully when a flagship carries no enrichment', () => {
+    const f = toProjectFeature(projectEntry({ slug: 'bare' }), 'fr');
+    expect(f.name).toBe('N');
+    expect(f.year).toBeUndefined();
+    expect(f.highlights).toBeUndefined();
+    expect(f.metrics).toBeUndefined();
   });
 });
 

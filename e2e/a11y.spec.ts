@@ -64,7 +64,17 @@ test.describe('a11y — primary-text contrast', () => {
   test.use({ colorScheme: 'light' });
 
   const SUBSET = TEMPLATES.filter((t) =>
-    ['home', 'article', 'work-detail', 'about', 'search'].includes(t.name)
+    // work-index added with the feature card (its enriched metrics/highlights are
+    // load-bearing text); the page had no contrast gate before, so this also locks
+    // the uniform-card text against regression.
+    [
+      'home',
+      'article',
+      'work-index',
+      'work-detail',
+      'about',
+      'search',
+    ].includes(t.name)
   );
 
   for (const t of SUBSET) {
