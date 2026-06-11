@@ -45,6 +45,9 @@ const s = avatarStrings(lang);
     SourcesEventData,
     TokenEventData,
     IdkEventData,
+    Artifact,
+    DiagramArtifact,
+    CodeArtifact,
   } from '@/lib/avatar/protocol';
   import { takeFrames } from '@/lib/sse-frames';
 
@@ -77,6 +80,9 @@ const s = avatarStrings(lang);
   const tplCite = root?.querySelector<HTMLTemplateElement>('[data-tpl-cite]');
   const tplRefuse =
     root?.querySelector<HTMLTemplateElement>('[data-tpl-refuse]');
+  const tplDiagram =
+    root?.querySelector<HTMLTemplateElement>('[data-tpl-diagram]');
+  const tplCode = root?.querySelector<HTMLTemplateElement>('[data-tpl-code]');
 
   if (
     root &&
@@ -94,10 +100,13 @@ const s = avatarStrings(lang);
     tplThink &&
     tplGround &&
     tplCite &&
-    tplRefuse
+    tplRefuse &&
+    tplDiagram &&
+    tplCode
   ) {
     let busy = false;
-    let proseEl: HTMLElement | null = null; // current grounded answer's prose node
+    let ansEl: HTMLElement | null = null; // current grounded answer container (.rc-ans)
+    let proseEl: HTMLElement | null = null; // current open prose run, or null after an artifact
     // Per-article scope: the slug an "ask about this article" trigger set, or null for the
     // corpus-wide launcher. Sent as scopeSlug so the answer (and the honest refusal) is
     // restricted to that article; cleared when the panel closes or the FAB opens fresh.
@@ -201,13 +210,110 @@ const s = avatarStrings(lang);
         if (cites) cites.append(row);
       }
       body.append(ans);
+      ansEl = ans; // artifacts + later prose runs append here, after the citations
       proseEl = prose; // citations are in the DOM BEFORE any prose text
       scrollToEnd();
     };
 
+    // Start a fresh prose run inside the current answer (after an artifact closed the
+    // previous one, or for a token that arrives with no open run).
+    const ensureProse = (): HTMLElement | null => {
+      if (proseEl) return proseEl;
+      if (!ansEl) return null;
+      const p = document.createElement('div');
+      p.className = 'rc-ans__prose';
+      ansEl.append(p);
+      proseEl = p;
+      return p;
+    };
+
     const appendToken = (text: string) => {
-      if (!proseEl) return; // defensive: a malformed stream could send a stray token
-      proseEl.append(document.createTextNode(text)); // text node — never a markup sink
+      const prose = ensureProse();
+      if (!prose) return; // defensive: a stray token before any sources frame
+      prose.append(document.createTextNode(text)); // text node — never a markup sink
+      panel.dataset.state = 'answering';
+      scrollToEnd();
+    };
+
+    // Build a layered diagram with safe DOM only (textContent / createElement). The
+    // whole figure is one role="img" labelled unit, so the live region announces it
+    // once; the inner lattice is aria-hidden. Connectors are CSS (no extra nodes).
+    const renderDiagram = (d: DiagramArtifact): HTMLElement => {
+      const fig = cloneTpl(tplDiagram);
+      const titleEl = fig.querySelector<HTMLElement>('[data-slot="title"]');
+      if (titleEl) {
+        if (d.title) {
+          titleEl.textContent = d.title;
+          titleEl.hidden = false;
+        }
+      }
+      const layersEl = fig.querySelector<HTMLElement>('[data-slot="layers"]');
+      for (const layer of d.layers) {
+        const row = document.createElement('div');
+        row.className = 'rc-adia__layer';
+        const lbl = document.createElement('span');
+        lbl.className = 'rc-adia__label';
+        lbl.textContent = layer.label;
+        const nodes = document.createElement('div');
+        nodes.className = 'rc-adia__nodes';
+        for (const n of layer.nodes) {
+          const node = document.createElement('span');
+          node.className = 'rc-adia__node';
+          node.textContent = n;
+          nodes.append(node);
+        }
+        row.append(lbl, nodes);
+        layersEl?.append(row);
+      }
+      const prov = fig.querySelector<HTMLElement>('.rc-art__prov');
+      const label = [d.title, d.caption, prov?.textContent ?? '']
+        .filter(Boolean)
+        .join('. ');
+      fig.setAttribute('aria-label', label);
+      return fig;
+    };
+
+    // Build a plain code card. The code is set via textContent (never a markup sink);
+    // the copy button copies the literal source and swaps to its confirmation label.
+    const renderCode = (c: CodeArtifact): HTMLElement => {
+      const fig = cloneTpl(tplCode);
+      const langEl = fig.querySelector<HTMLElement>('[data-slot="lang"]');
+      if (langEl) {
+        if (c.lang) langEl.textContent = c.lang;
+        else langEl.hidden = true;
+      }
+      const codeEl = fig.querySelector<HTMLElement>('[data-slot="code"]');
+      if (codeEl) codeEl.textContent = c.code;
+      const copyBtn =
+        fig.querySelector<HTMLButtonElement>('[data-slot="copy"]');
+      if (copyBtn) {
+        const idle = copyBtn.textContent ?? '';
+        const done = copyBtn.dataset.labelCopied ?? idle;
+        copyBtn.addEventListener('click', () => {
+          void navigator.clipboard
+            ?.writeText(c.code)
+            .then(() => {
+              copyBtn.textContent = done;
+              window.setTimeout(() => {
+                copyBtn.textContent = idle;
+              }, 1500);
+            })
+            .catch(() => {
+              /* clipboard denied (focus/permission): leave the label unchanged */
+            });
+        });
+      }
+      return fig;
+    };
+
+    const renderArtifact = (artifact: Artifact) => {
+      if (!ansEl) return; // sources always precede artifacts; defensive otherwise
+      proseEl = null; // an artifact closes the current prose run
+      const el =
+        artifact.kind === 'diagram'
+          ? renderDiagram(artifact)
+          : renderCode(artifact);
+      ansEl.append(el);
       panel.dataset.state = 'answering';
       scrollToEnd();
     };
@@ -227,6 +333,8 @@ const s = avatarStrings(lang);
         renderSources((data as SourcesEventData).citations ?? []);
       } else if (event === SSE_EVENT.token) {
         appendToken((data as TokenEventData).text ?? '');
+      } else if (event === SSE_EVENT.artifact) {
+        renderArtifact(data as Artifact);
       } else if (event === SSE_EVENT.idk) {
         renderIdk((data as IdkEventData).message ?? '');
         // data.suggestions intentionally NOT rendered (the refusal carries no
@@ -239,6 +347,7 @@ const s = avatarStrings(lang);
     };
 
     const ask = async (query: string) => {
+      ansEl = null;
       proseEl = null;
       try {
         const res = await fetch('/api/avatar/query', {

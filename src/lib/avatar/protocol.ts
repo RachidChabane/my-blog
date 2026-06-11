@@ -32,11 +32,39 @@ export interface Citation {
 export const SSE_EVENT = {
   sources: 'sources',
   token: 'token',
+  artifact: 'artifact',
   idk: 'idk',
   done: 'done',
   error: 'error',
 } as const;
 export type SseEventName = (typeof SSE_EVENT)[keyof typeof SSE_EVENT];
+
+// ---- Artifacts: structured blocks the assistant draws inline (the "tools"). The
+// model emits them as fenced blocks in its stream; the endpoint parses the fences
+// server-side and forwards them as typed `artifact` frames (never as raw tokens),
+// so the island renders them with safe DOM (textContent only) rather than as text.
+// A diagram carries NO citations (it is synthesized, not retrieved) — the UI labels
+// it as assistant-drawn. ----
+
+/** A layered architecture diagram (top-to-bottom flow of labelled layers of nodes). */
+export interface DiagramArtifact {
+  kind: 'diagram';
+  title?: string;
+  caption?: string;
+  layers: { label: string; nodes: string[] }[];
+}
+
+/** A plain (NOT syntax-highlighted) code block with a copy affordance. */
+export interface CodeArtifact {
+  kind: 'code';
+  lang?: string;
+  code: string;
+}
+
+export type Artifact = DiagramArtifact | CodeArtifact;
+
+/** The `artifact` SSE frame payload — exactly one Artifact. */
+export type ArtifactEventData = Artifact;
 
 export interface SourcesEventData {
   citations: Citation[];

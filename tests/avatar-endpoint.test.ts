@@ -380,6 +380,54 @@ describe('handleAvatarQuery — grounded + refusal', () => {
     };
     expect(idk.message).toBe(IDK_MESSAGE.fr);
   });
+
+  // A model that draws a diagram mid-answer. The endpoint must lift the fenced
+  // block out of the token stream and forward it as one typed `artifact` frame,
+  // ordered after sources and before done; prose still flows as tokens.
+  class DiagramLLM implements LLMProvider {
+    readonly model = 'diagram-llm';
+    callCount = 0;
+    async *stream(): AsyncIterable<string> {
+      this.callCount += 1;
+      yield '[1] The platform is layered.\n';
+      yield '```rc-diagram\n';
+      yield '{"title":"Platform","layers":[{"label":"Frontend","nodes":["React"]},{"label":"Backend","nodes":["Django"]}]}\n';
+      yield '```\n';
+      yield 'See [1].';
+    }
+  }
+
+  it('20: a diagram fence becomes one artifact frame (sources → token → artifact → token → done)', async () => {
+    const res = await handleAvatarQuery(post({ query: ON_TOPIC_A }), {
+      retriever,
+      llm: new DiagramLLM(),
+    });
+    const frames = parseSSE(await drain(res));
+    const order = frames.map((f) => f.event);
+    expect(order[0]).toBe('sources');
+    expect(order[order.length - 1]).toBe('done');
+    expect(order).toContain('artifact');
+    // artifact sits between the citations and the terminal done
+    const ai = order.indexOf('artifact');
+    expect(order.indexOf('sources')).toBeLessThan(ai);
+    expect(ai).toBeLessThan(order.indexOf('done'));
+
+    const art = frames.find((f) => f.event === 'artifact')!.data as {
+      kind: string;
+      title?: string;
+      layers: { label: string; nodes: string[] }[];
+    };
+    expect(art.kind).toBe('diagram');
+    expect(art.title).toBe('Platform');
+    expect(art.layers.map((l) => l.label)).toEqual(['Frontend', 'Backend']);
+    // the fence markers never leaked into prose
+    const prose = frames
+      .filter((f) => f.event === 'token')
+      .map((f) => (f.data as { text: string }).text)
+      .join('');
+    expect(prose).not.toContain('```');
+    expect(prose).toContain('The platform is layered.');
+  });
 });
 
 // --- Group F — validation / transport --------------------------------------

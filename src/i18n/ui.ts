@@ -604,6 +604,9 @@ export interface AvatarStrings {
   thinking: string; // thinking-row label
   refuseTag: string; // out-of-scope chip
   sourceLbl: string; // citation label
+  diagramProv: string; // diagram provenance note (assistant-drawn, not retrieved)
+  copy: string; // code-card copy button label
+  copied: string; // code-card copy confirmation label
   open: string; // launcher aria fallback (= chrome.avatarAria)
   close: string; // close button aria-label
   send: string; // send button aria-label
@@ -619,6 +622,9 @@ export const AVATAR: Record<Locale, AvatarStrings> = {
     thinking: 'recherche dans le site…',
     refuseTag: 'hors périmètre',
     sourceLbl: 'Source',
+    diagramProv: 'Schéma tracé par l’agent à partir des sources ci-dessus',
+    copy: 'Copier',
+    copied: 'Copié',
     open: 'Demander à l’agent',
     close: 'Fermer',
     send: 'Envoyer',
@@ -632,6 +638,9 @@ export const AVATAR: Record<Locale, AvatarStrings> = {
     thinking: 'searching the site…',
     refuseTag: 'out of scope',
     sourceLbl: 'Source',
+    diagramProv: 'Diagram drawn by the assistant from the sources above',
+    copy: 'Copy',
+    copied: 'Copied',
     open: 'Ask the agent',
     close: 'Close',
     send: 'Send',

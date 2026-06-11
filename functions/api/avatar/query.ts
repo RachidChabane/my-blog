@@ -26,6 +26,7 @@ import {
   SSE_CONTENT_TYPE,
   SSE_EVENT,
 } from '../../../src/lib/avatar/protocol';
+import { parseArtifactStream } from '../../../src/lib/avatar/artifacts';
 
 // --- type-only imports (verbatimModuleSyntax) ---
 import type {
@@ -106,10 +107,15 @@ function groundedResponse(
         enc.encode(encodeSSE(SSE_EVENT.sources, { citations }))
       );
       try {
-        for await (const delta of llm.stream(llmRequest)) {
-          controller.enqueue(
-            enc.encode(encodeSSE(SSE_EVENT.token, { text: delta }))
-          );
+        // Parse the model's stream for fenced artifacts (diagrams/code): prose flows
+        // out as `token` frames, a completed fence as one typed `artifact` frame. The
+        // ordering (sources → interleaved tokens/artifacts → done) is preserved.
+        for await (const ev of parseArtifactStream(llm.stream(llmRequest))) {
+          const frame =
+            ev.type === 'artifact'
+              ? encodeSSE(SSE_EVENT.artifact, ev.artifact)
+              : encodeSSE(SSE_EVENT.token, { text: ev.text });
+          controller.enqueue(enc.encode(frame));
         }
         controller.enqueue(
           enc.encode(

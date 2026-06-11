@@ -402,6 +402,146 @@
   color: var(--fg-muted);
 }
 
+/* ── Artifacts: assistant-drawn diagram + plain code card (the inline "tools").
+   Tokens only; fits the min(412px) panel — node chips wrap, code scrolls-x. ── */
+.rc-dock .rc-art {
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+}
+
+/* diagram — labelled layers, top-to-bottom, CSS connectors (no extra DOM nodes) */
+.rc-dock .rc-art--diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 13px 14px 11px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 13px;
+  box-shadow: var(--shadow-sm);
+}
+.rc-dock .rc-art__title {
+  margin: 0 0 2px;
+  font-family: var(--font-display);
+  font-variation-settings: var(--fraunces-sub);
+  font-size: 14px;
+  line-height: 1.25;
+  color: var(--fg);
+}
+.rc-dock .rc-adia {
+  display: flex;
+  flex-direction: column;
+}
+.rc-dock .rc-adia__layer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 9px 11px;
+  background: var(--fill-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+}
+/* vertical connector centered in the gap below every layer but the last */
+.rc-dock .rc-adia__layer:not(:last-child) {
+  position: relative;
+  margin-bottom: 15px;
+}
+.rc-dock .rc-adia__layer:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -11px;
+  width: 2px;
+  height: 8px;
+  border-radius: 1px;
+  transform: translateX(-50%);
+  background: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+.rc-dock .rc-adia__label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+.rc-dock .rc-adia__nodes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.rc-dock .rc-adia__node {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  padding: 3px 9px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--fg-muted);
+}
+.rc-dock .rc-art__prov {
+  margin-top: 3px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: var(--fg-subtle);
+}
+
+/* code card — plain (NOT syntax-highlighted), with a copy affordance */
+.rc-dock .rc-art--code {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--bg-sunken);
+}
+.rc-dock .rc-art__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 8px 5px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--fill-subtle);
+}
+.rc-dock .rc-art__lang {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+.rc-dock .rc-art__copy {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-deep);
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  padding: 3px 11px;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-hover) var(--ease-soft),
+    color var(--dur-hover) var(--ease-soft);
+}
+.rc-dock .rc-art__copy:hover {
+  border-color: var(--accent);
+}
+.rc-dock .rc-art__pre {
+  margin: 0;
+  padding: 11px 13px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--fg);
+}
+.rc-dock .rc-art__pre code {
+  font-family: inherit;
+  white-space: pre;
+}
+
 /* thinking row with accent shimmer */
 .rc-dock .rc-think-row {
   align-self: flex-start;

@@ -81,9 +81,30 @@ export function buildSystemPrompt(lang: Locale): string {
     NO_EXFILTRATION_CLAUSES,
     `Cite sources inline as [n], matching the numbered SITE_CONTEXT items.`,
     `Never use em-dashes (the long dash); use commas, colons, semicolons, or periods instead.`,
+    DIAGRAM_TOOL_CLAUSES,
     `Answer in ${language}. Be concise.`,
   ].join(' ');
 }
+
+/**
+ * The one "tool" the assistant can use inline: a layered architecture diagram. It is
+ * OPTIONAL and grounded — only draw what the SITE_CONTEXT actually describes (never
+ * invent a structure). The endpoint parses this fenced block out of the stream and
+ * renders it as a real diagram, so the JSON must be exact. Keep prose answering the
+ * question; the diagram supplements it.
+ */
+const DIAGRAM_TOOL_CLAUSES = [
+  'When the visitor asks about the ARCHITECTURE or STRUCTURE of a system that the',
+  'SITE_CONTEXT describes as layered components, you MAY add ONE diagram by emitting',
+  'a fenced block on its own lines:',
+  '```rc-diagram',
+  '{"title":"short title","layers":[{"label":"Layer name","nodes":["Component A","Component B"]}]}',
+  '```',
+  'Rules: emit valid minified JSON (double quotes, no trailing commas); 2 to 6 layers',
+  'top-to-bottom; only components named in the SITE_CONTEXT; omit the diagram entirely',
+  'if the context does not describe a layered structure. Still answer in prose and cite',
+  '[n]; the diagram is a supplement, not a replacement.',
+].join(' ');
 
 /** Build the synthesis request + the citation list to stream before the prose. */
 export function buildSynthesisRequest(args: {

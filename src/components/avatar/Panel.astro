@@ -162,5 +162,36 @@ const { strings } = Astro.props;
     </div>
   </template>
 
+  <!-- Artifact: layered diagram. The island clones this, fills the dynamic title +
+       layers (textContent / createElement — never a markup sink), and labels the
+       whole figure as one role="img" unit so the live region announces it once
+       (not every node). The provenance line keeps the synthesized nature explicit
+       (a diagram carries no citations). -->
+  <template data-tpl-diagram>
+    <figure class="rc-art rc-art--diagram" role="img">
+      <figcaption class="rc-art__title" data-slot="title" hidden></figcaption>
+      <div class="rc-adia" data-slot="layers" aria-hidden="true"></div>
+      <span class="rc-art__prov">{strings.diagramProv}</span>
+    </figure>
+  </template>
+
+  <!-- Artifact: plain (NOT highlighted) code card with a copy button. The island
+       fills the <code> via textContent and wires the copy button; the button's two
+       labels live here (COPY NEVER LIVES IN JS). -->
+  <template data-tpl-code>
+    <figure class="rc-art rc-art--code">
+      <div class="rc-art__bar">
+        <span class="rc-art__lang" data-slot="lang"></span>
+        <button
+          class="rc-art__copy"
+          type="button"
+          data-slot="copy"
+          data-label-copied={strings.copied}>{strings.copy}</button
+        >
+      </div>
+      <pre class="rc-art__pre"><code data-slot="code" /></pre>
+    </figure>
+  </template>
+
   <p class="visually-hidden" data-avatar-error>{strings.error}</p>
 </section>
