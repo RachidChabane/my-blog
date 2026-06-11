@@ -144,6 +144,18 @@ describe('buildGraph — edges', () => {
     });
   });
 
+  it('drops weight-1 co-occurrence (same-article cliques are noise, not structure)', () => {
+    const g = buildGraph(
+      [
+        concept({ id: 'a', articles: ['k1'] }),
+        concept({ id: 'b', articles: ['k1'] }), // share exactly ONE article
+      ],
+      ARTICLES,
+      'en'
+    );
+    expect(g.edges).toEqual([]);
+  });
+
   it('drops related ids that are not in the store (no dangling edge)', () => {
     const g = buildGraph(
       [concept({ id: 'a', related: ['ghost'], articles: ['k9'] })],

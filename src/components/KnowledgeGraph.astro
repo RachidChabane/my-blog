@@ -424,6 +424,10 @@ const THEMES = [
     stroke-opacity: 0.55;
     stroke-width: 1.4;
   }
+  .rc-graph .rc-gedge--xtheme {
+    stroke-opacity: 0.3;
+    stroke-dasharray: 3 5;
+  }
   .rc-graph .rc-gnode {
     cursor: pointer;
     outline: none;
@@ -450,6 +454,11 @@ const THEMES = [
     font-size: 11px;
     fill: var(--fg-muted);
     pointer-events: none;
+    /* halo so labels stay readable when an edge runs underneath */
+    paint-order: stroke;
+    stroke: var(--surface);
+    stroke-width: 3px;
+    stroke-linejoin: round;
   }
   .rc-graph .rc-gnode:hover circle.rc-gnode__dot,
   .rc-graph .rc-gnode:focus-visible circle.rc-gnode__dot {
@@ -538,11 +547,12 @@ const THEMES = [
 
     /* ---------------- deterministic force layout ---------------- */
     // Cluster anchors: one quadrant per theme, so the map reads at a glance.
+    // Spread WIDE — the anchor pull is the main cluster-separation force.
     const ANCHORS: Record<string, [number, number]> = {
-      'agentic-ai': [W * 0.3, H * 0.34],
-      'ml-fundamentals': [W * 0.74, H * 0.3],
-      'infra-tooling': [W * 0.32, H * 0.72],
-      'evals-quality': [W * 0.74, H * 0.72],
+      'agentic-ai': [W * 0.2, H * 0.24],
+      'ml-fundamentals': [W * 0.8, H * 0.24],
+      'infra-tooling': [W * 0.22, H * 0.78],
+      'evals-quality': [W * 0.8, H * 0.78],
     };
     const GOLDEN = Math.PI * (3 - Math.sqrt(5));
     const pos = new Map<
@@ -554,7 +564,7 @@ const THEMES = [
       const k = perTheme.get(n.theme) ?? 0;
       perTheme.set(n.theme, k + 1);
       const [ax, ay] = ANCHORS[n.theme] ?? [W / 2, H / 2];
-      const r = 16 * Math.sqrt(k + 1);
+      const r = 30 * Math.sqrt(k + 1);
       const a = k * GOLDEN;
       pos.set(n.id, {
         x: ax + r * Math.cos(a),
@@ -564,9 +574,11 @@ const THEMES = [
       });
     }
     const radius = (n: GNode) => 7 + 3.5 * Math.sqrt(n.occurrences);
+    // approx label box (JetBrains Mono 11px ≈ 6.6px/char) for collision + fit
+    const labelHalf = (n: GNode) => Math.min(n.label.length * 3.3, 110);
 
     const tick = () => {
-      // pairwise repulsion
+      // pairwise repulsion (strong: labels need room, the fit pass reframes)
       for (let i = 0; i < data.nodes.length; i++) {
         for (let j = i + 1; j < data.nodes.length; j++) {
           const a = pos.get(data.nodes[i].id)!;
@@ -574,7 +586,7 @@ const THEMES = [
           let dx = a.x - b.x;
           let dy = a.y - b.y;
           const d2 = Math.max(dx * dx + dy * dy, 64);
-          const f = 5200 / d2;
+          const f = 9500 / d2;
           const d = Math.sqrt(d2);
           dx /= d;
           dy /= d;
@@ -584,41 +596,123 @@ const THEMES = [
           b.vy -= dy * f;
         }
       }
-      // edge springs
+      // edge springs: cross-theme edges pull WEAKER so they don't drag the
+      // clusters into one central tangle (the screenshot failure mode).
       for (const e of data.edges) {
         const a = pos.get(e.source);
         const b = pos.get(e.target);
         if (!a || !b) continue;
-        const rest = e.kind === 'related' ? 120 : 150;
+        const sameTheme =
+          byId.get(e.source)!.theme === byId.get(e.target)!.theme;
+        const rest = (e.kind === 'related' ? 130 : 170) * (sameTheme ? 1 : 1.7);
+        const k = sameTheme ? 0.03 : 0.008;
         const dx = b.x - a.x;
         const dy = b.y - a.y;
         const d = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
-        const f = ((d - rest) / d) * 0.035 * Math.min(e.weight, 3);
+        const f = ((d - rest) / d) * k * Math.min(e.weight, 3);
         a.vx += dx * f;
         a.vy += dy * f;
         b.vx -= dx * f;
         b.vy -= dy * f;
       }
-      // anchor gravity + integrate
+      // anchor gravity + integrate (loose clamp; fitView reframes the result)
       for (const n of data.nodes) {
         const p = pos.get(n.id)!;
         const [ax, ay] = ANCHORS[n.theme] ?? [W / 2, H / 2];
-        p.vx += (ax - p.x) * 0.012;
-        p.vy += (ay - p.y) * 0.012;
-        p.vx *= 0.82;
-        p.vy *= 0.82;
-        p.x = Math.min(W - 40, Math.max(40, p.x + p.vx));
-        p.y = Math.min(H - 36, Math.max(36, p.y + p.vy));
+        p.vx += (ax - p.x) * 0.03;
+        p.vy += (ay - p.y) * 0.03;
+        p.vx *= 0.8;
+        p.vy *= 0.8;
+        p.x = Math.min(W * 1.2, Math.max(-W * 0.2, p.x + p.vx));
+        p.y = Math.min(H * 1.2, Math.max(-H * 0.2, p.y + p.vy));
       }
+    };
+
+    // Label-aware overlap resolution: labels sit BELOW their node, so two
+    // nodes at similar heights collide horizontally long before their circles
+    // touch. Deterministic pair sweep, run after the simulation settles.
+    const separate = () => {
+      for (let iter = 0; iter < 60; iter++) {
+        let moved = false;
+        for (let i = 0; i < data.nodes.length; i++) {
+          for (let j = i + 1; j < data.nodes.length; j++) {
+            const na = data.nodes[i];
+            const nb = data.nodes[j];
+            const a = pos.get(na.id)!;
+            const b = pos.get(nb.id)!;
+            const dy = b.y - a.y;
+            // same text band -> need horizontal room for both labels
+            if (Math.abs(dy) < 34) {
+              const need = labelHalf(na) + labelHalf(nb) + 10;
+              const dx = b.x - a.x;
+              if (Math.abs(dx) < need) {
+                const push = (need - Math.abs(dx)) / 2;
+                const s = dx >= 0 ? 1 : -1;
+                a.x -= s * push * 0.6;
+                b.x += s * push * 0.6;
+                // nudge apart vertically too: stacking beats stretching
+                a.y -= 4;
+                b.y += 4;
+                moved = true;
+              }
+            }
+            // circle overlap backstop
+            const ddx = b.x - a.x;
+            const ddy = b.y - a.y;
+            const d = Math.sqrt(ddx * ddx + ddy * ddy) || 1;
+            const minD = radius(na) + radius(nb) + 26;
+            if (d < minD) {
+              const push = (minD - d) / 2;
+              a.x -= (ddx / d) * push;
+              a.y -= (ddy / d) * push;
+              b.x += (ddx / d) * push;
+              b.y += (ddy / d) * push;
+              moved = true;
+            }
+          }
+        }
+        if (!moved) break;
+      }
+    };
+
+    // Fit + center the settled layout in the viewBox (the layout's extent
+    // depends on the data; never trust it to land framed).
+    const fitView = () => {
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
+      for (const n of data.nodes) {
+        const p = pos.get(n.id)!;
+        const hw = Math.max(labelHalf(n), radius(n) + 6);
+        minX = Math.min(minX, p.x - hw);
+        maxX = Math.max(maxX, p.x + hw);
+        minY = Math.min(minY, p.y - radius(n) - 8);
+        maxY = Math.max(maxY, p.y + radius(n) + 26);
+      }
+      const m = 24; // frame margin
+      const bw = maxX - minX + m * 2;
+      const bh = maxY - minY + m * 2;
+      scale = Math.min(W / bw, H / bh, 1.4);
+      tx = (W - (maxX + minX) * scale) / 2;
+      ty = (H - (maxY + minY) * scale) / 2;
+      applyView();
     };
 
     /* ---------------- render ---------------- */
     const edgeEls = new Map<string, SVGLineElement>();
     for (const e of data.edges) {
       const line = document.createElementNS(SVG_NS, 'line');
+      // cross-theme edges read quieter (dashed, fainter) so the long spans
+      // crossing the middle never drown the within-cluster structure
+      const xTheme =
+        byId.get(e.source)!.theme !== byId.get(e.target)!.theme
+          ? ' rc-gedge--xtheme'
+          : '';
       line.setAttribute(
         'class',
-        e.kind === 'related' ? 'rc-gedge rc-gedge--related' : 'rc-gedge'
+        (e.kind === 'related' ? 'rc-gedge rc-gedge--related' : 'rc-gedge') +
+          xTheme
       );
       if (e.kind === 'cooccurrence' && e.weight > 1) {
         line.setAttribute(
@@ -686,24 +780,7 @@ const THEMES = [
       }
     };
 
-    const TICKS = 260;
-    const reduced = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
-    if (reduced) {
-      for (let i = 0; i < TICKS; i++) tick();
-      draw();
-    } else {
-      let done = 0;
-      const step = () => {
-        for (let i = 0; i < 4 && done < TICKS; i++, done++) tick();
-        draw();
-        if (done < TICKS) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    }
-
-    /* ---------------- zoom / pan ---------------- */
+    /* ---------------- zoom / pan (view state; fitView writes it too) ------ */
     let scale = 1;
     let tx = 0;
     let ty = 0;
@@ -715,14 +792,44 @@ const THEMES = [
       const rect = svg.getBoundingClientRect();
       return Math.max(W / rect.width, H / rect.height);
     };
+
+    /* ---------------- settle + frame the layout ---------------- */
+    const TICKS = 260;
+    const reduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    const settle = () => {
+      separate();
+      draw();
+      fitView();
+    };
+    if (reduced) {
+      for (let i = 0; i < TICKS; i++) tick();
+      settle();
+    } else {
+      let done = 0;
+      const step = () => {
+        for (let i = 0; i < 4 && done < TICKS; i++, done++) tick();
+        draw();
+        fitView(); // keep the entrance framed while it breathes
+        if (done < TICKS) requestAnimationFrame(step);
+        else settle();
+      };
+      requestAnimationFrame(step);
+    }
+
     svg.addEventListener(
       'wheel',
       (ev) => {
         ev.preventDefault();
         const rect = svg.getBoundingClientRect();
         const u = unit();
-        const px = (ev.clientX - rect.left) * u;
-        const py = (ev.clientY - rect.top) * u;
+        // letterbox offsets: the centered viewBox leaves dead margins on the
+        // shorter axis; without these the zoom anchor drifts off the cursor.
+        const ox = (rect.width * u - W) / 2;
+        const oy = (rect.height * u - H) / 2;
+        const px = (ev.clientX - rect.left) * u - ox;
+        const py = (ev.clientY - rect.top) * u - oy;
         const next = Math.min(
           4,
           Math.max(0.45, scale * Math.exp(-ev.deltaY * 0.0014))
