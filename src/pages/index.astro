@@ -1,35 +1,105 @@
 ---
-import { DEFAULT_LOCALE, localePath } from '@/i18n/index';
+/**
+ * Root `/` → the localized home. A STATIC, client-side redirect (NOT an Astro
+ * middleware / config redirect): with `output: 'static'` and no SSR adapter, an
+ * `Astro.redirect()` is never invoked at the edge AND makes the build emit Astro's
+ * bare "Redirecting from / to /fr/" page (a 2s meta-refresh on a blank white screen).
+ * Cloudflare edge primitives (`_redirects`, a Pages Function) would be cleaner in
+ * prod but DON'T run under `astro preview`, so the e2e (`smoke` / `i18n`) that asserts
+ * `/` lands on `/(fr|en)/` could not see them. A real static page redirects in both
+ * `astro preview` and on Pages, instantly, with a branded splash so a slow load never
+ * shows a blank page, and a <noscript> fallback for no-JS.
+ *
+ * Locale is chosen client-side from navigator.languages (the edge Accept-Language
+ * equivalent); unknown languages fall back to DEFAULT_LOCALE.
+ */
+import '@/styles/tokens.css';
+import { DEFAULT_LOCALE, LOCALES, localePath } from '@/i18n/index';
 
 const defaultHref = localePath(DEFAULT_LOCALE);
+const locales = [...LOCALES];
 ---
 
 <!doctype html>
-<html>
+<html lang={DEFAULT_LOCALE}>
   <head>
     <meta charset="UTF-8" />
-    <script is:inline>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>rachid chabane</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={defaultHref} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script is:inline define:vars={{ locales, defaultHref }}>
       (function () {
-        var locales = ['fr', 'en'];
-        var lang =
-          (navigator.languages && navigator.languages[0]) ||
-          navigator.language ||
-          '';
-        lang = lang.toLowerCase();
-        for (var i = 0; i < locales.length; i++) {
-          if (lang === locales[i] || lang.startsWith(locales[i] + '-')) {
-            if (locales[i] !== 'fr') {
-              window.location.replace('/' + locales[i] + '/');
+        try {
+          var pref =
+            (navigator.languages && navigator.languages[0]) ||
+            navigator.language ||
+            '';
+          pref = pref.toLowerCase();
+          for (var i = 0; i < locales.length; i++) {
+            var l = locales[i];
+            if (pref === l || pref.indexOf(l + '-') === 0) {
+              window.location.replace('/' + l + '/');
               return;
             }
-            break;
           }
+        } catch (e) {
+          /* navigator unavailable — fall through to the default */
         }
-        window.location.replace('/fr/');
+        window.location.replace(defaultHref);
       })();
     </script>
     <meta http-equiv="refresh" content={`0;url=${defaultHref}`} />
-    <link rel="canonical" href={defaultHref} />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: var(--bg, #fafafb);
+        color: var(--fg, #16171c);
+        font-family: var(--font-display, Georgia, 'Times New Roman', serif);
+        font-variation-settings: var(--fraunces-sub, normal);
+        font-size: 1.5rem;
+        letter-spacing: -0.015em;
+      }
+      .rc-redirect {
+        margin: 0;
+        opacity: 0.92;
+      }
+      .rc-redirect__dot {
+        color: var(--accent, #5b4be0);
+      }
+      .rc-redirect a {
+        color: inherit;
+        text-decoration: none;
+      }
+      /* The splash has no [data-theme] JS, and tokens' --bg/--fg are the LIGHT
+         values, so honor the OS preference with explicit dark values here. */
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #0e0f13;
+          color: #e8e8ec;
+        }
+      }
+    </style>
   </head>
-  <body></body>
+  <body>
+    <p class="rc-redirect">
+      rachid chabane<span class="rc-redirect__dot">.</span>
+    </p>
+    <noscript>
+      <p class="rc-redirect">
+        <a href={defaultHref}>
+          rachid chabane<span class="rc-redirect__dot">.</span>
+        </a>
+      </p>
+    </noscript>
+  </body>
 </html>
