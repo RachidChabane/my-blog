@@ -21,7 +21,7 @@ jobs:
     name: Refresh avatar index (Vectorize + D1)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Secret gate. The live refresh needs the CF token (= EMBEDDINGS_API_KEY, for
       # Workers AI) + CLOUDFLARE_ACCOUNT_ID. Absent during the autonomous build -> a
@@ -39,9 +39,9 @@ jobs:
             echo "::notice::Avatar reindex wired but skipped — EMBEDDINGS_API_KEY / CLOUDFLARE_API_TOKEN not set (owner secrets; see DEPLOY.md)."
           fi
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         if: steps.gate.outputs.ready == 'true'
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         if: steps.gate.outputs.ready == 'true'
         with:
           node-version: '22'
