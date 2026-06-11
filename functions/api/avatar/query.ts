@@ -17,6 +17,7 @@ import { VectorizeVectorStore } from '../../../src/lib/avatar/vectorize-store';
 import { D1LexicalStore } from '../../../src/lib/avatar/d1-lexical';
 import {
   buildSynthesisRequest,
+  dedupeChunksByArticle,
   IDK_MESSAGE,
   OpenRouterLLMProvider,
 } from '../../../src/lib/avatar/synthesize';
@@ -187,11 +188,13 @@ export async function handleAvatarQuery(
     return idkResponse(outcome, v.lang);
   }
 
-  // 5. GROUNDED branch — citations first, then streamed prose.
+  // 5. GROUNDED branch — citations first, then streamed prose. Collapse the retrieved
+  // chunks to one per article in the reader's language so each source is cited ONCE
+  // (not its EN + FR versions both); dedup before synthesis keeps the [n] aligned.
   const { request: llmRequest, citations } = buildSynthesisRequest({
     query: v.query,
     lang: v.lang,
-    chunks: outcome.chunks,
+    chunks: dedupeChunksByArticle(outcome.chunks, v.lang),
   });
   return groundedResponse(
     citations,

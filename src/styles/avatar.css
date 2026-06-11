@@ -23,22 +23,34 @@
 }
 
 /* ---- launcher (the FAB) --------------------------------------------------- */
+/* No border (owner req): the lattice mark is the hero. The FAB is a soft, borderless
+   accent "chip" — a radial accent wash + the elevation shadow give it presence and a
+   subtle glow without an outline. The active (open) state deepens the wash + adds a
+   soft accent halo via box-shadow (still no border). */
 .rc-dock .rc-fab {
   display: grid;
   place-items: center;
   width: 60px;
   height: 60px;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-subtle);
-  background: var(--surface);
+  border: 0;
+  background: radial-gradient(
+    120% 120% at 50% 30%,
+    color-mix(in srgb, var(--accent) 16%, var(--surface)),
+    color-mix(in srgb, var(--accent) 7%, var(--surface))
+  );
   box-shadow: var(--shadow-lg);
   pointer-events: auto;
   transition:
     transform var(--dur-hover) var(--ease-soft),
-    border-color var(--dur-hover) var(--ease-soft);
+    box-shadow var(--dur-hover) var(--ease-soft),
+    background var(--dur-hover) var(--ease-soft);
 }
 .rc-dock .rc-fab:hover {
   transform: translateY(-2px);
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 6px color-mix(in srgb, var(--accent) 10%, transparent);
 }
 .rc-dock .rc-fab:focus-visible {
   outline: none;
@@ -46,9 +58,16 @@
     var(--shadow-lg),
     0 0 0 3px var(--accent-ring);
 }
-/* accent on the active state: the open launcher reads as active (task req.) */
+/* the open launcher reads as active: deeper accent wash + a soft halo, no border */
 .rc-dock .rc-fab[aria-expanded='true'] {
-  border-color: var(--accent);
+  background: radial-gradient(
+    120% 120% at 50% 30%,
+    color-mix(in srgb, var(--accent) 30%, var(--surface)),
+    color-mix(in srgb, var(--accent) 14%, var(--surface))
+  );
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 /* ---- the lattice mark ----------------------------------------------------- */
@@ -68,22 +87,37 @@
      width (~380px in the panel head), which forces the box ~76px wide regardless of
      the set 26/40/22px. border-box keeps this 2px inside the set width. */
   padding: 2px;
-  border-radius: var(--radius);
-  background: color-mix(in srgb, var(--accent) 15%, transparent);
 }
-/* Nodes fill their grid cell -> a dense, intentional lattice rather than tiny dots
-   floating in a padded square. Reads cleanly at every context size (launcher 40 /
-   panel 26 / thinking 22). */
+/* RADIAL-DEPTH lattice: a bright 2x2 core condensing out of faint corners — a mesh
+   "focusing toward a node", not a flat dot grid. The depth is encoded as per-ring
+   OPACITY + a subtle hue shift (cool accent-deep corners). The animations below touch
+   only transform:scale / filter:brightness, never opacity, so this radial gradient
+   stays legible in EVERY state (idle / thinking / static / reduced-motion). 4x4 index:
+      1  2  3  4
+      5  6  7  8
+      9 10 11 12
+     13 14 15 16  */
 .rc-dock .rc-mark__node {
   width: 100%;
   height: 100%;
   border-radius: 50%;
   background: var(--accent);
-  opacity: 0.7;
+  opacity: 0.5; /* edge ring (default) */
 }
+/* core 2x2 — brightest, full accent */
 .rc-dock .rc-mark__node:nth-child(6),
+.rc-dock .rc-mark__node:nth-child(7),
+.rc-dock .rc-mark__node:nth-child(10),
 .rc-dock .rc-mark__node:nth-child(11) {
   opacity: 1;
+}
+/* corners — faintest + cooler (mixed toward accent-deep) */
+.rc-dock .rc-mark__node:nth-child(1),
+.rc-dock .rc-mark__node:nth-child(4),
+.rc-dock .rc-mark__node:nth-child(13),
+.rc-dock .rc-mark__node:nth-child(16) {
+  opacity: 0.24;
+  background: color-mix(in srgb, var(--accent) 60%, var(--accent-deep));
 }
 /* sizes by context (no per-node sizing JS — pure CSS) */
 .rc-dock .rc-fab .rc-mark {
@@ -103,27 +137,51 @@
   width: 22px;
   height: 22px;
 }
-/* state animations (idle breathe/drift; thinking shimmer = accent "active") */
+/* State animations drive ONLY transform:scale + filter:brightness (never opacity),
+   so the radial opacity gradient above is preserved in every state. Idle = a gentle
+   core-out pulse; thinking = a brighter ripple staggered core -> edges -> corners
+   (the mesh "processing" outward). The whole-mark rc-breathe adds a slow swell. */
 .rc-dock .rc-mark.is-idle {
   animation: rc-breathe 5.2s var(--ease-soft) infinite;
 }
 .rc-dock .rc-mark.is-idle .rc-mark__node {
-  animation: rc-drift 4.6s ease-in-out infinite;
-}
-.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(4n + 2) {
-  animation-delay: -0.9s;
-}
-.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(4n + 3) {
-  animation-delay: -1.8s;
-}
-.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(4n) {
-  animation-delay: -2.7s;
+  animation: rc-pulse 4.6s ease-in-out infinite;
 }
 .rc-dock .rc-mark.is-thinking .rc-mark__node {
-  animation: rc-shimmer 1.15s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: rc-ripple 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
-.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(2n) {
-  animation-delay: 0.12s;
+/* ring stagger (shared by idle + thinking): core fires first, corners last */
+.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(6),
+.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(7),
+.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(10),
+.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(11),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(6),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(7),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(10),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(11) {
+  animation-delay: 0s;
+}
+.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(1),
+.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(4),
+.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(13),
+.rc-dock .rc-mark.is-idle .rc-mark__node:nth-child(16) {
+  animation-delay: -2.3s;
+}
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(1),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(4),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(13),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(16) {
+  animation-delay: 0.3s;
+}
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(2),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(3),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(5),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(8),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(9),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(12),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(14),
+.rc-dock .rc-mark.is-thinking .rc-mark__node:nth-child(15) {
+  animation-delay: 0.15s;
 }
 /* .is-static layers nothing — the base node rule already supplies the look. */
 
@@ -136,31 +194,27 @@
     transform: scale(1.045);
   }
 }
-@keyframes rc-drift {
+@keyframes rc-pulse {
   0%,
   100% {
-    opacity: 0.42;
+    transform: scale(0.9);
   }
   50% {
-    opacity: 0.95;
+    transform: scale(1.06);
   }
 }
-@keyframes rc-shimmer {
+@keyframes rc-ripple {
   0% {
-    opacity: 0.4;
-    transform: scale(0.82);
+    transform: scale(0.78);
+    filter: brightness(1);
   }
-  38% {
-    opacity: 1;
-    transform: scale(1.35);
-  }
-  70% {
-    opacity: 0.55;
-    transform: scale(1);
+  40% {
+    transform: scale(1.32);
+    filter: brightness(1.4);
   }
   100% {
-    opacity: 0.4;
-    transform: scale(0.82);
+    transform: scale(0.78);
+    filter: brightness(1);
   }
 }
 
@@ -415,18 +469,12 @@
   cursor: not-allowed;
 }
 
-/* reduced motion: mark animations off, keep the static emphasized-node look
-   (mirrors the design's avatar.js reduced-motion block). */
+/* reduced motion: mark animations off. The radial-depth look is encoded in the
+   per-ring base opacity (not in the animation), so the static lattice keeps its
+   bright-core-to-faint-corner gradient with no motion. */
 @media (prefers-reduced-motion: reduce) {
   .rc-dock .rc-mark,
   .rc-dock .rc-mark__node {
     animation: none !important;
-  }
-  .rc-dock .rc-mark__node {
-    opacity: 0.7;
-  }
-  .rc-dock .rc-mark__node:nth-child(6),
-  .rc-dock .rc-mark__node:nth-child(11) {
-    opacity: 1;
   }
 }

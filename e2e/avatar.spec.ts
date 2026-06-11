@@ -216,6 +216,11 @@ test.describe('S10 avatar overlay', () => {
     await input.press('Enter');
 
     const panel = page.locator('[data-avatar-panel]');
+    // The user's message bubble renders with the typed text (regression guard: the
+    // template root carries data-slot="text", so a descendant-only query left it empty).
+    await expect(panel.locator('.rc-bub--me')).toHaveText(
+      'Has Rachid built a RAG system?'
+    );
     // Set synchronously on submit, before the (delayed) fetch resolves.
     await expect(panel).toHaveAttribute('data-state', 'thinking');
     await expect(panel.locator('[data-avatar-thinking]')).toBeVisible();

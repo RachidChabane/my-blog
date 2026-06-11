@@ -172,7 +172,12 @@ const s = avatarStrings(lang);
 
     const appendUser = (text: string) => {
       const node = cloneTpl(tplUser);
-      const slot = node.querySelector<HTMLElement>('[data-slot="text"]');
+      // The user-bubble template's ROOT element carries data-slot="text" (it has no
+      // child slot), and querySelector only searches descendants — so match self OR
+      // a descendant, else the bubble renders empty.
+      const slot = node.matches('[data-slot="text"]')
+        ? node
+        : node.querySelector<HTMLElement>('[data-slot="text"]');
       if (slot) slot.textContent = text;
       body.append(node);
     };

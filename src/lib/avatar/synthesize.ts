@@ -21,6 +21,34 @@ export const IDK_MESSAGE: Record<Locale, string> = {
   fr: "Je ne sais pas. Je n'ai rien trouvé à ce sujet dans le contenu du site.",
 };
 
+/**
+ * Collapse the retrieved chunks to ONE per article, in the reader's language, so the
+ * cited Sources list shows each article once (not its EN and FR versions both, nor the
+ * same article's several sections). The corpus is fully bilingual but a chunk carries no
+ * cross-lingual key (only `slug` + `lang`, and the slug differs across languages), so:
+ *   1. prefer the query-language chunks (fallback: keep all if none match — e.g. an
+ *      off-language-only match), then
+ *   2. dedup by `slug`, keeping the highest-ranked (first) chunk per article.
+ * Applied to `outcome.chunks` BEFORE buildSynthesisRequest, so the LLM context and the
+ * citations use the same deduped, renumbered set and the inline [n] markers stay aligned.
+ * `chunks` is assumed pre-sorted by relevance (the retriever's RRF order).
+ */
+export function dedupeChunksByArticle(
+  chunks: Candidate[],
+  lang: Locale
+): Candidate[] {
+  const inLang = chunks.filter((c) => c.chunk.lang === lang);
+  const base = inLang.length > 0 ? inLang : chunks;
+  const seen = new Set<string>();
+  const out: Candidate[] = [];
+  for (const c of base) {
+    if (seen.has(c.chunk.slug)) continue;
+    seen.add(c.chunk.slug);
+    out.push(c);
+  }
+  return out;
+}
+
 /** Map retrieved candidates → a numbered context block + the citation list. */
 export function buildContextBlock(chunks: Candidate[]): {
   numbered: string;

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
 import type {
+  Candidate,
   IndexArtifact,
   LLMProvider,
   LlmRequest,
@@ -24,6 +25,7 @@ import {
   buildContextBlock,
   buildSystemPrompt,
   buildSynthesisRequest,
+  dedupeChunksByArticle,
   IDK_MESSAGE,
 } from '@/lib/avatar/synthesize';
 import {
@@ -282,6 +284,54 @@ describe('synthesize', () => {
     expect(request.messages[0].content).toContain('<<<USER_QUESTION>>>');
     expect(request.system).not.toContain(ON_TOPIC_A);
     expect(citations.length).toBe(chunks.length);
+  });
+
+  it('17: dedupeChunksByArticle → one source per article, in the reader language', () => {
+    const mkCand = (
+      slug: string,
+      lang: 'en' | 'fr',
+      anchor = 'a'
+    ): Candidate => ({
+      chunk: {
+        id: `${slug}#${anchor}#0`,
+        slug,
+        lang,
+        sourceUrl: `https://x/${lang}/blog/${slug}/`,
+        headingAnchor: anchor,
+        title: `${slug} (${lang})`,
+        text: 'body',
+        embedding: [],
+      },
+      vectorSimilarity: 0,
+      lexicalScore: 0,
+      fusedScore: 0,
+      rerankScore: null,
+    });
+    // the same article in EN+FR (distinct slugs) + an EN second section (same slug)
+    const chunks = [
+      mkCand('hybrid-rag', 'en', 's1'),
+      mkCand('rag-hybride', 'fr', 's1'),
+      mkCand('hybrid-rag', 'en', 's2'),
+      mkCand('ast-chunking', 'en', 's1'),
+      mkCand('decoupage-ast', 'fr', 's1'),
+    ];
+    // EN reader: each article once, EN version, multi-section collapsed
+    expect(
+      dedupeChunksByArticle(chunks, 'en').map((c) => c.chunk.slug)
+    ).toEqual(['hybrid-rag', 'ast-chunking']);
+    // FR reader: each article once, FR version
+    expect(
+      dedupeChunksByArticle(chunks, 'fr').map((c) => c.chunk.slug)
+    ).toEqual(['rag-hybride', 'decoupage-ast']);
+    // off-language-only fallback: no FR chunk -> keep all (deduped by slug)
+    const enOnly = [
+      mkCand('a', 'en', 's1'),
+      mkCand('a', 'en', 's2'),
+      mkCand('b', 'en'),
+    ];
+    expect(
+      dedupeChunksByArticle(enOnly, 'fr').map((c) => c.chunk.slug)
+    ).toEqual(['a', 'b']);
   });
 });
 
