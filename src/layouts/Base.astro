@@ -5,6 +5,7 @@ import Masthead from '@/components/Masthead.astro';
 import Footer from '@/components/Footer.astro';
 import Avatar from '@/components/Avatar.astro';
 import { themeInitScript } from '@/lib/theme';
+import { revealInitScript } from '@/lib/reveal';
 import { chrome } from '@/i18n/ui';
 import type { Locale } from '@/i18n/index';
 
@@ -31,6 +32,7 @@ const c = chrome(lang);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script is:inline set:html={themeInitScript} />
+    <script is:inline set:html={revealInitScript} />
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

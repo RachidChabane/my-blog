@@ -109,12 +109,16 @@ const title = `${s.title} · rachid chabane`;
             class="rc-catsec"
             aria-labelledby={`rc-cat-${section.category}`}
           >
-            <h2 class="rc-catsec__title" id={`rc-cat-${section.category}`}>
+            <h2
+              class="rc-catsec__title"
+              id={`rc-cat-${section.category}`}
+              data-reveal
+            >
               {section.label}
             </h2>
             <div class="rc-arows">
               {section.cards.map((card) => (
-                <ArticleListItem card={card} readCta={s.readCta} />
+                <ArticleListItem card={card} readCta={s.readCta} reveal />
               ))}
             </div>
           </section>

@@ -80,7 +80,7 @@ const workHref = localePath(lang, 'work');
     {
       latest.length > 0 && (
         <section class="rc-block">
-          <div class="rc-block__head">
+          <div class="rc-block__head" data-reveal>
             <h2 class="rc-block__title">{h.latestTitle}</h2>
             <a class="rc-teaser-all" href={blogHref}>
               {h.latestAll} →
@@ -88,7 +88,7 @@ const workHref = localePath(lang, 'work');
           </div>
           <div class="rc-arows">
             {latest.map((card) => (
-              <ArticleListItem card={card} readCta={ai.readCta} />
+              <ArticleListItem card={card} readCta={ai.readCta} reveal />
             ))}
           </div>
         </section>
@@ -98,7 +98,7 @@ const workHref = localePath(lang, 'work');
     {
       teaser.length > 0 && (
         <section class="rc-block">
-          <div class="rc-block__head">
+          <div class="rc-block__head" data-reveal>
             <h2 class="rc-block__title">{h.projectsTitle}</h2>
             <a class="rc-teaser-all" href={workHref}>
               {h.projectsAll} →
@@ -111,6 +111,7 @@ const workHref = localePath(lang, 'work');
                 ordinal={String(i + 1).padStart(2, '0')}
                 ordinalWord={pi.ordinalWord}
                 viewCta={pi.viewCta}
+                reveal
               />
             ))}
           </div>

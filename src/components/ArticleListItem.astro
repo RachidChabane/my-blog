@@ -15,12 +15,13 @@ import type { ArticleCard } from '@/lib/content';
 interface Props {
   card: ArticleCard;
   readCta: string;
+  reveal?: boolean; // opt the row into the scroll-reveal (data-reveal); see src/lib/reveal.ts
 }
 
-const { card, readCta } = Astro.props;
+const { card, readCta, reveal = false } = Astro.props;
 ---
 
-<article class="rc-arow">
+<article class="rc-arow" data-reveal={reveal ? '' : undefined}>
   <div class="rc-arow__head">
     <div class="rc-meta">
       <span>{card.dateDisplay}</span>

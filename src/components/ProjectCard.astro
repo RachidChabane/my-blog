@@ -21,12 +21,13 @@ interface Props {
   ordinal: string; // "01" … zero-padded, from render position (computed in the route)
   ordinalWord: string; // strings.ordinalWord — uppercased via CSS → "PROJET · 01"
   viewCta: string; // strings.viewCta — rendered "<viewCta> →" (decorative)
+  reveal?: boolean; // opt the card into the scroll-reveal (data-reveal); see src/lib/reveal.ts
 }
 
-const { card, ordinal, ordinalWord, viewCta } = Astro.props;
+const { card, ordinal, ordinalWord, viewCta, reveal = false } = Astro.props;
 ---
 
-<article class="rc-proj">
+<article class="rc-proj" data-reveal={reveal ? '' : undefined}>
   <div class="rc-proj__top">
     <span class="rc-proj__n">{ordinalWord} · {ordinal}</span>
     <span class:list={['rc-pstatus', { 'is-live': card.isLive }]}>

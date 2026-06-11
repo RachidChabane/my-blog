@@ -90,6 +90,30 @@ svg {
   border: 0;
 }
 
+/* ---- Scroll reveal (progressive enhancement) ----------------------------
+   `data-reveal` elements are visible by default. The inline head script
+   (src/lib/reveal.ts) adds `.js-reveal` to <html> only when JS runs, and the
+   hidden→reveal state is gated behind `prefers-reduced-motion: no-preference`.
+   So no-JS and reduced-motion visitors always see the content; everyone else
+   gets a one-shot fade-up as each element scrolls into view. The per-batch
+   stagger is applied as an inline transition-delay by the script. */
+@media (prefers-reduced-motion: no-preference) {
+  .js-reveal [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity var(--dur-section) var(--ease-out),
+      transform var(--dur-section) var(--ease-out);
+  }
+  .js-reveal [data-reveal='fade'] {
+    transform: none;
+  }
+  .js-reveal [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ---- Semantic type roles (ported from the design system; tokens only) ---- */
 .t-display {
   font-family: var(--font-display);
