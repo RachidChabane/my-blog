@@ -89,6 +89,63 @@ jobs:
           pnpm lh
           node -e "const s=require('./perf/.lh-report.json').categories.performance.score; if(s<0.9){console.error('Lighthouse perf '+s+' < 0.90'); process.exit(1)} else console.log('Lighthouse perf '+s)"
 
+  # Pipeline ratchet (CI-1 / docs/pipeline-audit-2026-06-11.md): run the Python
+  # content-engine's pytest + ruff so the rigor cannot silently regress — a commit
+  # that un-wires a gate (drops a gates_extra entry, makes invariants_file relative,
+  # breaks a gate's exit-1 contract) goes RED here instead of shipping to a live daily
+  # run. Independent job (NOT in deploy.needs): a pipeline regression must be visible,
+  # but it is orthogonal to the static-site build, so it does not block a site deploy.
+  # cpe is a PRIVATE cross-repo dependency (not a pip package), so it is checked out at
+  # a PINNED sha (see pipeline/cpe-pin.txt) using the owner secret CPE_REPO_TOKEN. The
+  # job is secret-GATED (like deploy): absent token -> documented green skip, never red.
+  pipeline:
+    name: Pipeline (pytest + ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check cpe token present
+        id: gate
+        env:
+          HAS_TOKEN: ${{ secrets.CPE_REPO_TOKEN != '' }}
+        run: |
+          if [ "$HAS_TOKEN" = "true" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Pipeline pytest/ruff skipped — CPE_REPO_TOKEN not set (private cpe repo; see docs/pipeline-audit-2026-06-11.md CI-1)."
+          fi
+
+      - uses: actions/checkout@v6
+        if: steps.gate.outputs.ready == 'true'
+
+      - name: Checkout cpe (pinned)
+        if: steps.gate.outputs.ready == 'true'
+        uses: actions/checkout@v6
+        with:
+          repository: RachidChabane/claude-plan-execute
+          ref: 576f5e765a7d808c4f24bc473ec0882995ee8cfa # keep in sync with pipeline/cpe-pin.txt
+          path: claude-plan-execute
+          token: ${{ secrets.CPE_REPO_TOKEN }}
+
+      - uses: actions/setup-python@v6
+        if: steps.gate.outputs.ready == 'true'
+        with:
+          python-version: '3.13'
+
+      - name: Install (cpe editable + ruff/pytest)
+        if: steps.gate.outputs.ready == 'true'
+        run: |
+          python -m pip install -U pip
+          pip install -e ./claude-plan-execute
+          pip install ruff pytest
+
+      - name: ruff + pytest (gate wiring + golden bank)
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          CLAUDE_PLAN_EXECUTE_HOME: ${{ github.workspace }}/claude-plan-execute
+        run: |
+          ruff check pipeline
+          python -m pytest pipeline -q
+
   # M-8 deploy: on push to main, refresh the avatar index (Workers AI bge-m3 ->
   # Vectorize + D1) then build + deploy the static site to Cloudflare Pages. This is
   # the SINGLE index+deploy owner on a content push; reindex.yml is index-only

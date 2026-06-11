@@ -1,0 +1,14 @@
+# claude-plan-execute (cpe) dependency pin
+#
+# my-blog's pipeline/ imports `claude_plan_execute` but does NOT declare it as a pip
+# dependency (pyproject.toml has no [project] table by design); locally it is resolved
+# by runtime discovery of the sibling checkout. CI cannot rely on that, so the pipeline
+# CI job (.github/workflows/ci.yml, job `pipeline`) checks cpe out at the exact sha below.
+#
+# Validated against (the pipeline's 289 pytest pass / ruff clean on this cpe):
+repo:   RachidChabane/claude-plan-execute   (private — CI uses secret CPE_REPO_TOKEN)
+ref:    576f5e765a7d808c4f24bc473ec0882995ee8cfa
+date:   2026-06-11
+#
+# To bump: check out a newer cpe, run `ruff check pipeline && python -m pytest pipeline`
+# locally against it, then update BOTH this file and the `ref:` in ci.yml's pipeline job.
