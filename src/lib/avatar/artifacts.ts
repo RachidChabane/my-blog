@@ -46,6 +46,24 @@ function couldBeFenceOpener(s: string): boolean {
 }
 
 /**
+ * Some models emit the whole fence on ONE line — ```rc-diagram {json} ``` — instead
+ * of the multi-line block. If `line` (already known to start with ```) carries a
+ * closing ``` later on the SAME line, split it into {lang, body} and return them;
+ * else it is a multi-line opener (null). Liberal in what we accept so a valid diagram
+ * is not stranded as raw text just because the model inlined it.
+ */
+function trySingleLineFence(
+  line: string
+): { lang: string; body: string } | null {
+  const rest = line.slice(3); // drop the opening ```
+  const close = rest.lastIndexOf('```');
+  if (close === -1) return null; // no inline closer → a normal multi-line opener
+  const inner = rest.slice(0, close);
+  const m = inner.match(/^(\S*)\s*([\s\S]*)$/); // lang token, then the body
+  return { lang: m ? m[1] : '', body: m ? m[2] : inner };
+}
+
+/**
  * Build the artifact for a completed fence. `rc-diagram` + valid diagram JSON →
  * DiagramArtifact; everything else (incl. malformed diagram JSON) → CodeArtifact,
  * so a model slip degrades to a readable code card rather than breaking or vanishing.
@@ -56,7 +74,7 @@ export function buildArtifact(lang: string, body: string): Artifact {
     const diagram = tryParseDiagram(body);
     if (diagram) return diagram;
   }
-  const code: CodeArtifact = { kind: 'code', code: body.replace(/\n+$/, '') };
+  const code: CodeArtifact = { kind: 'code', code: body.replace(/\s+$/, '') };
   const langTag = clamp(l, MAX_LANG_LEN);
   if (langTag && langTag !== DIAGRAM_LANG) code.lang = langTag;
   return code;
@@ -137,7 +155,20 @@ export class ArtifactStreamParser {
         if (this.buffer === '') return false;
         if (couldBeFenceOpener(this.buffer)) {
           if (!end) return false; // could still become a fence — wait
-          out.push(tok(this.buffer)); // give up at end: emit literally
+          // Give up at end: a single-line fence with no trailing newline still
+          // resolves; otherwise emit the buffer literally so nothing is lost.
+          if (this.buffer.startsWith('```')) {
+            const inline = trySingleLineFence(this.buffer);
+            if (inline) {
+              out.push({
+                type: 'artifact',
+                artifact: buildArtifact(inline.lang, inline.body),
+              });
+              this.buffer = '';
+              return false;
+            }
+          }
+          out.push(tok(this.buffer));
           this.buffer = '';
           return false;
         }
@@ -149,6 +180,17 @@ export class ArtifactStreamParser {
       }
       const line = this.buffer.slice(0, nl);
       if (line.startsWith('```')) {
+        // Single-line fence (```lang body ```)? Emit it whole; else open a block.
+        const inline = trySingleLineFence(line);
+        if (inline) {
+          out.push({
+            type: 'artifact',
+            artifact: buildArtifact(inline.lang, inline.body),
+          });
+          this.buffer = this.buffer.slice(nl + 1);
+          this.freshLine = true;
+          return true;
+        }
         this.fenceLang = line.slice(3).trim();
         this.fenceBody = '';
         this.codeBudget = MAX_CODE_LEN;

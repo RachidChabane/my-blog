@@ -104,6 +104,43 @@ describe('ArtifactStreamParser — diagram fences', () => {
     expect(proseText(evs)).toBe(''); // nothing but the artifact
   });
 
+  // Observed live: Gemini emits the whole fence on ONE line (```rc-diagram {json} ```)
+  // rather than the multi-line block. The parser must accept that form too.
+  it('parses a SINGLE-LINE diagram fence (the live model form)', () => {
+    const evs = run([
+      'The platform is layered [1].\n\n',
+      '```rc-diagram {"title":"Platform","layers":[{"label":"Frontend","nodes":["React 19"]},{"label":"Backend","nodes":["Django"]}]} ```\n\n',
+      'That maps it.',
+    ]);
+    const [art] = artifacts(evs);
+    expect(art?.kind).toBe('diagram');
+    expect((art as DiagramArtifact).title).toBe('Platform');
+    expect((art as DiagramArtifact).layers.map((l) => l.label)).toEqual([
+      'Frontend',
+      'Backend',
+    ]);
+    // the raw fence text never leaked into prose
+    expect(proseText(evs)).not.toContain('```');
+    expect(proseText(evs)).toContain('That maps it.');
+  });
+
+  it('resolves a single-line fence with no trailing newline (flush)', () => {
+    const evs = run([
+      '```rc-diagram {"layers":[{"label":"A","nodes":["x"]}]} ```',
+    ]);
+    expect(artifacts(evs)[0]?.kind).toBe('diagram');
+    expect(proseText(evs)).toBe('');
+  });
+
+  it('parses a single-line code fence', () => {
+    const evs = run(['```python print(1) ```\n']);
+    expect(artifacts(evs)[0]).toEqual<CodeArtifact>({
+      kind: 'code',
+      lang: 'python',
+      code: 'print(1)',
+    });
+  });
+
   it('orders interleaved prose and artifacts by arrival', () => {
     const evs = run([
       'intro\n',
