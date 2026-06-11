@@ -41,12 +41,14 @@ BANK_PATH = GOLDEN_DIR / "bank.json"
 # is malformed (fail-closed in _entry_from_dict).
 KNOWN_GATES = (
     "factcheck", "grounding", "style", "argument", "editorial", "source_quality", "independence",
+    "difficulty",
 )
 
 # Floor for the seeded retro-proof. A truncated bank => fewer entries => the floor test fails
 # rather than silently parametrizing zero defects. Tasks may raise it as they add entries.
-# 11 retro-proof seeds + style-em-dash + style-fr-diacritics (deterministic D-007 backstops).
-EXPECTED_MIN_ENTRIES = 13
+# 11 retro-proof seeds + style-em-dash + style-fr-diacritics (deterministic D-007 backstops)
+# + difficulty-missing + difficulty-parity-mismatch (deterministic rubric-rating backstops).
+EXPECTED_MIN_ENTRIES = 15
 
 # Most gates read plans/task-draft/; the argue (G1) gate -- and task 6's independence (G4)
 # -- read plans/task-argue/. The bank stays purely additive (no new bank.json field): the

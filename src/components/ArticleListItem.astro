@@ -11,6 +11,8 @@
  * (site.css/screens.css) into this scoped block — tokens only, nothing inherited.
  */
 import type { ArticleCard } from '@/lib/content';
+import { difficultyStars } from '@/lib/content';
+import { difficultyStrings } from '@/i18n/ui';
 
 interface Props {
   card: ArticleCard;
@@ -19,6 +21,12 @@ interface Props {
 }
 
 const { card, readCta, reveal = false } = Astro.props;
+// Stars sit NEXT TO the reading time (spec) — same meta row, same mono rhythm.
+const stars = difficultyStars(card.difficulty);
+const starsAria = difficultyStrings(card.lang).aria.replace(
+  '{n}',
+  String(card.difficulty)
+);
 ---
 
 <article class="rc-arow" data-reveal={reveal ? '' : undefined}>
@@ -27,6 +35,8 @@ const { card, readCta, reveal = false } = Astro.props;
       <span>{card.dateDisplay}</span>
       <span class="rc-meta__dot"></span>
       <span>{card.readingLabel}</span>
+      <span class="rc-meta__dot"></span>
+      <span class="rc-stars" role="img" aria-label={starsAria}>{stars}</span>
     </div>
   </div>
   <h3 class="rc-arow__title"><a href={card.href}>{card.title}</a></h3>
@@ -79,6 +89,10 @@ const { card, readCta, reveal = false } = Astro.props;
     border-radius: 50%;
     background: var(--fg-subtle);
     display: inline-block;
+  }
+  .rc-stars {
+    letter-spacing: 0.12em;
+    font-size: 11px;
   }
   .rc-arow__title {
     grid-column: 1;

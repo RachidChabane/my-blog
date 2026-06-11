@@ -8,6 +8,7 @@ publishDate: '04-05-2026'
 tags:
   - llm-oss
   - retrieval
+difficulty: 3
 sources:
   - label: 'vLLM, Documentation'
     url: 'https://docs.vllm.ai/en/latest/'

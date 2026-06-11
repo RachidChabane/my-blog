@@ -181,6 +181,29 @@
     }
   },
   {
+    "id": "difficulty-missing",
+    "gate": "difficulty",
+    "args": [],
+    "artifacts": {
+      "draft-fr.md": "golden/artifacts/draft-fr.nodifficulty.md",
+      "draft-en.md": "golden/artifacts/draft-en.nodifficulty.md"
+    },
+    "expect_contains": ["difficulty must be an integer 1-5"],
+    "why": "An otherwise-valid bilingual pair with NO difficulty frontmatter key: the article would render without its rubric rating (and the zod schema would fail the site build later). The M-4 difficulty gate must BLOCK in Python first, naming the missing 1-5 rating. Deterministic-only: the closed range needs no judge (the rubric pins the meaning; the gate pins the shape)."
+  },
+  {
+    "id": "difficulty-parity-mismatch",
+    "gate": "difficulty",
+    "args": [],
+    "artifacts": {
+      "draft-fr.md": "golden/artifacts/draft-fr.difficulty-mismatch.md",
+      "draft-en.md": "golden/artifacts/draft-en.difficulty-mismatch.md"
+    },
+    "expect_contains": ["difficulty parity"],
+    "why": "Both drafts carry in-range ratings but they DISAGREE (fr 2 vs en 4): one article, two difficulty claims -- the consistency contract (a level means the same thing blog-wide) breaks at the pair level first. The M-4 difficulty gate must BLOCK naming the parity break. Deterministic-only.",
+    "live": null
+  },
+  {
     "id": "style-em-dash",
     "gate": "style",
     "args": ["--lang", "en"],

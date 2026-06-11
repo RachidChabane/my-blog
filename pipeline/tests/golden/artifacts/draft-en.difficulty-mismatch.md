@@ -4,7 +4,7 @@ translationKey: agentic-coding-harness-eval
 slug: agentic-coding-harness-eval
 title: Evaluating agentic coding harnesses
 category: explainers
-difficulty: 3
+difficulty: 4
 tags:
   - agentic
   - evaluation

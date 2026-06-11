@@ -4,7 +4,6 @@ translationKey: agentic-coding-harness-eval
 slug: evaluer-harnais-codage-agentique
 title: Évaluer les harnais de codage agentique
 category: explainers
-difficulty: 3
 tags:
   - agentic
   - evaluation

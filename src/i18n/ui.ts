@@ -13,6 +13,7 @@ export interface ChromeStrings {
   navAria: string; // primary <nav> aria-label
   navArticles: string; // → /[lang]/blog/
   navWork: string; // → /[lang]/work/
+  navGraph: string; // → /[lang]/graph/ (the knowledge map)
   navAbout: string; // → /[lang]/about/
   searchLabel: string; // search button visible text + aria-label
   langGroupAria: string; // switcher group aria-label
@@ -33,6 +34,7 @@ export const CHROME: Record<Locale, ChromeStrings> = {
     navAria: 'Navigation principale',
     navArticles: 'Articles',
     navWork: 'Projets',
+    navGraph: 'Graphe',
     navAbout: 'À propos',
     searchLabel: 'Rechercher',
     langGroupAria: 'Langue',
@@ -51,6 +53,7 @@ export const CHROME: Record<Locale, ChromeStrings> = {
     navAria: 'Main navigation',
     navArticles: 'Articles',
     navWork: 'Projects',
+    navGraph: 'Graph',
     navAbout: 'About',
     searchLabel: 'Search',
     langGroupAria: 'Language',
@@ -77,6 +80,7 @@ export function chrome(lang: Locale): ChromeStrings {
 export const NAV_ITEMS = [
   { key: 'navArticles', path: 'blog' },
   { key: 'navWork', path: 'work' },
+  { key: 'navGraph', path: 'graph' },
   { key: 'navAbout', path: 'about' },
 ] as const;
 
@@ -188,6 +192,28 @@ export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
 
 export function articleDetailStrings(lang: Locale): ArticleDetailStrings {
   return ARTICLE_DETAIL[lang];
+}
+
+/**
+ * Difficulty rating copy. One tiny dedicated table (not a ChromeStrings field):
+ * the stars render on BOTH the card (ArticleListItem) and the article page, so
+ * the aria template lives once here and both surfaces consume it. `{n}` is the
+ * 1-5 level, substituted in the template (mirrors TAGS/SEARCH `{n}` counts —
+ * tables hold strings only, per the ui.test.ts Object.entries guard). The star
+ * glyphs themselves come from difficultyStars() in src/lib/content.ts; the
+ * SCALE is pinned by pipeline/difficulty_rubric.md.
+ */
+export interface DifficultyStrings {
+  aria: string; // role="img" label — "Difficulté : {n} sur 5" / "Difficulty: {n} out of 5"
+}
+
+export const DIFFICULTY: Record<Locale, DifficultyStrings> = {
+  fr: { aria: 'Difficulté : {n} sur 5' },
+  en: { aria: 'Difficulty: {n} out of 5' },
+};
+
+export function difficultyStrings(lang: Locale): DifficultyStrings {
+  return DIFFICULTY[lang];
 }
 
 /**
@@ -557,6 +583,7 @@ export interface SearchStrings {
   empty: string; // quiet no-match line — "Aucun résultat" / "No results"
   countOne: string; // a11y live-region singular — "{n} résultat" / "{n} result"
   countMany: string; // a11y live-region plural — "{n} résultats" / "{n} results"
+  difficultyAria: string; // stars aria template on runtime rows (= DIFFICULTY.aria; duplication accepted, see AVATAR note)
 }
 
 export const SEARCH: Record<Locale, SearchStrings> = {
@@ -569,6 +596,7 @@ export const SEARCH: Record<Locale, SearchStrings> = {
     empty: 'Aucun résultat',
     countOne: '{n} résultat',
     countMany: '{n} résultats',
+    difficultyAria: 'Difficulté : {n} sur 5',
   },
   en: {
     eyebrow: 'Index',
@@ -579,6 +607,7 @@ export const SEARCH: Record<Locale, SearchStrings> = {
     empty: 'No results',
     countOne: '{n} result',
     countMany: '{n} results',
+    difficultyAria: 'Difficulty: {n} out of 5',
   },
 };
 
@@ -650,4 +679,102 @@ export const AVATAR: Record<Locale, AvatarStrings> = {
 
 export function avatarStrings(lang: Locale): AvatarStrings {
   return AVATAR[lang];
+}
+
+/**
+ * Knowledge graph (the /[lang]/graph/ page + KnowledgeGraph island) copy.
+ * Dedicated table — sibling to SEARCH, kept out of ChromeStrings per this file's
+ * header. The island needs a handful of strings at runtime (counts, the citation
+ * lead-in); they ride the island's JSON payload server-side — copy never lives
+ * in JS. `{n}` count templates mirror TAGS/SEARCH + formatCount. The four theme
+ * labels name the cluster colors (CONCEPT_THEMES in src/content/schemas.ts).
+ */
+export interface GraphStrings {
+  metaDesc: string; // <meta name="description">
+  eyebrow: string; // mono kicker
+  title: string; // <h1>
+  intro: string; // one-line explainer under the title
+  hint: string; // interaction hint (zoom / pan / click)
+  searchLabel: string; // search input aria-label
+  searchPlaceholder: string; // search input placeholder
+  searchEmpty: string; // a11y live-region line when no concept matches
+  filterAria: string; // theme chip-rail group aria-label
+  themeAll: string; // "all themes" chip
+  themeAgenticAi: string; // cluster label — agentic-ai
+  themeMlFundamentals: string; // cluster label — ml-fundamentals
+  themeInfraTooling: string; // cluster label — infra-tooling
+  themeEvalsQuality: string; // cluster label — evals-quality
+  legendNew: string; // "new" highlight legend (latest reindex cohort)
+  panelAria: string; // side panel aria-label
+  panelClose: string; // close button aria-label
+  articlesH: string; // panel heading — citing articles
+  relatedH: string; // panel heading — related concepts
+  citedIn: string; // tooltip lead-in before the citing-article titles
+  countOne: string; // "{n} article"
+  countMany: string; // "{n} articles"
+  nodeAria: string; // node aria template: "{label}, {theme}, {n}" (+ count tail)
+  empty: string; // empty-store state (no concepts yet)
+}
+
+export const GRAPH: Record<Locale, GraphStrings> = {
+  fr: {
+    metaDesc:
+      'Carte interactive des concepts d’IA couverts par ce carnet : définitions, liens entre notions et articles sources.',
+    eyebrow: 'Atlas',
+    title: 'Graphe de connaissances',
+    intro:
+      'Tous les concepts couverts par le carnet, reliés entre eux. Chaque nœud cite ses articles sources.',
+    hint: 'Molette pour zoomer, glisser pour déplacer, cliquer un concept pour le détail.',
+    searchLabel: 'Rechercher un concept',
+    searchPlaceholder: 'Rechercher un concept…',
+    searchEmpty: 'Aucun concept ne correspond.',
+    filterAria: 'Filtrer par thème',
+    themeAll: 'Tous',
+    themeAgenticAi: 'IA agentique',
+    themeMlFundamentals: 'Fondamentaux ML',
+    themeInfraTooling: 'Infra et outillage',
+    themeEvalsQuality: 'Évals et qualité',
+    legendNew: 'Nouveau',
+    panelAria: 'Détail du concept',
+    panelClose: 'Fermer le panneau',
+    articlesH: 'Articles',
+    relatedH: 'Concepts liés',
+    citedIn: 'Cité dans',
+    countOne: '{n} article',
+    countMany: '{n} articles',
+    nodeAria: '{label}, {theme}',
+    empty: 'Le graphe se remplit au fil des publications.',
+  },
+  en: {
+    metaDesc:
+      'Interactive map of the AI concepts this notebook covers: definitions, links between ideas, and the source articles.',
+    eyebrow: 'Atlas',
+    title: 'Knowledge graph',
+    intro:
+      'Every concept the notebook covers, linked together. Each node cites its source articles.',
+    hint: 'Scroll to zoom, drag to pan, click a concept for detail.',
+    searchLabel: 'Search concepts',
+    searchPlaceholder: 'Search concepts…',
+    searchEmpty: 'No concept matches.',
+    filterAria: 'Filter by theme',
+    themeAll: 'All',
+    themeAgenticAi: 'Agentic AI',
+    themeMlFundamentals: 'ML fundamentals',
+    themeInfraTooling: 'Infra & tooling',
+    themeEvalsQuality: 'Evals & quality',
+    legendNew: 'New',
+    panelAria: 'Concept detail',
+    panelClose: 'Close panel',
+    articlesH: 'Articles',
+    relatedH: 'Related concepts',
+    citedIn: 'Cited in',
+    countOne: '{n} article',
+    countMany: '{n} articles',
+    nodeAria: '{label}, {theme}',
+    empty: 'The graph fills in as articles publish.',
+  },
+};
+
+export function graphStrings(lang: Locale): GraphStrings {
+  return GRAPH[lang];
 }

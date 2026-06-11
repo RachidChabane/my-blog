@@ -1,0 +1,728 @@
+[
+  {
+    "id": "agent-evaluation",
+    "label": {
+      "fr": "Évaluation d'agents",
+      "en": "Agent evaluation"
+    },
+    "definition": {
+      "fr": "Évaluer un agent au-delà du taux de réussite : a-t-il atteint l'objectif sans casser l'état, sans raccourcis dangereux, sans brûler un nombre d'étapes non borné. La confiance en production repose sur ces dimensions.",
+      "en": "Judging an agent beyond task success rate: did it reach the goal without wrecking state, taking unsafe shortcuts, or burning unbounded steps. Production trust rests on these dimensions."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "success rate"
+    ],
+    "related": [
+      "tool-use",
+      "state-safety",
+      "retrieval-evaluation"
+    ],
+    "articles": [
+      "evaluating-tool-using-agents"
+    ],
+    "addedOn": "12-05-2026"
+  },
+  {
+    "id": "ast-chunking",
+    "label": {
+      "fr": "Découpage par AST",
+      "en": "AST chunking"
+    },
+    "definition": {
+      "fr": "Découpage de code sensible à la structure, qui coupe le long de l'arbre syntaxique abstrait (fonctions, classes, blocs) plutôt qu'en fenêtres de taille fixe, pour que les unités de récupération respectent les frontières du code.",
+      "en": "Structure-aware code chunking that cuts along the abstract syntax tree (functions, classes, blocks) instead of fixed character windows, so retrieval units respect code boundaries."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "structural chunking",
+      "cAST"
+    ],
+    "related": [
+      "chunking",
+      "code-rag"
+    ],
+    "articles": [
+      "ast-code-chunking"
+    ],
+    "addedOn": "10-06-2026"
+  },
+  {
+    "id": "bm25",
+    "label": {
+      "fr": "BM25",
+      "en": "BM25"
+    },
+    "definition": {
+      "fr": "Fonction de classement lexical classique qui note les documents selon la fréquence et la rareté des termes. Excellente sur les identifiants exacts et le jargon, aveugle aux synonymes et aux paraphrases.",
+      "en": "A classic lexical ranking function that scores documents by term frequency and rarity. Strong on exact identifiers and jargon, blind to synonyms and paraphrase."
+    },
+    "theme": "infra-tooling",
+    "aliases": [],
+    "related": [
+      "hybrid-retrieval",
+      "vector-search"
+    ],
+    "articles": [
+      "hybrid-rag-rrf"
+    ],
+    "addedOn": "27-05-2026"
+  },
+  {
+    "id": "change-cost",
+    "label": {
+      "fr": "Coût du changement vs lisibilité",
+      "en": "Change cost vs legibility"
+    },
+    "definition": {
+      "fr": "Les deux coûts que le canon de conception a historiquement fusionnés : le coût de modification du code et le coût de compréhension pour un lecteur. L'écriture par IA les sépare, et une règle servant l'un ne sert plus automatiquement l'autre.",
+      "en": "The two costs the design canon historically fused: how expensive code is to modify, and how expensive it is for a reader to understand. AI authorship splits them, so rules serving one no longer automatically serve the other."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "cost of change",
+      "legibility"
+    ],
+    "related": [
+      "software-design-canon",
+      "coding-agents"
+    ],
+    "articles": [
+      "canon-repriced"
+    ],
+    "addedOn": "10-06-2026"
+  },
+  {
+    "id": "chunking",
+    "label": {
+      "fr": "Découpage en chunks",
+      "en": "Chunking"
+    },
+    "definition": {
+      "fr": "Découpage des documents en unités de récupération avant indexation. La taille et les frontières des chunks déterminent ce qu'un récupérateur pourra renvoyer, ce qui en fait une décision de conception de premier ordre en RAG.",
+      "en": "Splitting documents into retrieval units before indexing. Chunk size and boundaries decide what a retriever can ever return, which makes chunking a first-class design decision in RAG."
+    },
+    "theme": "infra-tooling",
+    "aliases": [],
+    "related": [
+      "ast-chunking",
+      "rag",
+      "context-window"
+    ],
+    "articles": [
+      "ast-code-chunking"
+    ],
+    "addedOn": "10-06-2026"
+  },
+  {
+    "id": "citation-grounding",
+    "label": {
+      "fr": "Ancrage par citations",
+      "en": "Citation grounding"
+    },
+    "definition": {
+      "fr": "Maintenir une chaîne traçable de chaque affirmation publiée vers le texte source qui l'étaye : extraits capturés, identifiants de source stables et marqueurs en ligne qu'un lecteur (ou une porte de contrôle) peut suivre.",
+      "en": "Keeping a traceable chain from each published claim to the source text that backs it: captured excerpts, stable source ids, and inline markers a reader (or a gate) can follow."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "provenance"
+    ],
+    "related": [
+      "fact-checking",
+      "rag"
+    ],
+    "articles": [
+      "publication-guardrails-factcheck"
+    ],
+    "addedOn": "23-05-2026"
+  },
+  {
+    "id": "code-rag",
+    "label": {
+      "fr": "RAG pour le code",
+      "en": "Code RAG"
+    },
+    "definition": {
+      "fr": "Génération augmentée par récupération spécialisée pour le code : récupérer les fragments sources pertinents (définitions, usages, contexte inter-fichiers) pour ancrer la complétion, la réparation ou l'explication.",
+      "en": "Retrieval-augmented generation specialized for code: retrieving relevant source fragments (definitions, usages, cross-file context) to ground completion, repair or explanation."
+    },
+    "theme": "agentic-ai",
+    "aliases": [],
+    "related": [
+      "rag",
+      "ast-chunking",
+      "retrieval-evaluation"
+    ],
+    "articles": [
+      "ast-code-chunking"
+    ],
+    "addedOn": "10-06-2026"
+  },
+  {
+    "id": "coding-agents",
+    "label": {
+      "fr": "Agents de codage",
+      "en": "Coding agents"
+    },
+    "definition": {
+      "fr": "Agents pilotés par LLM qui lisent, écrivent et refactorent du code via des appels d'outils (éditeur, shell, tests), déplaçant l'économie de qui lit le code et des conventions qui valent leur coût.",
+      "en": "LLM-driven agents that read, write and refactor code through tool calls (editor, shell, tests), shifting the economics of who reads code and what conventions are worth their cost."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "AI coding assistants",
+      "AI-assisted coding"
+    ],
+    "related": [
+      "deterministic-workflows",
+      "tool-use",
+      "software-design-canon"
+    ],
+    "articles": [
+      "deterministic-agent-workflows",
+      "canon-repriced"
+    ],
+    "addedOn": "30-05-2026"
+  },
+  {
+    "id": "context-budget",
+    "label": {
+      "fr": "Budget de contexte",
+      "en": "Context budget"
+    },
+    "definition": {
+      "fr": "Traiter le contexte comme un budget d'exploitation conçu plutôt que comme une ressource gratuite : dimensionner les prompts pour ce que le modèle exploite bien, pas pour ce que la fenêtre ou le cache rend bon marché à envoyer.",
+      "en": "Treating context as an engineered operating budget rather than a free resource: sizing prompts for what the model uses well, not for what the window or caching makes cheap to send."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "effective context"
+    ],
+    "related": [
+      "context-window",
+      "prompt-caching",
+      "long-context-degradation"
+    ],
+    "articles": [
+      "context-budget"
+    ],
+    "addedOn": "10-06-2026"
+  },
+  {
+    "id": "context-window",
+    "label": {
+      "fr": "Fenêtre de contexte",
+      "en": "Context window"
+    },
+    "definition": {
+      "fr": "Le nombre maximal de tokens qu'un modèle peut traiter en un appel. Un plafond architectural dur, distinct de la quantité plus réduite de contexte que le modèle exploite réellement bien.",
+      "en": "The maximum number of tokens a model can attend to in one call. A hard architectural ceiling, distinct from the smaller amount of context the model can actually use well."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [],
+    "related": [
+      "context-budget",
+      "long-context-degradation",
+      "kv-cache"
+    ],
+    "articles": [
+      "context-budget",
+      "ast-code-chunking"
+    ],
+    "addedOn": "10-06-2026"
+  },
+  {
+    "id": "continuous-batching",
+    "label": {
+      "fr": "Batching continu",
+      "en": "Continuous batching"
+    },
+    "definition": {
+      "fr": "Un ordonnanceur de service qui admet et libère les requêtes token par token au lieu d'attendre la fin d'un lot complet, gardant le GPU occupé et réduisant la latence de queue sous charge.",
+      "en": "A serving scheduler that admits and retires requests token by token instead of waiting for a full batch to finish, keeping the GPU busy and cutting tail latency under load."
+    },
+    "theme": "infra-tooling",
+    "aliases": [],
+    "related": [
+      "vllm",
+      "llm-serving"
+    ],
+    "articles": [
+      "serving-oss-llm-production-cost"
+    ],
+    "addedOn": "04-05-2026"
+  },
+  {
+    "id": "deterministic-workflows",
+    "label": {
+      "fr": "Workflows d'agents déterministes",
+      "en": "Deterministic agent workflows"
+    },
+    "definition": {
+      "fr": "Structurer le travail d'un agent en étapes nommées avec des entrées explicites et une vérification qui doit passer avant l'étape suivante : l'agent fait le travail créatif, le harnais impose le chemin et échoue tôt.",
+      "en": "Structuring agent work as named steps with explicit inputs and a check that must pass before the next step runs: the agent does the creative work, the harness enforces the path and fails early."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "plan-execute workflows"
+    ],
+    "related": [
+      "coding-agents",
+      "tool-use",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "deterministic-agent-workflows"
+    ],
+    "addedOn": "30-05-2026"
+  },
+  {
+    "id": "embeddings",
+    "label": {
+      "fr": "Embeddings",
+      "en": "Embeddings"
+    },
+    "definition": {
+      "fr": "Représentations vectorielles apprises d'un texte (ou d'un code) dans lesquelles la distance géométrique approxime la similarité sémantique. Le substrat de la recherche vectorielle, de la déduplication et du clustering.",
+      "en": "Learned vector representations of text (or code) in which geometric distance approximates semantic similarity. The substrate of vector search, deduplication and clustering."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [],
+    "related": [
+      "vector-search",
+      "rag"
+    ],
+    "articles": [
+      "hybrid-rag-rrf",
+      "ast-code-chunking"
+    ],
+    "addedOn": "27-05-2026"
+  },
+  {
+    "id": "fact-checking",
+    "label": {
+      "fr": "Vérification automatique des faits",
+      "en": "Automated fact-checking"
+    },
+    "definition": {
+      "fr": "Traiter chaque phrase factuelle comme une affirmation qui doit être étayée par un extrait de source capturé, jugé par un vérificateur distinct de l'auteur, avant publication.",
+      "en": "Treating every factual sentence as a claim that must be supported by a captured source excerpt, judged by a verifier separate from the author, before publication."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "claim verification"
+    ],
+    "related": [
+      "publication-guardrails",
+      "citation-grounding"
+    ],
+    "articles": [
+      "publication-guardrails-factcheck"
+    ],
+    "addedOn": "23-05-2026"
+  },
+  {
+    "id": "hybrid-retrieval",
+    "label": {
+      "fr": "Récupération hybride",
+      "en": "Hybrid retrieval"
+    },
+    "definition": {
+      "fr": "Combinaison d'une recherche lexicale (comme BM25) et d'une recherche vectorielle dans un même pipeline de récupération, pour que les correspondances exactes et les correspondances sémantiques compensent leurs angles morts respectifs.",
+      "en": "Combining lexical search (such as BM25) and vector search in one retrieval pipeline, so exact-term matches and semantic matches compensate for each other's blind spots."
+    },
+    "theme": "infra-tooling",
+    "aliases": [],
+    "related": [
+      "rag",
+      "bm25",
+      "vector-search",
+      "reciprocal-rank-fusion"
+    ],
+    "articles": [
+      "hybrid-rag-rrf"
+    ],
+    "addedOn": "27-05-2026"
+  },
+  {
+    "id": "kv-cache",
+    "label": {
+      "fr": "Cache KV",
+      "en": "KV cache"
+    },
+    "definition": {
+      "fr": "Les tenseurs clé/valeur par token qu'un transformeur conserve pour ne pas recalculer l'attention sur tout le préfixe à chaque étape. Au service, il domine souvent la VRAM au-delà des poids eux-mêmes.",
+      "en": "The per-token key/value tensors a transformer keeps so it does not recompute attention over the whole prefix at each step. At serving time it often dominates VRAM beyond the weights themselves."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "key-value cache"
+    ],
+    "related": [
+      "llm-serving",
+      "context-window",
+      "prompt-caching"
+    ],
+    "articles": [
+      "serving-oss-llm-production-cost"
+    ],
+    "addedOn": "04-05-2026"
+  },
+  {
+    "id": "llm-serving",
+    "label": {
+      "fr": "Service de LLM",
+      "en": "LLM serving"
+    },
+    "definition": {
+      "fr": "Faire tourner l'inférence d'un modèle en production : stratégies de batching, gestion mémoire et compromis débit/latence. Là où vit le coût réel d'un modèle ouvert.",
+      "en": "Running model inference in production: batching strategies, memory management and throughput/latency trade-offs. Where the real cost of an open model lives."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "inference serving"
+    ],
+    "related": [
+      "vllm",
+      "continuous-batching",
+      "kv-cache",
+      "quantization"
+    ],
+    "articles": [
+      "serving-oss-llm-production-cost"
+    ],
+    "addedOn": "04-05-2026"
+  },
+  {
+    "id": "long-context-degradation",
+    "label": {
+      "fr": "Dégradation en contexte long",
+      "en": "Long-context degradation"
+    },
+    "definition": {
+      "fr": "La chute mesurée de précision d'un modèle à mesure que le prompt grandit : l'information pertinente est diluée ou ignorée bien avant que la fenêtre de contexte soit pleine.",
+      "en": "The measured drop in model accuracy as the prompt grows: relevant information gets diluted or ignored well before the context window is full."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "context rot",
+      "lost in the middle"
+    ],
+    "related": [
+      "context-window",
+      "context-budget"
+    ],
+    "articles": [
+      "context-budget"
+    ],
+    "addedOn": "10-06-2026"
+  },
+  {
+    "id": "open-weight-models",
+    "label": {
+      "fr": "Modèles à poids ouverts",
+      "en": "Open-weight models"
+    },
+    "definition": {
+      "fr": "Modèles dont les poids sont téléchargeables et auto-hébergeables. Ils déplacent la question du coût de la tarification API au token vers l'infrastructure de service, la quantification et l'exploitation.",
+      "en": "Models whose weights are downloadable and self-hostable. They shift the cost question from per-token API pricing to serving infrastructure, quantization and operations."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "open-source LLMs",
+      "OSS models"
+    ],
+    "related": [
+      "llm-serving",
+      "quantization"
+    ],
+    "articles": [
+      "quantizing-open-models",
+      "serving-oss-llm-production-cost"
+    ],
+    "addedOn": "04-05-2026"
+  },
+  {
+    "id": "prompt-caching",
+    "label": {
+      "fr": "Cache de prompt",
+      "en": "Prompt caching"
+    },
+    "definition": {
+      "fr": "Réutilisation de l'état calculé d'un préfixe de prompt stable entre les appels, pour que le contexte répété coûte moins cher et réponde plus vite. Cela baisse le prix du renvoi des tokens, pas le coût de leur traitement par le modèle.",
+      "en": "Reusing the computed state of a stable prompt prefix across calls so repeated context is cheaper and faster. It lowers the price of resending tokens, not the cost of the model attending to them."
+    },
+    "theme": "infra-tooling",
+    "aliases": [],
+    "related": [
+      "context-budget",
+      "kv-cache"
+    ],
+    "articles": [
+      "context-budget"
+    ],
+    "addedOn": "10-06-2026"
+  },
+  {
+    "id": "publication-guardrails",
+    "label": {
+      "fr": "Garde-fous de publication",
+      "en": "Publication guardrails"
+    },
+    "definition": {
+      "fr": "Vérifications dures entre un système générateur et sa sortie publique : des portes structurelles qui bloquent la publication quand les affirmations, citations, règles de style ou de sûreté échouent, au lieu de faire confiance au générateur.",
+      "en": "Hard checks between a generating system and its public output: structural gates that block publishing when claims, citations, style or safety rules fail, instead of trusting the generator."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "guardrails"
+    ],
+    "related": [
+      "fact-checking",
+      "citation-grounding"
+    ],
+    "articles": [
+      "publication-guardrails-factcheck"
+    ],
+    "addedOn": "23-05-2026"
+  },
+  {
+    "id": "quantization",
+    "label": {
+      "fr": "Quantification",
+      "en": "Quantization"
+    },
+    "definition": {
+      "fr": "Stocker les poids d'un modèle (et parfois les activations) en précision numérique réduite pour réduire la mémoire et accélérer l'inférence, en échangeant une part mesurée de qualité contre l'empreinte.",
+      "en": "Storing model weights (and sometimes activations) at lower numerical precision to cut memory and speed up inference, trading a measured amount of quality for footprint."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [],
+    "related": [
+      "quantization-formats",
+      "llm-serving",
+      "open-weight-models"
+    ],
+    "articles": [
+      "quantizing-open-models"
+    ],
+    "addedOn": "19-05-2026"
+  },
+  {
+    "id": "quantization-formats",
+    "label": {
+      "fr": "Formats de quantification",
+      "en": "Quantization formats"
+    },
+    "definition": {
+      "fr": "Les schémas concrets dans lesquels un modèle quantifié est distribué : GPTQ et AWQ pour la quantification post-entraînement orientée GPU, GGUF pour l'inférence portable CPU/GPU. Chacun fige des compromis différents.",
+      "en": "The concrete schemes a quantized model ships in: GPTQ and AWQ for GPU-oriented post-training quantization, GGUF for portable CPU/GPU inference. Each pins different trade-offs."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "GPTQ",
+      "AWQ",
+      "GGUF"
+    ],
+    "related": [
+      "quantization",
+      "open-weight-models"
+    ],
+    "articles": [
+      "quantizing-open-models"
+    ],
+    "addedOn": "19-05-2026"
+  },
+  {
+    "id": "rag",
+    "label": {
+      "fr": "RAG",
+      "en": "RAG"
+    },
+    "definition": {
+      "fr": "Génération augmentée par récupération : le système ancre la réponse d'un modèle de langage en récupérant des documents pertinents au moment de la requête et en les injectant dans le prompt, plutôt que de compter sur la seule mémoire paramétrique du modèle.",
+      "en": "Retrieval-augmented generation: the system grounds a language model's answer by retrieving relevant documents at query time and injecting them into the prompt, instead of relying on the model's parametric memory alone."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "retrieval-augmented generation"
+    ],
+    "related": [
+      "hybrid-retrieval",
+      "embeddings",
+      "vector-search",
+      "chunking",
+      "code-rag"
+    ],
+    "articles": [
+      "hybrid-rag-rrf",
+      "ast-code-chunking"
+    ],
+    "addedOn": "27-05-2026"
+  },
+  {
+    "id": "reciprocal-rank-fusion",
+    "label": {
+      "fr": "Fusion de rangs réciproques",
+      "en": "Reciprocal rank fusion"
+    },
+    "definition": {
+      "fr": "Méthode de fusion de plusieurs listes classées fondée uniquement sur le rang : chaque document reçoit la somme de 1/(k + rang) sur les listes. Aucune normalisation de scores ni pondération à régler, ce qui fait sa robustesse.",
+      "en": "A rank-only method for merging several ranked lists: each document scores the sum of 1/(k + rank) across lists. No score normalization or weight tuning, which is what makes it robust."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "RRF"
+    ],
+    "related": [
+      "hybrid-retrieval",
+      "bm25",
+      "vector-search"
+    ],
+    "articles": [
+      "hybrid-rag-rrf"
+    ],
+    "addedOn": "27-05-2026"
+  },
+  {
+    "id": "retrieval-evaluation",
+    "label": {
+      "fr": "Évaluation de la récupération",
+      "en": "Retrieval evaluation"
+    },
+    "definition": {
+      "fr": "Mesurer si un récupérateur remonte ce dont la génération a besoin : métriques de rang comme le Recall@k pour l'ensemble récupéré, et métriques de tâche finale comme le Pass@1 pour l'effet sur la qualité produite.",
+      "en": "Measuring whether a retriever surfaces what downstream generation needs: rank metrics such as Recall@k for the retrieved set, and end-task metrics such as Pass@1 for the effect on output quality."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "recall@k",
+      "pass@1"
+    ],
+    "related": [
+      "code-rag",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "ast-code-chunking"
+    ],
+    "addedOn": "10-06-2026"
+  },
+  {
+    "id": "software-design-canon",
+    "label": {
+      "fr": "Canon de conception logicielle",
+      "en": "Software design canon"
+    },
+    "definition": {
+      "fr": "Le corpus hérité de doctrine de conception (SOLID, design patterns, clean code) dont les règles ont été tarifées pour des lecteurs humains et des coûts d'édition humains, et que l'écriture par IA re-tarife règle par règle.",
+      "en": "The inherited body of design doctrine (SOLID, design patterns, clean code) whose rules were priced for human readers and human editing costs, and which AI authorship re-prices rule by rule."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "SOLID",
+      "design patterns",
+      "clean code"
+    ],
+    "related": [
+      "coding-agents",
+      "change-cost"
+    ],
+    "articles": [
+      "canon-repriced"
+    ],
+    "addedOn": "10-06-2026"
+  },
+  {
+    "id": "state-safety",
+    "label": {
+      "fr": "Sûreté de l'état",
+      "en": "State safety"
+    },
+    "definition": {
+      "fr": "Dimension de qualité d'un agent : accomplir une tâche ne doit pas corrompre l'état environnant (fichiers supprimés, migrations à moitié appliquées, ressources fuitées). Une bonne réponse avec un espace de travail cassé est un échec.",
+      "en": "An agent quality dimension: completing a task must not corrupt the surrounding state (files deleted, half-applied migrations, leaked resources). A right answer with a wrecked workspace is a failure."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "side effects"
+    ],
+    "related": [
+      "agent-evaluation"
+    ],
+    "articles": [
+      "evaluating-tool-using-agents"
+    ],
+    "addedOn": "12-05-2026"
+  },
+  {
+    "id": "tool-use",
+    "label": {
+      "fr": "Usage d'outils",
+      "en": "Tool use"
+    },
+    "definition": {
+      "fr": "Le mécanisme par lequel un modèle agit sur le monde : il émet des appels structurés vers des outils déclarés (recherche, shell, API) et raisonne sur leurs résultats en boucle.",
+      "en": "The mechanism by which a model acts on the world: it emits structured calls to declared tools (search, shell, APIs) and reasons over their results in a loop."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "function calling"
+    ],
+    "related": [
+      "coding-agents",
+      "agent-evaluation",
+      "deterministic-workflows"
+    ],
+    "articles": [
+      "evaluating-tool-using-agents",
+      "deterministic-agent-workflows"
+    ],
+    "addedOn": "12-05-2026"
+  },
+  {
+    "id": "vector-search",
+    "label": {
+      "fr": "Recherche vectorielle",
+      "en": "Vector search"
+    },
+    "definition": {
+      "fr": "Récupération sur des vecteurs d'embedding : documents et requêtes sont projetés dans un même espace vectoriel et appariés par similarité (souvent cosinus), ce qui capture le sens au-delà des mots exacts.",
+      "en": "Retrieval over embedding vectors: documents and queries are mapped to a shared vector space and matched by similarity (typically cosine), capturing meaning beyond exact words."
+    },
+    "theme": "infra-tooling",
+    "aliases": [],
+    "related": [
+      "embeddings",
+      "bm25",
+      "hybrid-retrieval"
+    ],
+    "articles": [
+      "hybrid-rag-rrf"
+    ],
+    "addedOn": "27-05-2026"
+  },
+  {
+    "id": "vllm",
+    "label": {
+      "fr": "vLLM",
+      "en": "vLLM"
+    },
+    "definition": {
+      "fr": "Moteur d'inférence open source très utilisé, construit autour de PagedAttention : il gère la mémoire du cache KV par pages et met les requêtes en lot en continu pour maximiser le débit GPU.",
+      "en": "A widely used open-source inference engine built around PagedAttention: it manages KV-cache memory in pages and batches requests continuously to maximize GPU throughput."
+    },
+    "theme": "infra-tooling",
+    "aliases": [],
+    "related": [
+      "llm-serving",
+      "continuous-batching",
+      "kv-cache"
+    ],
+    "articles": [
+      "serving-oss-llm-production-cost"
+    ],
+    "addedOn": "04-05-2026"
+  }
+]

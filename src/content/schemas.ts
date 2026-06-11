@@ -43,7 +43,12 @@ export const articleFrontmatterSchema = z.object({
   title: z.string().min(1),
   publishDate: z.string().regex(/^\d{2}-\d{2}-\d{4}$/),
   tags: z.array(z.string().min(1)).min(1),
-  category: z.enum(['essays', 'explainers', 'briefings']).default('explainers'),
+  category: z
+    .enum(['essays', 'explainers', 'briefings', 'lessons'])
+    .default('explainers'),
+  // 1-5 against the single fixed rubric (pipeline/difficulty_rubric.md, the one
+  // source of truth). Required on every article; FR/EN pairs carry the SAME value.
+  difficulty: z.number().int().min(1).max(5),
   sources: z.array(sourceSchema).min(2),
   contentHash: z.string().min(1),
   publishState: z.enum(['published', 'draft']),
@@ -109,8 +114,43 @@ export const provenanceSchema = z.object({
   citations: z.array(provenanceCitationSchema).min(1),
 });
 
+/**
+ * Knowledge-graph concept store (src/content/concepts/index.json). One CANONICAL
+ * record per AI concept extracted from the blog's content: the definition is
+ * write-once (the pipeline's concepts CLI refuses to overwrite it -- consistency
+ * over regeneration), `articles` carries the citing translationKeys (the graph's
+ * citations are first-class), `related` names sibling concept ids (typed edges on
+ * top of the computed article co-occurrence), and `theme` drives cluster color.
+ * `addedOn` (DD-MM-YYYY) lets the graph highlight the newest concepts.
+ */
+export const CONCEPT_THEMES = [
+  'agentic-ai',
+  'ml-fundamentals',
+  'infra-tooling',
+  'evals-quality',
+] as const;
+
+export const conceptSchema = z.object({
+  id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
+  label: z.object({
+    fr: z.string().min(1),
+    en: z.string().min(1),
+  }),
+  definition: z.object({
+    fr: z.string().min(1),
+    en: z.string().min(1),
+  }),
+  theme: z.enum(CONCEPT_THEMES),
+  aliases: z.array(z.string().min(1)).default([]),
+  related: z.array(z.string().min(1)).default([]),
+  articles: z.array(z.string().min(1)).min(1),
+  addedOn: z.string().regex(/^\d{2}-\d{2}-\d{4}$/),
+});
+
 export type ArticleFrontmatter = z.infer<typeof articleFrontmatterSchema>;
 export type ProjectFrontmatter = z.infer<typeof projectFrontmatterSchema>;
 export type Tag = z.infer<typeof tagSchema>;
 export type Category = z.infer<typeof categorySchema>;
 export type Provenance = z.infer<typeof provenanceSchema>;
+export type Concept = z.infer<typeof conceptSchema>;
+export type ConceptTheme = (typeof CONCEPT_THEMES)[number];

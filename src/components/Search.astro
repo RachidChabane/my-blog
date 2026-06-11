@@ -57,6 +57,7 @@ const { strings } = Astro.props;
     aria-live="polite"
     data-one={strings.countOne}
     data-many={strings.countMany}
+    data-diff-aria={strings.difficultyAria}
   >
   </p>
   <p class="rc-search__note" data-search-idle>{strings.idleHint}</p>
@@ -134,6 +135,10 @@ const { strings } = Astro.props;
     height: 3px;
     border-radius: 50%;
     background: var(--fg-subtle);
+  }
+  .rc-search .rc-stars {
+    letter-spacing: 0.12em;
+    font-size: 11px;
   }
   .rc-search .rc-arow__title {
     margin: 0;
@@ -244,6 +249,23 @@ const { strings } = Astro.props;
           const b = document.createElement('span');
           b.textContent = d.meta.reading;
           m.append(a, dot, b);
+          // Difficulty stars (next to reading time, like the static rows). The
+          // level comes from data-pagefind-meta; the aria template is server-
+          // rendered into data-diff-aria — copy never lives in JS.
+          const level = Number.parseInt(d.meta.difficulty ?? '', 10);
+          if (level >= 1 && level <= 5) {
+            const dot2 = document.createElement('span');
+            dot2.className = 'rc-meta__dot';
+            const stars = document.createElement('span');
+            stars.className = 'rc-stars';
+            stars.setAttribute('role', 'img');
+            stars.setAttribute(
+              'aria-label',
+              (status.dataset.diffAria ?? '{n}/5').replace('{n}', String(level))
+            );
+            stars.textContent = '★'.repeat(level) + '☆'.repeat(5 - level);
+            m.append(dot2, stars);
+          }
           row.append(m);
         }
         const h = document.createElement('h3');

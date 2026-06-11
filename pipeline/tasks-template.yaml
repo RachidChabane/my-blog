@@ -115,6 +115,7 @@ tasks:
         style-en,
         editorial-quality,
         source-quality,
+        difficulty-rating,
       ]
   - id: publish
     phase: publish

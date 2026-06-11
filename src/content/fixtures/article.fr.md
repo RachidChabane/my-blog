@@ -7,6 +7,7 @@ publishDate: '01-06-2026'
 tags:
   - agents-ia
   - llm
+difficulty: 3
 sources:
   - label: 'Anthropic — Building effective agents'
     url: 'https://www.anthropic.com/research/building-effective-agents'

@@ -9,6 +9,7 @@ tags:
 - retrieval
 - agentic-coding
 category: explainers
+difficulty: 4
 sources:
 - label: 'cAST: Enhancing Code RAG with Structural Chunking via Abstract Syntax Tree
     (Zhang et al., EMNLP 2025 Findings)'

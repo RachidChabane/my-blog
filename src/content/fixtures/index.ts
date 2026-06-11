@@ -8,6 +8,7 @@ export const ARTICLE_FR: ArticleFrontmatter = {
   publishDate: '01-06-2026',
   tags: ['agents-ia', 'llm'],
   category: 'explainers',
+  difficulty: 3,
   sources: [
     {
       label: 'Anthropic — Building effective agents',
@@ -32,6 +33,7 @@ export const ARTICLE_EN: ArticleFrontmatter = {
   publishDate: '01-06-2026',
   tags: ['agents-ia', 'llm'],
   category: 'explainers',
+  difficulty: 3,
   sources: [
     {
       label: 'Anthropic — Building effective agents',

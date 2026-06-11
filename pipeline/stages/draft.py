@@ -26,11 +26,25 @@ import yaml
 
 from ..contracts.claim_source_map import ClaimSourceMap, ContractError
 
-REQUIRED_FRONTMATTER = ("lang", "translationKey", "slug", "title", "tags", "category")
+REQUIRED_FRONTMATTER = (
+    "lang",
+    "translationKey",
+    "slug",
+    "title",
+    "tags",
+    "category",
+    "difficulty",
+)
 
-# The 3-way article taxonomy (single-valued `category` field, distinct from free-form
-# `tags`). Display/grouping order: essays, then explainers, then briefings.
-VALID_CATEGORIES = ("essays", "explainers", "briefings")
+# The 4-way article taxonomy (single-valued `category` field, distinct from free-form
+# `tags`). Display/grouping order: essays, explainers, briefings, then lessons
+# (structured educational deep-dives, generated on no-news days).
+VALID_CATEGORIES = ("essays", "explainers", "briefings", "lessons")
+
+# The closed difficulty scale. The MEANING of each level is pinned by the versioned
+# rubric (pipeline/difficulty_rubric.md, injected into the draft prompt every run);
+# this validator only enforces the closed integer range + fr/en parity.
+VALID_DIFFICULTIES = (1, 2, 3, 4, 5)
 
 # Leading frontmatter fence only: anchored at start, non-greedy body so the FIRST
 # closing `---` line ends it (markdown bodies contain `---` rules). A deliberate small
@@ -61,6 +75,16 @@ def _str_field(value: object) -> str:
     return value if isinstance(value, str) else ""
 
 
+def _int_field(value: object) -> int:
+    """Coerce a frontmatter value to ``int`` (bool/None/float/str => 0 so validate flags it).
+
+    YAML already yields ``difficulty: 3`` as an int; a quoted ``'3'`` or a float is NOT
+    accepted (the published schema requires a literal integer), it coerces to the 0
+    sentinel and validate() names the problem.
+    """
+    return value if isinstance(value, int) and not isinstance(value, bool) else 0
+
+
 @dataclass(frozen=True)
 class DraftDoc:
     """One language's draft: author-time frontmatter + the markdown body."""
@@ -72,6 +96,7 @@ class DraftDoc:
     tags: list[str]
     body: str
     category: str = ""
+    difficulty: int = 0  # 0 == absent/invalid; validate() requires 1-5
 
     def validate(self) -> list[str]:
         """Return structural problems (empty == valid)."""
@@ -96,6 +121,11 @@ class DraftDoc:
             problems.append(
                 f"category must be one of {list(VALID_CATEGORIES)} (got {self.category!r})"
             )
+        if self.difficulty not in VALID_DIFFICULTIES:
+            problems.append(
+                "difficulty must be an integer 1-5 rated against "
+                f"pipeline/difficulty_rubric.md (got {self.difficulty!r})"
+            )
         return problems
 
     @classmethod
@@ -111,6 +141,7 @@ class DraftDoc:
             tags=tags if isinstance(tags, list) else [],
             body=_strip_frontmatter(text),
             category=_str_field(fm.get("category")),
+            difficulty=_int_field(fm.get("difficulty")),
         )
 
 
@@ -139,6 +170,12 @@ def validate_draft_pair(fr_text: str, en_text: str) -> list[str]:
             "category parity: fr "
             f"{fr.category!r} != en {en.category!r} "
             "(fr/en are the same article and must share one category bucket)"
+        )
+    if fr.difficulty != en.difficulty:
+        problems.append(
+            "difficulty parity: fr "
+            f"{fr.difficulty!r} != en {en.difficulty!r} "
+            "(fr/en are the same article and must carry one rubric rating)"
         )
     return problems
 
@@ -204,6 +241,7 @@ if __name__ == "__main__":
 __all__ = [
     "REQUIRED_FRONTMATTER",
     "VALID_CATEGORIES",
+    "VALID_DIFFICULTIES",
     "DraftDoc",
     "validate_draft_pair",
     "validate_draft_run",

@@ -25,6 +25,7 @@ function entry(
       publishDate: '15-05-2026',
       tags: ['agents'],
       category: 'explainers',
+      difficulty: 3,
       sources: [
         { label: 'src', url: 'https://example.com', date: '01-01-2024' },
       ],

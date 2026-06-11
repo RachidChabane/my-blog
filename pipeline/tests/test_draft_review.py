@@ -113,6 +113,31 @@ def test_category_parity_enforced():
     assert any("category" in p.lower() and "parity" in p.lower() for p in problems)
 
 
+def test_difficulty_required_in_range_and_integer():
+    # the valid fixtures carry difficulty: 3 (the rubric rating is REQUIRED frontmatter)
+    assert DraftDoc.parse(_fixture_text("draft-en.valid.md")).difficulty == 3
+    # missing key -> 0 sentinel -> named problem
+    no_diff = _fixture_text("draft-en.valid.md").replace("difficulty: 3\n", "", 1)
+    assert any("difficulty" in p for p in DraftDoc.parse(no_diff).validate())
+    # out of range / wrong type all coerce or flag (a quoted '3' is NOT an int)
+    for bad in ("difficulty: 0", "difficulty: 6", "difficulty: '3'", "difficulty: 2.5"):
+        txt = _fixture_text("draft-en.valid.md").replace("difficulty: 3", bad, 1)
+        assert any(
+            "difficulty must be an integer 1-5" in p
+            for p in DraftDoc.parse(txt).validate()
+        ), bad
+
+
+def test_difficulty_parity_enforced():
+    fr = _fixture_text("draft-fr.valid.md")
+    # both in range, but DIFFERENT -> one article would carry two ratings
+    en = _fixture_text("draft-en.valid.md").replace(
+        "difficulty: 3", "difficulty: 4", 1
+    )
+    problems = validate_draft_pair(fr, en)
+    assert any("difficulty" in p.lower() and "parity" in p.lower() for p in problems)
+
+
 def test_leading_fence_not_confused_by_body_rule():
     doc = DraftDoc.parse(_fixture_text("draft-en.valid.md"))
     # frontmatter parsed from the LEADING fence only
@@ -327,9 +352,20 @@ def test_draft_prompt_substrings():
         '"unsound"',  # verdict vocab (in verdict_schema, on one line: "sound"|"unsound")
         "ALONGSIDE the fact-check",  # the G2-alongside-factcheck framing
         "INDEPENDENT corroboration",  # the corroboration dimension
+        # difficulty rating: the rubric is READ (path) + the frontmatter key + the gate
+        "/abs/repo/pipeline/difficulty_rubric.md",  # the versioned rubric, read every run
+        "difficulty: <integer 1-5>",  # the frontmatter key spec
+        "choose the HIGHER",  # the rubric's round-toward-the-reader rule
+        # LESSON MODE (no-news days): keyed on the brief's lesson- topic_id prefix
+        "LESSON MODE",
+        "lesson-",
+        "category: lessons",
+        "## Quiz",
+        "<details><summary>",
+        "DIAGRAM",
     ]:
         assert needle in p, f"draft prompt missing {needle!r}"
-    assert "Eight gates BLOCK this task" in p  # task 5: 6 M-4 + editorial + source-quality
+    assert "Nine gates BLOCK this task" in p  # +difficulty-rating on top of the eight
     # the round cap is interpolated into the humanize section (asserted in context, not
     # as a bare '2' which would also match paths / 's2'). Use a distinctive value.
     p7 = build_draft_prompt(repo_root=_ABS_REPO, run_dir=_ABS_RUN, max_humanize_rounds=7)

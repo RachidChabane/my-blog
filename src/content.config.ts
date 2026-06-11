@@ -6,6 +6,7 @@ import {
   tagSchema,
   categorySchema,
   provenanceSchema,
+  conceptSchema,
 } from './content/schemas';
 
 export const collections = {
@@ -30,5 +31,11 @@ export const collections = {
   provenance: defineCollection({
     loader: glob({ pattern: '**/*.json', base: './src/content/provenance' }),
     schema: provenanceSchema,
+  }),
+  // Knowledge-graph concept store: canonical bilingual definitions + article
+  // citations, appended daily by the pipeline's publish stage (concepts CLI).
+  concepts: defineCollection({
+    loader: file('./src/content/concepts/index.json'),
+    schema: conceptSchema,
   }),
 };

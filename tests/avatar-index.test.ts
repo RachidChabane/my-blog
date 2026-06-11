@@ -467,6 +467,7 @@ function articleMd(o: {
     `publishDate: '01-06-2026'`,
     'tags:',
     '  - rag',
+    'difficulty: 2',
     'sources:',
     `  - label: 'Source One'`,
     `    url: 'https://example.com/one'`,

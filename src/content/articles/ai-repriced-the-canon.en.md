@@ -9,6 +9,7 @@ tags:
 - qualite
 - evaluation
 category: essays
+difficulty: 3
 sources:
 - label: Kent Beck, coupling and cohesion (Tidy First?)
   url: https://tidyfirst.substack.com/p/tldr-coupling-and-later-cohesion

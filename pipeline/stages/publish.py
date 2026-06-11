@@ -36,7 +36,12 @@ import yaml
 
 from ..contracts.claim_source_map import ClaimSourceMap, ContractError
 from ..memory.topic_memory import TopicMemory, TopicRecord
-from .draft import VALID_CATEGORIES, DraftDoc, validate_draft_pair
+from .draft import (
+    VALID_CATEGORIES,
+    VALID_DIFFICULTIES,
+    DraftDoc,
+    validate_draft_pair,
+)
 from .research import CandidatesDoc
 from .select import parse_brief
 
@@ -174,6 +179,7 @@ def build_article(draft: DraftDoc, sources: list[dict], *, publish_date: str) ->
         "publishDate": publish_date,
         "tags": list(draft.tags),
         "category": draft.category,
+        "difficulty": draft.difficulty,
         "sources": [dict(source) for source in sources],
         "contentHash": content_hash(draft.translation_key, draft.lang, draft.body),
         "publishState": "published",
@@ -235,13 +241,23 @@ def validate_published(article_text: str) -> list[str]:
     if publish_state != "published":
         problems.append(f"publishState must be 'published' (got {publish_state!r})")
 
-    # Fail-fast on the 3-way taxonomy: a bad/missing `category` dies HERE in Python, not
+    # Fail-fast on the 4-way taxonomy: a bad/missing `category` dies HERE in Python, not
     # later at the Astro/zod build (the schema enum). REQUIRED for pipeline articles.
     category = fm.get("category")
     if category not in VALID_CATEGORIES:
         problems.append(
             f"category must be one of {list(VALID_CATEGORIES)} (got {category!r})"
         )
+
+    # Same fail-fast for the rubric rating: the zod schema requires an integer 1-5 on
+    # every article, so a bad/missing `difficulty` dies here, not at the Astro build.
+    difficulty = fm.get("difficulty")
+    if not (
+        isinstance(difficulty, int)
+        and not isinstance(difficulty, bool)
+        and difficulty in VALID_DIFFICULTIES
+    ):
+        problems.append(f"difficulty must be an integer 1-5 (got {difficulty!r})")
     return problems
 
 

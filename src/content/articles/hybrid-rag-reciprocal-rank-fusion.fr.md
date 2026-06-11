@@ -8,6 +8,7 @@ publishDate: '27-05-2026'
 tags:
   - rag
   - retrieval
+difficulty: 3
 sources:
   - label: 'Pinecone, Hybrid search intro'
     url: 'https://www.pinecone.io/learn/hybrid-search-intro/'

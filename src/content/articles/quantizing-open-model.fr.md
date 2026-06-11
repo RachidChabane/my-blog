@@ -7,6 +7,7 @@ title: 'Quantifier un modèle ouvert sans le casser'
 publishDate: '19-05-2026'
 tags:
   - llm-oss
+difficulty: 3
 sources:
   - label: 'Hugging Face, Quantization overview'
     url: 'https://huggingface.co/docs/transformers/main/en/quantization/overview'

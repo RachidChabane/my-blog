@@ -1,0 +1,177 @@
+# Lesson backlog (version 1) -- the curated topic queue for the "Lesson" article type.
+#
+# On a day where the research sweep finds NO agentic-AI news worth covering, the run
+# writes a Lesson instead: a structured educational deep-dive on ONE subject (diagrams +
+# an end quiz), category `lessons`. `python3 -m pipeline.stages.lesson next-topic` reads
+# this file + the topic memory and recommends the next uncovered entry DETERMINISTICALLY:
+# the track with fewer published lessons goes next (tie -> ml-fundamentals), first
+# uncovered entry in file order within the track. ORDER IS LOAD-BEARING in the
+# ml-fundamentals track: it is a fundamentals-first progression, each entry building on
+# the previous ones. The agentic track is a curated priority order, not a progression.
+#
+# Two tracks, calibrated to the owner's profile (the blog teaches its author too):
+#   agentic         -- AI-engineering depth for an EXPERT reader: go deep, difficulty 3-5.
+#   ml-fundamentals -- machine learning from scratch for a BEGINNER: assume little
+#                      background, add rigor gradually across the sequence, difficulty 1-3.
+#
+# Editing rules: append entries; never reuse a deleted id (topic-memory coverage matches
+# on it); keep ids slug-shaped (they become `topic_id: lesson-<id>` and the dedup key).
+version: 1
+tracks:
+  agentic:
+    - id: claude-code-hooks
+      title: 'Claude Code hooks: deterministic control around an agentic CLI'
+      focus: >-
+        The hook lifecycle (PreToolUse, PostToolUse, Stop and friends), what each
+        hook can see and veto, and how teams encode policy as hooks instead of
+        prompt pleading.
+      why: >-
+        Hooks are the highest-leverage hardening seam in Claude Code adoption;
+        most teams discover them late.
+    - id: agents-md-operating-contracts
+      title: 'agents.md and CLAUDE.md as operating contracts for coding agents'
+      focus: >-
+        What belongs in a repo-level agent contract (invariants, commands,
+        conventions), what does not (anything derivable from code), and how the
+        contract degrades when it bloats.
+      why: >-
+        Every team adopting coding agents writes one of these files; few treat it
+        as the engineered interface it is.
+    - id: tool-use-design
+      title: 'Tool-use design: schemas an agent cannot misuse'
+      focus: >-
+        Designing tool definitions for LLM callers: naming, parameter shape,
+        error surfaces, idempotency, and the failure modes of over-broad tools.
+      why: >-
+        Tool ergonomics dominate agent reliability; the design discipline is
+        rarely written down.
+    - id: agent-orchestration-patterns
+      title: 'Agent orchestration patterns: pipelines, fan-out, judge panels'
+      focus: >-
+        The recurring multi-agent shapes (orchestrator/worker, pipeline with
+        barriers, adversarial verification, judge panels), when each pays for
+        itself, and when a single context beats a fleet.
+      why: >-
+        Orchestration is where agent projects either compound or collapse into
+        token burn.
+    - id: eval-harness-design
+      title: 'Eval harnesses for agentic systems: beyond the benchmark score'
+      focus: >-
+        Building task suites, deterministic replays, gate design (block vs warn),
+        and separating capability evals from regression evals.
+      why: >-
+        Teams shipping agents need evals as CI, not as a research afterthought.
+    - id: mcp-server-design
+      title: 'MCP servers in practice: surface design for model-facing APIs'
+      focus: >-
+        The Model Context Protocol's primitives (tools, resources, prompts),
+        scoping and auth, and how a good MCP surface differs from a REST API.
+      why: >-
+        MCP is becoming the integration layer between agents and everything else.
+    - id: context-engineering-budgets
+      title: 'Context engineering: budgets, compaction, and memory'
+      focus: >-
+        Treating the context window as an operating budget: what degrades as it
+        fills, compaction strategies, persistent memory files, and retrieval as
+        a budget tool.
+      why: >-
+        Context discipline is the difference between a reliable long-running
+        agent and a forgetful one.
+    - id: agent-sandboxing-permissions
+      title: 'Sandboxing and permission models for coding agents'
+      focus: >-
+        Blast-radius control: permission modes, filesystem and network isolation,
+        worktree isolation, and what an agent should have to ASK for.
+      why: >-
+        Autonomy without a permission model is how agents earn distrust.
+    - id: llm-judge-calibration
+      title: 'LLM-as-judge: calibration, bias, and adversarial verification'
+      focus: >-
+        Where judge models fail (position bias, verbosity bias, self-preference),
+        calibration against human labels, and adversarial multi-judge patterns.
+      why: >-
+        Most agentic quality gates rest on a judge; an uncalibrated judge gates
+        nothing.
+    - id: managed-background-agents
+      title: 'Managed and background agents: fleets, schedules, dead-man switches'
+      focus: >-
+        Running agents nobody is watching: scheduling, heartbeats and alerting,
+        resumability, idempotent runs, and when to page a human.
+      why: >-
+        The shift from interactive copilots to unattended agents is where
+        operational rigor becomes mandatory.
+  ml-fundamentals:
+    - id: what-is-a-model
+      title: 'What a model actually is: functions, parameters, learning'
+      focus: >-
+        A model as a parameterized function; what "learning from data" means;
+        inputs, outputs, weights, and the simplest possible worked example.
+      why: >-
+        The progression starts here; every later lesson assumes exactly this and
+        nothing more.
+    - id: loss-functions
+      title: 'Loss functions: measuring wrong so a machine can improve'
+      focus: >-
+        Why learning needs a number to minimize, squared error and cross-entropy
+        by intuition, and what the loss surface metaphor buys.
+      why: >-
+        Loss is the second primitive; gradient descent is meaningless without it.
+    - id: gradient-descent
+      title: 'Gradient descent: how models actually learn'
+      focus: >-
+        Following the slope downhill, the learning rate and what diverging looks
+        like, stochastic vs batch, and a hand-traceable numeric example.
+      why: >-
+        The single algorithm behind nearly all modern training.
+    - id: train-test-generalization
+      title: 'Generalization: train/test splits, overfitting, regularization'
+      focus: >-
+        Why memorizing the training set is failure, validation methodology, and
+        the standard defenses (early stopping, weight penalties, dropout) at
+        intuition level.
+      why: >-
+        The evaluation mindset every practitioner needs before trusting any
+        metric.
+    - id: embeddings
+      title: 'Embeddings: turning words and things into vectors'
+      focus: >-
+        Vector spaces where distance means similarity; how embeddings are
+        learned; what cosine similarity does and where it misleads.
+      why: >-
+        The bridge from classic ML to modern LLM systems (search, RAG, dedup).
+    - id: neural-networks-layers
+      title: 'Neural networks: from a linear model to layers'
+      focus: >-
+        Stacking linear maps and nonlinearities; why depth helps; what a forward
+        pass computes, traced by hand on a tiny network.
+      why: >-
+        The architecture primitive underneath everything that follows.
+    - id: attention-mechanism
+      title: 'Attention from first principles'
+      focus: >-
+        Queries, keys and values as a soft lookup table; why attention solved
+        the fixed-window problem; a small worked example with real numbers.
+      why: >-
+        The one mechanism a reader must internalize to understand transformers.
+    - id: transformer-architecture
+      title: 'Assembling the transformer'
+      focus: >-
+        Putting attention, MLP blocks, residuals and positional information
+        together; what a single transformer block computes; why it scales.
+      why: >-
+        The architecture of every frontier model the blog discusses.
+    - id: llm-pretraining
+      title: 'Pretraining: next-token prediction at scale'
+      focus: >-
+        The pretraining objective, why predicting the next token teaches so
+        much, tokenization basics, and what scale changes qualitatively.
+      why: >-
+        Explains where LLM capability actually comes from.
+    - id: finetuning-rlhf
+      title: 'Finetuning and preference tuning: adapting a pretrained model'
+      focus: >-
+        Supervised finetuning vs preference optimization (RLHF/DPO) by
+        intuition; what each can and cannot fix; why alignment tuning shapes
+        model behavior.
+      why: >-
+        Completes the progression to the assistants the agentic track builds on.

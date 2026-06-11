@@ -6,6 +6,7 @@ import {
   getPublishedArticles,
   readingTime,
   readingLabel,
+  difficultyStars,
   excerpt,
   tagLabel,
   toArticleCard,
@@ -72,6 +73,7 @@ function entry(
       publishDate: '01-01-2026',
       tags: ['agents'],
       category: 'explainers',
+      difficulty: 3,
       sources: [
         { label: 'a', url: 'https://a.example', date: '01-01-2024' },
         { label: 'b', url: 'https://b.example', date: '01-01-2024' },
@@ -151,20 +153,46 @@ describe('readingTime / readingLabel', () => {
     expect(readingTime('a few short words')).toBe(1);
   });
 
-  it('~400-word body → 2 min', () => {
+  it('~400-word body → 2 min (210 wpm)', () => {
     const long = Array.from({ length: 400 }, () => 'word').join(' ');
     expect(readingTime(long)).toBe(2);
     expect(readingLabel(long)).toBe('2 min');
   });
 
-  it('does not count fenced code toward reading time', () => {
+  it('fenced code is charged per LINE (slow absorb rate), not per word', () => {
+    // 400 "words" on a single fenced line ≈ 1/30 min — rounds away entirely.
     const fence =
       '```\n' + Array.from({ length: 400 }, () => 'x').join(' ') + '\n```';
     expect(readingTime(`Short intro.\n\n${fence}`)).toBe(1);
+    // 60 non-empty fenced lines ≈ 2 min of code on top of negligible prose.
+    const tall =
+      '```\n' + Array.from({ length: 60 }, () => 'line').join('\n') + '\n```';
+    expect(readingTime(`Short intro.\n\n${tall}`)).toBe(2);
   });
 
   it('label matches the "/^\\d+ min$/" format', () => {
     expect(readingLabel('hello there')).toMatch(/^\d+ min$/);
+  });
+});
+
+/* ------------------------------------------- 4b. difficulty stars */
+describe('difficultyStars', () => {
+  it('renders n filled + (5-n) outline stars, always 5 glyphs', () => {
+    expect(difficultyStars(1)).toBe('★☆☆☆☆');
+    expect(difficultyStars(3)).toBe('★★★☆☆');
+    expect(difficultyStars(5)).toBe('★★★★★');
+    for (let n = 1; n <= 5; n++) {
+      expect([...difficultyStars(n)]).toHaveLength(5);
+    }
+  });
+
+  it('clamps out-of-range input instead of mis-rendering', () => {
+    expect(difficultyStars(0)).toBe('★☆☆☆☆');
+    expect(difficultyStars(9)).toBe('★★★★★');
+  });
+
+  it('uses text-presentation glyphs, not emoji (INV-9)', () => {
+    expect(/\p{Emoji_Presentation}/u.test(difficultyStars(5))).toBe(false);
   });
 });
 
@@ -221,9 +249,11 @@ describe('toArticleCard', () => {
       title: 'Hello',
       publishDate: '15-05-2026',
       tags: ['agents', 'rag'],
+      difficulty: 4,
       body: 'Lead paragraph here.\n\nMore body text.',
     });
     const card = toArticleCard(e, 'fr', TAGS);
+    expect(card.difficulty).toBe(4);
     expect(card.href).toBe('/fr/blog/hello-world/');
     expect(card.tags.map((t) => t.href)).toEqual([
       '/fr/tags/agents/',

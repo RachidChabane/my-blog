@@ -8,6 +8,7 @@ tags:
 - retrieval
 - llm-oss
 category: briefings
+difficulty: 3
 sources:
 - label: 'NoLiMa: Long-Context Evaluation Beyond Literal Matching (Modarressi et al.,
     ICML 2025)'

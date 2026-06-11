@@ -383,6 +383,11 @@ def test_24_research_prompt_substrings_deterministic_no_emoji():
         "two sources",
         "FR-D3",
         "schema_version",
+        # the no-news LESSON fallback: deterministic recommendation, lesson- topic_id
+        "NO-NEWS FALLBACK",
+        "python3 -m pipeline.stages.lesson next-topic",
+        "'lesson-' prefix",
+        "exactly one\n  lesson candidate",
     ]:
         assert needle in prompt, f"research prompt missing {needle!r}"
     # task 6: the broadened multi-angle ask wraps across lines, so assert the multi-word
@@ -415,6 +420,8 @@ def test_25_select_prompt_substrings_no_emoji():
         "claim->source",
         "--memory",
         "pipeline/memory/topic_memory.json",
+        "LESSON DAY",
+        "central explanatory claim",
     ]:
         assert needle in prompt, f"select prompt missing {needle!r}"
     assert "no emoji" in prompt.lower()

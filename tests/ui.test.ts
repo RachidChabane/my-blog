@@ -22,6 +22,8 @@ import {
   avatarStrings,
   HOME,
   homeStrings,
+  GRAPH,
+  graphStrings,
 } from '@/i18n/ui';
 import { LOCALES } from '@/i18n/index';
 
@@ -147,9 +149,14 @@ describe('project-detail string table (PROJECT_DETAIL)', () => {
 });
 
 describe('NAV_ITEMS', () => {
-  it('maps three localized labels to shared route slugs', () => {
-    expect(NAV_ITEMS).toHaveLength(3);
-    expect(NAV_ITEMS.map((it) => it.path)).toEqual(['blog', 'work', 'about']);
+  it('maps four localized labels to shared route slugs', () => {
+    expect(NAV_ITEMS).toHaveLength(4);
+    expect(NAV_ITEMS.map((it) => it.path)).toEqual([
+      'blog',
+      'work',
+      'graph',
+      'about',
+    ]);
   });
 
   it('every nav key resolves to a chrome string in both locales', () => {
@@ -486,5 +493,40 @@ describe('home string table (HOME)', () => {
   it('homeStrings(lang) returns the locale record', () => {
     expect(homeStrings('fr')).toBe(HOME.fr);
     expect(homeStrings('en')).toBe(HOME.en);
+  });
+});
+
+describe('graph string table (GRAPH)', () => {
+  it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
+    expect(Object.keys(GRAPH.fr).sort()).toEqual(Object.keys(GRAPH.en).sort());
+  });
+
+  it('every graph string is a non-empty string in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(GRAPH[locale])) {
+        expect(typeof value, `${locale}.${key}`).toBe('string');
+        expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('contains no emoji in any string (INV-9)', () => {
+    for (const locale of LOCALES) {
+      for (const [key, value] of Object.entries(GRAPH[locale])) {
+        expect(EMOJI.test(value), `${locale}.${key} = "${value}"`).toBe(false);
+      }
+    }
+  });
+
+  it('count templates carry the {n} placeholder (formatCount contract)', () => {
+    for (const locale of LOCALES) {
+      expect(GRAPH[locale].countOne).toContain('{n}');
+      expect(GRAPH[locale].countMany).toContain('{n}');
+    }
+  });
+
+  it('graphStrings(lang) returns the locale record', () => {
+    expect(graphStrings('fr')).toBe(GRAPH.fr);
+    expect(graphStrings('en')).toBe(GRAPH.en);
   });
 });

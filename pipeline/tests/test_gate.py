@@ -40,6 +40,7 @@ from pipeline import (
 from pipeline.config import ensure_cpe_importable
 from pipeline.contracts.claim_source_map import ClaimSourceMap, ContractError
 from pipeline.gate import grounding
+from pipeline.gate.difficulty import check_difficulty
 from pipeline.gate.factcheck import (
     factcheck_passes,
     parse_factcheck_findings,
@@ -70,6 +71,7 @@ _DRAFT_GATE_NAMES = [
     "style-en",
     "editorial-quality",  # task 4: G3, a draft gate -> precedes the argue gate in load order
     "source-quality",     # task 5: G2 -- draft gate; precedes the argue gate in load order
+    "difficulty-rating",  # M-4 difficulty: 1-5 rubric rating present + fr/en parity
 ]
 _ARGUE_GATE_NAMES = ["argument-rigor", "source-independence"]  # task 6 adds source-independence
 _ALL_GATE_NAMES = _DRAFT_GATE_NAMES + _ARGUE_GATE_NAMES  # invariants.yaml load order
@@ -463,6 +465,27 @@ def test_check_style_fr_diacritics_blocks_deaccented_word():
     assert any("fr-diacritics" in p and "modele" in p for p in problems)
 
 
+def test_check_difficulty_clean_pair_passes():
+    fr = _fixture_text("draft-fr.valid.md")
+    en = _fixture_text("draft-en.valid.md")
+    assert check_difficulty(fr, en) == []
+
+
+def test_check_difficulty_missing_blocks_both_slots():
+    fr = _fixture_text("draft-fr.valid.md").replace("difficulty: 3\n", "", 1)
+    en = _fixture_text("draft-en.valid.md").replace("difficulty: 3\n", "", 1)
+    problems = check_difficulty(fr, en)
+    assert any("draft-fr" in p and "difficulty must be an integer 1-5" in p for p in problems)
+    assert any("draft-en" in p and "difficulty must be an integer 1-5" in p for p in problems)
+
+
+def test_check_difficulty_parity_mismatch_blocks():
+    fr = _fixture_text("draft-fr.valid.md").replace("difficulty: 3", "difficulty: 2", 1)
+    en = _fixture_text("draft-en.valid.md").replace("difficulty: 3", "difficulty: 4", 1)
+    problems = check_difficulty(fr, en)
+    assert any("difficulty parity" in p for p in problems)
+
+
 def test_check_style_fr_diacritics_skips_ascii_slug_and_clean_prose():
     # FP guard: a correctly-accented FR draft whose SLUG is deaccented BY DESIGN (it
     # contains 'fenetre' and 'modele') must NOT trip the FR-diacritics scan -- only
@@ -755,7 +778,7 @@ def test_run_fallback_blocked_argue_dry_skip_names_argue(config):
 # ---------------------------------------------------------------------------
 
 
-def test_invariants_load_as_ten_blocking_shell_gates():
+def test_invariants_load_as_eleven_blocking_shell_gates():
     ensure_cpe_importable()
     from claude_plan_execute.gates import GateRegistry
     from claude_plan_execute.gates.invariants import (
@@ -767,8 +790,8 @@ def test_invariants_load_as_ten_blocking_shell_gates():
     with redirect_stdout(out), redirect_stderr(err):
         pairs = load_invariants(_PIPELINE_DIR / "invariants.yaml")
     # load order == _DRAFT_GATE_NAMES + _ARGUE_GATE_NAMES: the 6 M-4 + editorial-quality (task 4)
-    # + source-quality (task 5) + argument-rigor (task 3) precede source-independence (task 6),
-    # appended LAST.
+    # + source-quality (task 5) + difficulty-rating (the rubric gate) precede argument-rigor
+    # (task 3) and source-independence (task 6), appended LAST.
     assert [name for name, _ in pairs] == _ALL_GATE_NAMES
     assert all(gate.kind == "shell" for _, gate in pairs)
     assert all(gate.on_failure == "block" for _, gate in pairs)
@@ -778,7 +801,7 @@ def test_invariants_load_as_ten_blocking_shell_gates():
     registry = GateRegistry()  # a LOCAL registry, not the singleton
     register_invariants_on(registry, pairs)
     resolved, unknown = registry.resolve(_ALL_GATE_NAMES)
-    assert len(resolved) == 10
+    assert len(resolved) == len(_ALL_GATE_NAMES)
     assert unknown == []
 
 

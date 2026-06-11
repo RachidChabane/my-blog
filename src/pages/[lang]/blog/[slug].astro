@@ -25,10 +25,12 @@ import {
   buildSlugMap,
   toSourceViews,
   readingLabel,
+  difficultyStars,
   excerpt,
   tagLabel,
   categoryLabel,
 } from '@/lib/content';
+import { difficultyStrings } from '@/i18n/ui';
 import type { PrevNextNav, SourceView } from '@/lib/content';
 import Base from '@/layouts/Base.astro';
 import Prose from '@/components/Prose.astro';
@@ -104,12 +106,19 @@ const dek = excerpt(entry.body);
 const eyebrow = `${categoryName} · ${metaTags[0]} · ${s.maintained}`;
 const askSeed = s.askSeed.replace('{topic}', metaTags[0]);
 const hasBoth = Boolean(slugMap.fr && slugMap.en);
+// Stars render right AFTER the reading time (spec: difficulty next to read
+// time, on card and page alike) as a dedicated role="img" span — they need an
+// aria-label, so they can't ride the plain-string metaItems list.
 const metaItems = [
   entry.data.publishDate,
   ...metaTags,
   readingLabel(entry.body),
-  ...(hasBoth ? [s.bilingualNote] : []),
 ];
+const stars = difficultyStars(entry.data.difficulty);
+const starsAria = difficultyStrings(lang).aria.replace(
+  '{n}',
+  String(entry.data.difficulty)
+);
 const title = `${entry.data.title} · rachid chabane`;
 ---
 
@@ -125,7 +134,7 @@ const title = `${entry.data.title} · rachid chabane`;
     <div
       class="rc-pf-body"
       data-pagefind-body
-      data-pagefind-meta={`date:${entry.data.publishDate}, reading:${readingLabel(entry.body)}`}
+      data-pagefind-meta={`date:${entry.data.publishDate}, reading:${readingLabel(entry.body)}, difficulty:${entry.data.difficulty}`}
     >
       <span class="rc-eyebrow">{eyebrow}</span>
       <h1 class="rc-article__title" data-pagefind-meta="title">
@@ -139,6 +148,16 @@ const title = `${entry.data.title} · rachid chabane`;
               <span>{m}</span>
             </>
           ))
+        }
+        <span class="rc-meta__dot"></span>
+        <span class="rc-stars" role="img" aria-label={starsAria}>{stars}</span>
+        {
+          hasBoth && (
+            <>
+              <span class="rc-meta__dot" />
+              <span>{s.bilingualNote}</span>
+            </>
+          )
         }
       </div>
 
@@ -237,6 +256,10 @@ const title = `${entry.data.title} · rachid chabane`;
     border-radius: 50%;
     background: var(--fg-subtle);
     display: inline-block;
+  }
+  .rc-stars {
+    letter-spacing: 0.12em;
+    font-size: 11px;
   }
   /* translate-only entrance (reduced-motion neutralized via tokens.css) */
   .rc-enter {

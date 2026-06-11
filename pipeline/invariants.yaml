@@ -96,6 +96,20 @@
   timeout_minutes: 5
   comment: 'G2 source-quality: a fresh judge rates the cited source set; BLOCK on an unsound verdict.'
 
+# M-4 DIFFICULTY -- scoped to the `draft` task via draft.gates_extra. Deterministic only:
+# both drafts must carry an integer 1-5 `difficulty` frontmatter rating (the meaning of each
+# level is pinned by pipeline/difficulty_rubric.md, injected into the draft prompt every run)
+# and fr == en (one rating per article). SINGLE gate, NO --lang: parity is a property of the
+# PAIR. The empty tail after `--run-dir .` is what the golden bank's `args: []` extends.
+- name: difficulty-rating
+  kind: shell
+  command: 'PYTHONPATH=../../.. python3 -m pipeline.gate.difficulty --run-dir .'
+  on_failure: block
+  when: [always] # scoped to the draft task via draft.gates_extra
+  parallel_safe: true # the gate only READS the drafts the draft phase wrote
+  timeout_minutes: 5
+  comment: 'M-4 difficulty: integer 1-5 rubric rating present in both drafts + fr/en parity.'
+
 # G1 ARGUMENT-RIGOR (task 3) -- scoped to the `argue` task via argue.gates_extra, NOT draft.
 # Single gate, NO --lang: the brief's claim_skeleton is language-neutral, so the thesis is
 # judged once, before the bilingual draft is paid for. The empty tail after `--run-dir .`

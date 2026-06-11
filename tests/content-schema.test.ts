@@ -63,6 +63,35 @@ describe('articleFrontmatterSchema', () => {
     expect(result.success).toBe(false);
   });
 
+  it('7b. difficulty is required and must be an integer 1-5', () => {
+    const noDifficulty = Object.fromEntries(
+      Object.entries(ARTICLE_FR).filter(([k]) => k !== 'difficulty')
+    );
+    expect(articleFrontmatterSchema.safeParse(noDifficulty).success).toBe(
+      false
+    );
+    for (const bad of [0, 6, 2.5, '3']) {
+      expect(
+        articleFrontmatterSchema.safeParse({ ...ARTICLE_FR, difficulty: bad })
+          .success,
+        `difficulty=${String(bad)}`
+      ).toBe(false);
+    }
+    for (const ok of [1, 3, 5]) {
+      expect(
+        articleFrontmatterSchema.safeParse({ ...ARTICLE_FR, difficulty: ok })
+          .success
+      ).toBe(true);
+    }
+  });
+
+  it('7c. lessons is a valid category', () => {
+    expect(
+      articleFrontmatterSchema.safeParse({ ...ARTICLE_FR, category: 'lessons' })
+        .success
+    ).toBe(true);
+  });
+
   it('8. invalid source URL fails', () => {
     const result = articleFrontmatterSchema.safeParse({
       ...ARTICLE_FR,

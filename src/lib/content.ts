@@ -56,7 +56,8 @@ export interface ArticleCard {
   dek: string;
   dateDisplay: string; // DD-MM-YYYY (already stored that way)
   readingLabel: string; // "N min"
-  category: ArticleFrontmatter['category']; // 'essays' | 'explainers' | 'briefings' (schema default applied)
+  difficulty: number; // 1-5 (rubric-rated; rendered as stars next to readingLabel)
+  category: ArticleFrontmatter['category']; // 'essays' | 'explainers' | 'briefings' | 'lessons' (schema default applied)
   tags: { slug: string; label: string; href: string }[]; // href → /<lang>/tags/<slug>/
 }
 
@@ -100,6 +101,19 @@ function stripCodeFences(s: string): string {
   return s.replace(/```[\s\S]*?```/g, '\n\n');
 }
 
+/**
+ * Non-empty lines inside fenced blocks (``` … ```). Code and fenced diagrams
+ * read slower than prose, so readingTime charges them per LINE (not per word)
+ * instead of dropping them entirely.
+ */
+function fencedBlockLines(s: string): number {
+  let lines = 0;
+  for (const m of s.matchAll(/```[^\n]*\n([\s\S]*?)```/g)) {
+    lines += m[1].split('\n').filter((l) => l.trim().length > 0).length;
+  }
+  return lines;
+}
+
 /** Strip inline markdown to plain text. Order matters: images before links. */
 function stripInlineMarkdown(s: string): string {
   return s
@@ -111,17 +125,46 @@ function stripInlineMarkdown(s: string): string {
     .trim();
 }
 
+/**
+ * THE single reading-speed constants — every surface (card, article page,
+ * search meta) derives its estimate from readingTime below, so the numbers
+ * stay comparable across the whole blog. 210 wpm sits mid-band of the
+ * 200-225 wpm spec; fenced code/diagram lines are charged at a slower
+ * per-line rate since they take longer to absorb than prose.
+ */
+export const READING_WPM = 210;
+export const CODE_LINES_PER_MINUTE = 30;
+
 /** Reading time in minutes from raw markdown body. Empty/short → 1. */
-export function readingTime(body: string | undefined, wpm = 200): number {
+export function readingTime(
+  body: string | undefined,
+  wpm = READING_WPM
+): number {
   if (!body) return 1;
   const text = stripInlineMarkdown(stripCodeFences(body));
   const words = text.split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.round(words / wpm));
+  const codeMinutes = fencedBlockLines(body) / CODE_LINES_PER_MINUTE;
+  return Math.max(1, Math.round(words / wpm + codeMinutes));
 }
 
 /** Language-neutral reading label, e.g. "7 min" (matches the design). */
-export function readingLabel(body: string | undefined, wpm = 200): string {
+export function readingLabel(
+  body: string | undefined,
+  wpm = READING_WPM
+): string {
   return `${readingTime(body, wpm)} min`;
+}
+
+/* ----------------------------------------------------- Difficulty (1-5 stars) */
+/**
+ * Star string for the 1-5 difficulty rating (rubric: pipeline/difficulty_rubric.md).
+ * U+2605/U+2606 are TEXT-presentation glyphs, not emoji (INV-9 safe — they don't
+ * match \p{Emoji_Presentation}). Out-of-range input is clamped so a rogue value
+ * can never render more than five stars. Always 5 glyphs → columns align.
+ */
+export function difficultyStars(level: number): string {
+  const n = Math.min(5, Math.max(1, Math.round(level)));
+  return '★'.repeat(n) + '☆'.repeat(5 - n);
 }
 
 /**
@@ -185,6 +228,7 @@ export function toArticleCard(
     dek: excerpt(entry.body),
     dateDisplay: publishDate,
     readingLabel: readingLabel(entry.body),
+    difficulty: entry.data.difficulty,
     category: entry.data.category,
     tags: entry.data.tags.map((s) => ({
       slug: s,
@@ -388,11 +432,18 @@ export function getArticlesByTag(
 /* ------------------------------------------------ Category grouping (blog index) */
 
 /**
- * Display/grouping order of the 3-way `category` taxonomy. `category` is a closed
+ * Display/grouping order of the 4-way `category` taxonomy. `category` is a closed
  * `z.enum`, so every article value is guaranteed to be one of these — there are no
- * "extras" to append (unlike free-form tags). Order is fixed by the design.
+ * "extras" to append (unlike free-form tags). Order is fixed by the design;
+ * `lessons` (structured educational deep-dives, generated on no-news days) sits
+ * last so the news-driven sections keep their established positions.
  */
-export const CATEGORY_ORDER = ['essays', 'explainers', 'briefings'] as const;
+export const CATEGORY_ORDER = [
+  'essays',
+  'explainers',
+  'briefings',
+  'lessons',
+] as const;
 
 /** One category section on the blog index: the slug + its published articles (raw entries). */
 export interface CategoryGroup {

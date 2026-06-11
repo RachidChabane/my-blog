@@ -14,3 +14,5 @@ LAUNCH.md
 src/content/**/*.md
 # Generated provenance sidecars (Option B) — pipeline-written JSON, Zod-validated, not prettier.
 src/content/provenance/**/*.json
+# Knowledge-graph concept store — pipeline-written (concepts CLI, json.dumps shape), Zod-validated.
+src/content/concepts/index.json

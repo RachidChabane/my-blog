@@ -1,0 +1,96 @@
+---
+/**
+ * Knowledge graph — `/[lang]/graph/` (FR + EN). The blog's living concept map:
+ * every AI concept extracted from the content (the `concepts` collection, fed
+ * daily by the pipeline's publish stage) as an interactive force-directed graph.
+ * Nodes carry one CANONICAL definition each; edges are curated `related` links
+ * plus article co-occurrence; every node cites the articles it comes from.
+ *
+ * Data is assembled once per locale by the pure buildGraph (src/lib/graph.ts)
+ * and handed to the KnowledgeGraph island as JSON. No slugMap: the language
+ * switcher falls back to the localized home (NFR-11 holds, both locales exist).
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { LOCALES } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { graphStrings } from '@/i18n/ui';
+import { buildGraph } from '@/lib/graph';
+import Base from '@/layouts/Base.astro';
+import KnowledgeGraph from '@/components/KnowledgeGraph.astro';
+
+export const getStaticPaths = (async () => {
+  const [concepts, articles] = await Promise.all([
+    getCollection('concepts'),
+    getCollection('articles'),
+  ]);
+  return LOCALES.map((lang) => ({
+    params: { lang },
+    props: {
+      lang,
+      graph: buildGraph(
+        concepts.map((c: CollectionEntry<'concepts'>) => ({
+          id: c.id,
+          data: c.data,
+        })),
+        articles,
+        lang
+      ),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { lang, graph } = Astro.props;
+const s = graphStrings(lang as Locale);
+const title = `${s.title} · rachid chabane`;
+---
+
+<Base title={title} description={s.metaDesc} lang={lang as Locale}>
+  <section class="rc-graphpage rc-enter">
+    <span class="rc-graphpage__eyebrow t-eyebrow">{s.eyebrow}</span>
+    <h1 class="rc-graphpage__title">{s.title}</h1>
+    <p class="rc-graphpage__intro">{s.intro}</p>
+    <KnowledgeGraph graph={graph} strings={s} />
+  </section>
+</Base>
+
+<style>
+  /* Wide working surface (the map wants room): --measure-wide, not the article
+     column. Header anatomy mirrors the other index pages (eyebrow/h1/meta). */
+  .rc-graphpage {
+    width: 100%;
+    max-width: var(--measure-wide);
+    margin: 0 auto;
+    padding: 52px 40px 64px;
+  }
+  @media (max-width: 720px) {
+    .rc-graphpage {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+  .rc-graphpage__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-meta);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rc-graphpage__title {
+    margin: 12px 0 10px;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-head);
+    font-size: var(--text-h1);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+  }
+  .rc-graphpage__intro {
+    margin: 0 0 26px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+    max-width: 64ch;
+  }
+</style>

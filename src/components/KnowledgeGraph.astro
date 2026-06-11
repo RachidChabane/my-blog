@@ -1,0 +1,965 @@
+---
+/**
+ * KnowledgeGraph island (the /[lang]/graph/ page). Server-renders the controls
+ * (search, theme chips, legend), the SVG stage, the tooltip and the side panel
+ * shells with copy from `strings`; the <script> runs a small deterministic
+ * force layout and wires the interactions — COPY NEVER LIVES IN JS (runtime
+ * strings ride the JSON payload in data-graph). Vanilla script, no framework
+ * (memory: islands-are-astro-not-react). All dynamic text lands via
+ * textContent / createElement — no innerHTML on data.
+ *
+ * Layout is DETERMINISTIC: nodes seed on a golden-angle spiral around their
+ * theme's cluster anchor (no Math.random), so e2e sees a stable map. Reduced
+ * motion: the simulation settles synchronously, no animation.
+ */
+import type { GraphVM } from '@/lib/graph';
+import type { GraphStrings } from '@/i18n/ui';
+
+interface Props {
+  graph: GraphVM;
+  strings: GraphStrings;
+}
+
+const { graph, strings } = Astro.props;
+
+// The runtime payload: graph data + the handful of strings the script needs.
+const payload = JSON.stringify({
+  nodes: graph.nodes,
+  edges: graph.edges,
+  ui: {
+    citedIn: strings.citedIn,
+    countOne: strings.countOne,
+    countMany: strings.countMany,
+    searchEmpty: strings.searchEmpty,
+    themes: {
+      'agentic-ai': strings.themeAgenticAi,
+      'ml-fundamentals': strings.themeMlFundamentals,
+      'infra-tooling': strings.themeInfraTooling,
+      'evals-quality': strings.themeEvalsQuality,
+    },
+    legendNew: strings.legendNew,
+  },
+});
+
+const THEMES = [
+  ['agentic-ai', strings.themeAgenticAi],
+  ['ml-fundamentals', strings.themeMlFundamentals],
+  ['infra-tooling', strings.themeInfraTooling],
+  ['evals-quality', strings.themeEvalsQuality],
+] as const;
+---
+
+<div class="rc-graph" data-graph={payload}>
+  <div class="rc-graph__controls">
+    <input
+      class="rc-graph__search"
+      type="search"
+      data-graph-search
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      aria-label={strings.searchLabel}
+      placeholder={strings.searchPlaceholder}
+    />
+    <div
+      class="rc-graph__chips"
+      role="group"
+      aria-label={strings.filterAria}
+      data-graph-filters
+    >
+      <button
+        class="rc-gchip"
+        type="button"
+        data-theme="all"
+        aria-pressed="true"
+      >
+        {strings.themeAll}
+      </button>
+      {
+        THEMES.map(([slug, label]) => (
+          <button
+            class={`rc-gchip rc-gchip--${slug}`}
+            type="button"
+            data-theme={slug}
+            aria-pressed="false"
+          >
+            <span class="rc-gchip__dot" aria-hidden="true" />
+            {label}
+          </button>
+        ))
+      }
+      <span class="rc-graph__legendnew">
+        <span class="rc-graph__newdot" aria-hidden="true"></span>
+        {strings.legendNew}
+      </span>
+    </div>
+  </div>
+  <p class="visually-hidden" data-graph-status role="status" aria-live="polite">
+  </p>
+  <p class="rc-graph__hint">{strings.hint}</p>
+
+  <div class="rc-graph__stage" data-graph-stage>
+    {
+      graph.nodes.length === 0 ? (
+        <p class="rc-graph__empty">{strings.empty}</p>
+      ) : (
+        <svg
+          class="rc-graph__svg"
+          data-graph-svg
+          viewBox="0 0 1200 800"
+          preserveAspectRatio="xMidYMid meet"
+          aria-hidden="false"
+          role="group"
+          aria-label={strings.title}
+        >
+          <g data-graph-world>
+            <g data-graph-edges />
+            <g data-graph-nodes />
+          </g>
+        </svg>
+      )
+    }
+    <div class="rc-graph__tooltip" data-graph-tooltip hidden>
+      <p class="rc-graph__tooltip-title" data-tt-title></p>
+      <p class="rc-graph__tooltip-def" data-tt-def></p>
+      <p class="rc-graph__tooltip-cite" data-tt-cite></p>
+    </div>
+    {
+      /* role=region (not <aside>): a complementary landmark nested in <main>
+        trips axe's top-level-landmark rule; a labelled region does not. */
+    }
+    <div
+      class="rc-graph__panel"
+      data-graph-panel
+      role="region"
+      aria-label={strings.panelAria}
+      hidden
+    >
+      <button
+        class="rc-graph__close"
+        type="button"
+        data-panel-close
+        aria-label={strings.panelClose}>×</button
+      >
+      <p class="rc-graph__panel-theme" data-panel-theme></p>
+      <h2 class="rc-graph__panel-title" data-panel-title></h2>
+      <p class="rc-graph__panel-def" data-panel-def></p>
+      <h3 class="rc-graph__panel-h">{strings.articlesH}</h3>
+      <ul class="rc-graph__panel-articles" data-panel-articles></ul>
+      <h3 class="rc-graph__panel-h">{strings.relatedH}</h3>
+      <div class="rc-graph__panel-related" data-panel-related></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Cluster palette: component-scoped vars mapped onto existing tokens only —
+     accent (agentic), success (ML), warning (infra), error hue (evals). */
+  .rc-graph {
+    --g-agentic-ai: var(--accent);
+    --g-ml-fundamentals: var(--success);
+    --g-infra-tooling: var(--warning);
+    --g-evals-quality: var(--error);
+    width: 100%;
+  }
+  .rc-graph__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .rc-graph__search {
+    flex: 0 1 260px;
+    height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: 14px;
+  }
+  .rc-graph__search:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-ring);
+  }
+  .rc-graph__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .rc-gchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--fill-subtle);
+    color: var(--fg-muted);
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition:
+      color var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-gchip:hover {
+    color: var(--fg);
+    border-color: var(--border);
+  }
+  .rc-gchip[aria-pressed='true'] {
+    color: var(--fg);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .rc-gchip__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--fg-subtle);
+  }
+  .rc-gchip--agentic-ai .rc-gchip__dot {
+    background: var(--g-agentic-ai);
+  }
+  .rc-gchip--ml-fundamentals .rc-gchip__dot {
+    background: var(--g-ml-fundamentals);
+  }
+  .rc-gchip--infra-tooling .rc-gchip__dot {
+    background: var(--g-infra-tooling);
+  }
+  .rc-gchip--evals-quality .rc-gchip__dot {
+    background: var(--g-evals-quality);
+  }
+  .rc-graph__legendnew {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-muted);
+    margin-left: 4px;
+  }
+  .rc-graph__newdot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px dashed var(--accent);
+  }
+  .rc-graph__hint {
+    margin: 0 0 10px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-muted);
+  }
+  .rc-graph__stage {
+    position: relative;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .rc-graph__svg {
+    display: block;
+    width: 100%;
+    height: min(72vh, 760px);
+    cursor: grab;
+    touch-action: none;
+  }
+  .rc-graph__svg.is-panning {
+    cursor: grabbing;
+  }
+  .rc-graph__empty {
+    margin: 0;
+    padding: 64px 24px;
+    font-size: 15px;
+    color: var(--fg-muted);
+    text-align: center;
+  }
+
+  /* tooltip (hover/focus) */
+  .rc-graph__tooltip {
+    position: absolute;
+    max-width: 320px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: 0 8px 28px rgb(0 0 0 / 12%);
+    pointer-events: none;
+    z-index: 3;
+  }
+  .rc-graph__tooltip-title {
+    margin: 0 0 6px;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: 16px;
+    color: var(--fg);
+  }
+  .rc-graph__tooltip-def {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--fg-muted);
+  }
+  .rc-graph__tooltip-cite {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+  }
+
+  /* side panel (click) */
+  .rc-graph__panel {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    bottom: 12px;
+    width: min(340px, calc(100% - 24px));
+    padding: 20px 22px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: 0 12px 36px rgb(0 0 0 / 14%);
+    overflow-y: auto;
+    z-index: 4;
+  }
+  .rc-graph__close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 50%;
+    background: var(--fill-subtle);
+    color: var(--fg-muted);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .rc-graph__close:hover {
+    color: var(--fg);
+    border-color: var(--border);
+  }
+  .rc-graph__panel-theme {
+    margin: 0 0 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rc-graph__panel-title {
+    margin: 0 0 10px;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: 22px;
+    color: var(--fg);
+  }
+  .rc-graph__panel-def {
+    margin: 0 0 18px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+  .rc-graph__panel-h {
+    margin: 16px 0 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+  .rc-graph__panel-articles {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .rc-graph__panel-articles :global(li) {
+    margin: 0 0 8px;
+  }
+  .rc-graph__panel-articles :global(a) {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--accent);
+  }
+  .rc-graph__panel-articles :global(a:hover) {
+    text-decoration: underline;
+  }
+  .rc-graph__panel-related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .rc-graph__panel-related :global(button) {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 4px 11px;
+    border-radius: var(--radius-pill);
+    background: var(--fill-subtle);
+    color: var(--fg-muted);
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+  }
+  .rc-graph__panel-related :global(button:hover) {
+    color: var(--fg);
+    border-color: var(--border);
+  }
+</style>
+
+<style is:global>
+  /* SVG node/edge styling. Global because the script creates these elements at
+     runtime (Astro's scope hash never reaches them) — scoped under .rc-graph so
+     nothing leaks (same pattern as Search.astro's runtime rows). */
+  .rc-graph .rc-gedge {
+    stroke: var(--hairline);
+    stroke-width: 1;
+  }
+  .rc-graph .rc-gedge--related {
+    stroke: var(--fg-subtle);
+    stroke-opacity: 0.55;
+    stroke-width: 1.4;
+  }
+  .rc-graph .rc-gnode {
+    cursor: pointer;
+    outline: none;
+  }
+  .rc-graph .rc-gnode circle.rc-gnode__dot {
+    stroke: var(--surface);
+    stroke-width: 1.5;
+    transition: stroke-width 120ms ease;
+  }
+  .rc-graph .rc-gnode--agentic-ai circle.rc-gnode__dot {
+    fill: var(--g-agentic-ai);
+  }
+  .rc-graph .rc-gnode--ml-fundamentals circle.rc-gnode__dot {
+    fill: var(--g-ml-fundamentals);
+  }
+  .rc-graph .rc-gnode--infra-tooling circle.rc-gnode__dot {
+    fill: var(--g-infra-tooling);
+  }
+  .rc-graph .rc-gnode--evals-quality circle.rc-gnode__dot {
+    fill: var(--g-evals-quality);
+  }
+  .rc-graph .rc-gnode text {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    fill: var(--fg-muted);
+    pointer-events: none;
+  }
+  .rc-graph .rc-gnode:hover circle.rc-gnode__dot,
+  .rc-graph .rc-gnode:focus-visible circle.rc-gnode__dot {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+  }
+  .rc-graph .rc-gnode--new circle.rc-gnode__ring {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.6;
+    stroke-dasharray: 4 3;
+  }
+  .rc-graph .is-dim {
+    opacity: 0.12;
+  }
+  .rc-graph .is-focus circle.rc-gnode__dot {
+    stroke: var(--accent);
+    stroke-width: 3;
+  }
+</style>
+
+<script>
+  interface GNode {
+    id: string;
+    label: string;
+    definition: string;
+    theme: string;
+    aliases: string[];
+    related: string[];
+    articles: { title: string; href: string }[];
+    occurrences: number;
+    isNew: boolean;
+  }
+  interface GEdge {
+    source: string;
+    target: string;
+    kind: 'related' | 'cooccurrence';
+    weight: number;
+  }
+  interface GUi {
+    citedIn: string;
+    countOne: string;
+    countMany: string;
+    searchEmpty: string;
+    themes: Record<string, string>;
+    legendNew: string;
+  }
+  interface GPayload {
+    nodes: GNode[];
+    edges: GEdge[];
+    ui: GUi;
+  }
+
+  const W = 1200;
+  const H = 800;
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+
+  const root = document.querySelector<HTMLElement>('.rc-graph');
+  const svg = root?.querySelector<SVGSVGElement>('[data-graph-svg]');
+  const world = root?.querySelector<SVGGElement>('[data-graph-world]');
+  const edgesG = root?.querySelector<SVGGElement>('[data-graph-edges]');
+  const nodesG = root?.querySelector<SVGGElement>('[data-graph-nodes]');
+  const stage = root?.querySelector<HTMLElement>('[data-graph-stage]');
+  const tooltip = root?.querySelector<HTMLElement>('[data-graph-tooltip]');
+  const panel = root?.querySelector<HTMLElement>('[data-graph-panel]');
+  const search = root?.querySelector<HTMLInputElement>('[data-graph-search]');
+  const filters = root?.querySelector<HTMLElement>('[data-graph-filters]');
+  const status = root?.querySelector<HTMLElement>('[data-graph-status]');
+
+  if (
+    root &&
+    svg &&
+    world &&
+    edgesG &&
+    nodesG &&
+    stage &&
+    tooltip &&
+    panel &&
+    search &&
+    filters &&
+    status
+  ) {
+    const data = JSON.parse(root.dataset.graph ?? '{}') as GPayload;
+    const ui = data.ui;
+    const byId = new Map(data.nodes.map((n) => [n.id, n]));
+
+    /* ---------------- deterministic force layout ---------------- */
+    // Cluster anchors: one quadrant per theme, so the map reads at a glance.
+    const ANCHORS: Record<string, [number, number]> = {
+      'agentic-ai': [W * 0.3, H * 0.34],
+      'ml-fundamentals': [W * 0.74, H * 0.3],
+      'infra-tooling': [W * 0.32, H * 0.72],
+      'evals-quality': [W * 0.74, H * 0.72],
+    };
+    const GOLDEN = Math.PI * (3 - Math.sqrt(5));
+    const pos = new Map<
+      string,
+      { x: number; y: number; vx: number; vy: number }
+    >();
+    const perTheme = new Map<string, number>();
+    for (const n of data.nodes) {
+      const k = perTheme.get(n.theme) ?? 0;
+      perTheme.set(n.theme, k + 1);
+      const [ax, ay] = ANCHORS[n.theme] ?? [W / 2, H / 2];
+      const r = 16 * Math.sqrt(k + 1);
+      const a = k * GOLDEN;
+      pos.set(n.id, {
+        x: ax + r * Math.cos(a),
+        y: ay + r * Math.sin(a),
+        vx: 0,
+        vy: 0,
+      });
+    }
+    const radius = (n: GNode) => 7 + 3.5 * Math.sqrt(n.occurrences);
+
+    const tick = () => {
+      // pairwise repulsion
+      for (let i = 0; i < data.nodes.length; i++) {
+        for (let j = i + 1; j < data.nodes.length; j++) {
+          const a = pos.get(data.nodes[i].id)!;
+          const b = pos.get(data.nodes[j].id)!;
+          let dx = a.x - b.x;
+          let dy = a.y - b.y;
+          const d2 = Math.max(dx * dx + dy * dy, 64);
+          const f = 5200 / d2;
+          const d = Math.sqrt(d2);
+          dx /= d;
+          dy /= d;
+          a.vx += dx * f;
+          a.vy += dy * f;
+          b.vx -= dx * f;
+          b.vy -= dy * f;
+        }
+      }
+      // edge springs
+      for (const e of data.edges) {
+        const a = pos.get(e.source);
+        const b = pos.get(e.target);
+        if (!a || !b) continue;
+        const rest = e.kind === 'related' ? 120 : 150;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const d = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
+        const f = ((d - rest) / d) * 0.035 * Math.min(e.weight, 3);
+        a.vx += dx * f;
+        a.vy += dy * f;
+        b.vx -= dx * f;
+        b.vy -= dy * f;
+      }
+      // anchor gravity + integrate
+      for (const n of data.nodes) {
+        const p = pos.get(n.id)!;
+        const [ax, ay] = ANCHORS[n.theme] ?? [W / 2, H / 2];
+        p.vx += (ax - p.x) * 0.012;
+        p.vy += (ay - p.y) * 0.012;
+        p.vx *= 0.82;
+        p.vy *= 0.82;
+        p.x = Math.min(W - 40, Math.max(40, p.x + p.vx));
+        p.y = Math.min(H - 36, Math.max(36, p.y + p.vy));
+      }
+    };
+
+    /* ---------------- render ---------------- */
+    const edgeEls = new Map<string, SVGLineElement>();
+    for (const e of data.edges) {
+      const line = document.createElementNS(SVG_NS, 'line');
+      line.setAttribute(
+        'class',
+        e.kind === 'related' ? 'rc-gedge rc-gedge--related' : 'rc-gedge'
+      );
+      if (e.kind === 'cooccurrence' && e.weight > 1) {
+        line.setAttribute(
+          'stroke-width',
+          String(Math.min(1 + e.weight * 0.5, 3))
+        );
+      }
+      edgesG.append(line);
+      edgeEls.set(`${e.source} ${e.target}`, line);
+    }
+    const nodeEls = new Map<string, SVGGElement>();
+    for (const n of data.nodes) {
+      const g = document.createElementNS(SVG_NS, 'g');
+      const themeLabel = ui.themes[n.theme] ?? n.theme;
+      const count = (n.occurrences === 1 ? ui.countOne : ui.countMany).replace(
+        '{n}',
+        String(n.occurrences)
+      );
+      g.setAttribute(
+        'class',
+        `rc-gnode rc-gnode--${n.theme}${n.isNew ? ' rc-gnode--new' : ''}`
+      );
+      g.setAttribute('role', 'button');
+      g.setAttribute('tabindex', '0');
+      g.setAttribute('aria-label', `${n.label}, ${themeLabel}, ${count}`);
+      g.dataset.id = n.id;
+      const r = radius(n);
+      const dot = document.createElementNS(SVG_NS, 'circle');
+      dot.setAttribute('class', 'rc-gnode__dot');
+      dot.setAttribute('r', String(r));
+      g.append(dot);
+      if (n.isNew) {
+        const ring = document.createElementNS(SVG_NS, 'circle');
+        ring.setAttribute('class', 'rc-gnode__ring');
+        ring.setAttribute('r', String(r + 4));
+        g.append(ring);
+      }
+      const text = document.createElementNS(SVG_NS, 'text');
+      text.setAttribute('y', String(r + 13));
+      text.setAttribute('text-anchor', 'middle');
+      text.textContent = n.label;
+      g.append(text);
+      nodesG.append(g);
+      nodeEls.set(n.id, g);
+    }
+
+    const draw = () => {
+      for (const e of data.edges) {
+        const line = edgeEls.get(`${e.source} ${e.target}`)!;
+        const a = pos.get(e.source)!;
+        const b = pos.get(e.target)!;
+        line.setAttribute('x1', a.x.toFixed(1));
+        line.setAttribute('y1', a.y.toFixed(1));
+        line.setAttribute('x2', b.x.toFixed(1));
+        line.setAttribute('y2', b.y.toFixed(1));
+      }
+      for (const n of data.nodes) {
+        const p = pos.get(n.id)!;
+        nodeEls
+          .get(n.id)!
+          .setAttribute(
+            'transform',
+            `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`
+          );
+      }
+    };
+
+    const TICKS = 260;
+    const reduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    if (reduced) {
+      for (let i = 0; i < TICKS; i++) tick();
+      draw();
+    } else {
+      let done = 0;
+      const step = () => {
+        for (let i = 0; i < 4 && done < TICKS; i++, done++) tick();
+        draw();
+        if (done < TICKS) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    /* ---------------- zoom / pan ---------------- */
+    let scale = 1;
+    let tx = 0;
+    let ty = 0;
+    const applyView = () => {
+      world.setAttribute('transform', `translate(${tx} ${ty}) scale(${scale})`);
+    };
+    // client px -> viewBox units (preserveAspectRatio=meet keeps one ratio)
+    const unit = () => {
+      const rect = svg.getBoundingClientRect();
+      return Math.max(W / rect.width, H / rect.height);
+    };
+    svg.addEventListener(
+      'wheel',
+      (ev) => {
+        ev.preventDefault();
+        const rect = svg.getBoundingClientRect();
+        const u = unit();
+        const px = (ev.clientX - rect.left) * u;
+        const py = (ev.clientY - rect.top) * u;
+        const next = Math.min(
+          4,
+          Math.max(0.45, scale * Math.exp(-ev.deltaY * 0.0014))
+        );
+        // keep the point under the cursor fixed
+        tx = px - ((px - tx) / scale) * next;
+        ty = py - ((py - ty) / scale) * next;
+        scale = next;
+        applyView();
+      },
+      { passive: false }
+    );
+    let panning = false;
+    let lastX = 0;
+    let lastY = 0;
+    svg.addEventListener('pointerdown', (ev) => {
+      if ((ev.target as Element).closest('.rc-gnode')) return; // node clicks ≠ pan
+      panning = true;
+      lastX = ev.clientX;
+      lastY = ev.clientY;
+      svg.classList.add('is-panning');
+      svg.setPointerCapture(ev.pointerId);
+    });
+    svg.addEventListener('pointermove', (ev) => {
+      if (!panning) return;
+      const u = unit();
+      tx += (ev.clientX - lastX) * u;
+      ty += (ev.clientY - lastY) * u;
+      lastX = ev.clientX;
+      lastY = ev.clientY;
+      applyView();
+    });
+    const endPan = () => {
+      panning = false;
+      svg.classList.remove('is-panning');
+    };
+    svg.addEventListener('pointerup', endPan);
+    svg.addEventListener('pointercancel', endPan);
+
+    const centerOn = (id: string) => {
+      const p = pos.get(id);
+      if (!p) return;
+      tx = W / 2 - p.x * scale;
+      ty = H / 2 - p.y * scale;
+      applyView();
+    };
+
+    /* ---------------- tooltip ---------------- */
+    const ttTitle = tooltip.querySelector<HTMLElement>('[data-tt-title]')!;
+    const ttDef = tooltip.querySelector<HTMLElement>('[data-tt-def]')!;
+    const ttCite = tooltip.querySelector<HTMLElement>('[data-tt-cite]')!;
+    const showTooltip = (n: GNode, el: SVGGElement) => {
+      ttTitle.textContent = n.label;
+      ttDef.textContent = n.definition;
+      ttCite.textContent =
+        n.articles.length > 0
+          ? `${ui.citedIn}: ${n.articles.map((a) => a.title).join(' · ')}`
+          : '';
+      tooltip.hidden = false;
+      const stageRect = stage.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      const x = Math.min(
+        Math.max(8, r.left - stageRect.left + r.width / 2 - 150),
+        stageRect.width - 328
+      );
+      const below = r.bottom - stageRect.top + 10;
+      const ttH = tooltip.getBoundingClientRect().height;
+      const y =
+        below + ttH > stageRect.height - 8
+          ? Math.max(8, r.top - stageRect.top - ttH - 10)
+          : below;
+      tooltip.style.left = `${x}px`;
+      tooltip.style.top = `${y}px`;
+    };
+    const hideTooltip = () => {
+      tooltip.hidden = true;
+    };
+
+    /* ---------------- side panel ---------------- */
+    const pTheme = panel.querySelector<HTMLElement>('[data-panel-theme]')!;
+    const pTitle = panel.querySelector<HTMLElement>('[data-panel-title]')!;
+    const pDef = panel.querySelector<HTMLElement>('[data-panel-def]')!;
+    const pArticles = panel.querySelector<HTMLElement>(
+      '[data-panel-articles]'
+    )!;
+    const pRelated = panel.querySelector<HTMLElement>('[data-panel-related]')!;
+    const closeBtn =
+      panel.querySelector<HTMLButtonElement>('[data-panel-close]')!;
+
+    const openPanel = (n: GNode) => {
+      pTheme.textContent = `${ui.themes[n.theme] ?? n.theme}${n.isNew ? ` · ${ui.legendNew}` : ''}`;
+      pTitle.textContent = n.label;
+      pDef.textContent = n.definition;
+      pArticles.replaceChildren();
+      for (const a of n.articles) {
+        const li = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = a.href;
+        link.textContent = a.title;
+        li.append(link);
+        pArticles.append(li);
+      }
+      pRelated.replaceChildren();
+      for (const rid of n.related) {
+        const rn = byId.get(rid);
+        if (!rn) continue;
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.textContent = rn.label;
+        chip.addEventListener('click', () => {
+          focusNode(rid);
+          openPanel(rn);
+        });
+        pRelated.append(chip);
+      }
+      panel.hidden = false;
+    };
+    closeBtn.addEventListener('click', () => {
+      panel.hidden = true;
+    });
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') panel.hidden = true;
+    });
+
+    const focusNode = (id: string) => {
+      for (const [nid, el] of nodeEls)
+        el.classList.toggle('is-focus', nid === id);
+      centerOn(id);
+    };
+
+    /* ---------------- node events (delegated) ---------------- */
+    nodesG.addEventListener(
+      'pointerenter',
+      (ev) => {
+        const g = (ev.target as Element).closest<SVGGElement>('.rc-gnode');
+        const n = g && byId.get(g.dataset.id ?? '');
+        if (g && n) showTooltip(n, g);
+      },
+      true
+    );
+    nodesG.addEventListener(
+      'pointerleave',
+      (ev) => {
+        if ((ev.target as Element).closest('.rc-gnode')) hideTooltip();
+      },
+      true
+    );
+    nodesG.addEventListener('focusin', (ev) => {
+      const g = (ev.target as Element).closest<SVGGElement>('.rc-gnode');
+      const n = g && byId.get(g.dataset.id ?? '');
+      if (g && n) showTooltip(n, g);
+    });
+    nodesG.addEventListener('focusout', hideTooltip);
+    nodesG.addEventListener('click', (ev) => {
+      const g = (ev.target as Element).closest<SVGGElement>('.rc-gnode');
+      const n = g && byId.get(g.dataset.id ?? '');
+      if (g && n) {
+        hideTooltip();
+        focusNode(n.id);
+        openPanel(n);
+      }
+    });
+    nodesG.addEventListener('keydown', (ev) => {
+      if (ev.key !== 'Enter' && ev.key !== ' ') return;
+      const g = (ev.target as Element).closest<SVGGElement>('.rc-gnode');
+      const n = g && byId.get(g.dataset.id ?? '');
+      if (g && n) {
+        ev.preventDefault();
+        hideTooltip();
+        focusNode(n.id);
+        openPanel(n);
+      }
+    });
+
+    /* ---------------- theme filter + search dimming ---------------- */
+    let activeTheme = 'all';
+    let query = '';
+    const fold = (s: string) =>
+      s.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '');
+    const matches = (n: GNode) =>
+      query === '' ||
+      fold(n.label).includes(query) ||
+      fold(n.id).includes(query) ||
+      n.aliases.some((a) => fold(a).includes(query));
+    const visible = (n: GNode) =>
+      (activeTheme === 'all' || n.theme === activeTheme) && matches(n);
+
+    const applyVisibility = () => {
+      const shown = new Set<string>();
+      for (const n of data.nodes) {
+        const ok = visible(n);
+        if (ok) shown.add(n.id);
+        nodeEls.get(n.id)!.classList.toggle('is-dim', !ok);
+      }
+      for (const e of data.edges) {
+        edgeEls
+          .get(`${e.source} ${e.target}`)!
+          .classList.toggle(
+            'is-dim',
+            !(shown.has(e.source) && shown.has(e.target))
+          );
+      }
+      if (query !== '') {
+        const first = data.nodes.find((n) => visible(n));
+        if (first) {
+          focusNode(first.id);
+          status.textContent = '';
+        } else {
+          status.textContent = ui.searchEmpty;
+        }
+      } else {
+        status.textContent = '';
+        for (const el of nodeEls.values()) el.classList.remove('is-focus');
+      }
+    };
+
+    filters.addEventListener('click', (ev) => {
+      const btn = (ev.target as Element).closest<HTMLButtonElement>(
+        '[data-theme]'
+      );
+      if (!btn) return;
+      activeTheme = btn.dataset.theme ?? 'all';
+      for (const b of filters.querySelectorAll<HTMLButtonElement>(
+        '[data-theme]'
+      )) {
+        b.setAttribute('aria-pressed', String(b === btn));
+      }
+      applyVisibility();
+    });
+
+    let timer: number | undefined;
+    search.addEventListener('input', () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        query = fold(search.value.trim());
+        applyVisibility();
+      }, 140);
+    });
+  }
+</script>

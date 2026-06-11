@@ -19,6 +19,7 @@ test.describe('masthead — landmarks, wordmark, nav', () => {
 
     await expect(page.locator('header nav a[href="/fr/blog/"]')).toBeVisible();
     await expect(page.locator('header nav a[href="/fr/work/"]')).toBeVisible();
+    await expect(page.locator('header nav a[href="/fr/graph/"]')).toBeVisible();
     await expect(page.locator('header nav a[href="/fr/about/"]')).toBeVisible();
   });
 
@@ -32,6 +33,7 @@ test.describe('masthead — landmarks, wordmark, nav', () => {
     );
     await expect(page.locator('header nav a[href="/en/blog/"]')).toBeVisible();
     await expect(page.locator('header nav a[href="/en/work/"]')).toBeVisible();
+    await expect(page.locator('header nav a[href="/en/graph/"]')).toBeVisible();
     await expect(page.locator('header nav a[href="/en/about/"]')).toBeVisible();
   });
 });

@@ -29,6 +29,10 @@ def build_publish_prompt(*, repo_root: Path, run_dir: Path) -> str:
         f"PYTHONPATH={repo_root} python3 -m pipeline.stages.publish validate"
         f" --run-dir {run_dir}"
     )
+    concepts_base = (
+        f"PYTHONPATH={repo_root} python3 -m pipeline.stages.concepts"
+    )
+    concepts_validate_cmd = f"{concepts_base} validate --repo-root {repo_root}"
 
     return (
         "STAGE: Publish (writing-flow.md section 6; FR-B5, FR-G1/G2).\n"
@@ -52,13 +56,43 @@ def build_publish_prompt(*, repo_root: Path, run_dir: Path) -> str:
         "   (under the ABSOLUTE repo_root via --repo-root). If it prints problems, fix the\n"
         "   drafts / map and re-run; it writes nothing on any problem.\n"
         "\n"
-        "3. The publish task's commit (git add -A && git commit, run by the harness) RECORDS\n"
+        "3. CONCEPT EXTRACTION (the knowledge-graph daily reindex). The graph page\n"
+        "   renders from the canonical concept store; fold the day's article in NOW so\n"
+        "   the next deploy carries it:\n"
+        "   - SEE what already exists (REUSE aggressively; an alias counts as the same\n"
+        "     concept; never create a near-duplicate):\n"
+        f"       {concepts_base} list --repo-root {repo_root}\n"
+        "   - IDENTIFY the 3-8 AI concepts the published article genuinely teaches or\n"
+        "     leans on (named techniques, mechanisms, architectures, practices -- not\n"
+        "     every noun; a reader should learn about that concept by reading this\n"
+        "     article).\n"
+        "   - For each concept ALREADY in the store, cite the article on it (idempotent;\n"
+        "     <translationKey> is the published article's translationKey):\n"
+        f"       {concepts_base} link --repo-root {repo_root} --id <concept-id>"
+        " --article <translationKey>\n"
+        "   - For each GENUINELY NEW concept, write a JSON record and add it:\n"
+        '       {"id": "<kebab-slug>", "label": {"fr": "...", "en": "..."},\n'
+        '        "definition": {"fr": "...", "en": "..."}, "theme": "<one of:\n'
+        "        agentic-ai | ml-fundamentals | infra-tooling | evals-quality>\",\n"
+        '        "aliases": [...], "related": ["<existing concept ids>"],\n'
+        '        "articles": ["<translationKey>"]}\n'
+        "     Definitions: 1-2 sentences per language, self-contained, factual, written\n"
+        "     for a practitioner; FR is idiomatic French (accents mandatory), not a\n"
+        "     calque; NO em-dashes, NO emoji. The definition is CANONICAL and WRITE-ONCE:\n"
+        "     the store refuses to overwrite it on later runs, so write it to stand for\n"
+        "     years. Save the record to plans/task-publish/concept-<id>.json, then:\n"
+        f"       {concepts_base} add --repo-root {repo_root}"
+        " --file plans/task-publish/concept-<id>.json\n"
+        "   - VALIDATE the store before finishing:\n"
+        f"       {concepts_validate_cmd}\n"
+        "\n"
+        "4. The publish task's commit (git add -A && git commit, run by the harness) RECORDS\n"
         "   the durable FR + EN publish on main -- no manual step on this path (D-002). You\n"
         "   do NOT run pnpm, wrangler, or git push yourself. The site build (CF Pages) and\n"
         "   the avatar reindex fire only when that commit is later PUSHED to the remote (the\n"
         "   scheduled runner / task 28), NOT from this local commit.\n"
         "\n"
-        "4. PRIVACY / SECRET HYGIENE (FR-D3): no secrets, private-repo internals, internal\n"
+        "5. PRIVACY / SECRET HYGIENE (FR-D3): no secrets, private-repo internals, internal\n"
         "   codenames, or third-party personal data reaches a public article file.\n"
         "   Use no emojis anywhere (D-007).\n"
         "\n"

@@ -8,6 +8,7 @@ publishDate: '12-05-2026'
 tags:
   - agents
   - evaluation
+difficulty: 2
 sources:
   - label: 'Anthropic, Building effective agents'
     url: 'https://www.anthropic.com/research/building-effective-agents'
