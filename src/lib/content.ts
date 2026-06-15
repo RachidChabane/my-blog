@@ -588,6 +588,7 @@ export interface ProjectCardVM {
 export const PROJECT_ORDER = [
   'sterna-ai-platform',
   'claude-plan-execute',
+  'cca-f-exam-trainer',
   'ijtihad-engine',
   'bayan-rag-platform',
   'atelier',

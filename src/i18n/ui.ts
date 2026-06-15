@@ -234,6 +234,11 @@ export interface ProjectDetailStrings {
   hEng: string; // "Ingénierie" / "Engineering"
   hArch: string; // "Architecture" (optional section)
   hHighlights: string; // "Points clés" / "Highlights" (optional section)
+  hGallery: string; // "Aperçus" / "Screens" (optional screenshot carousel — a11y name)
+  galleryPrev: string; // prev-slide button aria-label
+  galleryNext: string; // next-slide button aria-label
+  gallerySlide: string; // dot/open button aria-label prefix ("Screen 1" / "Aperçu 1")
+  galleryClose: string; // lightbox close button aria-label
   hStack: string; // "Stack" / "Stack"
   hStatus: string; // "Statut" / "Status"
   hLinks: string; // "Liens" / "Links"
@@ -250,6 +255,11 @@ export const PROJECT_DETAIL: Record<Locale, ProjectDetailStrings> = {
     hEng: 'Ingénierie',
     hArch: 'Architecture',
     hHighlights: 'Points clés',
+    hGallery: 'Aperçus',
+    galleryPrev: 'Aperçu précédent',
+    galleryNext: 'Aperçu suivant',
+    gallerySlide: 'Aperçu',
+    galleryClose: 'Fermer',
     hStack: 'Stack',
     hStatus: 'Statut',
     hLinks: 'Liens',
@@ -264,6 +274,11 @@ export const PROJECT_DETAIL: Record<Locale, ProjectDetailStrings> = {
     hEng: 'Engineering',
     hArch: 'Architecture',
     hHighlights: 'Highlights',
+    hGallery: 'Screens',
+    galleryPrev: 'Previous screen',
+    galleryNext: 'Next screen',
+    gallerySlide: 'Screen',
+    galleryClose: 'Close',
     hStack: 'Stack',
     hStatus: 'Status',
     hLinks: 'Links',

@@ -40,6 +40,11 @@ export interface Architecture {
   caption?: string;
   layers: ArchLayer[];
 }
+export interface GalleryImage {
+  src: string; // site-root path under public/ (e.g. "/work/<slug>/home.png")
+  alt: string; // required for a11y
+  caption?: string;
+}
 
 export interface LocalizedCopy {
   slug: string;
@@ -52,6 +57,9 @@ export interface LocalizedCopy {
   highlights?: string[];
   metrics?: Metric[];
   architecture?: Architecture;
+  // Optional screenshot gallery — per-locale so an EN page shows EN screens and an
+  // FR page shows FR screens (captured from the real app, not fabricated).
+  gallery?: GalleryImage[];
 }
 
 export interface PortfolioEntry {
@@ -270,6 +278,287 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     },
   },
 
+  // ── 4b. CCA-F Exam Trainer ────────────────────────────────────────────────
+  // Public GitHub repo + GitHub Pages app; safe to link directly. Copy describes
+  // the deployed, content-complete build; screenshots captured from the live app.
+  {
+    translationKey: 'cca-f-exam-trainer',
+    stack: [
+      'React 19',
+      'TypeScript',
+      'Vite',
+      'Tailwind CSS v4',
+      'Zustand',
+      'Playwright',
+      'GitHub Actions',
+    ],
+    status: { en: 'in production', fr: 'en production' },
+    links: [
+      {
+        label: 'Live app',
+        url: 'https://rachidchabane.github.io/cca-f-exam-trainer/',
+      },
+      {
+        label: 'GitHub',
+        url: 'https://github.com/RachidChabane/cca-f-exam-trainer',
+      },
+    ],
+    // Public-safe related reads (all published FR + EN); on-point for the CCA-F
+    // domains (context management, tool-using agents, agentic coding workflows).
+    relatedArticles: [
+      'context-budget',
+      'evaluating-tool-using-agents',
+      'deterministic-agent-workflows',
+    ],
+    publishState: 'published',
+    year: '2026',
+    en: {
+      slug: 'cca-f-exam-trainer',
+      name: 'CCA-F Exam Trainer: Bilingual Certification Practice',
+      summary:
+        'A fully client-side, bilingual (English and French) practice trainer for ' +
+        "Anthropic's Claude Certified Architect Foundations (CCA-F) exam: timed mocks " +
+        'weighted across the five official domains, a scaled score with a per-domain ' +
+        'breakdown and a full answer review, plus a study mode of original course ' +
+        'summaries grounded in first-party Anthropic documentation.',
+      body:
+        'CCA-F Exam Trainer is a fully client-side single-page app (Vite, React 19, ' +
+        'TypeScript, Tailwind CSS v4) with no backend, no database, and no accounts: ' +
+        'every in-progress exam, results history, and preference lives only in the ' +
+        "browser's localStorage. The exam runner assembles a timed mock weighted across " +
+        'the five official domains, with a flag-and-navigator grid, a 120-minute ' +
+        'countdown, and auto-submit at zero. Each sitting is graded on a documented ' +
+        'linear approximation of the scaled 100-1000 score (pass at 720), with a ' +
+        'per-domain accuracy breakdown and a full answer review that shows your answer, ' +
+        'the correct one, why it is best, and why each distractor falls short. A Zustand ' +
+        'store persists session state, so an in-progress mock survives a refresh or a ' +
+        'slept laptop, recent attempts build a score history, and you can re-quiz only ' +
+        'the questions you missed or drill a single weak domain untimed. The English and ' +
+        'French toggle is total: one click swaps every label and every piece of content, ' +
+        'including stems, options, explanations, and the study-mode course bodies. All ' +
+        'questions and summaries are original and grounded in first-party Anthropic ' +
+        'documentation, with no third-party question banks; a deterministic fact-check ' +
+        'pins the exam parameters and keeps community-reported numbers labeled as such, ' +
+        'an optional Claude-powered pass reviews the answer keys, and a Playwright suite ' +
+        'runs against the real production bundle. Continuous integration ties it ' +
+        'together: every push runs schema validation, the fact-check, and end-to-end ' +
+        'tests before deploying to GitHub Pages.',
+      highlights: [
+        'A timed mock built like the real exam: weighted across the five official ' +
+          'domains, with a flag-and-navigator grid, a 120-minute countdown, auto-submit, ' +
+          'and a scaled 100-1000 score (pass at 720).',
+        'Every result breaks accuracy down per domain and opens a full review: your ' +
+          'answer, the correct answer, why it is best, and why each distractor falls short.',
+        'A total English / French toggle flips all UI and all content at once; language, ' +
+          'theme, and an in-progress attempt persist locally, with no backend and no accounts.',
+        'Original content grounded in first-party Anthropic docs, guarded by a ' +
+          'deterministic fact-check, an optional Claude answer-key review, and a Playwright ' +
+          'suite that runs against the production bundle before each GitHub Pages deploy.',
+      ],
+      metrics: [
+        { value: '300+', label: 'scenario questions' },
+        { value: '5', label: 'weighted domains' },
+        { value: '11', label: 'course summaries' },
+        { value: 'EN / FR', label: 'fully bilingual' },
+      ],
+      architecture: {
+        caption: 'Local-first, content-validated, continuously deployed',
+        layers: [
+          {
+            label: 'Content (bilingual JSON)',
+            nodes: ['question pool', 'course summaries', 'exam blueprint'],
+          },
+          {
+            label: 'App (Vite, React 19, TS)',
+            nodes: [
+              'exam runner',
+              'scaled scoring',
+              'study reader',
+              'EN / FR + theme',
+            ],
+          },
+          {
+            label: 'State',
+            nodes: ['Zustand store', 'localStorage (resume, history, prefs)'],
+          },
+          {
+            label: 'Quality gates (CI)',
+            nodes: [
+              'schema check',
+              'deterministic fact-check',
+              'Playwright e2e',
+            ],
+          },
+          {
+            label: 'Deploy',
+            nodes: ['GitHub Actions', 'GitHub Pages'],
+          },
+        ],
+      },
+      gallery: [
+        {
+          src: '/work/cca-f-exam-trainer/home.en.png',
+          alt: 'CCA-F Exam Trainer home screen in English, with the exam and study mode cards and the exam blueprint',
+          caption: 'Home: exam and study modes, with the blueprint at a glance',
+        },
+        {
+          src: '/work/cca-f-exam-trainer/exam.en.png',
+          alt: 'A timed exam question in English with its domain tag, four options, and the numbered question-navigator grid',
+          caption:
+            'Exam: a scenario question, its domain, and the navigator grid',
+        },
+        {
+          src: '/work/cca-f-exam-trainer/results.en.png',
+          alt: 'The results screen in English showing a scaled score out of 1000, the pass mark, and accuracy by domain',
+          caption: 'Results: scaled score, pass line, and accuracy by domain',
+        },
+        {
+          src: '/work/cca-f-exam-trainer/review.en.png',
+          alt: 'The answer review in English with the chosen answer, the correct answer, and why it is best',
+          caption:
+            'Review: your answer, the correct answer, and why it is best',
+        },
+        {
+          src: '/work/cca-f-exam-trainer/study.en.png',
+          alt: 'Study mode in English with a course index, a course summary, and highlighted key concepts',
+          caption: 'Study: course summaries with key concepts and self-checks',
+        },
+      ],
+    },
+    fr: {
+      slug: 'entraineur-examen-cca-f',
+      name: "Entraîneur d'examen CCA-F : pratique bilingue de la certification",
+      summary:
+        "Un entraîneur d'examen entièrement côté client et bilingue (français et " +
+        'anglais) pour la certification Claude Certified Architect Foundations (CCA-F) ' +
+        "d'Anthropic : des examens blancs chronométrés et pondérés sur les cinq " +
+        'domaines officiels, un score normalisé avec répartition par domaine et revue ' +
+        'complète des réponses, et un mode révision de résumés de cours originaux ancrés ' +
+        'dans la documentation Anthropic de première partie.',
+      body:
+        "L'Entraîneur d'examen CCA-F est une application monopage entièrement côté " +
+        'client (Vite, React 19, TypeScript, Tailwind CSS v4), sans backend, sans base ' +
+        'de données et sans comptes : chaque examen en cours, historique de résultats et ' +
+        "préférence ne vit que dans le localStorage du navigateur. Le moteur d'examen " +
+        'assemble un examen blanc chronométré et pondéré sur les cinq domaines officiels, ' +
+        'avec une grille de marquage et de navigation, un compte à rebours de 120 minutes ' +
+        'et une soumission automatique à zéro. Chaque session est notée selon une ' +
+        'approximation linéaire documentée du score normalisé de 100 à 1000 (réussite à ' +
+        '720), avec une répartition de la précision par domaine et une revue complète des ' +
+        'réponses qui montre votre réponse, la bonne réponse, pourquoi elle est la ' +
+        'meilleure et pourquoi chaque distracteur échoue. Un store Zustand persiste ' +
+        "l'état de session : un examen en cours survit à un rafraîchissement ou à une " +
+        'mise en veille, les tentatives récentes forment un historique de scores, et vous ' +
+        'pouvez ne reprendre que les questions ratées ou réviser un seul domaine faible ' +
+        'sans chronomètre. La bascule français / anglais est totale : un clic change ' +
+        'chaque libellé et chaque contenu, y compris les énoncés, les options, les ' +
+        'explications et les corps de cours du mode révision. Toutes les questions et ' +
+        'tous les résumés sont originaux et ancrés dans la documentation Anthropic de ' +
+        'première partie, sans banque de questions tierce ; un fact-check déterministe ' +
+        "fixe les paramètres de l'examen et garde les chiffres rapportés par la " +
+        'communauté étiquetés comme tels, une passe optionnelle propulsée par Claude relit ' +
+        "les clés de réponse, et une suite Playwright s'exécute contre le vrai bundle de " +
+        "production. L'intégration continue relie le tout : chaque push lance la " +
+        'validation du schéma, le fact-check et les tests de bout en bout avant le ' +
+        'déploiement sur GitHub Pages.',
+      highlights: [
+        'Un examen blanc bâti comme le vrai : pondéré sur les cinq domaines officiels, ' +
+          'avec une grille de marquage et de navigation, un compte à rebours de 120 ' +
+          'minutes, une soumission automatique et un score normalisé de 100 à 1000 ' +
+          '(réussite à 720).',
+        'Chaque résultat détaille la précision par domaine et ouvre une revue complète : ' +
+          'votre réponse, la bonne réponse, pourquoi elle est la meilleure et pourquoi ' +
+          'chaque distracteur échoue.',
+        "Une bascule français / anglais totale change toute l'interface et tout le " +
+          "contenu d'un coup ; la langue, le thème et un examen en cours persistent " +
+          'localement, sans backend ni comptes.',
+        'Contenu original ancré dans la documentation Anthropic de première partie, ' +
+          'protégé par un fact-check déterministe, une revue optionnelle des clés de ' +
+          'réponse par Claude et une suite Playwright exécutée contre le bundle de ' +
+          'production avant chaque déploiement sur GitHub Pages.',
+      ],
+      metrics: [
+        { value: '300+', label: 'questions de scénario' },
+        { value: '5', label: 'domaines pondérés' },
+        { value: '11', label: 'résumés de cours' },
+        { value: 'EN / FR', label: 'entièrement bilingue' },
+      ],
+      architecture: {
+        caption: "Local d'abord, contenu validé, déploiement continu",
+        layers: [
+          {
+            label: 'Contenu (JSON bilingue)',
+            nodes: [
+              'banque de questions',
+              'résumés de cours',
+              "blueprint d'examen",
+            ],
+          },
+          {
+            label: 'App (Vite, React 19, TS)',
+            nodes: [
+              "moteur d'examen",
+              'score normalisé',
+              'lecteur de révision',
+              'FR / EN + thème',
+            ],
+          },
+          {
+            label: 'État',
+            nodes: [
+              'store Zustand',
+              'localStorage (reprise, historique, préférences)',
+            ],
+          },
+          {
+            label: 'Portes qualité (CI)',
+            nodes: [
+              'validation du schéma',
+              'fact-check déterministe',
+              'e2e Playwright',
+            ],
+          },
+          {
+            label: 'Déploiement',
+            nodes: ['GitHub Actions', 'GitHub Pages'],
+          },
+        ],
+      },
+      gallery: [
+        {
+          src: '/work/cca-f-exam-trainer/home.fr.png',
+          alt: "Écran d'accueil de l'Entraîneur d'examen CCA-F en français, avec les cartes des modes examen et révision et le blueprint",
+          caption:
+            "Accueil : modes examen et révision, avec le blueprint en un coup d'oeil",
+        },
+        {
+          src: '/work/cca-f-exam-trainer/exam.fr.png',
+          alt: "Une question d'examen chronométré en français avec son domaine, quatre options et la grille de navigation numérotée",
+          caption:
+            'Examen : une question de scénario, son domaine et la grille de navigation',
+        },
+        {
+          src: '/work/cca-f-exam-trainer/results.fr.png',
+          alt: 'Écran de résultats en français montrant un score normalisé sur 1000, le seuil de réussite et la précision par domaine',
+          caption:
+            'Résultats : score normalisé, seuil de réussite et précision par domaine',
+        },
+        {
+          src: '/work/cca-f-exam-trainer/review.fr.png',
+          alt: 'Revue des réponses en français avec la réponse choisie, la bonne réponse et pourquoi elle est la meilleure',
+          caption:
+            'Révision : votre réponse, la bonne réponse et pourquoi elle est la meilleure',
+        },
+        {
+          src: '/work/cca-f-exam-trainer/study.fr.png',
+          alt: 'Mode révision en français avec un index de cours, un résumé de cours et des concepts clés mis en évidence',
+          caption:
+            'Révision : résumés de cours avec concepts clés et auto-évaluations',
+        },
+      ],
+    },
+  },
+
   // ── 5. Athletic Tracker ───────────────────────────────────────────────────
   {
     translationKey: 'athletic-tracker',
@@ -441,6 +730,7 @@ interface OverrideCopy {
   highlights?: string[];
   metrics?: Metric[];
   architecture?: Architecture;
+  gallery?: GalleryImage[];
 }
 interface ProjectOverride {
   year?: string;
@@ -467,6 +757,7 @@ for (const entry of PORTFOLIO_PROJECTS) {
     if (oc.highlights) copy.highlights = oc.highlights;
     if (oc.metrics) copy.metrics = oc.metrics;
     if (oc.architecture) copy.architecture = oc.architecture;
+    if (oc.gallery) copy.gallery = oc.gallery;
   }
 }
 
@@ -494,6 +785,16 @@ function yamlMetricArr(metrics: Metric[]): string {
       (m) => `\n  - value: ${yamlStr(m.value)}\n    label: ${yamlStr(m.label)}`
     )
     .join('');
+}
+
+function yamlGalleryLines(gallery: GalleryImage[]): string[] {
+  const lines: string[] = ['gallery:'];
+  for (const g of gallery) {
+    lines.push(`  - src: ${yamlStr(g.src)}`);
+    lines.push(`    alt: ${yamlStr(g.alt)}`);
+    if (g.caption) lines.push(`    caption: ${yamlStr(g.caption)}`);
+  }
+  return lines;
 }
 
 function yamlArchitectureLines(arch: Architecture): string[] {
@@ -534,6 +835,7 @@ export function buildFrontmatter(
     ...(copy.highlights ? { highlights: copy.highlights } : {}),
     ...(copy.metrics ? { metrics: copy.metrics } : {}),
     ...(copy.architecture ? { architecture: copy.architecture } : {}),
+    ...(copy.gallery ? { gallery: copy.gallery } : {}),
   };
 }
 
@@ -564,6 +866,7 @@ export function renderMarkdown(entry: PortfolioEntry, lang: Locale): string {
     ...(fm.highlights ? [`highlights:${yamlStrArr(fm.highlights)}`] : []),
     ...(fm.metrics ? [`metrics:${yamlMetricArr(fm.metrics)}`] : []),
     ...(fm.architecture ? yamlArchitectureLines(fm.architecture) : []),
+    ...(fm.gallery ? yamlGalleryLines(fm.gallery) : []),
     '---',
   ].join('\n');
 

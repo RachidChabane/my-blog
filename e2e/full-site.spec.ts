@@ -6,7 +6,7 @@ import { fulfillSSE, GROUNDED_EN, IDK_EN } from './helpers/avatar-sse';
  * Task 29 — full-site cross-screen verification. Per-screen INTERNALS are already
  * covered by home/blog-index/article/work-detail/about/search/tags/404/theme/
  * i18n/shell/avatar specs (Decision D). This file adds ONLY what those can't:
- *   (a) an all-route smoke over every one of the 60 localized routes, with the
+ *   (a) an all-route smoke over every one of the 62 localized routes, with the
  *       switcher-never-dead-ends check (NFR-11) FOLDED INTO the same navigation;
  *   (b) cross-screen journeys (reading spine, mid-journey language switch, theme
  *       persistence across navigation, the avatar grounded+refusal flow).
@@ -23,7 +23,7 @@ const ROUTES = LANGS.flatMap((lang) =>
   allRoutes(lang).map((path) => ({ lang, path }))
 );
 
-test.describe('all-route smoke (60 localized routes)', () => {
+test.describe('all-route smoke (62 localized routes)', () => {
   for (const { lang, path } of ROUTES) {
     test(`${path} — loads, one h1, lang=${lang}, switcher targets resolve`, async ({
       page,

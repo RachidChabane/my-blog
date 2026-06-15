@@ -3,7 +3,7 @@
  * Playwright import, so it is collected by neither vitest (`exclude: e2e/**`) nor
  * Playwright (its `testMatch` ignores non-`*.spec`/`*.test` files). Slugs are
  * pinned to the PUBLISHED seeds and were verified against `find dist -name
- * '*.html'` at implement time (60 localized routes = 30 per lang). The
+ * '*.html'` at implement time (62 localized routes = 31 per lang). The
  * integration test (`tests/integration.test.ts`) independently re-derives the
  * published slug set from the `.md` corpus, so a future content drift fails THAT
  * test loudly — the intended cross-check (plan §5.1 risk note).
@@ -73,6 +73,7 @@ export const WORK_SLUGS: Record<Lang, readonly string[]> = {
     'atelier-marketplace-plugins',
     'claude-plan-execute-fr',
     'coffre-secrets-mcp',
+    'entraineur-examen-cca-f',
     'moteur-recherche-autonome',
     'plateforme-ia-multi-modeles',
     'rag-erudition-arabe',
@@ -83,6 +84,7 @@ export const WORK_SLUGS: Record<Lang, readonly string[]> = {
     'atelier-plugin-marketplace',
     'athletic-tracker',
     'autonomous-research-engine',
+    'cca-f-exam-trainer',
     'claude-plan-execute',
     'mcp-secrets-vault',
     'multi-model-ai-platform',

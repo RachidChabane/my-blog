@@ -8,14 +8,14 @@ import { test, expect } from '@playwright/test';
 // (unit-tested via isLiveStatus, Playwright-MCP for hover) — NOT pinned here.
 
 test.describe('S6 portfolio renders', () => {
-  test('FR: 7 cards, title-link → detail href, per-card status/chips/desc', async ({
+  test('FR: 8 cards, title-link → detail href, per-card status/chips/desc', async ({
     page,
   }) => {
     await page.goto('/fr/work/');
     await expect(page.locator('h1')).toHaveText('Projets');
 
     const cards = page.locator('article.rc-proj');
-    await expect(cards).toHaveCount(7);
+    await expect(cards).toHaveCount(8);
 
     // the title is the SOLE link; href points at the (task-13) detail route
     const firstTitle = cards.first().locator('.rc-proj__title a');
@@ -38,7 +38,7 @@ test.describe('S6 portfolio renders', () => {
   test('EN: parallel grid, English h1, /en/ detail hrefs', async ({ page }) => {
     await page.goto('/en/work/');
     await expect(page.locator('h1')).toHaveText('Projects');
-    await expect(page.locator('article.rc-proj')).toHaveCount(7);
+    await expect(page.locator('article.rc-proj')).toHaveCount(8);
     await expect(
       page.locator('article.rc-proj .rc-proj__title a').first()
     ).toHaveAttribute('href', /^\/en\/work\/.+\/$/);
@@ -57,7 +57,7 @@ test.describe('card anatomy (locks the three deltas)', () => {
     // exactly one title-link per card (the sole <a>) — guards against rendering
     // external links[] or chip links as anchors
     await expect(page.locator('article.rc-proj .rc-proj__title a')).toHaveCount(
-      7
+      8
     );
 
     // stack chips are <span>, not links — there are no stack-tag pages
@@ -68,7 +68,7 @@ test.describe('card anatomy (locks the three deltas)', () => {
     // the "Voir →" affordance is a decorative <span>, never an <a>
     await expect(
       page.locator('article.rc-proj span.rc-proj__link')
-    ).toHaveCount(7);
+    ).toHaveCount(8);
     await expect(page.locator('article.rc-proj a.rc-proj__link')).toHaveCount(
       0
     );

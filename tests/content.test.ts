@@ -829,6 +829,7 @@ describe('isLiveStatus', () => {
     const expectedLive: Record<string, boolean> = {
       'sterna-ai-platform': false,
       'claude-plan-execute': false,
+      'cca-f-exam-trainer': true,
       'ijtihad-engine': false,
       'bayan-rag-platform': false,
       atelier: false,

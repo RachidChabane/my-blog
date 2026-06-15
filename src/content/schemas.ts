@@ -36,6 +36,18 @@ const architectureSchema = z.object({
   layers: z.array(architectureLayerSchema).min(2),
 });
 
+// Optional screenshot gallery (S7 richer detail pages). `src` is a SITE-ROOT path
+// under public/ (e.g. "/work/<slug>/home.png"); `alt` is required (a11y); `caption`
+// is the optional figure label. Real captured screens only (no fabrication) — the
+// detail page renders these as a zero-JS, lazy-loaded figure grid.
+const galleryImageSchema = z.object({
+  src: z.string().regex(/^\/.+\.(png|jpe?g|webp|avif)$/i, {
+    message: 'gallery src must be a root-absolute image path under public/',
+  }),
+  alt: z.string().min(1),
+  caption: z.string().min(1).optional(),
+});
+
 export const articleFrontmatterSchema = z.object({
   translationKey: z.string().min(1),
   lang: z.enum(['fr', 'en']),
@@ -72,6 +84,7 @@ export const projectFrontmatterSchema = z.object({
   highlights: z.array(z.string().min(1)).min(1).optional(),
   metrics: z.array(metricSchema).min(1).optional(),
   architecture: architectureSchema.optional(),
+  gallery: z.array(galleryImageSchema).min(1).optional(),
 });
 
 export const tagSchema = z.object({

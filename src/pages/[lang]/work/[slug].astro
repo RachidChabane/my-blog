@@ -111,6 +111,7 @@ const d = entry.data;
 const hasMetrics = Boolean(d.metrics?.length);
 const hasArch = Boolean(d.architecture);
 const hasHighlights = Boolean(d.highlights?.length);
+const hasGallery = Boolean(d.gallery?.length);
 const hasLinks = d.links.length > 0;
 const hasRelated = related.length > 0;
 let runningNo = 0;
@@ -166,6 +167,159 @@ const noRelated = hasRelated ? nextNo() : null;
             </div>
           ))}
         </div>
+      )
+    }
+
+    {
+      /* Screens — an index-driven coverflow deck near the top (optional). JS promotes
+        the no-JS scroll-snap filmstrip into a 3D deck (.is-deck): the active screen is
+        centred and upright; neighbours peek, dim, scale down and tilt. The script sets
+        each card's transform ONCE per index change and CSS transitions animate it (no
+        per-frame painting). Clicking the active screen opens an in-page lightbox; the
+        <a href> is the no-JS fallback (same tab, no popup). */
+    }
+    {
+      hasGallery && (
+        <section
+          class="rc-gallery"
+          data-gallery
+          role="group"
+          aria-roledescription="carousel"
+          aria-label={s.hGallery}
+        >
+          <div class="rc-gallery__head">
+            <span class="rc-gallery__eyebrow">{s.hGallery}</span>
+            <span
+              class="rc-gallery__count"
+              data-gallery-count
+              aria-hidden="true"
+            >
+              {`01 / ${String(d.gallery?.length ?? 0).padStart(2, '0')}`}
+            </span>
+          </div>
+
+          <div class="rc-gallery__stage">
+            <span class="rc-gallery__glow" aria-hidden="true" />
+            <div class="rc-gallery__track" data-gallery-track>
+              {(d.gallery ?? []).map(
+                (
+                  g: { src: string; alt: string; caption?: string },
+                  i: number
+                ) => (
+                  <a
+                    class="rc-gallery__card"
+                    href={g.src}
+                    data-gallery-card
+                    data-index={i}
+                    aria-label={`${s.gallerySlide} ${i + 1}`}
+                  >
+                    <span class="rc-gallery__bar" aria-hidden="true">
+                      <span class="rc-gallery__tl" />
+                      <span class="rc-gallery__tl" />
+                      <span class="rc-gallery__tl" />
+                    </span>
+                    <img
+                      class="rc-gallery__img"
+                      src={g.src}
+                      alt={g.alt}
+                      data-caption={g.caption ?? ''}
+                      width="1920"
+                      height="1200"
+                      loading={i === 0 ? 'eager' : 'lazy'}
+                      decoding="async"
+                    />
+                    <span class="rc-gallery__zoom" aria-hidden="true">
+                      <svg
+                        viewBox="0 0 24 24"
+                        width="15"
+                        height="15"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M9 3H5a2 2 0 0 0-2 2v4" />
+                        <path d="M15 3h4a2 2 0 0 1 2 2v4" />
+                        <path d="M9 21H5a2 2 0 0 1-2-2v-4" />
+                        <path d="M15 21h4a2 2 0 0 0 2-2v-4" />
+                      </svg>
+                    </span>
+                  </a>
+                )
+              )}
+            </div>
+
+            <button
+              class="rc-gallery__nav rc-gallery__nav--prev"
+              data-gallery-prev
+              type="button"
+              aria-label={s.galleryPrev}
+            >
+              <span aria-hidden="true">‹</span>
+            </button>
+            <button
+              class="rc-gallery__nav rc-gallery__nav--next"
+              data-gallery-next
+              type="button"
+              aria-label={s.galleryNext}
+            >
+              <span aria-hidden="true">›</span>
+            </button>
+          </div>
+
+          <p
+            class="rc-gallery__caption"
+            data-gallery-caption
+            aria-live="polite"
+          >
+            {d.gallery?.[0]?.caption}
+          </p>
+
+          <div class="rc-gallery__dots" data-gallery-dots>
+            {(d.gallery ?? []).map((_g: unknown, i: number) => (
+              <button
+                class="rc-gallery__dot"
+                data-gallery-dot
+                type="button"
+                aria-label={`${s.gallerySlide} ${i + 1}`}
+              />
+            ))}
+          </div>
+
+          <dialog class="rc-lb" data-lb aria-label={s.hGallery}>
+            <div class="rc-lb__inner">
+              <figure class="rc-lb__fig">
+                <img class="rc-lb__img" data-lb-img alt="" />
+                <figcaption class="rc-lb__cap" data-lb-cap />
+              </figure>
+            </div>
+            <button
+              class="rc-lb__btn rc-lb__close"
+              data-lb-close
+              type="button"
+              aria-label={s.galleryClose}
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+            <button
+              class="rc-lb__btn rc-lb__nav rc-lb__nav--prev"
+              data-lb-prev
+              type="button"
+              aria-label={s.galleryPrev}
+            >
+              <span aria-hidden="true">‹</span>
+            </button>
+            <button
+              class="rc-lb__btn rc-lb__nav rc-lb__nav--next"
+              data-lb-next
+              type="button"
+              aria-label={s.galleryNext}
+            >
+              <span aria-hidden="true">›</span>
+            </button>
+          </dialog>
+        </section>
       )
     }
 
@@ -485,6 +639,396 @@ const noRelated = hasRelated ? nextNo() : null;
     background: var(--accent);
   }
 
+  /* Screens — an index-driven coverflow deck (optional). Two layout modes share one
+     card style: with no JS the track is a horizontal scroll-snap filmstrip (usable,
+     accessible); with JS (.is-deck on the section) the track becomes a 3D stage and
+     each card is absolutely centred, then translated/scaled/tilted by its distance
+     from the active index. The script sets those inline transforms ONCE per index
+     change; CSS transitions animate them. Tokens only, except the fixed-dark lightbox
+     scrim (commented below). */
+  .rc-gallery {
+    /* breakout band, wider than the 68ch column, centred in the viewport */
+    width: min(100vw - 48px, 960px);
+    margin-left: 50%;
+    transform: translateX(-50%);
+    margin-top: 44px;
+    --card-w: clamp(248px, 52vw, 540px);
+    --stage-h: clamp(208px, 38vw, 392px);
+  }
+
+  /* header row: a mono eyebrow + a position counter (a real sequence position) */
+  .rc-gallery__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 4px 8px;
+  }
+  .rc-gallery__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-meta);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rc-gallery__count {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--fg-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .rc-gallery__stage {
+    position: relative;
+  }
+  .rc-gallery__glow {
+    display: none;
+  }
+
+  /* ---- no-JS fallback: a horizontal scroll-snap filmstrip ---- */
+  .rc-gallery__track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 14px calc((100% - var(--card-w)) / 2);
+    scrollbar-width: none; /* Firefox */
+  }
+  .rc-gallery__track::-webkit-scrollbar {
+    display: none; /* WebKit */
+  }
+  .rc-gallery__card {
+    flex: 0 0 var(--card-w);
+    scroll-snap-align: center;
+    position: relative;
+    display: block;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: inherit;
+  }
+  .rc-gallery__card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* slim window bar — a quiet "this is a live app screen" cue */
+  .rc-gallery__bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 26px;
+    padding: 0 12px;
+    background: var(--fill-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .rc-gallery__tl {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+  .rc-gallery__img {
+    display: block;
+    width: 100%;
+    /* height:auto lets aspect-ratio win over the img's height="1200" attribute */
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: top center;
+  }
+  /* zoom affordance — shown only on the active card in deck mode */
+  .rc-gallery__zoom {
+    position: absolute;
+    top: 34px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--fg-muted);
+    box-shadow: var(--shadow-sm);
+    opacity: 0;
+    transform: scale(0.92);
+    pointer-events: none;
+    transition:
+      opacity var(--dur-hover) var(--ease-soft),
+      transform var(--dur-hover) var(--ease-soft),
+      color var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-gallery:not(.is-deck) .rc-gallery__zoom {
+    display: none;
+  }
+
+  /* ---- enhanced: the 3D deck ---- */
+  .rc-gallery.is-deck .rc-gallery__stage {
+    perspective: 1700px;
+    height: var(--stage-h);
+  }
+  .rc-gallery.is-deck .rc-gallery__glow {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(var(--card-w), 72%);
+    height: 68%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      ellipse at center,
+      var(--accent-soft),
+      transparent 72%
+    );
+    filter: blur(10px);
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .rc-gallery.is-deck .rc-gallery__track {
+    display: block;
+    position: relative;
+    height: 100%;
+    overflow: visible;
+    padding: 0;
+    scroll-snap-type: none;
+  }
+  .rc-gallery.is-deck .rc-gallery__card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--card-w);
+    /* transform is set inline by the script; this is the rest state + the easing */
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
+    will-change: transform, opacity;
+    box-shadow: var(--shadow-md);
+    transition:
+      transform 460ms var(--ease-soft),
+      opacity 460ms var(--ease-soft),
+      box-shadow var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-gallery.is-deck .rc-gallery__card[data-state='active'] {
+    box-shadow: var(--shadow-lg);
+    cursor: zoom-in;
+  }
+  .rc-gallery.is-deck .rc-gallery__card[data-state='active']:hover {
+    border-color: var(--accent);
+  }
+  .rc-gallery.is-deck .rc-gallery__card[data-state='near'] {
+    cursor: pointer;
+  }
+  .rc-gallery.is-deck .rc-gallery__card[data-state='hidden'] {
+    pointer-events: none;
+  }
+  .rc-gallery.is-deck .rc-gallery__card[data-state='active'] .rc-gallery__zoom {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .rc-gallery.is-deck
+    .rc-gallery__card[data-state='active']:hover
+    .rc-gallery__zoom {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* prev/next — revealed only when enhanced */
+  .rc-gallery__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    z-index: 40;
+    transition:
+      border-color var(--dur-hover) var(--ease-soft),
+      color var(--dur-hover) var(--ease-soft),
+      opacity var(--dur-hover) var(--ease-soft);
+  }
+  .rc-gallery.is-deck .rc-gallery__nav {
+    display: flex;
+  }
+  .rc-gallery__nav--prev {
+    left: clamp(-8px, -1.5vw, 6px);
+  }
+  .rc-gallery__nav--next {
+    right: clamp(-8px, -1.5vw, 6px);
+  }
+  .rc-gallery__nav:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .rc-gallery__nav:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .rc-gallery__nav:disabled:hover {
+    border-color: var(--border-subtle);
+    color: var(--fg);
+  }
+
+  .rc-gallery__caption {
+    margin: 20px auto 0;
+    max-width: 52ch;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--fg-muted);
+    min-height: 1.5em;
+  }
+
+  /* dot indicators — revealed only when enhanced */
+  .rc-gallery__dots {
+    display: none;
+    justify-content: center;
+    gap: 9px;
+    margin-top: 14px;
+  }
+  .rc-gallery.is-deck .rc-gallery__dots {
+    display: flex;
+  }
+  .rc-gallery__dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      background var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft),
+      transform var(--dur-hover) var(--ease-soft);
+  }
+  .rc-gallery__dot:hover {
+    border-color: var(--accent);
+  }
+  .rc-gallery__dot.is-active {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.25);
+  }
+
+  @media (max-width: 600px) {
+    .rc-gallery__nav {
+      width: 40px;
+      height: 40px;
+      font-size: 22px;
+    }
+  }
+
+  /* Lightbox — a native <dialog> in the top layer over a fixed dark scrim. Opened
+     from a screen click; Escape / backdrop / the close button dismiss it. The scrim
+     and its chrome stay dark in both site themes, so the literal values here are
+     intentional (page tokens would invert the contrast against the scrim). */
+  .rc-lb {
+    width: min(95vw, 1200px);
+    max-width: none;
+    max-height: 94vh;
+    margin: auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    overflow: visible;
+  }
+  .rc-lb::backdrop {
+    background: rgba(10, 10, 13, 0.84);
+    backdrop-filter: blur(3px);
+  }
+  .rc-lb__inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rc-lb__fig {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .rc-lb__img {
+    display: block;
+    max-width: 100%;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+  }
+  .rc-lb__cap {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .rc-lb__btn {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(20, 20, 26, 0.62);
+    color: #fff;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      border-color var(--dur-hover) var(--ease-soft),
+      background var(--dur-hover) var(--ease-soft);
+  }
+  .rc-lb__btn:hover {
+    border-color: var(--accent);
+    background: rgba(20, 20, 26, 0.86);
+  }
+  .rc-lb__close {
+    top: 18px;
+    right: 20px;
+    width: 42px;
+    height: 42px;
+    font-size: 26px;
+  }
+  .rc-lb__nav {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    font-size: 28px;
+  }
+  .rc-lb__nav--prev {
+    left: 20px;
+  }
+  .rc-lb__nav--next {
+    right: 20px;
+  }
+  @media (max-width: 640px) {
+    .rc-lb__nav {
+      display: none;
+    }
+  }
+
   /* 03 — stack chips (ported from ProjectCard .rc-tag; static spans, no hover) */
   .rc-stack {
     display: flex;
@@ -606,3 +1150,210 @@ const noRelated = hasRelated ? nextNo() : null;
     }
   }
 </style>
+
+<script>
+  // Screens deck + in-page lightbox. The markup is a usable scroll-snap filmstrip on
+  // its own; this promotes it to an index-driven 3D deck (.is-deck), reveals the
+  // prev/next + dot controls, and wires the lightbox. One transform per index change
+  // (CSS transitions do the animating). No-ops with no [data-gallery], safe anywhere.
+  type Pose = {
+    x: number; // translateX, in % of the card's own width
+    sc: number; // scale
+    ry: number; // rotateY, deg
+    tz: number; // translateZ, px
+    op: number; // opacity
+    z: number; // z-index
+  };
+
+  // The active screen is centred, upright and on top; neighbours peek, dim, recede
+  // and tilt toward the centre. Tuned so the active card is never hidden behind one.
+  function poseFor(offset: number): Pose {
+    const sign = Math.sign(offset);
+    switch (Math.abs(offset)) {
+      case 0:
+        return { x: 0, sc: 1, ry: 0, tz: 0, op: 1, z: 30 };
+      case 1:
+        return {
+          x: sign * 56,
+          sc: 0.82,
+          ry: -sign * 20,
+          tz: -90,
+          op: 0.5,
+          z: 20,
+        };
+      case 2:
+        return {
+          x: sign * 92,
+          sc: 0.66,
+          ry: -sign * 26,
+          tz: -180,
+          op: 0.16,
+          z: 10,
+        };
+      default:
+        return {
+          x: sign * 120,
+          sc: 0.6,
+          ry: -sign * 28,
+          tz: -240,
+          op: 0,
+          z: 0,
+        };
+    }
+  }
+
+  function initGallery(root: HTMLElement): void {
+    const track = root.querySelector<HTMLElement>('[data-gallery-track]');
+    const cards = Array.from(
+      root.querySelectorAll<HTMLAnchorElement>('[data-gallery-card]')
+    );
+    if (!track || cards.length === 0) return;
+
+    const prev = root.querySelector<HTMLButtonElement>('[data-gallery-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-gallery-next]');
+    const dots = Array.from(
+      root.querySelectorAll<HTMLButtonElement>('[data-gallery-dot]')
+    );
+    const caption = root.querySelector<HTMLElement>('[data-gallery-caption]');
+    const counter = root.querySelector<HTMLElement>('[data-gallery-count]');
+    const total = cards.length;
+    const pad = (n: number): string => String(n).padStart(2, '0');
+    const clamp = (i: number): number => Math.max(0, Math.min(total - 1, i));
+
+    let index = 0;
+    root.classList.add('is-deck');
+
+    const layout = (): void => {
+      cards.forEach((card, i) => {
+        const offset = i - index;
+        const p = poseFor(offset);
+        card.style.transform =
+          `translate(-50%, -50%) translateX(${p.x}%) ` +
+          `translateZ(${p.tz}px) rotateY(${p.ry}deg) scale(${p.sc})`;
+        card.style.opacity = String(p.op);
+        card.style.zIndex = String(p.z);
+        const a = Math.abs(offset);
+        card.dataset.state = a === 0 ? 'active' : a <= 2 ? 'near' : 'hidden';
+        card.setAttribute('aria-hidden', a === 0 ? 'false' : 'true');
+        card.tabIndex = a === 0 ? 0 : -1;
+      });
+      dots.forEach((dot, i) => {
+        const on = i === index;
+        dot.classList.toggle('is-active', on);
+        if (on) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+      if (prev) prev.disabled = index === 0;
+      if (next) next.disabled = index === total - 1;
+      if (caption) {
+        const img = cards[index].querySelector<HTMLImageElement>('img');
+        caption.textContent = img?.dataset.caption ?? '';
+      }
+      if (counter) counter.textContent = `${pad(index + 1)} / ${pad(total)}`;
+    };
+
+    const go = (i: number): void => {
+      index = clamp(i);
+      layout();
+    };
+
+    // ---- in-page lightbox -----------------------------------------------------
+    const lb = root.querySelector<HTMLDialogElement>('[data-lb]');
+    const supportsModal = !!lb && typeof lb.showModal === 'function';
+    const lbImg = lb?.querySelector<HTMLImageElement>('[data-lb-img]') ?? null;
+    const lbCap = lb?.querySelector<HTMLElement>('[data-lb-cap]') ?? null;
+    let lbIndex = 0;
+    const fill = (i: number): void => {
+      lbIndex = clamp(i);
+      const img = cards[lbIndex].querySelector<HTMLImageElement>('img');
+      if (lbImg && img) {
+        lbImg.src = img.currentSrc || img.src;
+        lbImg.alt = img.alt;
+      }
+      if (lbCap) lbCap.textContent = img?.dataset.caption ?? '';
+    };
+    const openLightbox = (i: number): void => {
+      if (!lb || !supportsModal) return;
+      fill(i);
+      lb.showModal();
+    };
+
+    prev?.addEventListener('click', () => go(index - 1));
+    next?.addEventListener('click', () => go(index + 1));
+    dots.forEach((dot, i) => dot.addEventListener('click', () => go(i)));
+
+    // Card click: the active screen opens the lightbox, a neighbour steps to it. The
+    // <a href> is the no-JS fallback, so always preventDefault here. A pointer drag
+    // that crossed the swipe threshold suppresses the click it would otherwise fire.
+    let moved = false;
+    cards.forEach((card, i) => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (moved) {
+          moved = false;
+          return;
+        }
+        if (i === index) openLightbox(index);
+        else go(i);
+      });
+    });
+
+    // keyboard, when the gallery region holds focus
+    root.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        go(index - 1);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        go(index + 1);
+      }
+    });
+
+    // pointer swipe on the stage
+    let downX = 0;
+    let dragging = false;
+    track.addEventListener('pointerdown', (e: PointerEvent) => {
+      dragging = true;
+      moved = false;
+      downX = e.clientX;
+    });
+    track.addEventListener('pointermove', (e: PointerEvent) => {
+      if (dragging && Math.abs(e.clientX - downX) > 10) moved = true;
+    });
+    track.addEventListener('pointerup', (e: PointerEvent) => {
+      if (!dragging) return;
+      dragging = false;
+      const dx = e.clientX - downX;
+      if (Math.abs(dx) > 44) go(index + (dx < 0 ? 1 : -1));
+    });
+    track.addEventListener('pointercancel', () => {
+      dragging = false;
+    });
+
+    if (lb && supportsModal) {
+      lb.querySelector('[data-lb-prev]')?.addEventListener('click', () =>
+        fill(lbIndex - 1)
+      );
+      lb.querySelector('[data-lb-next]')?.addEventListener('click', () =>
+        fill(lbIndex + 1)
+      );
+      lb.querySelector('[data-lb-close]')?.addEventListener('click', () =>
+        lb.close()
+      );
+      lb.addEventListener('click', (e) => {
+        if (e.target === lb) lb.close(); // backdrop click
+      });
+      lb.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'ArrowLeft') fill(lbIndex - 1);
+        else if (e.key === 'ArrowRight') fill(lbIndex + 1);
+      });
+    }
+
+    layout();
+    window.addEventListener('resize', layout, { passive: true });
+  }
+
+  document
+    .querySelectorAll<HTMLElement>('[data-gallery]')
+    .forEach((el) => initGallery(el));
+</script>
