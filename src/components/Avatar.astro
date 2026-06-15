@@ -23,6 +23,7 @@ const s = avatarStrings(lang);
 ---
 
 <div class="rc-dock" data-avatar-root>
+  <div class="rc-scrim" data-avatar-scrim aria-hidden="true" hidden></div>
   <Panel strings={s} lang={lang} />
   <button
     class="rc-fab"
@@ -50,6 +51,8 @@ const s = avatarStrings(lang);
     CodeArtifact,
   } from '@/lib/avatar/protocol';
   import { takeFrames } from '@/lib/sse-frames';
+  import { StreamingMarkdown } from '@/lib/avatar/markdown';
+  import type { MarkdownOptions } from '@/lib/avatar/markdown';
 
   // Capture every node the behavior uses, ONCE. The single guard below lists all
   // of them so the const arrow functions that follow keep TypeScript's non-null
@@ -65,6 +68,8 @@ const s = avatarStrings(lang);
   const closeBtn = root?.querySelector<HTMLButtonElement>(
     '[data-avatar-close]'
   );
+  const fsBtn = root?.querySelector<HTMLButtonElement>('[data-avatar-fs]');
+  const scrim = root?.querySelector<HTMLElement>('[data-avatar-scrim]');
   const launchMark = root?.querySelector<HTMLElement>(
     '[data-avatar-launchmark]'
   );
@@ -93,6 +98,8 @@ const s = avatarStrings(lang);
     input &&
     sendBtn &&
     closeBtn &&
+    fsBtn &&
+    scrim &&
     launchMark &&
     headMark &&
     errorLine &&
@@ -107,6 +114,9 @@ const s = avatarStrings(lang);
     let busy = false;
     let ansEl: HTMLElement | null = null; // current grounded answer container (.rc-ans)
     let proseEl: HTMLElement | null = null; // current open prose run, or null after an artifact
+    let md: StreamingMarkdown | null = null; // streaming Markdown renderer for the open run
+    let lastCitations: Citation[] = []; // citations of the in-flight answer ([n] marker links)
+    let fullscreen = false; // full-screen reading view (modeled on the gallery lightbox)
     // Per-article scope: the slug an "ask about this article" trigger set, or null for the
     // corpus-wide launcher. Sent as scopeSlug so the answer (and the honest refusal) is
     // restricted to that article; cleared when the panel closes or the FAB opens fresh.
@@ -132,6 +142,33 @@ const s = avatarStrings(lang);
 
     const isOpen = () => !panel.hidden;
 
+    // Full-screen reading view — modeled on the project gallery's lightbox: a dimmed
+    // scrim drops behind a large, centered reading surface. The dock toggles the
+    // [data-fullscreen] hook (CSS does the rest); the label/pressed state swap reads
+    // its copy from the button's data-* (COPY NEVER LIVES IN JS). Escape and a scrim
+    // click step back to the docked panel (the lightbox dismiss mental model).
+    const setFullscreen = (on: boolean) => {
+      fullscreen = on;
+      root.toggleAttribute('data-fullscreen', on);
+      scrim.hidden = !on;
+      fsBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      // In full-screen the panel is a true modal over the scrim; docked it is a
+      // non-modal dialog (the page stays interactive). Focus is trapped within the
+      // panel while modal (see the Tab handler) and restored to the toggle on exit.
+      panel.setAttribute('aria-modal', on ? 'true' : 'false');
+      const label = on
+        ? fsBtn.dataset.labelCollapse
+        : fsBtn.dataset.labelExpand;
+      if (label) fsBtn.setAttribute('aria-label', label);
+      if (isOpen()) scrollToEnd();
+    };
+
+    // Leave full-screen and return focus to the toggle (the modal-dismiss contract).
+    const exitFullscreen = () => {
+      setFullscreen(false);
+      fsBtn.focus();
+    };
+
     const open = () => {
       panel.hidden = false;
       panel.dataset.state = 'idle';
@@ -140,6 +177,7 @@ const s = avatarStrings(lang);
     };
 
     const close = () => {
+      setFullscreen(false); // a fresh open is always docked
       panel.hidden = true;
       launcher.setAttribute('aria-expanded', 'false');
       launcher.focus();
@@ -150,6 +188,22 @@ const s = avatarStrings(lang);
     // Protocol-relative `//host` is rejected (the browser resolves it off-origin).
     const isSafeHref = (u: string): boolean =>
       /^https?:/i.test(u) || /^\/(?!\/)/.test(u);
+
+    // Markdown rendering of the streamed prose runs through the SAME href allow-list,
+    // so an inline link or a `[n]` citation marker can only ever link a safe URL. The
+    // renderer builds DOM with textContent/createElement only (never a markup sink),
+    // so adversarial HTML in a token renders as literal text (M-12 / NFR-7).
+    const mdOpts: MarkdownOptions = {
+      isSafeHref,
+      citationHref: (n: number) => {
+        const cit = lastCitations.find((c) => c.n === n);
+        return cit && isSafeHref(cit.sourceUrl) ? cit.sourceUrl : null;
+      },
+      // Accessible name for the inline [n] marker link — the cited source's title,
+      // so a screen reader announces the destination instead of a bare "1".
+      citationLabel: (n: number) =>
+        lastCitations.find((c) => c.n === n)?.title ?? null,
+    };
 
     const removeThinking = () => {
       const row = body.querySelector('[data-avatar-thinking]');
@@ -193,25 +247,28 @@ const s = avatarStrings(lang);
 
     const renderSources = (citations: Citation[]) => {
       removeThinking();
+      lastCitations = citations; // [n] markers in the prose link back to these
       const ans = cloneTpl(tplGround);
       const cites = ans.querySelector<HTMLElement>('[data-slot="cites"]');
       const prose = ans.querySelector<HTMLElement>('[data-slot="prose"]');
-      for (const cit of citations) {
+      citations.forEach((cit, i) => {
         // Build the <a> in JS (an <a> cannot live in the <template> — it would
         // leak out of it during HTML parsing). The inner content (icon + label +
         // title) is cloned from the inert <span> template, keeping copy out of JS.
         const row = document.createElement('a');
-        row.className = 'rc-cite__row';
+        row.className = 'rc-cite__row rc-in';
+        row.style.animationDelay = `${i * 70}ms`; // staggered reveal
         const inner = cloneTpl(tplCite);
         const title = inner.querySelector<HTMLElement>('[data-slot="title"]');
         if (title) title.textContent = cit.title;
         if (isSafeHref(cit.sourceUrl)) row.href = cit.sourceUrl; // allow-list (D5)
         row.append(inner);
         if (cites) cites.append(row);
-      }
+      });
       body.append(ans);
       ansEl = ans; // artifacts + later prose runs append here, after the citations
       proseEl = prose; // citations are in the DOM BEFORE any prose text
+      if (prose) md = new StreamingMarkdown(prose, mdOpts);
       scrollToEnd();
     };
 
@@ -224,13 +281,16 @@ const s = avatarStrings(lang);
       p.className = 'rc-ans__prose';
       ansEl.append(p);
       proseEl = p;
+      md = new StreamingMarkdown(p, mdOpts);
       return p;
     };
 
     const appendToken = (text: string) => {
       const prose = ensureProse();
       if (!prose) return; // defensive: a stray token before any sources frame
-      prose.append(document.createTextNode(text)); // text node — never a markup sink
+      // Render the streamed Markdown via the safe DOM renderer (never a markup sink);
+      // completed blocks animate in once, the live block grows in place.
+      md?.push(text);
       panel.dataset.state = 'answering';
       scrollToEnd();
     };
@@ -248,9 +308,10 @@ const s = avatarStrings(lang);
         }
       }
       const layersEl = fig.querySelector<HTMLElement>('[data-slot="layers"]');
-      for (const layer of d.layers) {
+      d.layers.forEach((layer, i) => {
         const row = document.createElement('div');
-        row.className = 'rc-adia__layer';
+        row.className = 'rc-adia__layer rc-in';
+        row.style.animationDelay = `${i * 90}ms`; // layers settle top-to-bottom
         const lbl = document.createElement('span');
         lbl.className = 'rc-adia__label';
         lbl.textContent = layer.label;
@@ -264,7 +325,7 @@ const s = avatarStrings(lang);
         }
         row.append(lbl, nodes);
         layersEl?.append(row);
-      }
+      });
       const prov = fig.querySelector<HTMLElement>('.rc-art__prov');
       const label = [d.title, d.caption, prov?.textContent ?? '']
         .filter(Boolean)
@@ -309,6 +370,7 @@ const s = avatarStrings(lang);
     const renderArtifact = (artifact: Artifact) => {
       if (!ansEl) return; // sources always precede artifacts; defensive otherwise
       proseEl = null; // an artifact closes the current prose run
+      md = null; // ...and ends its Markdown stream; the next token starts a fresh one
       const el =
         artifact.kind === 'diagram'
           ? renderDiagram(artifact)
@@ -349,6 +411,8 @@ const s = avatarStrings(lang);
     const ask = async (query: string) => {
       ansEl = null;
       proseEl = null;
+      md = null;
+      lastCitations = [];
       try {
         const res = await fetch('/api/avatar/query', {
           method: 'POST',
@@ -408,6 +472,36 @@ const s = avatarStrings(lang);
     });
     closeBtn.addEventListener('click', close);
     sendBtn.addEventListener('click', send);
+    fsBtn.addEventListener('click', () => {
+      setFullscreen(!fullscreen);
+      fsBtn.focus(); // the toggle persists in both states — keep focus on it
+    });
+    // The scrim only exists in full-screen; a click on it steps back to the docked
+    // panel (it does NOT close the panel — the lightbox-dismiss mental model).
+    scrim.addEventListener('click', exitFullscreen);
+
+    // Focus trap: while modal (full-screen), keep Tab within the panel so focus can
+    // never reach the page behind the scrim. Docked, the dialog is non-modal and Tab
+    // flows normally. Only visible, focusable controls participate.
+    panel.addEventListener('keydown', (e) => {
+      if (!fullscreen || e.key !== 'Tab') return;
+      const focusables = Array.from(
+        panel.querySelectorAll<HTMLElement>(
+          'a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => el.offsetParent !== null);
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
     // The composer is a div, not a <form> (avoids a duplicate landmark / the W-2
     // no-backend-form check on every page) — wire Enter explicitly.
     input.addEventListener('keydown', (e) => {
@@ -417,11 +511,16 @@ const s = avatarStrings(lang);
       }
     });
 
-    // No scrim (D3): close on Escape or a click outside the dock. The outside
-    // check is against `root` (the dock wrapping launcher + panel), NOT the
-    // panel — else the opening click on the sibling launcher self-closes it.
+    // Escape: in full-screen, step back to the docked panel first (one level at a
+    // time, like dismissing the gallery lightbox); otherwise close the panel. A
+    // click outside the dock closes it — the outside check is against `root` (the
+    // dock wrapping launcher + panel + scrim), NOT the panel, else the opening click
+    // on the sibling launcher self-closes it. In full-screen the scrim fills the
+    // viewport (and IS inside root), so its own handler governs the back-step.
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && isOpen()) close();
+      if (e.key !== 'Escape' || !isOpen()) return;
+      if (fullscreen) exitFullscreen();
+      else close();
     });
     document.addEventListener('click', (e) => {
       if (isOpen() && e.target instanceof Node && !root.contains(e.target))

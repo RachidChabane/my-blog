@@ -274,14 +274,13 @@
   color: var(--fg-subtle);
 }
 
-/* quiet icon button (close) */
+/* quiet icon buttons (full-screen toggle + close), grouped at the right */
 .rc-dock .rc-icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 30px;
   height: 30px;
-  margin-left: auto;
   border: 1px solid transparent;
   border-radius: var(--radius);
   background: transparent;
@@ -290,6 +289,12 @@
     background var(--dur-hover) var(--ease-soft),
     color var(--dur-hover) var(--ease-soft);
 }
+/* the first trailing control carries the auto margin; the head's gap spaces the
+   pair. (Generic .rc-icon-btn no longer claims margin-left:auto — with two controls
+   that would distribute the free space BETWEEN them instead of grouping them.) */
+.rc-dock .rc-ava__head .rc-icon-btn--fs {
+  margin-left: auto;
+}
 .rc-dock .rc-icon-btn:hover {
   background: var(--fill-subtle);
   color: var(--fg);
@@ -297,6 +302,14 @@
 .rc-dock .rc-icon-btn svg {
   width: 16px;
   height: 16px;
+}
+/* glyph swap: expand when docked, collapse in full-screen (one button, two icons) */
+.rc-dock .rc-icon-btn--fs .rc-fs-collapse,
+.rc-dock[data-fullscreen] .rc-icon-btn--fs .rc-fs-expand {
+  display: none;
+}
+.rc-dock[data-fullscreen] .rc-icon-btn--fs .rc-fs-collapse {
+  display: block;
 }
 
 .rc-dock .rc-ava__body {
@@ -609,12 +622,187 @@
   cursor: not-allowed;
 }
 
+/* ── Streamed Markdown prose. The prose run (.rc-ans__prose) hosts block children
+   built by the SAFE DOM renderer (src/lib/avatar/markdown.ts) — headings render as
+   bold paragraphs, never real <h*> (no document-outline pollution). Tokens only. ── */
+.rc-dock .rc-ans__prose > :first-child {
+  margin-top: 0;
+}
+.rc-dock .rc-ans__prose > :last-child {
+  margin-bottom: 0;
+}
+.rc-dock .rc-md-p {
+  margin: 0 0 8px;
+}
+.rc-dock .rc-md-h {
+  font-family: var(--font-body);
+  font-weight: 650;
+  color: var(--fg);
+}
+.rc-dock .rc-ans__prose strong {
+  font-weight: 650;
+  color: var(--fg);
+}
+.rc-dock .rc-ans__prose em {
+  font-style: italic;
+}
+.rc-dock .rc-md-list {
+  margin: 0 0 8px;
+  padding-left: 19px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.rc-dock .rc-md-list li {
+  line-height: 1.5;
+}
+.rc-dock .rc-md-quote {
+  margin: 0 0 8px;
+  padding: 2px 0 2px 11px;
+  border-left: 2px solid var(--border);
+  color: var(--fg-muted);
+}
+.rc-dock .rc-md-code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  border: 1px solid var(--border-subtle);
+}
+.rc-dock .rc-md-pre {
+  margin: 0 0 8px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  border-radius: 10px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.rc-dock .rc-md-pre code {
+  font-family: inherit;
+  white-space: pre;
+}
+.rc-dock .rc-md-link {
+  color: var(--accent-deep);
+  border-bottom: 1px solid var(--accent);
+  transition: color var(--dur-hover) var(--ease-soft);
+}
+.rc-dock .rc-md-link:hover {
+  color: var(--accent);
+}
+/* inline citation marker — a small mono superscript; CSS supplies the [brackets] so
+   the node text stays the bare number (the marker links to its source when safe). */
+.rc-dock .rc-md-cite {
+  font-family: var(--font-mono);
+  font-size: 0.72em;
+  font-weight: 600;
+  color: var(--accent-deep);
+  padding: 0 1px;
+}
+.rc-dock .rc-md-cite::before {
+  content: '[';
+}
+.rc-dock .rc-md-cite::after {
+  content: ']';
+}
+.rc-dock .rc-md-cite a {
+  color: inherit;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-hover) var(--ease-soft);
+}
+.rc-dock .rc-md-cite a:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* ── Progressive reveal. Injected elements (.rc-in) and streamed Markdown blocks
+   (.rc-md-in) fade+rise in ONCE. The resting state is fully visible — opacity:0
+   lives ONLY in the keyframe `from`, with `both` fill so a staggered item (inline
+   animation-delay) stays at `from` until its turn instead of flashing visible
+   first. Under reduced motion, tokens.css zeroes the DURATION; the rule below also
+   zeroes the DELAY (which it does not), so staggered items appear at once. ── */
+.rc-dock .rc-in,
+.rc-dock .rc-md-in {
+  animation: rc-in var(--dur-enter) var(--ease-out) both;
+}
+@keyframes rc-in {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Full-screen reading view — modeled on the project gallery's lightbox: a dimmed
+   scrim drops behind a large, centered reading surface. Toggled by [data-fullscreen]
+   on the dock; Escape / a scrim click step back to the docked panel. The scrim wash
+   is a token-derived color-mix (no literal) so it stays a consistent dark dim in
+   both themes. ── */
+.rc-dock[data-fullscreen] {
+  /* above masthead (20) + reading-progress (30); under the skip-link (100) */
+  z-index: 90;
+}
+.rc-dock .rc-scrim {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--slate-900) 62%, transparent);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: rc-scrim-in var(--dur-enter) var(--ease-out);
+}
+.rc-dock .rc-scrim[hidden] {
+  display: none;
+}
+@keyframes rc-scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* the corner launcher is redundant in full-screen — the panel owns the surface */
+.rc-dock[data-fullscreen] .rc-fab {
+  display: none;
+}
+.rc-dock[data-fullscreen] .rc-ava {
+  position: fixed;
+  inset: 0;
+  margin: auto; /* with a definite width+height, centers in the viewport */
+  width: min(980px, 94vw);
+  height: min(88vh, 900px);
+  max-height: none;
+  /* deliberately NO `animation` override here: toggling full-screen must not change
+     the panel's animation property, or reverting it would REPLAY the base open-rise
+     on collapse. The scrim's fade-in (rc-scrim-in) carries the entrance — the same
+     way the project gallery's lightbox appears with its backdrop. */
+}
+/* a comfortable centered reading column for the conversation + composer */
+.rc-dock[data-fullscreen] .rc-ava__body {
+  padding-inline: max(var(--sp-5), calc((100% - 720px) / 2));
+  padding-block: var(--sp-5);
+}
+.rc-dock[data-fullscreen] .rc-ava__input {
+  padding-inline: max(var(--sp-4), calc((100% - 720px) / 2));
+}
+
 /* reduced motion: mark animations off. The radial-depth look is encoded in the
    per-ring base opacity (not in the animation), so the static lattice keeps its
-   bright-core-to-faint-corner gradient with no motion. */
+   bright-core-to-faint-corner gradient with no motion. The reveal/scrim entrances
+   are duration-zeroed globally (tokens.css); we additionally zero the staggered
+   reveal DELAY so nothing lingers invisible for a reduced-motion visitor. */
 @media (prefers-reduced-motion: reduce) {
   .rc-dock .rc-mark,
   .rc-dock .rc-mark__node {
     animation: none !important;
+  }
+  .rc-dock .rc-in,
+  .rc-dock .rc-md-in {
+    animation-delay: 0ms !important;
   }
 }

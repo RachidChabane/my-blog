@@ -675,6 +675,8 @@ export interface AvatarStrings {
   open: string; // launcher aria fallback (= chrome.avatarAria)
   close: string; // close button aria-label
   send: string; // send button aria-label
+  expand: string; // enter full-screen view (button aria-label)
+  collapse: string; // leave full-screen view (button aria-label)
   error: string; // network-failure line (generic, localized, no internals)
 }
 
@@ -693,6 +695,8 @@ export const AVATAR: Record<Locale, AvatarStrings> = {
     open: 'Demander à l’agent',
     close: 'Fermer',
     send: 'Envoyer',
+    expand: 'Afficher en plein écran',
+    collapse: 'Quitter le plein écran',
     error: 'Une erreur est survenue. Réessayez.',
   },
   en: {
@@ -709,6 +713,8 @@ export const AVATAR: Record<Locale, AvatarStrings> = {
     open: 'Ask the agent',
     close: 'Close',
     send: 'Send',
+    expand: 'Show full screen',
+    collapse: 'Exit full screen',
     error: 'Something went wrong. Try again.',
   },
 };

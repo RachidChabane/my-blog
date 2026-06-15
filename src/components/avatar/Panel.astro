@@ -40,6 +40,52 @@ const { strings } = Astro.props;
       <span class="rc-ava__sub">{strings.subtitle}</span>
     </span>
     <button
+      class="rc-icon-btn rc-icon-btn--fs"
+      type="button"
+      data-avatar-fs
+      aria-label={strings.expand}
+      aria-pressed="false"
+      data-label-expand={strings.expand}
+      data-label-collapse={strings.collapse}
+    >
+      <!-- expand glyph (shown when docked): four corners pulling outward -->
+      <svg
+        class="rc-fs-expand"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M9 3H5a2 2 0 0 0-2 2v4"></path>
+        <path d="M15 3h4a2 2 0 0 1 2 2v4"></path>
+        <path d="M9 21H5a2 2 0 0 1-2-2v-4"></path>
+        <path d="M15 21h4a2 2 0 0 0 2-2v-4"></path>
+      </svg>
+      <!-- collapse glyph (shown in full screen): corners pulling inward -->
+      <svg
+        class="rc-fs-collapse"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M5 9h4a2 2 0 0 0 2-2V3"></path>
+        <path d="M19 9h-4a2 2 0 0 1-2-2V3"></path>
+        <path d="M5 15h4a2 2 0 0 1 2 2v4"></path>
+        <path d="M19 15h-4a2 2 0 0 0-2 2v4"></path>
+      </svg>
+    </button>
+    <button
       class="rc-icon-btn"
       type="button"
       data-avatar-close
@@ -105,11 +151,11 @@ const { strings } = Astro.props;
 
   <!-- copy-bearing templates cloned at runtime (COPY NEVER LIVES IN JS) -->
   <template data-tpl-user>
-    <div class="rc-bub rc-bub--me" data-slot="text"></div>
+    <div class="rc-bub rc-bub--me rc-in" data-slot="text"></div>
   </template>
 
   <template data-tpl-thinking>
-    <div class="rc-think-row" data-avatar-thinking>
+    <div class="rc-think-row rc-in" data-avatar-thinking>
       <span class="rc-mark is-thinking" aria-hidden="true">
         {Array.from({ length: 16 }).map(() => <b class="rc-mark__node" />)}
       </span>
@@ -156,7 +202,7 @@ const { strings } = Astro.props;
   </template>
 
   <template data-tpl-refuse>
-    <div class="rc-ans rc-ans--refuse">
+    <div class="rc-ans rc-ans--refuse rc-in">
       <span class="rc-refuse-tag">{strings.refuseTag}</span>
       <div class="rc-ans__prose" data-slot="prose"></div>
     </div>
@@ -168,7 +214,7 @@ const { strings } = Astro.props;
        (not every node). The provenance line keeps the synthesized nature explicit
        (a diagram carries no citations). -->
   <template data-tpl-diagram>
-    <figure class="rc-art rc-art--diagram" role="img">
+    <figure class="rc-art rc-art--diagram rc-in" role="img">
       <figcaption class="rc-art__title" data-slot="title" hidden></figcaption>
       <div class="rc-adia" data-slot="layers" aria-hidden="true"></div>
       <span class="rc-art__prov">{strings.diagramProv}</span>
@@ -179,7 +225,7 @@ const { strings } = Astro.props;
        fills the <code> via textContent and wires the copy button; the button's two
        labels live here (COPY NEVER LIVES IN JS). -->
   <template data-tpl-code>
-    <figure class="rc-art rc-art--code">
+    <figure class="rc-art rc-art--code rc-in">
       <div class="rc-art__bar">
         <span class="rc-art__lang" data-slot="lang"></span>
         <button
