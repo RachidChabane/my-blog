@@ -32,6 +32,7 @@ from pipeline.stages.draft import DraftDoc, validate_draft_pair, validate_draft_
 from pipeline.stages.humanize import (
     MAX_HUMANIZE_ROUNDS,
     find_emoji,
+    fr_diacritic_violations,
     house_style_violations,
     parse_style_findings,
     style_passes,
@@ -363,6 +364,19 @@ def test_draft_prompt_substrings():
         "## Quiz",
         "<details><summary>",
         "DIAGRAM",
+        # DOSSIER body constructs (the two-column documentation reading surface): the
+        # prompt must teach callouts, the verdict pair, GFM tables, and ## sections,
+        # plus the faithfulness guards (INFERRED is source-free; placement; parity).
+        "BODY CONSTRUCTS",
+        "table-of-contents rail",
+        "[!NOTE]",
+        "[!CAUTION]",
+        "VERDICT PAIR",
+        "[!CONFIRMED]",
+        "[!INFERRED]",
+        "SOURCE-FREE BY CONSTRUCTION",  # the INFERRED card carries no [sN]
+        "GFM table",
+        "NEVER opens the body",  # the dek-placement guard
     ]:
         assert needle in p, f"draft prompt missing {needle!r}"
     assert "Nine gates BLOCK this task" in p  # +difficulty-rating on top of the eight
@@ -402,8 +416,124 @@ def test_house_style_no_emoji_and_covers_rules():
     text = (_REPO_ROOT / "pipeline" / "house_style.md").read_text(encoding="utf-8")
     assert find_emoji(text) == []  # the guide self-passes the no-emoji scan
     low = text.lower()
-    for needle in ("no emoji", "d-007", "citation", "translationkey", "bilingual", "voice"):
+    for needle in (
+        "no emoji",
+        "d-007",
+        "citation",
+        "translationkey",
+        "bilingual",
+        "voice",
+        # the DOSSIER reading-surface constructs the draft prompt delegates here
+        "callout",
+        "verdict pair",
+        "[!confirmed]",
+        "[!inferred]",
+        "contents rail",
+    ):
         assert needle in low, f"house_style.md missing {needle!r}"
+
+
+# ---------------------------------------------------------------------------
+# DOSSIER body constructs survive the deterministic draft path unchanged.
+# The render contract (src/lib/remark-callouts.mjs + src/components/Prose.astro)
+# is GitHub-alert callouts, an adjacent CONFIRMED/INFERRED verdict pair, GFM
+# tables, and ## sections. None of the deterministic stages (draft validate, the
+# style/diacritic scans, the frontmatter split) may reject or mangle them; this
+# locks that in so a future scan tweak cannot silently break generated articles.
+# ---------------------------------------------------------------------------
+
+_CONSTRUCTS_EN = """\
+---
+lang: en
+translationKey: dossier-constructs-fixture
+slug: dossier-constructs-fixture
+title: Constructs survive the pipeline
+category: explainers
+difficulty: 3
+tags:
+  - rendering
+---
+
+A harness runs tool-use loops over a task suite [s1]. This is the take.
+
+## How it actually scores
+
+Benchmarks measure pass rate across multi-step tasks [s2].
+
+> [!NOTE]
+> Needle-in-a-haystack recall is not the same as agentic success.
+
+| Retriever | Catches | Misses |
+| --- | :---: | ---: |
+| Lexical | Exact ids | Paraphrases |
+| Vector | Paraphrases | Exact ids |
+
+> [!CONFIRMED]
+> The benchmark reports end-to-end completion, not per-step accuracy [s2].
+
+> [!INFERRED]
+> In my experience that gap is where most harnesses quietly fail.
+"""
+
+_CONSTRUCTS_FR = """\
+---
+lang: fr
+translationKey: dossier-constructs-fixture
+slug: les-constructs-survivent
+title: Les constructs survivent au pipeline
+category: explainers
+difficulty: 3
+tags:
+  - rendering
+---
+
+Un harnais exécute des boucles d'outils sur une suite de tâches [s1]. Voici la thèse.
+
+## Comment on le mesure vraiment
+
+Les benchmarks mesurent le taux de réussite sur des tâches multi-étapes [s2].
+
+> [!NOTE]
+> La recherche d'aiguille dans une botte de foin n'est pas la réussite agentique.
+
+| Récupérateur | Attrape | Manque |
+| --- | :---: | ---: |
+| Lexical | Identifiants exacts | Paraphrases |
+| Vectoriel | Paraphrases | Identifiants exacts |
+
+> [!CONFIRMED]
+> Le benchmark mesure l'achèvement de bout en bout, pas la précision par étape [s2].
+
+> [!INFERRED]
+> D'après mon expérience, c'est là que la plupart des harnais échouent.
+"""
+
+
+def test_dossier_constructs_pass_deterministic_scans():
+    # The lang-agnostic hard scans (no-emoji + no-em-dash) see nothing to flag in a
+    # body full of callouts, a verdict pair, and a GFM table; the FR-diacritic scan
+    # is clean because the construct bodies keep their accents (markers stay ASCII).
+    for text in (_CONSTRUCTS_EN, _CONSTRUCTS_FR):
+        assert house_style_violations(text) == []
+    assert fr_diacritic_violations(_CONSTRUCTS_FR) == []
+
+
+def test_dossier_constructs_parse_and_validate():
+    # The author-time self-gate accepts the pair (frontmatter + parity); it imposes no
+    # structural constraint on the body, so the constructs neither fail nor are required.
+    assert validate_draft_pair(_CONSTRUCTS_FR, _CONSTRUCTS_EN) == []
+
+
+def test_dossier_constructs_survive_frontmatter_split_verbatim():
+    # DraftDoc.parse strips only the leading fence; every construct must reach the body
+    # untouched (publish concatenates this body verbatim, so what parses here ships).
+    for text in (_CONSTRUCTS_EN, _CONSTRUCTS_FR):
+        body = DraftDoc.parse(text).body
+        for fragment in ("## ", "> [!NOTE]", "> [!CONFIRMED]", "> [!INFERRED]", ":---:"):
+            assert fragment in body, f"construct {fragment!r} lost in frontmatter split"
+    # Faithfulness contract: the INFERRED card is source-free (only CONFIRMED cites).
+    en_inferred = _CONSTRUCTS_EN.split("> [!INFERRED]", 1)[1]
+    assert "[s" not in en_inferred
 
 
 # ---------------------------------------------------------------------------

@@ -108,6 +108,32 @@ pass:
   against your take fairly, then refute it); concrete mechanisms, commands, and at
   least one named failure mode; every load-bearing number cited. Length must be EARNED
   by what the piece argues and demonstrates, never padded to a word count.
+- Reading-surface constructs. The published article renders as a two-column
+  documentation surface (a sticky contents rail beside the body), not a flat column.
+  Reach for a construct ONLY where the content earns it; never fabricate a callout, a
+  table row, or a verdict to look structured. Faithfulness outranks polish.
+  - `##` (depth-2) headings name the sections AND build the contents rail, so write
+    them as real section titles. A short briefing may have none and read as a single
+    column; that is fine.
+  - Callouts: a blockquote whose first line is a GitHub-alert marker alone, then the
+    body on the following `>` lines: `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`,
+    `> [!WARNING]`, `> [!CAUTION]`. Use one to lift a real caveat, pitfall, or
+    takeaway out of the prose. The markers stay in English in both languages (the
+    renderer keys on them); the body is written in the article's language.
+  - Verdict pair: a `> [!CONFIRMED]` blockquote immediately followed (one blank line)
+    by a `> [!INFERRED]` one renders as a side-by-side evidence-vs-inference card. The
+    CONFIRMED side states the sourced fact and carries its `[sN]`; the INFERRED side is
+    your judgment over already-cited facts, marked as your own (section 1), and is
+    source-free: no `[sN]`, and never a `claim_source_map` entry. Citing a source to
+    prop up an inference fails the grounding gate.
+  - Tables: a GFM table with an ASCII-hyphen alignment row (`---:` right, `:--:`
+    center, `:---`/`---` left) for a real multi-dimension comparison; not for a list
+    two sentences handle better.
+  - Placement and parity: the article's first block is always the lead paragraph (the
+    dek is derived from it), so a construct never opens the body. Inside a callout body
+    or table cell the house rules still hold: no em-dash, no emoji, and every French
+    construct keeps its accents. FR and EN author the same constructs, and any `[sN]` a
+    construct introduces must appear in both languages.
 
 ## 6. Bilingual parity (NFR-11, writing-flow section 6)
 

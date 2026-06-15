@@ -310,6 +310,24 @@ def test_check_grounding_dangling_citation():
     assert any("dangling citation [s9]" in p for p in problems)
 
 
+def test_check_grounding_ignores_dossier_markers():
+    # DOSSIER constructs must not perturb the gate: the citation regex keys on `[sN]`
+    # (s + digits), so the callout/verdict markers [!NOTE]/[!CONFIRMED]/[!INFERRED]
+    # never alias a source (no false dangling citation), and a [sN] carried INSIDE a
+    # callout or a table cell still counts as a real citation.
+    csm = _complete_map()
+    constructs = (
+        "\n\n## A vs B\n\n"
+        "> [!NOTE]\n> A caveat that cites nothing.\n\n"
+        "| Option | Catches | Misses |\n| --- | :---: | ---: |\n"
+        "| A | exact ids [s1] | paraphrases |\n\n"
+        "> [!CONFIRMED]\n> The benchmark reports completion [s2].\n\n"
+        "> [!INFERRED]\n> My read: the gap is where harnesses fail.\n"
+    )
+    body = _fixture_text("draft-en.valid.md") + constructs
+    assert check_grounding(csm, body, "en", FakeLinkChecker()) == []
+
+
 def _checker(route, **kw):
     opener = _RouteOpener(route)
     return HttpLinkChecker(opener=opener, **kw), opener
