@@ -27,6 +27,14 @@ citation. The pipeline extracts claims, retrieves candidate sources, and refuses
 publish until each claim maps to a passage that actually supports it, not merely a
 page that mentions the topic.
 
+> [!CAUTION]
+> A page that only mentions the topic is not support: each claim must map to a
+> passage that actually backs it.
+
 Tying the gate to evidence rather than tone is what makes it trustworthy. A draft
 that reads well but cites nothing is held back, and the failure report points at the
 exact unsupported sentence, so the fix is targeted instead of a full rewrite.
+
+> [!IMPORTANT]
+> Tie the gate to evidence rather than tone: a well-written draft that cites nothing
+> is held back, and the report points at the exact unsupported sentence.

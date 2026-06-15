@@ -27,6 +27,12 @@ before the next step runs. The agent still does the creative work, but the harne
 not the model, decides whether a step succeeded, so a wrong turn surfaces at the
 gate instead of three steps downstream.
 
+> [!IMPORTANT]
+> The harness, not the model, decides whether a step succeeded — so a wrong turn surfaces at the gate instead of three steps downstream.
+
 The payoff is debuggability: every run leaves an auditable trail of which check
 failed and why. Re-runs resume from the last green step rather than restarting,
 which keeps long tasks affordable and makes flaky behaviour reproducible.
+
+> [!TIP]
+> Have re-runs resume from the last green step rather than restarting: it keeps long tasks affordable and makes flaky behaviour reproducible.

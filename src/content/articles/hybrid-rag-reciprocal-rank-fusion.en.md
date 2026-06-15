@@ -27,6 +27,10 @@ document's rank, so a result that scores well in either retriever rises without 
 score normalization. The single `k` constant is far easier to reason about than a
 weighted blend of incomparable lexical and cosine scores.
 
+> [!TIP]
+> Tune one `k` constant instead of a weighted blend of incomparable lexical and
+> cosine scores.
+
 > Fusing two imperfect rankings beats over-optimizing a single one.
 
 ```python
@@ -44,3 +48,12 @@ def rrf(rankings, k=60):
 In practice the lexical arm catches exact identifiers and rare terms the embedding
 glosses over, while the vector arm recovers paraphrase. Fused, they cover each
 other's blind spots, a robust default before reaching for a trained reranker.
+
+| Retriever | Catches | Misses |
+| --- | --- | --- |
+| Lexical (BM25) | Exact identifiers and rare terms | Paraphrase |
+| Vector | Paraphrase | Exact identifiers and rare terms the embedding glosses over |
+
+> [!IMPORTANT]
+> Fused, the two arms cover each other's blind spots, a robust default before
+> reaching for a trained reranker.

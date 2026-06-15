@@ -27,7 +27,15 @@ cache grows with every concurrent request and every token of context, and it is
 usually the cache, not the parameters, that decides how many users a single GPU can
 hold.
 
+> [!IMPORTANT]
+> It is usually the KV cache, not the parameters, that decides how many users a
+> single GPU can hold.
+
 Continuous batching keeps the device busy by admitting new requests as old ones
 finish, which lifts throughput far above naive per-request serving. Sizing a
 deployment means budgeting cache against batch size and context length, then
 measuring tokens per second under a realistic mix rather than a single prompt.
+
+> [!TIP]
+> Measure tokens per second under a realistic mix of requests rather than a single
+> prompt.

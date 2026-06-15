@@ -26,7 +26,15 @@ vitesse, mais le coût varie selon la méthode. GPTQ et AWQ conservent l’essen
 la qualité d’un modèle en pleine précision à quatre bits, tandis que des schémas
 agressifs peuvent dégrader le raisonnement bien avant d’affecter la perplexité.
 
+> [!CAUTION]
+> La perplexité peut rester stable alors qu’un schéma agressif a déjà érodé le
+> raisonnement : un bon chiffre de perplexité ne prouve donc pas que le modèle est intact.
+
 La seule façon honnête de choisir, c’est de mesurer sur sa propre tâche, pas de
 croire un chiffre unique. On évalue le modèle quantifié sur un jeu réservé, on le
 compare à l’original, et on n’accepte les poids réduits que si l’écart reste dans un
 budget fixé à l’avance.
+
+> [!IMPORTANT]
+> Fixez le budget de qualité avant de mesurer, puis n’acceptez les poids réduits que
+> si l’écart avec l’original reste à l’intérieur de ce budget.

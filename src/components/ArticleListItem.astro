@@ -91,8 +91,9 @@ const starsAria = difficultyStrings(card.lang).aria.replace(
     display: inline-block;
   }
   .rc-stars {
-    letter-spacing: 0.12em;
-    font-size: 11px;
+    letter-spacing: 0.16em;
+    font-size: 12px;
+    color: var(--accent);
   }
   .rc-arow__title {
     grid-column: 1;
@@ -125,23 +126,25 @@ const starsAria = difficultyStrings(card.lang).aria.replace(
     margin-top: 6px;
     flex-wrap: wrap;
   }
+  /* hard mono "stamp" chips — letterpress index tags, not soft pills. */
   .rc-tag {
     display: inline-flex;
     align-items: center;
     font-family: var(--font-mono);
-    font-size: 12px;
-    padding: 4px 11px;
-    border-radius: var(--radius-pill);
-    background: var(--fill-subtle);
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 0;
+    background: var(--band);
     color: var(--fg-muted);
-    border: 1px solid var(--border-subtle);
+    border: 1px solid var(--border);
     transition:
       color var(--dur-hover) var(--ease-soft),
       border-color var(--dur-hover) var(--ease-soft);
   }
   .rc-tag:hover {
     color: var(--fg);
-    border-color: var(--border);
+    border-color: var(--accent);
   }
   .rc-arow__cta {
     grid-column: 2;
@@ -149,7 +152,7 @@ const starsAria = difficultyStrings(card.lang).aria.replace(
     align-self: center;
     font-family: var(--font-mono);
     font-size: 13px;
-    color: var(--accent);
+    color: var(--accent-text);
     white-space: nowrap;
   }
 </style>

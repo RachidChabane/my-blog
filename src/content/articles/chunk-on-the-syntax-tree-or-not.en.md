@@ -65,7 +65,16 @@ A structure-aware chunk is a self-contained, semantically coherent unit [s1], so
 
 The 2026 controlled study is what thins that story out. Holding the other variables fixed and varying one thing at a time, it finds that structure-aware and sliding-window chunking perform comparably, and that the dominant parameter is not the chunking rule at all. Doubling the cross-file context budget from 2,048 to 8,192 tokens buys up to 4.2 percentage points, while chunk size has a weaker, non-monotonic effect [s2]. Read those two numbers next to each other: the budget knob moves the score about as much as cAST's entire reported retrieval gain, and it is a knob you set in one line of config rather than a parser you maintain.
 
-The study does surface one robust negative rule, and it cuts against the folk advice rather than for it. Making the function your chunk unit is the single worst strategy in the comparison: function-boundary chunking underperforms all other strategies on RepoEval by 3.57 to 5.64 percentage points, at a Cliff's delta of -1.0, meaning every paired comparison ran the same direction, and it is never Pareto-optimal, while Sliding Window and cAST, which pack to a size or context budget, dominate the cost-quality front [s2]. The loser is one-function-per-chunk, the strategy that treats the function as the atomic retrieval unit. It is not a verdict against chunks that happen to contain a whole function. If respecting function boundaries were the winning rule, cAST should beat the boundary-agnostic sliding window, and the controlled study says it does not [s2].
+The study does surface one robust negative rule, and it cuts against the folk advice rather than for it. Making the function your chunk unit is the single worst strategy in the comparison: function-boundary chunking underperforms all other strategies on RepoEval by 3.57 to 5.64 percentage points, at a Cliff's delta of -1.0, meaning every paired comparison ran the same direction, and it is never Pareto-optimal, while Sliding Window and cAST, which pack to a size or context budget, dominate the cost-quality front [s2]. The loser is one-function-per-chunk, the strategy that treats the function as the atomic retrieval unit.
+
+| Chunking strategy | RepoEval standing | Cost-quality front |
+| :--- | ---: | :--: |
+| Function boundary | −3.57 to −5.64 pts vs all others | never Pareto-optimal |
+| Sliding Window | comparable to cAST | dominates |
+| cAST | comparable to sliding window | dominates |
+
+> [!CAUTION]
+> Do not make the function your chunk unit: it is the single worst strategy in the comparison, underperforming all others on RepoEval by 3.57 to 5.64 percentage points at a Cliff's delta of -1.0 [s2]. It is not a verdict against chunks that happen to contain a whole function. If respecting function boundaries were the winning rule, cAST should beat the boundary-agnostic sliding window, and the controlled study says it does not [s2].
 
 ## The lever most posts ignore
 
@@ -73,6 +82,9 @@ While the field argues about cut points, the embedding model sits off to the sid
 
 ## Calibrated verdict
 
-Structure helps, but by less than the cAST headline implies and more conditionally than most write-ups admit. The controlled study puts cross-file context length as the dominant parameter [s2], and switching the encoder is a 20% lever on retrieval quality [s4]. Both are one-line config changes and both move the score more reliably than the cut, so they get my tuning budget first. Keep an AST chunker if you have one: it matches sliding window and is never worse on these benchmarks [s2], and the syntactically-whole chunks make it easier to eyeball what the retriever returned. Just do not expect it to be where your gains come from.
+Structure helps, but by less than the cAST headline implies and more conditionally than most write-ups admit. The controlled study puts cross-file context length as the dominant parameter [s2], and switching the encoder is a 20% lever on retrieval quality [s4].
+
+> [!IMPORTANT]
+> Cross-file context length and the encoder are both one-line config changes that move the score more reliably than the cut, so they get the tuning budget first [s2][s4]. Both are one-line config changes and both move the score more reliably than the cut, so they get my tuning budget first. Keep an AST chunker if you have one: it matches sliding window and is never worse on these benchmarks [s2], and the syntactically-whole chunks make it easier to eyeball what the retriever returned. Just do not expect it to be where your gains come from.
 
 The one chunking rule I would hard-code is the negative one: do not make the function your chunk unit. It is the single strategy the controlled study ranks dead last on RepoEval, by 3.57 to 5.64 points, on every paired comparison [s2].

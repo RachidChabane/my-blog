@@ -6,15 +6,17 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const css = readFileSync(`${root}/src/styles/tokens.css`, 'utf8');
 
 describe('design tokens contract', () => {
-  it('renamed the accent scale --ember-* → --iris-* (no vestigial ember)', () => {
-    expect(css).not.toMatch(/--ember-/);
-    expect(css).toMatch(/--iris-600:\s*#5b4be0/i);
-    expect(css).toMatch(/--iris-400:\s*#7c6bff/i);
+  it('wires the accent scale to one warm Clay ink (DOSSIER)', () => {
+    // The overhaul replaces the vestigial iris-violet scale with a single warm
+    // Clay accent, tuned per theme (light = AA-small safe; dark = soft/bright).
+    expect(css).not.toMatch(/--iris-/);
+    expect(css).toMatch(/--clay-light:\s*#a8492a/i);
+    expect(css).toMatch(/--clay-dark:\s*#e2966a/i);
   });
 
-  it('wires --accent to the iris scale in both registers', () => {
-    expect(css).toMatch(/--accent:\s*var\(--iris-600\)/);
-    expect(css).toMatch(/--accent:\s*var\(--iris-400\)/);
+  it('wires --accent to Clay in both registers', () => {
+    expect(css).toMatch(/--accent:\s*var\(--clay-light\)/);
+    expect(css).toMatch(/--accent:\s*var\(--clay-dark\)/);
   });
 
   it('defines the core semantic tokens', () => {

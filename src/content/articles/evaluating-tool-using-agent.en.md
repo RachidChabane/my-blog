@@ -29,5 +29,19 @@ call that a win.
 
 A useful evaluation scores the trajectory, not just the destination: did it respect
 side-effect boundaries, recover from a failed tool call, and stay within budget?
+
+> [!IMPORTANT]
+> Score the trajectory, not just the destination. A binary pass/fail that ignores the
+> path will call a run a win even when the agent wrecked the state to get there.
+
+Each production failure the binary score hides maps to a trajectory check it should
+have run instead:
+
+| Failure the success rate hides | Trajectory check |
+| --- | :--: |
+| Deleting a file | Respected side-effect boundaries |
+| Leaving a half-applied migration | Recovered from a failed tool call |
+| Burning ten times the necessary tokens | Stayed within budget |
+
 Logging each step makes these checks possible and turns a vague regression into a
 specific, fixable one.

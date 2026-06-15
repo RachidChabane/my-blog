@@ -27,8 +27,16 @@ service, le cache clé-valeur grandit avec chaque requête simultanée et chaque
 de contexte : c’est souvent lui, pas les paramètres, qui décide du nombre
 d’utilisateurs qu’un seul GPU peut tenir.
 
+> [!IMPORTANT]
+> C’est souvent le cache clé-valeur, pas les paramètres, qui décide du nombre
+> d’utilisateurs qu’un seul GPU peut tenir.
+
 Le batching continu garde le matériel occupé en admettant de nouvelles requêtes à
 mesure que les anciennes se terminent, ce qui élève le débit bien au-dessus d’un
 service naïf requête par requête. Dimensionner un déploiement, c’est arbitrer le
 cache contre la taille de lot et la longueur de contexte, puis mesurer les tokens par
 seconde sous une charge réaliste.
+
+> [!TIP]
+> Mesurez les tokens par seconde sous une charge réaliste plutôt que sur un seul
+> prompt.

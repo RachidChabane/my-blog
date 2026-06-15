@@ -17,92 +17,117 @@ interface Props {
 const { sources, heading } = Astro.props;
 ---
 
-<section class="rc-sources" aria-label={heading}>
+<section class="rc-sources" id="sources" aria-label={heading}>
   <h2 class="rc-sources__h">{heading}</h2>
-  {
-    sources.map((s) => (
-      <div class="rc-source">
-        <span class="rc-source__n">{s.n}</span>
-        <div class="rc-source__main">
-          <div class="rc-source__title">
-            <a href={s.url} target="_blank" rel="noopener noreferrer">
-              {s.label}
-              <span class="rc-source__ext" aria-hidden="true">
-                ↗
-              </span>
-            </a>
+  <div class="rc-sources__grid">
+    {
+      sources.map((s) => (
+        <div class="rc-source">
+          <span class="rc-source__n">{s.n}</span>
+          <div class="rc-source__main">
+            <div class="rc-source__title">
+              <a href={s.url} target="_blank" rel="noopener noreferrer">
+                {s.label}
+              </a>
+            </div>
+            <div class="rc-source__meta">
+              <span>{s.date}</span>
+              {s.host && (
+                <>
+                  <span class="rc-meta__dot" />
+                  <span>{s.host}</span>
+                </>
+              )}
+            </div>
           </div>
-          <div class="rc-source__meta">
-            <span>{s.date}</span>
-            {s.host && (
-              <>
-                <span class="rc-meta__dot" />
-                <span>{s.host}</span>
-              </>
-            )}
-          </div>
+          <span class="rc-source__ext" aria-hidden="true">
+            ↗
+          </span>
         </div>
-      </div>
-    ))
-  }
+      ))
+    }
+  </div>
 </section>
 
 <style>
-  /* Ported from screens.css .rc-sources / .rc-source* — tokens only. */
+  /* DOSSIER sources — a section of soft cards, each a stretched-link to its source.
+     Tokens only. Class names preserved (e2e asserts .rc-sources / .rc-source /
+     .rc-source__title a). */
   .rc-sources {
-    margin-top: 56px;
-    padding-top: 30px;
-    border-top: 1px solid var(--hairline);
+    margin-top: 50px;
+    scroll-margin-top: 92px;
   }
   .rc-sources__h {
-    margin: 0 0 6px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--fg-subtle);
+    margin: 0 0 16px;
+    font-family: var(--font-display);
+    font-variation-settings:
+      'opsz' 40,
+      'wght' 540;
+    font-size: var(--text-h2);
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+    color: var(--fg);
+  }
+  .rc-sources__grid {
+    display: grid;
+    gap: 10px;
   }
   .rc-source {
+    position: relative;
     display: flex;
-    gap: 16px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--hairline);
-    align-items: baseline;
-    transition: padding var(--dur-hover) var(--ease-soft);
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition:
+      border-color var(--dur-hover) var(--ease-soft),
+      background var(--dur-hover) var(--ease-soft);
   }
   .rc-source:hover {
-    padding-left: 8px;
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    background: var(--accent-soft);
   }
   .rc-source__n {
     flex: none;
-    width: 22px;
+    width: 20px;
     font-family: var(--font-mono);
     font-size: 12px;
-    color: var(--fg-subtle);
+    color: var(--accent-text);
+    padding-top: 1px;
   }
   .rc-source__main {
     flex: 1;
+    min-width: 0;
   }
   .rc-source__title {
     font-family: var(--font-body);
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 550;
     line-height: 1.45;
     color: var(--fg);
   }
+  /* stretched link: the title <a> covers the whole card (whole-card click) while
+     the markup keeps the e2e-pinned `.rc-source__title a` shape. */
   .rc-source__title a {
     color: inherit;
-    border-bottom: 1px solid transparent;
-    transition: border-color var(--dur-hover) var(--ease-soft);
+    text-decoration: none;
   }
-  .rc-source:hover .rc-source__title a {
-    border-bottom-color: var(--accent);
-    color: var(--accent);
+  .rc-source__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
   }
   .rc-source__ext {
-    margin-left: 6px;
-    color: var(--accent);
-    font-size: 13px;
+    flex: none;
+    color: var(--fg-muted);
+    font-size: 14px;
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-source:hover .rc-source__ext {
+    color: var(--accent-text);
   }
   .rc-source__meta {
     margin-top: 5px;

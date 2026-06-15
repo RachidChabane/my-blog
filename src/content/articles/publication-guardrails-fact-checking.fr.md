@@ -27,6 +27,14 @@ exige une citation. Le pipeline extrait les affirmations, récupère des sources
 candidates et refuse de publier tant que chaque affirmation ne pointe pas vers un
 passage qui la soutient réellement, pas seulement une page qui évoque le sujet.
 
+> [!CAUTION]
+> Une page qui ne fait qu’évoquer le sujet ne constitue pas une preuve : chaque
+> affirmation doit pointer vers un passage qui la soutient réellement.
+
 Lier le contrôle à la preuve plutôt qu’au ton, c’est ce qui le rend fiable. Un
 brouillon bien tourné mais sans citation est retenu, et le rapport d’échec désigne la
 phrase non étayée : la correction est ciblée plutôt qu’une réécriture complète.
+
+> [!IMPORTANT]
+> Liez le contrôle à la preuve plutôt qu’au ton : un brouillon bien tourné mais sans
+> citation est retenu, et le rapport désigne la phrase exacte non étayée.

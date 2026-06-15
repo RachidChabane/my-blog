@@ -155,16 +155,19 @@ export function readingLabel(
   return `${readingTime(body, wpm)} min`;
 }
 
-/* ----------------------------------------------------- Difficulty (1-5 stars) */
+/* --------------------------------------------------- Difficulty (1-5 meter) */
 /**
- * Star string for the 1-5 difficulty rating (rubric: pipeline/difficulty_rubric.md).
- * U+2605/U+2606 are TEXT-presentation glyphs, not emoji (INV-9 safe — they don't
- * match \p{Emoji_Presentation}). Out-of-range input is clamped so a rogue value
- * can never render more than five stars. Always 5 glyphs → columns align.
+ * The PRESSWORK difficulty METER for the 1-5 rating (rubric:
+ * pipeline/difficulty_rubric.md). Full blocks (U+2588) = level, light shade
+ * blocks (U+2591) = remainder — a typeset gauge that reads in grayscale and via
+ * the companion aria-label, never on color alone. U+2588/U+2591 are box-drawing
+ * glyphs, not emoji (INV-9 safe — they don't match \p{Emoji_Presentation}).
+ * Out-of-range input is clamped. Always 5 glyphs → columns align.
+ * (Name kept as `difficultyStars` so every call site / import stays stable.)
  */
 export function difficultyStars(level: number): string {
   const n = Math.min(5, Math.max(1, Math.round(level)));
-  return '★'.repeat(n) + '☆'.repeat(5 - n);
+  return '█'.repeat(n) + '░'.repeat(5 - n);
 }
 
 /**

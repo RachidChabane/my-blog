@@ -73,7 +73,14 @@ The field data agrees, and it comes with a conflict of interest worth naming. Go
 
 ## The ceremony gets cheaper
 
-Now the other leg. Some of the canon was never structural economics; it was reading comfort, and reading comfort is exactly what a machine reader stops charging for. Peter Norvig pointed out decades ago that 16 of the 23 Gang of Four patterns are invisible or simpler once you have first-class types and functions [s5]. Much of that vocabulary was a way for a person to name a workaround, not a substrate-independent gain. The names keep losing value: the best models in one classification study reached only 38.81 percent accuracy at labeling patterns in source code [s6]. I will be honest that this cuts two ways, since it is at least as easily read as "models are bad at this task" as "the vocabulary carries no machine value," and I come back to that problem below. GitClear, a vendor selling code-quality analytics, shows the drift from another angle: cloned lines rose from 8.3 to 12.3 percent while the share of changed lines tied to refactoring fell from 25 percent in 2021 to under 10 percent in 2024 [s13]. Read carefully, that is repricing, not a sign flip. The reflex to de-duplicate every syntactic echo gets cheaper to skip; knowledge-level DRY, one fact living in one place, does not. The ceremony is worth less. It is not worthless.
+Now the other leg. Some of the canon was never structural economics; it was reading comfort, and reading comfort is exactly what a machine reader stops charging for. Peter Norvig pointed out decades ago that 16 of the 23 Gang of Four patterns are invisible or simpler once you have first-class types and functions [s5]. Much of that vocabulary was a way for a person to name a workaround, not a substrate-independent gain. The names keep losing value: the best models in one classification study reached only 38.81 percent accuracy at labeling patterns in source code [s6]. I will be honest that this cuts two ways, since it is at least as easily read as "models are bad at this task" as "the vocabulary carries no machine value," and I come back to that problem below. GitClear, a vendor selling code-quality analytics, shows the drift from another angle: cloned lines rose from 8.3 to 12.3 percent while the share of changed lines tied to refactoring fell from 25 percent in 2021 to under 10 percent in 2024 [s13].
+
+| GitClear signal [s13]          |   Earlier |     Later |
+| ------------------------------ | --------: | --------: |
+| Cloned lines                   |      8.3% |     12.3% |
+| Changed lines tied to refactoring | 25% (2021) | <10% (2024) |
+
+Read carefully, that is repricing, not a sign flip. The reflex to de-duplicate every syntactic echo gets cheaper to skip; knowledge-level DRY, one fact living in one place, does not. The ceremony is worth less. It is not worthless.
 
 ## The rare flip
 
@@ -87,6 +94,12 @@ Then comes the part with no human-era analog, because the new reader and the new
 
 Two slogans run loose and cannot both be fully true. "Code is disposable, regenerate it" and "invest more in AI-legible code" point in opposite directions. They reconcile only if you hold the two legs apart: the disposable claim, where it holds at all, holds for the cognitive surface, never for the structural core. And the disposable slogan is already losing on the evidence. A study of agent-authored code found, at the line level, a 15.8 percentage-point lower modification rate and a 16 percent lower hazard of modification [s11]. Agent code is not churning faster than human code. It persists. The thing the hype calls throwaway is, so far, stickier than what we wrote by hand.
 
+> [!CONFIRMED]
+> Measured: agent-authored code shows a 15.8 percentage-point lower modification rate and a 16 percent lower hazard of modification at the line level [s11]. It is not churning faster than human code.
+
+> [!INFERRED]
+> Read forward, that makes the throwaway-code slogan the loser so far, and agent code stickier than what we wrote by hand — a prediction that flips if its modification rate climbs above human code's.
+
 ## The honest preempt
 
 Here is the strongest attack on all of the above, and it is a good one. With four available fates, binds-harder, cheaper, inverted, new, and total freedom to draw the line between economic core and human ceremony wherever it suits, the frame can absorb any observation after the fact. A theory that can never be surprised predicts nothing. Worse, the best-sourced findings I cited all point one way. The rho=0.94 decay [s3], the robustness deficit [s4], the class-level gap [s7], the quality drop on larger problems [s12]: every one says structure matters more under AI, not less. That looks like proof that legibility and change-cost are still fused, which is the negation of the wedge.
@@ -94,6 +107,9 @@ Here is the strongest attack on all of the above, and it is a good one. With fou
 The attack lands against a loose version of the claim and misses the precise one, on two conditions I have to actually meet. First, membership in "split" is earned, not assigned: the two legs must be independently nameable and must receive opposite price moves. A frame with that bar cannot relabel a survival as "core" and a fade as "ceremony" at will. Second, the wedge does not separate legibility wholesale from change-cost. It separates human-cognitive legibility from structural change-cost. The s3, s4, s7, s12 cluster is not a counterexample; it is the binds-harder leg behaving exactly as predicted, because structural change-cost was never reading comfort in the first place. A human author merely served both at once. And the frame can be wrong: it loses if agent code becomes routinely disposable and its modification rate climbs above human code's. Today the data run the other way [s11]. That is a prediction you can hold me to.
 
 I am not the first to run this lens, and pretending otherwise would be the overclaim a careful reader catches. Dmytro Ustynov argued that the apparatus of software engineering was optimized around human cognition and decomposed SOLID along that line; Christina Lin sorted the design patterns by one classifying question; CGI's engineers made the economic-repricing case at the level of methodology. I claim only the narrow residual: one change-cost-versus-cognition question run across the whole technical canon, "splits" as a named mechanism with a falsifiable bar, and the wedge as its cause. One thing stays stubbornly human. When the problem gets larger and more complex, AI tools generate lower-quality solutions, which keeps problem decomposition and integration on the architect's desk [s12]. The machine writes the parts. You still cut the joints.
+
+> [!IMPORTANT]
+> One thing stays stubbornly human: as problems grow larger and more complex, AI tools generate lower-quality solutions, so decomposition and integration stay on the architect's desk [s12]. The machine writes the parts; you still cut the joints.
 
 ## The bet I will stand behind
 

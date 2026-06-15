@@ -175,23 +175,23 @@ describe('readingTime / readingLabel', () => {
   });
 });
 
-/* ------------------------------------------- 4b. difficulty stars */
+/* ------------------------------------------- 4b. difficulty meter */
 describe('difficultyStars', () => {
-  it('renders n filled + (5-n) outline stars, always 5 glyphs', () => {
-    expect(difficultyStars(1)).toBe('★☆☆☆☆');
-    expect(difficultyStars(3)).toBe('★★★☆☆');
-    expect(difficultyStars(5)).toBe('★★★★★');
+  it('renders n filled + (5-n) shade blocks, always 5 glyphs', () => {
+    expect(difficultyStars(1)).toBe('█░░░░');
+    expect(difficultyStars(3)).toBe('███░░');
+    expect(difficultyStars(5)).toBe('█████');
     for (let n = 1; n <= 5; n++) {
       expect([...difficultyStars(n)]).toHaveLength(5);
     }
   });
 
   it('clamps out-of-range input instead of mis-rendering', () => {
-    expect(difficultyStars(0)).toBe('★☆☆☆☆');
-    expect(difficultyStars(9)).toBe('★★★★★');
+    expect(difficultyStars(0)).toBe('█░░░░');
+    expect(difficultyStars(9)).toBe('█████');
   });
 
-  it('uses text-presentation glyphs, not emoji (INV-9)', () => {
+  it('uses box-drawing glyphs, not emoji (INV-9)', () => {
     expect(/\p{Emoji_Presentation}/u.test(difficultyStars(5))).toBe(false);
   });
 });

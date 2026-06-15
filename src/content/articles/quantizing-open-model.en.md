@@ -26,7 +26,15 @@ uniform across methods. GPTQ and AWQ keep most of the quality of a full-precisio
 model at four bits, while aggressive schemes can quietly degrade reasoning long
 before they touch perplexity.
 
+> [!CAUTION]
+> Perplexity can stay flat while an aggressive scheme has already eroded reasoning,
+> so a clean perplexity number is not proof the model is intact.
+
 The honest way to choose is to measure on your own task, not to trust a single
 headline number. Run the quantized model against a held-out set, compare it to the
 original, and accept the smaller weights only when the gap stays inside a budget you
 set in advance.
+
+> [!IMPORTANT]
+> Set the quality budget before you measure, then accept the smaller weights only
+> when the gap to the original stays inside it.

@@ -40,9 +40,19 @@ publishState: published
 
 La longueur de contexte affichée sur la fiche technique d'un modèle est un plafond marketing, pas un budget opérationnel ; je dimensionne donc un prompt pour ce que le modèle sait réellement exploiter, non pour ce que le cache me permet désormais d'envoyer à moindre frais. La précision s'effondre bien avant que la fenêtre soit pleine : sur NoLiMa, GPT-4o passe d'une référence de 99,3 % en contexte court à 69,7 % à 32K, et 11 modèles tombent sous la moitié de leur score court à cette longueur [s1] ; sur RULER, seuls quatre modèles tiennent une performance satisfaisante aux 32K qu'ils revendiquent tous [s2]. Le plafond vend le modèle ; le budget construit le système.
 
+> [!NOTE]
+> Un bon score d'aiguille dans une botte de foin ne contredit pas ce constat. Ces tests plantent des chaînes exactes dans du remplissage ; la dégradation n'apparaît que lorsque la recherche exige de l'*inférence* plutôt qu'une correspondance littérale.
+
 ## Les preuves côté précision
 
 Le chiffre qui compte n'est pas la taille de la fenêtre, mais l'ampleur de la chute de précision avant qu'on l'atteigne. NoLiMa rend la coupure nette en testant une recherche qui exige de l'inférence plutôt qu'une correspondance littérale de chaîne : GPT-4o, l'un des modèles les plus solides, descend d'une référence quasi parfaite de 99,3 % à 69,7 % à 32K, et 11 modèles passent sous la moitié de leur référence courte à cette même longueur [s1]. RULER raconte la même histoire sous un autre angle. Chaque modèle testé revendique une fenêtre de 32K ou plus, or seuls quatre d'entre eux (GPT-4, Command-R, Yi-34B et Mixtral) y maintiennent une performance satisfaisante [s2].
+
+| Benchmark · modèle        | Résultat à 32K        | Verdict       |
+| ------------------------- | --------------------: | :-----------: |
+| NoLiMa · GPT-4o           | 99,3 % → 69,7 %       | ✕ se dégrade  |
+| NoLiMa · 11 des N testés  | sous 50 % du score court | ✕ se dégrade |
+| RULER · GPT-4             | satisfaisant          | ✓ tient       |
+| RULER · Command-R         | satisfaisant          | ✓ tient       |
 
 La position ajoute une seconde pénalité à celle de la longueur. Lost in the Middle a observé qu'un modèle exploite le mieux une information placée au début ou à la fin du prompt, et nettement moins bien lorsque le fait pertinent est enfoui au milieu, même pour les modèles conçus explicitement pour le long contexte [s3]. Voilà le mode de défaillance à surveiller : le même fait, déplacé du bord vers le centre d'un long prompt, devient celui qu'on exploite le plus mal.
 
@@ -55,5 +65,11 @@ L'incitation va exactement à l'encontre de ces preuves. Le cache de prompt réd
 ## Le revers
 
 Des tokens bon marché ne sont pas des tokens utiles. Le cache change ce que coûte un long prompt ; il ne change rien à ce que le modèle en fait une fois les tokens arrivés, et l'argument de précision tient même si le cache n'existait pas. L'objection la plus solide mérite une vraie réponse, car les modèles de pointe revendiquent aujourd'hui des fenêtres de 200K à 1M et affichent des scores long-contexte quasi parfaits. Le piège est dans ce que ces scores mesurent : il s'agit massivement de recherche d'aiguille dans une botte de foin, des chaînes exactes plantées dans du remplissage. Un bon score d'aiguille à 1M est compatible avec cette thèse, et non une réfutation, car la dégradation n'apparaît qu'une fois que la recherche exige de l'inférence plutôt qu'une correspondance littérale [s1]. La fenêtre plus large creuse l'écart entre le plafond et le budget exploitable, sauf si l'on démontre qu'un modèle tient la recherche par inférence à cette longueur.
+
+> [!CONFIRMED]
+> Sur NoLiMa, RULER, Lost in the Middle et Context Rot, la précision sur la recherche par inférence se dégrade bien avant que la fenêtre affichée soit pleine — sur les modèles de pointe actuels, pas sur ceux qui sont retirés [s1][s2][s3][s4].
+
+> [!INFERRED]
+> La *taille* exacte de l'écart plafond-budget à 1M de tokens. Les preuves soutiennent la direction, pas une valeur à l'échelle de la frontière ; je ne mettrai donc pas de chiffre dessus.
 
 Je ne mettrai pas de chiffre sur cet écart pour un modèle à 1M de tokens, car les preuves ne soutiennent aucune valeur à l'échelle de la frontière ; la thèse est directionnelle, pas une magnitude. Ce que je dirai d'expérience, c'est la règle opérationnelle : budgétez le contexte exploitable, pas le contexte abordable. Mesurez ce qu'un modèle donné exploite réellement sur de la recherche par inférence à votre longueur cible, traitez la fenêtre affichée comme un plafond dur dont vous vous approchez rarement, et dépensez les économies du cache à envoyer les bons tokens plutôt qu'à en envoyer davantage.

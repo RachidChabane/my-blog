@@ -27,6 +27,10 @@ du rang de chaque document : un résultat bien placé dans l’un ou l’autre r
 remonte, sans normaliser les scores. L’unique constante `k` est bien plus simple à
 raisonner qu’un mélange pondéré de scores lexicaux et cosinus incomparables.
 
+> [!TIP]
+> Réglez une seule constante `k` au lieu d’un mélange pondéré de scores lexicaux et
+> cosinus incomparables.
+
 > Fusionner deux classements imparfaits vaut mieux que sur-optimiser un seul.
 
 ```python
@@ -45,3 +49,12 @@ En pratique, le bras lexical attrape les identifiants exacts et les termes rares
 le plongement survole, tandis que le bras vectoriel récupère les paraphrases.
 Fusionnés, ils couvrent leurs angles morts respectifs, un défaut robuste avant de
 sortir un reranker entraîné.
+
+| Récupérateur | Attrape | Manque |
+| --- | --- | --- |
+| Lexical (BM25) | Identifiants exacts et termes rares | Paraphrases |
+| Vectoriel | Paraphrases | Identifiants exacts et termes rares que le plongement survole |
+
+> [!IMPORTANT]
+> Fusionnés, les deux bras couvrent leurs angles morts respectifs, un défaut robuste
+> avant de sortir un reranker entraîné.

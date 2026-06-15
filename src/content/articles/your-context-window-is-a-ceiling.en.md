@@ -40,9 +40,19 @@ publishState: published
 
 The context length printed on a model's spec sheet is a marketing ceiling, not an operating budget, so I size a prompt for what the model can actually use, not for what caching now lets me cheaply afford to send. Accuracy collapses well before the window fills [s1][s2]. The ceiling sells the model; the budget builds the system.
 
+> [!NOTE]
+> A high needle-in-a-haystack score is not evidence against this. Those tests plant exact strings in filler; degradation shows up only when retrieval needs *inference* rather than a literal match.
+
 ## The accuracy evidence
 
 The number that matters is not the window size, it is how far accuracy has already slid by the time you reach it. NoLiMa makes the cut clean by testing retrieval that needs inference rather than literal string matching: GPT-4o, one of the strongest models, drops from an almost-perfect 99.3% to 69.7% at 32K, and 11 models fall below half their short-length baseline at that same length [s1]. RULER tells the same story from a different angle. Every model it tests claims a window of 32K or more, yet only four (GPT-4, Command-R, Yi-34B, and Mixtral) actually hold satisfactory performance there [s2].
+
+| Benchmark · model      | Result at 32K        | Verdict      |
+| ---------------------- | -------------------: | :----------: |
+| NoLiMa · GPT-4o        | 99.3% → 69.7%        | ✕ degrades   |
+| NoLiMa · 11 of N tested | below 50% of baseline | ✕ degrades  |
+| RULER · GPT-4          | satisfactory         | ✓ holds      |
+| RULER · Command-R      | satisfactory         | ✓ holds      |
 
 Position adds a second penalty on top of length. Lost in the Middle found that a model uses information best when it sits at the beginning or end of the prompt and significantly worse when the relevant fact is buried in the middle, even for models built explicitly for long context [s3]. That is the named failure mode to watch: the same fact, moved from the edge to the center of a long prompt, gets used worst.
 
@@ -55,5 +65,11 @@ The incentive runs exactly opposite to that evidence. Prompt caching cuts cost b
 ## The sting
 
 Cheap tokens are not useful tokens. Caching changes what a long prompt costs; it changes nothing about what the model does with the tokens once they arrive, and the accuracy argument stands even if caching did not exist. The steelman deserves a real answer, though, because frontier models now advertise 200K to 1M windows and post near-perfect long-context scores. The catch is what those scores measure: they are overwhelmingly needle-in-a-haystack retrieval, exact strings planted in filler. A high needle score at 1M is consistent with this thesis, not a refutation of it, because the degradation only shows up once retrieval needs inference rather than a literal match [s1]. The bigger window widens the gap between the ceiling and the usable budget unless a model is shown to hold inference-style retrieval at that length.
+
+> [!CONFIRMED]
+> Across NoLiMa, RULER, Lost in the Middle, and Context Rot, accuracy on inference-style retrieval degrades well before the advertised window fills — on current frontier models, not retired ones [s1][s2][s3][s4].
+
+> [!INFERRED]
+> The exact *size* of the ceiling-to-budget gap at 1M tokens. The evidence supports the direction, not a frontier-scale figure, so I will not put a number on it.
 
 I am not going to put a number on that gap for a 1M-token model, because the evidence does not support a frontier-scale figure; the claim is directional, not a magnitude. What I will say from experience is the operating rule: budget for usable context, not affordable context. Measure what a given model demonstrably uses on inference-style retrieval at your target length, treat the advertised window as a hard ceiling you rarely approach, and spend the caching savings on sending the right tokens rather than more of them.

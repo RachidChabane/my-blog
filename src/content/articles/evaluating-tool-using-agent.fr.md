@@ -29,5 +29,21 @@ score binaire réussite/échec appellera cela une victoire.
 
 Une évaluation utile note la trajectoire, pas seulement la destination : a-t-il
 respecté les limites d’effets de bord, récupéré après un appel d’outil raté et tenu
-son budget ? Journaliser chaque étape rend ces contrôles possibles et transforme une
-régression floue en une régression précise et corrigeable.
+son budget ?
+
+> [!IMPORTANT]
+> Notez la trajectoire, pas seulement la destination. Un score binaire réussite/échec
+> qui ignore le chemin appellera une exécution une victoire même si l’agent a saccagé
+> l’état pour y parvenir.
+
+Chaque échec en production que le score binaire masque correspond à un contrôle de
+trajectoire qu’il aurait dû effectuer à la place :
+
+| Échec masqué par le taux de réussite | Contrôle de trajectoire |
+| --- | :--: |
+| Supprimer un fichier | Limites d’effets de bord respectées |
+| Laisser une migration à moitié appliquée | Récupération après un appel d’outil raté |
+| Brûler dix fois les tokens nécessaires | Budget tenu |
+
+Journaliser chaque étape rend ces contrôles possibles et transforme une régression
+floue en une régression précise et corrigeable.

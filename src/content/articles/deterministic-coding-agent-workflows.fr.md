@@ -27,7 +27,13 @@ doit passer avant l’étape suivante. L’agent fait toujours le travail créat
 c’est le harnais, pas le modèle, qui décide si une étape a réussi : une erreur
 apparaît au point de contrôle plutôt que trois étapes plus loin.
 
+> [!IMPORTANT]
+> C’est le harnais, pas le modèle, qui décide si une étape a réussi — ainsi une erreur apparaît au point de contrôle plutôt que trois étapes plus loin.
+
 Le bénéfice, c’est la traçabilité : chaque exécution laisse une trace auditable de
 la vérification qui a échoué et pourquoi. Les reprises repartent de la dernière
 étape validée au lieu de tout recommencer, ce qui garde les tâches longues
 abordables.
+
+> [!TIP]
+> Faites repartir les reprises de la dernière étape validée plutôt que de tout recommencer : cela garde les tâches longues abordables.

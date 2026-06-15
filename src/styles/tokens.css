@@ -1,9 +1,15 @@
 /* ============================================================================
-   rachidchabane — Design tokens (PINNED CONTRACT)
-   src/styles/tokens.css · ported from design/.../colors_and_type.css
-   Cool-gray neutral base, a single electric-violet accent ("Iris").
-   Light ("paper") is the default; [data-theme="dark"] overrides.
+   rachidchabane — Design tokens · "DOSSIER"
+   src/styles/tokens.css
+   Articles are documents, not flat columns: a sticky contents rail + a content
+   canvas built from soft, rounded cards (numbered sections, comparison grids,
+   verdict pairs, a glossary panel, source cards). Color is restrained and
+   semantic — one warm CLAY accent for structure/emphasis; Slate/Pine/Amber/
+   Crimson carry note/ok/warning/caution as soft tinted cards. A warm-neutral
+   paper in light, warm graphite in dark — both first-class.
    Do NOT hard-code colors/fonts/spacing in components — reference these vars.
+   AA: --accent is tuned for SMALL text in both themes; --accent-strong is the
+   slightly hotter ink for large display (section numerals, the title).
    ============================================================================ */
 
 /* ---- Self-hosted variable fonts (served from public/fonts/) -------------- */
@@ -47,45 +53,51 @@
 
 /* 1. PRIMITIVES — raw values. Reference the semantic tokens below, not these. */
 :root {
-  /* Cool-gray neutrals — LIGHT ("paper") */
+  /* Warm-neutral paper — LIGHT */
   --paper-0: #ffffff;
-  --paper-50: #fafafb;
-  --paper-100: #f1f1f4;
-  --paper-200: #e6e7ec;
-  --paper-300: #d5d6de;
+  --paper-50: #f6f4ef; /* page */
+  --paper-100: #efece4; /* sunken / subtle fill */
+  --paper-150: #eae6dc; /* band — quiet plane (code, zebra) */
+  --paper-card: #fffdf9; /* raised card */
+  --paper-border: #e3ddd0; /* card / hairline border */
+  --paper-border-2: #ece7db; /* subtle border */
 
-  /* Cool charcoal neutrals — DARK */
-  --graphite-900: #090a0d;
-  --graphite-850: #0e0f13;
-  --graphite-800: #16181f;
-  --graphite-700: #1c1e27;
-  --graphite-600: #232530;
-  --graphite-400: #6a6d7c;
+  /* Warm graphite — DARK */
+  --slate-900: #100f0c; /* sunken */
+  --slate-850: #15140f; /* page */
+  --slate-800: #1c1a15; /* card / surface */
+  --slate-780: #211e18; /* surface-2 */
+  --slate-band: #221f18; /* band */
+  --slate-border: #302c24; /* card border */
+  --slate-border-2: #262219; /* subtle border */
 
-  /* Cool ink (text) */
-  --ink-900: #16171c;
-  --ink-600: #5b5d6a;
-  --ink-400: #8b8d9a;
-  --cream-100: #e8e8ec;
-  --cream-300: #9a9ca8;
+  /* Ink */
+  --ink-900: #221f1b; /* primary ink — ~13.7:1 on paper */
+  --ink-600: #6a6357; /* muted — ~5.3:1 */
+  --ink-400: #8a8273; /* subtle */
+  --cream-100: #ece9e2; /* primary on dark */
+  --cream-300: #9d9588; /* muted on dark */
+  --cream-500: #837b6d; /* subtle on dark */
 
-  /* Iris accent scale (electric indigo-violet) — the SINGLE accent.
-     Renamed from the vestigial warm-amber autogen scale; values unchanged. */
-  --iris-700: #3e2fb8;
-  --iris-600: #5b4be0;
-  --iris-500: #6b5bee;
-  --iris-400: #7c6bff;
-  --iris-300: #9484ff;
-  --iris-200: #b3a9ff;
-  --iris-tint-l: #eceafd;
+  /* CLAY — the one warm accent (refined terracotta, not neon). */
+  --clay-light: #a8492a; /* AA small on paper (~5.1:1) — default accent */
+  --clay-light-strong: #bc4e25; /* large display */
+  --clay-light-deep: #893a20; /* hover / active */
+  --clay-light-tint: #f4e7df; /* soft wash */
+  --clay-dark: #e2966a; /* AA on graphite (~7.8:1) */
+  --clay-dark-strong: #ec9f70;
+  --clay-dark-deep: #cf8256;
+  --clay-dark-tint: rgba(226, 150, 106, 0.14);
 
-  /* Muted functional states — secondary to the accent */
-  --success-l: #2e9e6a;
-  --success-d: #46be87;
-  --warning-l: #b08527;
-  --warning-d: #d2a53c;
-  --error-l: #c2473d;
-  --error-d: #e4685c;
+  /* Semantic structuring hues — note/ok/warning/caution. Per-theme tuned. */
+  --hue-note-l: #2f5ea6; /* NOTE / INFO */
+  --hue-tip-l: #1f7a4d; /* TIP / CONFIRMED */
+  --hue-warn-l: #8a5a00; /* WARNING */
+  --hue-caution-l: #b3261e; /* CAUTION / INFERRED */
+  --hue-note-d: #84acea;
+  --hue-tip-d: #54c48c;
+  --hue-warn-d: #e0a23c;
+  --hue-caution-d: #f0685c;
 }
 
 /* 2. SEMANTIC TOKENS — reference these in components. Light is default. */
@@ -95,74 +107,102 @@
 
   --bg: var(--paper-50);
   --bg-sunken: var(--paper-100);
-  --surface: var(--paper-0);
-  --surface-2: #ffffff;
+  --surface: var(--paper-card);
+  --surface-2: var(--paper-0);
   --fill-subtle: var(--paper-100);
+  --band: var(--paper-150);
 
   --fg: var(--ink-900);
   --fg-muted: var(--ink-600);
   --fg-subtle: var(--ink-400);
-  --fg-on-accent: #ffffff;
+  --fg-on-accent: #fffaf5;
 
-  --border: var(--paper-300);
-  --border-subtle: var(--paper-200);
-  --hairline: #ecedf1;
+  --border: var(--paper-border);
+  --border-subtle: var(--paper-border-2);
+  --hairline: #ece7dc;
+  --rule: #d8d1c2; /* a calm structural rule (not heavy ink) */
 
-  --accent: var(--iris-600);
-  --accent-strong: var(--iris-700);
-  --accent-deep: var(--iris-700);
-  --accent-soft: var(--iris-tint-l);
-  --accent-ring: rgba(91, 75, 224, 0.3);
+  --accent: var(--clay-light);
+  --accent-strong: var(--clay-light-strong);
+  --accent-deep: var(--clay-light-deep);
+  --accent-text: var(--clay-light);
+  --accent-soft: var(--clay-light-tint);
+  --accent-ring: rgba(168, 73, 42, 0.28);
 
-  --success: var(--success-l);
-  --warning: var(--warning-l);
-  --error: var(--error-l);
+  /* callout / verdict hues + their soft tint backgrounds */
+  --cl-note: var(--hue-note-l);
+  --cl-tip: var(--hue-tip-l);
+  --cl-warn: var(--hue-warn-l);
+  --cl-caution: var(--hue-caution-l);
+  --cl-important: var(--clay-light);
+  --cl-note-soft: #eaf0fa;
+  --cl-tip-soft: #e6f3ec;
+  --cl-warn-soft: #f6eed8;
+  --cl-caution-soft: #f9e7e5;
+  --cl-important-soft: var(--clay-light-tint);
 
-  --shadow-xs: 0 1px 1px rgba(18, 19, 34, 0.05);
+  --success: var(--hue-tip-l);
+  --warning: var(--hue-warn-l);
+  --error: var(--hue-caution-l);
+
+  --shadow-xs: 0 1px 1px rgba(34, 31, 27, 0.05);
   --shadow-sm:
-    0 1px 2px rgba(18, 19, 34, 0.06), 0 1px 3px rgba(18, 19, 34, 0.06);
+    0 1px 2px rgba(34, 31, 27, 0.06), 0 1px 3px rgba(34, 31, 27, 0.06);
   --shadow-md:
-    0 2px 4px rgba(18, 19, 34, 0.05), 0 6px 16px rgba(18, 19, 34, 0.08);
+    0 2px 4px rgba(34, 31, 27, 0.05), 0 8px 24px rgba(34, 31, 27, 0.08);
   --shadow-lg:
-    0 12px 32px rgba(18, 19, 34, 0.12), 0 4px 8px rgba(18, 19, 34, 0.06);
+    0 16px 40px rgba(34, 31, 27, 0.12), 0 4px 10px rgba(34, 31, 27, 0.07);
 }
 
 [data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: var(--graphite-850);
-  --bg-sunken: var(--graphite-900);
-  --surface: var(--graphite-800);
-  --surface-2: #1b1d26;
-  --fill-subtle: var(--graphite-700);
+  --bg: var(--slate-850);
+  --bg-sunken: var(--slate-900);
+  --surface: var(--slate-800);
+  --surface-2: var(--slate-780);
+  --fill-subtle: var(--slate-border-2);
+  --band: var(--slate-band);
 
   --fg: var(--cream-100);
   --fg-muted: var(--cream-300);
-  --fg-subtle: var(--graphite-400);
-  --fg-on-accent: #ffffff;
+  --fg-subtle: var(--cream-500);
+  --fg-on-accent: #1c130d;
 
-  --border: var(--graphite-600);
-  --border-subtle: var(--graphite-700);
-  --hairline: #1a1c24;
+  --border: var(--slate-border);
+  --border-subtle: var(--slate-border-2);
+  --hairline: #262218;
+  --rule: #322d24;
 
-  --accent: var(--iris-400);
-  --accent-strong: var(--iris-300);
-  --accent-deep: var(--iris-500);
-  --accent-soft: rgba(124, 107, 255, 0.15);
-  --accent-ring: rgba(124, 107, 255, 0.36);
+  --accent: var(--clay-dark);
+  --accent-strong: var(--clay-dark-strong);
+  --accent-deep: var(--clay-dark-deep);
+  --accent-text: var(--clay-dark);
+  --accent-soft: var(--clay-dark-tint);
+  --accent-ring: rgba(226, 150, 106, 0.36);
 
-  --success: var(--success-d);
-  --warning: var(--warning-d);
-  --error: var(--error-d);
+  --cl-note: var(--hue-note-d);
+  --cl-tip: var(--hue-tip-d);
+  --cl-warn: var(--hue-warn-d);
+  --cl-caution: var(--hue-caution-d);
+  --cl-important: var(--clay-dark);
+  --cl-note-soft: rgba(132, 172, 234, 0.12);
+  --cl-tip-soft: rgba(84, 196, 140, 0.12);
+  --cl-warn-soft: rgba(224, 162, 60, 0.12);
+  --cl-caution-soft: rgba(240, 104, 92, 0.12);
+  --cl-important-soft: var(--clay-dark-tint);
 
-  --shadow-xs: 0 1px 1px rgba(0, 0, 0, 0.34);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.38), 0 1px 3px rgba(0, 0, 0, 0.34);
-  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.44);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.54), 0 4px 10px rgba(0, 0, 0, 0.4);
+  --success: var(--hue-tip-d);
+  --warning: var(--hue-warn-d);
+  --error: var(--hue-caution-d);
+
+  --shadow-xs: 0 1px 1px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.44), 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.46), 0 10px 26px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.46);
 }
 
-/* 3. TYPE — families, fluid scale, variation presets.
-   (The .t-* role classes that consume these live in global.css.) */
+/* 3. TYPE — families, fluid scale, variation presets. */
 :root {
   --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
   --font-body:
@@ -172,13 +212,14 @@
   --fraunces-display: 'opsz' 132, 'wght' 460, 'SOFT' 0, 'WONK' 0;
   --fraunces-head: 'opsz' 72, 'wght' 480, 'SOFT' 0, 'WONK' 0;
   --fraunces-sub: 'opsz' 36, 'wght' 460;
+  --fraunces-title: 'opsz' 144, 'wght' 560, 'SOFT' 0, 'WONK' 0;
 
   --text-display: clamp(2.75rem, 1.6rem + 4.6vw, 4.5rem);
-  --text-h1: clamp(2.1rem, 1.5rem + 2.4vw, 3rem);
-  --text-h2: clamp(1.6rem, 1.25rem + 1.4vw, 2.1rem);
-  --text-h3: 1.375rem;
+  --text-h1: clamp(2rem, 1.45rem + 2.3vw, 3rem);
+  --text-h2: clamp(1.45rem, 1.2rem + 1vw, 1.85rem);
+  --text-h3: 1.3rem;
   --text-h4: 1.125rem;
-  --text-body-lg: 1.1875rem;
+  --text-body-lg: 1.0625rem;
   --text-body: 1rem;
   --text-sm: 0.875rem;
   --text-meta: 0.8125rem;
@@ -186,15 +227,15 @@
 
   --leading-tight: 1.12;
   --leading-snug: 1.3;
-  --leading-body: 1.65;
-  --leading-loose: 1.78;
+  --leading-body: 1.6;
+  --leading-loose: 1.72;
 
   --tracking-tight: -0.02em;
   --tracking-normal: 0;
-  --tracking-eyebrow: 0.12em;
+  --tracking-eyebrow: 0.14em;
 }
 
-/* 4. SPACE · RADIUS · MOTION */
+/* 4. SPACE · RADIUS · MOTION — soft, modern rounded cards. */
 :root {
   --sp-1: 4px;
   --sp-2: 8px;
@@ -207,12 +248,12 @@
   --sp-9: 96px;
   --sp-10: 128px;
 
-  --radius-sm: 5px;
-  --radius: 8px;
+  --radius-sm: 6px;
+  --radius: 10px;
   --radius-lg: 14px;
   --radius-pill: 999px;
 
-  --measure: 68ch;
+  --measure: 70ch;
   --measure-wide: 100ch;
 
   --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);

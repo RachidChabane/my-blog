@@ -65,7 +65,16 @@ Un chunk sensible à la structure est une unité autonome et sémantiquement coh
 
 L'étude contrôlée de 2026 est ce qui délite ce récit. En fixant les autres variables et en n'en faisant varier qu'une à la fois, elle constate que le découpage structurel et la fenêtre glissante se valent, et que le paramètre dominant n'est pas du tout la règle de découpage. Doubler le budget de contexte inter-fichiers de 2 048 à 8 192 jetons apporte jusqu'à 4,2 points de pourcentage, tandis que la taille de chunk a un effet plus faible et non monotone [s2]. Mettez ces deux nombres côte à côte : le réglage du budget fait bouger le score d'autant que tout le gain de récupération annoncé par cAST, et c'est un réglage qui tient en une ligne de configuration plutôt qu'un analyseur à maintenir.
 
-L'étude dégage tout de même un résultat négatif solide, et il va à rebours de la sagesse populaire. Prendre la fonction comme unité de chunk est la pire stratégie de la comparaison : le découpage sur les frontières de fonction est moins performant que toutes les autres stratégies sur RepoEval, de 3,57 à 5,64 points de pourcentage, avec un delta de Cliff de -1,0, c'est-à-dire que chaque comparaison appariée va dans le même sens, et il n'est jamais Pareto-optimal, alors que la fenêtre glissante et cAST, qui empaquettent jusqu'à une taille ou un budget de contexte, dominent le front coût-qualité [s2]. Le perdant, c'est une-fonction-par-chunk, la stratégie qui traite la fonction comme l'unité atomique de récupération. Ce n'est pas un verdict contre les chunks qui contiennent par hasard une fonction entière. Or si respecter les frontières de fonction était la bonne règle, cAST devrait battre la fenêtre glissante qui les ignore, et l'étude contrôlée dit qu'il ne le fait pas [s2].
+L'étude dégage tout de même un résultat négatif solide, et il va à rebours de la sagesse populaire. Prendre la fonction comme unité de chunk est la pire stratégie de la comparaison : le découpage sur les frontières de fonction est moins performant que toutes les autres stratégies sur RepoEval, de 3,57 à 5,64 points de pourcentage, avec un delta de Cliff de -1,0, c'est-à-dire que chaque comparaison appariée va dans le même sens, et il n'est jamais Pareto-optimal, alors que la fenêtre glissante et cAST, qui empaquettent jusqu'à une taille ou un budget de contexte, dominent le front coût-qualité [s2]. Le perdant, c'est une-fonction-par-chunk, la stratégie qui traite la fonction comme l'unité atomique de récupération.
+
+| Stratégie de découpage | Rang sur RepoEval | Front coût-qualité |
+| :--- | ---: | :--: |
+| Frontière de fonction | −3,57 à −5,64 pts vs les autres | jamais Pareto-optimal |
+| Fenêtre glissante | comparable à cAST | domine |
+| cAST | comparable à la fenêtre glissante | domine |
+
+> [!CAUTION]
+> Ne faites pas de la fonction votre unité de chunk : c'est la pire stratégie de la comparaison, moins performante que toutes les autres sur RepoEval de 3,57 à 5,64 points de pourcentage, avec un delta de Cliff de -1,0 [s2]. Ce n'est pas un verdict contre les chunks qui contiennent par hasard une fonction entière. Or si respecter les frontières de fonction était la bonne règle, cAST devrait battre la fenêtre glissante qui les ignore, et l'étude contrôlée dit qu'il ne le fait pas [s2].
 
 ## Le levier que la plupart des billets ignorent
 
@@ -73,6 +82,9 @@ Pendant que le domaine débat des points de coupe, on règle rarement le modèle
 
 ## Verdict calibré
 
-La structure aide, mais moins que le chiffre vedette de cAST ne le laisse croire, et plus conditionnellement que la plupart des billets l'admettent. L'étude contrôlée place la longueur de contexte inter-fichiers comme le paramètre dominant [s2], et changer d'encodeur représente un levier de 20 % sur la qualité de récupération [s4]. Les deux tiennent en une ligne de configuration et font bouger le score plus sûrement que la coupe ; c'est là que va mon budget de réglage en premier. Gardez un découpeur AST si vous en avez un : il égale la fenêtre glissante et ne fait jamais pire sur ces benchmarks [s2], et ses chunks syntaxiquement entiers facilitent l'inspection de ce que le récupérateur a remonté. N'en attendez simplement pas vos gains.
+La structure aide, mais moins que le chiffre vedette de cAST ne le laisse croire, et plus conditionnellement que la plupart des billets l'admettent. L'étude contrôlée place la longueur de contexte inter-fichiers comme le paramètre dominant [s2], et changer d'encodeur représente un levier de 20 % sur la qualité de récupération [s4].
+
+> [!IMPORTANT]
+> La longueur de contexte inter-fichiers et l'encodeur tiennent tous deux en une ligne de configuration et font bouger le score plus sûrement que la coupe ; c'est là que va le budget de réglage en premier [s2][s4]. Les deux tiennent en une ligne de configuration et font bouger le score plus sûrement que la coupe ; c'est là que va mon budget de réglage en premier. Gardez un découpeur AST si vous en avez un : il égale la fenêtre glissante et ne fait jamais pire sur ces benchmarks [s2], et ses chunks syntaxiquement entiers facilitent l'inspection de ce que le récupérateur a remonté. N'en attendez simplement pas vos gains.
 
 La seule règle que je coderais en dur est négative : ne faites pas de la fonction votre unité de chunk. C'est la seule stratégie que l'étude contrôlée classe bonne dernière sur RepoEval, de 3,57 à 5,64 points, sur chaque comparaison appariée [s2].
