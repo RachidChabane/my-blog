@@ -20,23 +20,24 @@ contentHash: 'seed-serving-oss-llm-production-cost-fr'
 publishState: published
 ---
 
-vLLM, batching continu, KV-cache : où part vraiment la VRAM.
+vLLM, batching continu, cache KV : où part vraiment la VRAM.
 
-Les poids du modèle ne sont qu’une partie de la facture mémoire. Au moment du
-service, le cache clé-valeur grandit avec chaque requête simultanée et chaque token
-de contexte : c’est souvent lui, pas les paramètres, qui décide du nombre
-d’utilisateurs qu’un seul GPU peut tenir.
+Les poids du modèle ne représentent qu'une partie de la facture mémoire. Au moment du
+service, le cache KV grossit à chaque requête concurrente et à chaque token de
+contexte ; c'est souvent lui, et non les paramètres, qui détermine le nombre
+d'utilisateurs simultanés qu'un seul GPU peut servir.
 
 > [!IMPORTANT]
-> C’est souvent le cache clé-valeur, pas les paramètres, qui décide du nombre
-> d’utilisateurs qu’un seul GPU peut tenir.
+> C'est souvent le cache KV, et non les paramètres, qui détermine le nombre
+> d'utilisateurs simultanés qu'un seul GPU peut servir.
 
-Le batching continu garde le matériel occupé en admettant de nouvelles requêtes à
-mesure que les anciennes se terminent, ce qui élève le débit bien au-dessus d’un
-service naïf requête par requête. Dimensionner un déploiement, c’est arbitrer le
-cache contre la taille de lot et la longueur de contexte, puis mesurer les tokens par
-seconde sous une charge réaliste.
+Le batching continu maintient le GPU pleinement occupé en admettant de nouvelles
+requêtes au fur et à mesure que les anciennes s'achèvent, ce qui fait grimper le débit
+bien au-delà d'un traitement séquentiel, requête par requête. Dimensionner un
+déploiement revient à arbitrer entre le cache, la taille de lot et la longueur de
+contexte, puis à mesurer les tokens par seconde sur un échantillon de requêtes
+réaliste plutôt que sur un seul prompt.
 
 > [!TIP]
-> Mesurez les tokens par seconde sous une charge réaliste plutôt que sur un seul
-> prompt.
+> Mesurez les tokens par seconde sur un échantillon de requêtes réaliste plutôt que
+> sur un seul prompt.

@@ -67,7 +67,7 @@ L'incitation va exactement à l'encontre de ces preuves. Le cache de prompt réd
 Des tokens bon marché ne sont pas des tokens utiles. Le cache change ce que coûte un long prompt ; il ne change rien à ce que le modèle en fait une fois les tokens arrivés, et l'argument de précision tient même si le cache n'existait pas. L'objection la plus solide mérite une vraie réponse, car les modèles de pointe revendiquent aujourd'hui des fenêtres de 200K à 1M et affichent des scores long-contexte quasi parfaits. Le piège est dans ce que ces scores mesurent : il s'agit massivement de recherche d'aiguille dans une botte de foin, des chaînes exactes plantées dans du remplissage. Un bon score d'aiguille à 1M est compatible avec cette thèse, et non une réfutation, car la dégradation n'apparaît qu'une fois que la recherche exige de l'inférence plutôt qu'une correspondance littérale [s1]. La fenêtre plus large creuse l'écart entre le plafond et le budget exploitable, sauf si l'on démontre qu'un modèle tient la recherche par inférence à cette longueur.
 
 > [!CONFIRMED]
-> Sur NoLiMa, RULER, Lost in the Middle et Context Rot, la précision sur la recherche par inférence se dégrade bien avant que la fenêtre affichée soit pleine — sur les modèles de pointe actuels, pas sur ceux qui sont retirés [s1][s2][s3][s4].
+> Sur NoLiMa, RULER, Lost in the Middle et Context Rot, la précision sur la recherche par inférence se dégrade bien avant que la fenêtre affichée soit pleine, et ce sur les modèles de pointe actuels, pas sur ceux qui sont retirés [s1][s2][s3][s4].
 
 > [!INFERRED]
 > La *taille* exacte de l'écart plafond-budget à 1M de tokens. Les preuves soutiennent la direction, pas une valeur à l'échelle de la frontière ; je ne mettrai donc pas de chiffre dessus.

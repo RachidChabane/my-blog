@@ -20,20 +20,14 @@ contentHash: 'seed-deterministic-agent-workflows-fr'
 publishState: published
 ---
 
-Découper une tâche d’ingénierie en étapes vérifiables, et laisser l’agent échouer tôt plutôt que tard.
+Découper une tâche d'ingénierie en étapes vérifiables, et laisser l'agent échouer tôt plutôt que tard.
 
-Un workflow déterministe nomme chaque étape, ses entrées et une vérification qui
-doit passer avant l’étape suivante. L’agent fait toujours le travail créatif, mais
-c’est le harnais, pas le modèle, qui décide si une étape a réussi : une erreur
-apparaît au point de contrôle plutôt que trois étapes plus loin.
+Un workflow déterministe nomme chaque étape, ses entrées et une vérification qui doit passer avant de lancer la suivante. L'agent assure toujours le travail créatif, mais c'est le harnais, pas le modèle, qui décide si une étape a réussi : un écart de trajectoire est détecté au point de contrôle plutôt que trois étapes plus loin.
 
 > [!IMPORTANT]
-> C’est le harnais, pas le modèle, qui décide si une étape a réussi — ainsi une erreur apparaît au point de contrôle plutôt que trois étapes plus loin.
+> C'est le harnais, pas le modèle, qui décide si une étape a réussi : ainsi un écart de trajectoire est détecté au point de contrôle plutôt que trois étapes plus loin.
 
-Le bénéfice, c’est la traçabilité : chaque exécution laisse une trace auditable de
-la vérification qui a échoué et pourquoi. Les reprises repartent de la dernière
-étape validée au lieu de tout recommencer, ce qui garde les tâches longues
-abordables.
+Le gain, c'est la facilité de débogage : chaque exécution laisse une trace auditable de la vérification qui a échoué, et de la raison. Les relances reprennent à la dernière étape au vert plutôt que de tout réexécuter, ce qui maintient le coût des tâches longues sous contrôle et rend les comportements instables (flaky) reproductibles.
 
 > [!TIP]
-> Faites repartir les reprises de la dernière étape validée plutôt que de tout recommencer : cela garde les tâches longues abordables.
+> Faites reprendre les relances à la dernière étape au vert plutôt que de tout réexécuter : cela maîtrise le coût des tâches longues et rend les comportements instables reproductibles.

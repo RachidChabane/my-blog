@@ -20,30 +20,23 @@ contentHash: 'seed-evaluating-tool-using-agents-fr'
 publishState: published
 ---
 
-Un agent qui réussit la tâche mais saccage l’état n’a pas réussi.
+Un agent qui mène la tâche à bien mais corrompt l’état n’a rien réussi du tout.
 
-Le taux de réussite seul masque les échecs qui comptent le plus en production. Un
-agent peut renvoyer la bonne réponse tout en supprimant un fichier, en laissant une
-migration à moitié appliquée ou en brûlant dix fois les tokens nécessaires, et un
-score binaire réussite/échec appellera cela une victoire.
+Le taux de réussite, pris isolément, masque justement les échecs qui pèsent le plus en production. Un agent peut renvoyer la bonne réponse tout en supprimant un fichier, en laissant une migration à moitié appliquée ou en consommant dix fois plus de tokens que nécessaire : un score binaire réussite/échec y verra pourtant une réussite.
 
-Une évaluation utile note la trajectoire, pas seulement la destination : a-t-il
-respecté les limites d’effets de bord, récupéré après un appel d’outil raté et tenu
-son budget ?
+Une évaluation digne de ce nom note la trajectoire, et pas seulement la destination : l’agent a-t-il contenu ses effets de bord, su récupérer après un appel d’outil échoué et respecté son budget ?
 
 > [!IMPORTANT]
-> Notez la trajectoire, pas seulement la destination. Un score binaire réussite/échec
-> qui ignore le chemin appellera une exécution une victoire même si l’agent a saccagé
-> l’état pour y parvenir.
+> Notez la trajectoire, et pas seulement la destination. Un score binaire réussite/échec
+> qui fait abstraction du chemin parcouru verra une réussite dans une exécution où l’agent
+> a pourtant corrompu l’état pour y parvenir.
 
-Chaque échec en production que le score binaire masque correspond à un contrôle de
-trajectoire qu’il aurait dû effectuer à la place :
+À chaque échec de production que le score binaire passe sous silence correspond un contrôle de trajectoire qui aurait dû être effectué :
 
 | Échec masqué par le taux de réussite | Contrôle de trajectoire |
 | --- | :--: |
-| Supprimer un fichier | Limites d’effets de bord respectées |
-| Laisser une migration à moitié appliquée | Récupération après un appel d’outil raté |
-| Brûler dix fois les tokens nécessaires | Budget tenu |
+| Supprimer un fichier | Effets de bord contenus |
+| Laisser une migration à moitié appliquée | Récupération après un appel d’outil échoué |
+| Consommer dix fois plus de tokens que nécessaire | Budget respecté |
 
-Journaliser chaque étape rend ces contrôles possibles et transforme une régression
-floue en une régression précise et corrigeable.
+Journaliser chaque étape rend ces contrôles possibles et transforme une régression floue en un problème précis et réparable.
