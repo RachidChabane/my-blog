@@ -44,13 +44,34 @@ export const getStaticPaths = (async () => {
 const { lang, graph } = Astro.props;
 const s = graphStrings(lang as Locale);
 const title = `${s.title} · rachid chabane`;
+// Atlas ledger — a live stat strip read off the assembled graph.
+const newCount = graph.nodes.filter((n) => n.isNew).length;
+const graphStats = [
+  { value: String(graph.nodes.length), label: s.statConcepts },
+  { value: String(graph.edges.length), label: s.statLinks },
+  { value: String(newCount), label: s.legendNew },
+];
 ---
 
 <Base title={title} description={s.metaDesc} lang={lang as Locale}>
   <section class="rc-graphpage rc-enter">
-    <span class="rc-graphpage__eyebrow t-eyebrow">{s.eyebrow}</span>
-    <h1 class="rc-graphpage__title">{s.title}</h1>
-    <p class="rc-graphpage__intro">{s.intro}</p>
+    <div class="rc-graphpage__head">
+      <div class="rc-graphpage__intro-col">
+        <span class="rc-graphpage__eyebrow t-eyebrow">{s.eyebrow}</span>
+        <h1 class="rc-graphpage__title">{s.title}</h1>
+        <p class="rc-graphpage__intro">{s.intro}</p>
+      </div>
+      <dl class="rc-graphpage__stats">
+        {
+          graphStats.map((st) => (
+            <div class="rc-graphpage__stat">
+              <dt class="rc-graphpage__stat-v">{st.value}</dt>
+              <dd class="rc-graphpage__stat-l">{st.label}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
     <KnowledgeGraph graph={graph} strings={s} />
   </section>
 </Base>
@@ -70,12 +91,25 @@ const title = `${s.title} · rachid chabane`;
       padding-right: 22px;
     }
   }
+  .rc-graphpage__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px 40px;
+    margin-bottom: 26px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .rc-graphpage__intro-col {
+    min-width: 0;
+  }
   .rc-graphpage__eyebrow {
     font-family: var(--font-mono);
     font-size: var(--text-meta);
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--accent-text);
   }
   .rc-graphpage__title {
     margin: 12px 0 10px;
@@ -87,10 +121,36 @@ const title = `${s.title} · rachid chabane`;
     color: var(--fg);
   }
   .rc-graphpage__intro {
-    margin: 0 0 26px;
+    margin: 0;
     font-size: 15px;
     line-height: 1.6;
     color: var(--fg-muted);
-    max-width: 64ch;
+    max-width: 60ch;
+  }
+  /* atlas ledger — mono stat strip beside the masthead */
+  .rc-graphpage__stats {
+    margin: 0;
+    display: flex;
+    gap: 32px;
+  }
+  .rc-graphpage__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .rc-graphpage__stat-v {
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: 26px;
+    line-height: 1;
+    color: var(--fg);
+  }
+  .rc-graphpage__stat-l {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
   }
 </style>

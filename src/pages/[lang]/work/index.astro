@@ -32,6 +32,9 @@ export const getStaticPaths = (async () => {
     const published = getPublishedProjects(projects, lang);
     // The flagship (curated PROJECT_ORDER[0]) renders as the wide, enriched feature
     // card; the rest stay uniform. Splitting here keeps the route declarative.
+    const liveCount = published
+      .map((e) => toProjectCard(e, lang))
+      .filter((c) => c.isLive).length;
     return {
       params: { lang },
       props: {
@@ -39,26 +42,46 @@ export const getStaticPaths = (async () => {
         featured:
           published.length > 0 ? toProjectFeature(published[0], lang) : null,
         cards: published.slice(1).map((e) => toProjectCard(e, lang)),
+        total: published.length,
+        liveCount,
       },
     };
   });
 }) satisfies GetStaticPaths;
 
-const { lang, featured, cards } = Astro.props as {
+const { lang, featured, cards, total, liveCount } = Astro.props as {
   lang: Locale;
   featured: ProjectCardVM | null;
   cards: ProjectCardVM[];
+  total: number;
+  liveCount: number;
 };
 const s = portfolioIndexStrings(lang);
 const title = `${s.title} · rachid chabane`;
+// Portfolio ledger — the documentation-register opener (computed off the collection).
+const workStats = [
+  { value: String(total), label: s.title },
+  { value: String(liveCount), label: s.statLive },
+  { value: 'FR · EN', label: s.statBilingual },
+];
 ---
 
 <Base title={title} lang={lang}>
   <div class="rc-work rc-enter">
     <header class="rc-pagehd">
-      <span class="t-eyebrow">{s.eyebrow}</span>
+      <span class="rc-pagehd__eyebrow t-eyebrow">{s.eyebrow}</span>
       <h1 class="rc-pagehd__title">{s.title}</h1>
       <span class="rc-pagehd__meta">{s.meta}</span>
+      <dl class="rc-workstats">
+        {
+          workStats.map((st) => (
+            <div class="rc-workstat">
+              <dt class="rc-workstat__v">{st.value}</dt>
+              <dd class="rc-workstat__l">{st.label}</dd>
+            </div>
+          ))
+        }
+      </dl>
     </header>
 
     {
@@ -118,6 +141,9 @@ const title = `${s.title} · rachid chabane`;
     flex-direction: column;
     gap: 12px;
   }
+  .rc-pagehd__eyebrow {
+    color: var(--accent-text);
+  }
   .rc-pagehd__title {
     margin: 0;
     font-family: var(--font-display);
@@ -132,6 +158,36 @@ const title = `${s.title} · rachid chabane`;
     font-size: 13px;
     letter-spacing: 0.04em;
     color: var(--fg-subtle);
+  }
+
+  /* portfolio ledger — a mono stat strip, the documentation-register opener */
+  .rc-workstats {
+    margin: 14px 0 0;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+  .rc-workstat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .rc-workstat__v {
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: 28px;
+    line-height: 1;
+    color: var(--fg);
+  }
+  .rc-workstat__l {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
   }
 
   /* Uniform card grid (screens.css .rc-projgrid). */

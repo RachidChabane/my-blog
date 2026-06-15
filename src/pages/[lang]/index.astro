@@ -29,6 +29,7 @@ import {
   teaserProjects,
   toArticleCard,
   toProjectCard,
+  toProjectFeature,
 } from '@/lib/content';
 import type { ArticleCard, ProjectCardVM } from '@/lib/content';
 import Base from '@/layouts/Base.astro';
@@ -43,28 +44,47 @@ export const getStaticPaths = (async () => {
     getCollection('tags'),
   ]);
   const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
-  return LOCALES.map((lang) => ({
-    params: { lang },
-    props: {
-      lang,
-      latest: latestArticles(articles, lang).map((e) =>
-        toArticleCard(e, lang, tags)
-      ),
-      teaser: teaserProjects(projects, lang).map((e) => toProjectCard(e, lang)),
-    },
-  }));
+  return LOCALES.map((lang) => {
+    const teaserEntries = teaserProjects(projects, lang);
+    return {
+      params: { lang },
+      props: {
+        lang,
+        latest: latestArticles(articles, lang).map((e) =>
+          toArticleCard(e, lang, tags)
+        ),
+        // the curated flagship (teaser[0]) becomes the wide feature card.
+        teaser: teaserEntries.map((e, i) =>
+          i === 0 ? toProjectFeature(e, lang) : toProjectCard(e, lang)
+        ),
+        // totals for the hero ledger (full published lists, not the capped slices).
+        articleCount: latestArticles(articles, lang, Infinity).length,
+        projectCount: teaserProjects(projects, lang, Infinity).length,
+      },
+    };
+  });
 }) satisfies GetStaticPaths;
 
-const { lang, latest, teaser } = Astro.props as {
+const { lang, latest, teaser, articleCount, projectCount } = Astro.props as {
   lang: Locale;
   latest: ArticleCard[];
   teaser: ProjectCardVM[];
+  articleCount: number;
+  projectCount: number;
 };
 const h = homeStrings(lang);
 const ai = articleIndexStrings(lang); // ai.readCta — reused for the article rows
 const pi = portfolioIndexStrings(lang); // pi.ordinalWord / pi.viewCta — reused for the cards
 const blogHref = localePath(lang, 'blog');
 const workHref = localePath(lang, 'work');
+
+// The hero's autonomous ledger: a living stat strip read off the content.
+const heroStats = [
+  { value: String(articleCount), label: h.statWritings },
+  { value: String(projectCount), label: h.projectsTitle },
+  { value: 'FR · EN', label: h.statLanguages },
+  { value: latest[0]?.dateDisplay ?? '', label: h.updatedLabel },
+];
 ---
 
 <Base title={h.metaTitle} description={h.heroSub} lang={lang}>
@@ -75,13 +95,22 @@ const workHref = localePath(lang, 'work');
       sub={h.heroSub}
       ctaLabel={h.heroCta}
       ctaHref={blogHref}
+      ctaAltLabel={h.heroCtaAlt}
+      ctaAltHref={workHref}
+      systemLabel={h.systemLabel}
+      stats={heroStats}
     />
 
     {
       latest.length > 0 && (
         <section class="rc-block">
           <div class="rc-block__head" data-reveal>
-            <h2 class="rc-block__title">{h.latestTitle}</h2>
+            <div class="rc-block__lead">
+              <span class="rc-block__n" aria-hidden="true">
+                01
+              </span>
+              <h2 class="rc-block__title">{h.latestTitle}</h2>
+            </div>
             <a class="rc-teaser-all" href={blogHref}>
               {h.latestAll} →
             </a>
@@ -99,7 +128,12 @@ const workHref = localePath(lang, 'work');
       teaser.length > 0 && (
         <section class="rc-block">
           <div class="rc-block__head" data-reveal>
-            <h2 class="rc-block__title">{h.projectsTitle}</h2>
+            <div class="rc-block__lead">
+              <span class="rc-block__n" aria-hidden="true">
+                02
+              </span>
+              <h2 class="rc-block__title">{h.projectsTitle}</h2>
+            </div>
             <a class="rc-teaser-all" href={workHref}>
               {h.projectsAll} →
             </a>
@@ -111,6 +145,7 @@ const workHref = localePath(lang, 'work');
                 ordinal={String(i + 1).padStart(2, '0')}
                 ordinalWord={pi.ordinalWord}
                 viewCta={pi.viewCta}
+                feature={i === 0}
                 reveal
               />
             ))}
@@ -149,8 +184,24 @@ const workHref = localePath(lang, 'work');
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    border-bottom: 1px solid var(--hairline);
+    gap: 16px;
+    border-bottom: 1px solid var(--rule);
     padding-bottom: 16px;
+  }
+  /* numbered section lead — color-as-structure (accent numeral + Fraunces head) */
+  .rc-block__lead {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    min-width: 0;
+  }
+  .rc-block__n {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--accent-text);
+    font-variant-numeric: tabular-nums;
   }
   .rc-block__title {
     margin: 0;
@@ -179,7 +230,7 @@ const workHref = localePath(lang, 'work');
   }
   .rc-projgrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: 22px;
   }
   .rc-enter {

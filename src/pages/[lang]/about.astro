@@ -1,6 +1,8 @@
 ---
 /**
- * S8 — About / contact. `/[lang]/about/` (FR + EN). A real first-person bio + tagline
+ * S8 — About / contact. `/[lang]/about/` (FR + EN). A two-column DOSSIER document:
+ * a sticky identity RAIL (portrait + name + tagline) beside a numbered content
+ * column (Bio, Contact, How this site works). A real first-person bio + tagline
  * (grounded in the owner's résumé), a quiet contact list (plain links, NO backend
  * form per W-2), and a REAL "how this site works" credibility note. D-007 split: a
  * profile photo identifies the author here, while the abstract AvatarMark lattice
@@ -11,7 +13,8 @@
  * falls back to the localized home (blog/work decision #6; NFR-11 holds since both
  * /fr/about/ and /en/about/ exist). GitHub, LinkedIn, and email are all live,
  * verifiably-public contacts (email + LinkedIn published from the public résumé; the
- * privacy gate noted in CLAUDE.md #3 / FR-D3 / NFR-6).
+ * privacy gate noted in CLAUDE.md #3 / FR-D3 / NFR-6). DOM order of the three
+ * .rc-sec__h is Bio, Contact, How (e2e about.spec pins nth(0..2)).
  */
 import type { GetStaticPaths } from 'astro';
 import { LOCALES } from '@/i18n/index';
@@ -34,88 +37,109 @@ const title = `${s.title} · rachid chabane`;
 ---
 
 <Base title={title} description={s.metaDesc} lang={lang}>
-  <section class="rc-about rc-enter">
-    <span class="rc-about__eyebrow t-eyebrow">{s.eyebrow}</span>
-    <div class="rc-about__mark">
-      <img
-        class="rc-about__photo"
-        src="/profile.jpg"
-        alt="Rachid Chabane"
-        width="96"
-        height="96"
-        loading="eager"
-        decoding="async"
-      />
+  <div class="rc-about rc-enter">
+    <div class="rc-about__rail">
+      <span class="rc-about__eyebrow t-eyebrow">{s.eyebrow}</span>
+      <div class="rc-about__mark">
+        <img
+          class="rc-about__photo"
+          src="/profile.jpg"
+          alt="Rachid Chabane"
+          width="96"
+          height="96"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+      <h1 class="rc-about__title">{s.title}</h1>
+      <p class="rc-about__tagline">{s.tagline}</p>
     </div>
-    <h1 class="rc-about__title">{s.title}</h1>
-    <p class="rc-about__tagline">{s.tagline}</p>
 
-    <section class="rc-sec">
-      <h2 class="rc-sec__h">{s.bioH}</h2>
-      <div class="rc-bio">
-        <p class="rc-bio__p">{s.bioP1}</p>
-        <p class="rc-bio__p">{s.bioP2}</p>
-      </div>
-    </section>
-
-    <section class="rc-sec">
-      <h2 class="rc-sec__h">{s.contactH}</h2>
-      <div class="rc-contact">
-        {
-          CONTACTS.map((c) =>
-            c.href ? (
-              <a
-                class="rc-contact__row"
-                href={c.href}
-                target={isExternal(c.href) ? '_blank' : undefined}
-                rel={isExternal(c.href) ? 'noopener noreferrer' : undefined}
-              >
-                <span class="rc-contact__ico">
-                  <ContactIcon name={c.icon} />
-                </span>
-                <span class="rc-contact__key">{c.label}</span>
-                <span class="rc-contact__val">{c.value}</span>
-                <span class="rc-contact__ext" aria-hidden="true">
-                  ↗
-                </span>
-              </a>
-            ) : (
-              <div class="rc-contact__row is-placeholder">
-                <span class="rc-contact__ico">
-                  <ContactIcon name={c.icon} />
-                </span>
-                <span class="rc-contact__key">{c.label}</span>
-                <span class="rc-contact__val">{s.contactPh}</span>
-              </div>
-            )
-          )
-        }
-      </div>
-    </section>
-
-    <section class="rc-sec">
-      <h2 class="rc-sec__h">{s.howH}</h2>
-      <div class="rc-howit">
-        <div class="rc-howit__mark"><AvatarMark size={34} /></div>
-        <div class="rc-howit__body">
-          <span class="rc-howit__lbl">{s.howLbl}</span>
-          <p class="rc-howit__text">{s.howText}</p>
+    <div class="rc-about__main">
+      <section class="rc-sec">
+        <div class="rc-sec__head">
+          <span class="rc-sec__n" aria-hidden="true">01</span>
+          <h2 class="rc-sec__h">{s.bioH}</h2>
         </div>
-      </div>
-    </section>
-  </section>
+        <div class="rc-bio">
+          <p class="rc-bio__p">{s.bioP1}</p>
+          <p class="rc-bio__p">{s.bioP2}</p>
+        </div>
+      </section>
+
+      <section class="rc-sec">
+        <div class="rc-sec__head">
+          <span class="rc-sec__n" aria-hidden="true">02</span>
+          <h2 class="rc-sec__h">{s.contactH}</h2>
+        </div>
+        <div class="rc-contact">
+          {
+            CONTACTS.map((c) =>
+              c.href ? (
+                <a
+                  class="rc-contact__row"
+                  href={c.href}
+                  target={isExternal(c.href) ? '_blank' : undefined}
+                  rel={isExternal(c.href) ? 'noopener noreferrer' : undefined}
+                >
+                  <span class="rc-contact__ico">
+                    <ContactIcon name={c.icon} />
+                  </span>
+                  <span class="rc-contact__key">{c.label}</span>
+                  <span class="rc-contact__val">{c.value}</span>
+                  <span class="rc-contact__ext" aria-hidden="true">
+                    ↗
+                  </span>
+                </a>
+              ) : (
+                <div class="rc-contact__row is-placeholder">
+                  <span class="rc-contact__ico">
+                    <ContactIcon name={c.icon} />
+                  </span>
+                  <span class="rc-contact__key">{c.label}</span>
+                  <span class="rc-contact__val">{s.contactPh}</span>
+                </div>
+              )
+            )
+          }
+        </div>
+      </section>
+
+      <section class="rc-sec">
+        <div class="rc-sec__head">
+          <span class="rc-sec__n" aria-hidden="true">03</span>
+          <h2 class="rc-sec__h">{s.howH}</h2>
+        </div>
+        <div class="rc-howit">
+          <div class="rc-howit__mark"><AvatarMark size={34} /></div>
+          <div class="rc-howit__body">
+            <span class="rc-howit__lbl">{s.howLbl}</span>
+            <p class="rc-howit__text">{s.howText}</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
 </Base>
 
 <style>
-  /* Inner reading column (Base already provides <main>; no second <main>). 68ch via
-     --measure, matching the article reading column ([slug].astro). Tokens only. */
+  /* Two-column DOSSIER document: a sticky identity rail + a numbered content
+     column. Collapses to a single column below 900px. Tokens only. */
   .rc-about {
     width: 100%;
-    max-width: var(--measure);
+    max-width: 1060px;
     margin: 0 auto;
-    padding: 52px 40px 0;
-    display: flex;
-    flex-direction: column;
+    padding: 56px 40px 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  @media (min-width: 900px) {
+    .rc-about {
+      grid-template-columns: 264px minmax(0, 1fr);
+      gap: 64px;
+      align-items: start;
+    }
   }
   @media (max-width: 720px) {
     .rc-about {
@@ -124,18 +148,33 @@ const title = `${s.title} · rachid chabane`;
     }
   }
 
-  /* eyebrow uses the global .t-eyebrow role class (mono/uppercase/--fg-subtle). */
-
-  /* Profile photo (owner decision: a real portrait here; the abstract AvatarMark
-     stays as the AI-agent glyph in the how-it-works note below and in the avatar
-     dock). Circular crop keeps the portrait centred; the scenic background corners
-     fall away. A hairline ring keeps it deliberate against the page. */
+  /* identity rail — a compact card, sticky beside the scrolling content */
+  .rc-about__rail {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  @media (min-width: 900px) {
+    .rc-about__rail {
+      position: sticky;
+      top: 88px;
+      padding: 26px 24px 28px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+  .rc-about__eyebrow {
+    color: var(--accent-text);
+  }
   .rc-about__mark {
-    margin: 6px 0 4px;
+    margin: 14px 0 6px;
   }
   .rc-about__photo {
-    width: 96px;
-    height: 96px;
+    width: 84px;
+    height: 84px;
     border-radius: 50%;
     object-fit: cover;
     object-position: center 28%;
@@ -143,41 +182,60 @@ const title = `${s.title} · rachid chabane`;
     box-shadow: var(--shadow-sm);
   }
   .rc-about__title {
-    margin: 12px 0 0;
+    margin: 8px 0 0;
     font-family: var(--font-display);
     font-variation-settings: var(--fraunces-head);
     font-size: var(--text-h1);
-    line-height: 1.12;
+    line-height: 1.08;
     letter-spacing: var(--tracking-tight);
     color: var(--fg);
   }
   .rc-about__tagline {
-    margin: 6px 0 0;
+    margin: 12px 0 0;
     font-family: var(--font-body);
-    font-size: var(--text-body-lg);
-    line-height: 1.55;
+    font-size: var(--text-body);
+    line-height: 1.6;
     color: var(--fg-muted);
-    max-width: 54ch;
   }
 
-  /* sections (screens.css .rc-sec / .rc-sec__h — plain text heading, no number
-     span, so no display:flex). */
+  /* content column */
+  .rc-about__main {
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+    min-width: 0;
+    max-width: 660px;
+  }
   .rc-sec {
-    margin-top: 46px;
+    margin: 0;
+  }
+  .rc-sec__head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin: 0 0 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .rc-sec__n {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--accent-text);
+    font-variant-numeric: tabular-nums;
   }
   .rc-sec__h {
-    margin: 0 0 18px;
+    margin: 0;
     font-family: var(--font-display);
-    font-variation-settings:
-      'opsz' 32,
-      'wght' 480;
-    font-size: 23px;
-    line-height: 1.25;
+    font-variation-settings: var(--fraunces-sub);
+    font-size: var(--text-h3);
+    line-height: 1.2;
     letter-spacing: -0.01em;
     color: var(--fg);
   }
 
-  /* finished bio prose (replaces the former owner-fill placeholder block). */
+  /* bio prose */
   .rc-bio {
     display: flex;
     flex-direction: column;
@@ -187,29 +245,31 @@ const title = `${s.title} · rachid chabane`;
     margin: 0;
     font-family: var(--font-body);
     font-size: 16px;
-    line-height: 1.7;
+    line-height: 1.72;
     color: var(--fg);
   }
 
-  /* contact list — quiet plain links, no form (screens.css .rc-contact*). The
-     design's <button> reset is adapted to block-level flex anchors/divs (the global
-     `a` reset already drops underline + inherits color). */
+  /* contact list — quiet plain links, no form. Bordered rows that tint on hover. */
   .rc-contact {
     display: flex;
     flex-direction: column;
-    margin-top: 2px;
+    gap: 8px;
   }
   .rc-contact__row {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 15px 2px;
-    border: 0;
-    border-bottom: 1px solid var(--hairline);
-    transition: padding var(--dur-hover) var(--ease-soft);
+    padding: 13px 16px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition:
+      border-color var(--dur-hover) var(--ease-soft),
+      background var(--dur-hover) var(--ease-soft);
   }
   .rc-contact__row:hover {
-    padding-left: 8px;
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    background: var(--accent-soft);
   }
   .rc-contact__ico {
     display: inline-flex;
@@ -217,17 +277,13 @@ const title = `${s.title} · rachid chabane`;
     transition: color var(--dur-hover) var(--ease-soft);
   }
   .rc-contact__row:hover .rc-contact__ico {
-    color: var(--accent);
+    color: var(--accent-text);
   }
   .rc-contact__key {
     font-family: var(--font-body);
     font-size: 15px;
     font-weight: 500;
     color: var(--fg);
-    transition: color var(--dur-hover) var(--ease-soft);
-  }
-  .rc-contact__row:hover .rc-contact__key {
-    color: var(--accent);
   }
   .rc-contact__val {
     margin-left: auto;
@@ -236,34 +292,34 @@ const title = `${s.title} · rachid chabane`;
     color: var(--fg-subtle);
   }
   .rc-contact__ext {
-    color: var(--accent);
+    color: var(--accent-text);
     font-size: 13px;
   }
-  /* owner-fill rows are non-interactive (not links): neutralize the hover shift and
-     mute the key so they read as not-yet-filled. */
+  /* owner-fill rows are non-interactive (not links) — neutralize the hover. */
   .rc-contact__row.is-placeholder {
     cursor: default;
   }
   .rc-contact__row.is-placeholder:hover {
-    padding-left: 2px;
+    border-color: var(--border-subtle);
+    background: var(--surface);
   }
-  .rc-contact__row.is-placeholder:hover .rc-contact__ico,
-  .rc-contact__row.is-placeholder:hover .rc-contact__key {
+  .rc-contact__row.is-placeholder:hover .rc-contact__ico {
     color: var(--fg-muted);
   }
   .rc-contact__row.is-placeholder .rc-contact__key {
     color: var(--fg-muted);
   }
 
-  /* how-it-works credibility note (screens.css .rc-howit*). */
+  /* how-it-works credibility note — the distinctive autonomous meta-narrative */
   .rc-howit {
     display: flex;
     gap: 18px;
     align-items: flex-start;
-    padding: 22px 24px;
+    padding: 24px 26px;
     border-radius: var(--radius-lg);
     background: var(--accent-soft);
-    border-left: 2px solid var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+    border-left: 3px solid var(--accent);
   }
   .rc-howit__mark {
     flex: none;

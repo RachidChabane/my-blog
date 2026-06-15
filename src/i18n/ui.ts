@@ -304,6 +304,8 @@ export interface PortfolioIndexStrings {
   ordinalWord: string; // "Projet" / "Project" (rendered uppercased via CSS → "PROJET · 01")
   viewCta: string; // "Voir" / "View" (rendered "<viewCta> →", decorative)
   empty: string; // empty-state line
+  statLive: string; // stat-line label — "En production" / "In production"
+  statBilingual: string; // stat-line label — "Bilingue" / "Bilingual"
 }
 
 export const PORTFOLIO_INDEX: Record<Locale, PortfolioIndexStrings> = {
@@ -314,6 +316,8 @@ export const PORTFOLIO_INDEX: Record<Locale, PortfolioIndexStrings> = {
     ordinalWord: 'Projet',
     viewCta: 'Voir',
     empty: 'Aucun projet pour le moment.',
+    statLive: 'En production',
+    statBilingual: 'Bilingue',
   },
   en: {
     eyebrow: 'Work',
@@ -322,6 +326,8 @@ export const PORTFOLIO_INDEX: Record<Locale, PortfolioIndexStrings> = {
     ordinalWord: 'Project',
     viewCta: 'View',
     empty: 'No projects yet.',
+    statLive: 'In production',
+    statBilingual: 'Bilingual',
   },
 };
 
@@ -345,6 +351,11 @@ export interface HomeStrings {
   heroLine: string; // the one-line statement (rendered as the page <h1>)
   heroSub: string; // supporting paragraph (also reused as <meta description>)
   heroCta: string; // primary CTA label → /[lang]/blog/
+  heroCtaAlt: string; // secondary (ghost) CTA label → /[lang]/work/
+  systemLabel: string; // autonomous-status panel header — "Autonome" / "Autonomous"
+  statWritings: string; // stat-panel label — "Écrits" / "Writings"
+  statLanguages: string; // stat-panel label — "Langues" / "Languages"
+  updatedLabel: string; // stat-panel label — "Mis à jour" / "Updated"
   latestTitle: string; // "Derniers articles" / "Latest articles"
   latestAll: string; // "Tout voir" / "See all" → /[lang]/blog/
   projectsTitle: string; // "Projets" / "Projects"
@@ -360,6 +371,11 @@ export const HOME: Record<Locale, HomeStrings> = {
     heroSub:
       'Évaluations, agents outillés, garde-fous. Un carnet tenu et publié par un agent, sous revue humaine.',
     heroCta: 'Lire les écrits',
+    heroCtaAlt: 'Le portfolio',
+    systemLabel: 'Autonome',
+    statWritings: 'Écrits',
+    statLanguages: 'Langues',
+    updatedLabel: 'Mis à jour',
     latestTitle: 'Derniers articles',
     latestAll: 'Tout voir',
     projectsTitle: 'Projets',
@@ -373,6 +389,11 @@ export const HOME: Record<Locale, HomeStrings> = {
     heroSub:
       'Evaluations, tool-using agents, guardrails. A notebook kept and published by an agent, under human review.',
     heroCta: 'Read the writing',
+    heroCtaAlt: 'The portfolio',
+    systemLabel: 'Autonomous',
+    statWritings: 'Writings',
+    statLanguages: 'Languages',
+    updatedLabel: 'Updated',
     latestTitle: 'Latest articles',
     latestAll: 'See all',
     projectsTitle: 'Projects',
@@ -729,6 +750,12 @@ export interface GraphStrings {
   countMany: string; // "{n} articles"
   nodeAria: string; // node aria template: "{label}, {theme}, {n}" (+ count tail)
   empty: string; // empty-store state (no concepts yet)
+  zoomIn: string; // zoom-in control aria-label
+  zoomOut: string; // zoom-out control aria-label
+  zoomFit: string; // fit-view control aria-label
+  zoomFitLabel: string; // fit-view control visible label — "Cadrer" / "Fit"
+  statConcepts: string; // atlas ledger label — "concepts"
+  statLinks: string; // atlas ledger label — "liens" / "links"
 }
 
 export const GRAPH: Record<Locale, GraphStrings> = {
@@ -759,6 +786,12 @@ export const GRAPH: Record<Locale, GraphStrings> = {
     countMany: '{n} articles',
     nodeAria: '{label}, {theme}',
     empty: 'Le graphe se remplit au fil des publications.',
+    zoomIn: 'Zoomer',
+    zoomOut: 'Dézoomer',
+    zoomFit: 'Cadrer la vue',
+    zoomFitLabel: 'Cadrer',
+    statConcepts: 'concepts',
+    statLinks: 'liens',
   },
   en: {
     metaDesc:
@@ -787,6 +820,12 @@ export const GRAPH: Record<Locale, GraphStrings> = {
     countMany: '{n} articles',
     nodeAria: '{label}, {theme}',
     empty: 'The graph fills in as articles publish.',
+    zoomIn: 'Zoom in',
+    zoomOut: 'Zoom out',
+    zoomFit: 'Fit view',
+    zoomFitLabel: 'Fit',
+    statConcepts: 'concepts',
+    statLinks: 'links',
   },
 };
 

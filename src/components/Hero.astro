@@ -1,37 +1,96 @@
 ---
 /**
- * Hero — S1 restrained typographic hero (design home.jsx Hero + site.css .rc-hero).
- * Owns the page heading (the one-line statement). The brand wordmark is the masthead's
- * (Base → Masthead), not repeated here. Single filled button on the home: the
- * primary CTA → the blog index. Tokens only; no gradient (task constraint, D-007).
+ * Hero — S1 masthead. The page heading (the one-line statement) beside a small
+ * "system" panel that makes the autonomous, self-publishing nature of the site
+ * structural rather than a buried sentence: a live status dot + a stat ledger
+ * (writings, projects, languages, last-updated). The brand wordmark is the
+ * masthead's (Base -> Masthead), not repeated here. Single filled button is the
+ * primary CTA -> the blog index; a quiet ghost link points at the portfolio.
+ * Tokens only; no gradient, no image (task constraints, D-007). The sole page
+ * heading is .rc-hero__line (e2e + tests/home.test.ts pinned).
  */
+interface Stat {
+  value: string;
+  label: string;
+}
 interface Props {
   eyebrow: string;
   line: string;
   sub: string;
   ctaLabel: string;
   ctaHref: string;
+  ctaAltLabel: string;
+  ctaAltHref: string;
+  systemLabel: string;
+  stats: Stat[];
 }
-const { eyebrow, line, sub, ctaLabel, ctaHref } = Astro.props;
+const {
+  eyebrow,
+  line,
+  sub,
+  ctaLabel,
+  ctaHref,
+  ctaAltLabel,
+  ctaAltHref,
+  systemLabel,
+  stats,
+} = Astro.props;
 ---
 
 <section class="rc-hero">
-  <span class="t-eyebrow">{eyebrow}</span>
-  <h1 class="rc-hero__line">{line}</h1>
-  <p class="rc-hero__sub">{sub}</p>
-  <a class="rc-btn rc-btn--primary" href={ctaHref}>{ctaLabel} →</a>
+  <div class="rc-hero__text">
+    <span class="rc-hero__eyebrow">{eyebrow}</span>
+    <h1 class="rc-hero__line">{line}</h1>
+    <p class="rc-hero__sub">{sub}</p>
+    <div class="rc-hero__actions">
+      <a class="rc-btn rc-btn--primary" href={ctaHref}>{ctaLabel} →</a>
+      <a class="rc-btn rc-btn--ghost" href={ctaAltHref}>{ctaAltLabel} →</a>
+    </div>
+  </div>
+
+  <div class="rc-hero__panel">
+    <div class="rc-hero__sys">
+      <span class="rc-hero__live" aria-hidden="true"></span>
+      <span class="rc-hero__sys-label">{systemLabel}</span>
+    </div>
+    <dl class="rc-hero__stats">
+      {
+        stats.map((s) => (
+          <div class="rc-hero__stat">
+            <dt class="rc-hero__stat-l">{s.label}</dt>
+            <dd class="rc-hero__stat-v">{s.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
 </section>
 
 <style>
   .rc-hero {
     padding-top: 72px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(232px, 30%, 312px);
+    gap: 40px;
+    align-items: end;
+  }
+  .rc-hero__text {
     display: flex;
     flex-direction: column;
-    gap: 22px;
-    max-width: 760px;
+    gap: 20px;
+    max-width: 720px;
+  }
+  /* accent kicker (the page's colored tab) — DOSSIER label idiom */
+  .rc-hero__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-meta);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--accent-text);
   }
   .rc-hero__line {
-    margin: 6px 0 0;
+    margin: 0;
     font-family: var(--font-display);
     font-variation-settings: var(--fraunces-display);
     font-size: var(--text-display);
@@ -44,7 +103,13 @@ const { eyebrow, line, sub, ctaLabel, ctaHref } = Astro.props;
     font-size: var(--text-body-lg);
     line-height: 1.7;
     color: var(--fg-muted);
-    max-width: 56ch;
+    max-width: 54ch;
+  }
+  .rc-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 4px;
   }
   .rc-btn {
     font-size: 14px;
@@ -53,18 +118,105 @@ const { eyebrow, line, sub, ctaLabel, ctaHref } = Astro.props;
     padding: 12px 20px;
     border-radius: var(--radius);
     border: 1px solid transparent;
-    transition: all var(--dur-hover) var(--ease-soft);
+    transition:
+      background var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft),
+      transform var(--dur-hover) var(--ease-soft),
+      box-shadow var(--dur-hover) var(--ease-soft),
+      color var(--dur-hover) var(--ease-soft);
   }
   .rc-btn--primary {
-    align-self: flex-start;
-    margin-top: 6px;
     background: var(--accent);
     color: var(--fg-on-accent);
   }
   .rc-btn--primary:hover {
-    background: var(--accent-strong);
+    background: var(--accent-deep);
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
+  }
+  .rc-btn--ghost {
+    background: transparent;
+    color: var(--fg-muted);
+    border-color: var(--border);
+  }
+  .rc-btn--ghost:hover {
+    color: var(--accent-text);
+    border-color: var(--accent);
+  }
+
+  /* system / stat panel — the autonomous ledger */
+  .rc-hero__panel {
+    align-self: end;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .rc-hero__sys {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .rc-hero__live {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+    flex: none;
+  }
+  .rc-hero__sys-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+  }
+  .rc-hero__stats {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rc-hero__stat {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .rc-hero__stat-l {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+  .rc-hero__stat-v {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-sub);
+    font-size: 17px;
+    line-height: 1;
+    color: var(--fg);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 860px) {
+    .rc-hero {
+      grid-template-columns: 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    .rc-hero__panel {
+      max-width: 360px;
+    }
   }
   @media (max-width: 720px) {
     .rc-hero {

@@ -59,15 +59,23 @@ const starsAria = difficultyStrings(card.lang).aria.replace(
   .rc-arow {
     text-align: left;
     border-bottom: 1px solid var(--hairline);
+    border-left: 2px solid transparent;
     padding: 26px 0;
     display: grid;
     grid-template-columns: 1fr auto;
     grid-auto-rows: min-content;
     gap: 8px 24px;
-    transition: padding var(--dur-hover) var(--ease-soft);
+    transition:
+      padding var(--dur-hover) var(--ease-soft),
+      background var(--dur-hover) var(--ease-soft),
+      border-left-color var(--dur-hover) var(--ease-soft);
   }
+  /* accent-soft tint + accent spine on hover (the card-hover idiom, as a row) */
   .rc-arow:hover {
-    padding-left: 12px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-left-color: var(--accent);
+    background: var(--accent-soft);
   }
   .rc-arow__head {
     grid-column: 1 / -1;
@@ -126,24 +134,24 @@ const starsAria = difficultyStrings(card.lang).aria.replace(
     margin-top: 6px;
     flex-wrap: wrap;
   }
-  /* hard mono "stamp" chips — letterpress index tags, not soft pills. */
+  /* soft mono pills — unified with the project-card chips (DOSSIER, not stamps). */
   .rc-tag {
     display: inline-flex;
     align-items: center;
     font-family: var(--font-mono);
     font-size: 11.5px;
     letter-spacing: 0.04em;
-    padding: 3px 10px;
-    border-radius: 0;
-    background: var(--band);
+    padding: 3px 11px;
+    border-radius: var(--radius-pill);
+    background: var(--fill-subtle);
     color: var(--fg-muted);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-subtle);
     transition:
       color var(--dur-hover) var(--ease-soft),
       border-color var(--dur-hover) var(--ease-soft);
   }
   .rc-tag:hover {
-    color: var(--fg);
+    color: var(--accent-text);
     border-color: var(--accent);
   }
   .rc-arow__cta {

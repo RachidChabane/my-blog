@@ -113,10 +113,41 @@ const THEMES = [
           aria-label={strings.title}
         >
           <g data-graph-world>
+            <g data-graph-clusters aria-hidden="true" />
             <g data-graph-edges />
             <g data-graph-nodes />
           </g>
         </svg>
+      )
+    }
+    {
+      graph.nodes.length > 0 && (
+        <div class="rc-graph__zoom" data-graph-zoom>
+          <button
+            class="rc-graph__zbtn"
+            type="button"
+            data-zoom-in
+            aria-label={strings.zoomIn}
+          >
+            +
+          </button>
+          <button
+            class="rc-graph__zbtn"
+            type="button"
+            data-zoom-out
+            aria-label={strings.zoomOut}
+          >
+            −
+          </button>
+          <button
+            class="rc-graph__zbtn rc-graph__zbtn--fit"
+            type="button"
+            data-zoom-fit
+            aria-label={strings.zoomFit}
+          >
+            {strings.zoomFitLabel}
+          </button>
+        </div>
       )
     }
     <div class="rc-graph__tooltip" data-graph-tooltip hidden>
@@ -278,6 +309,54 @@ const THEMES = [
     font-size: 15px;
     color: var(--fg-muted);
     text-align: center;
+  }
+
+  /* zoom / fit controls — a small instrument cluster in the stage corner */
+  .rc-graph__zoom {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 2;
+  }
+  .rc-graph__zbtn {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 17px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: var(--shadow-xs);
+    transition:
+      color var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft),
+      background var(--dur-hover) var(--ease-soft);
+  }
+  .rc-graph__zbtn:hover {
+    color: var(--accent-text);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .rc-graph__zbtn:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-ring);
+  }
+  .rc-graph__zbtn--fit {
+    width: auto;
+    padding: 0 11px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
   /* tooltip (hover/focus) */
@@ -478,6 +557,37 @@ const THEMES = [
     stroke: var(--accent);
     stroke-width: 3;
   }
+
+  /* ghosted cluster labels — the "atlas" captions behind each theme territory */
+  .rc-graph .rc-gcluster {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    fill: var(--fg);
+    opacity: 0.07;
+    pointer-events: none;
+    text-anchor: middle;
+  }
+
+  /* hover-neighborhood highlight: dim everything but the hovered node, its
+     1-hop neighbors, and the connecting edges (which brighten to accent). A
+     transient hover state — independent of the search/filter is-dim state. */
+  .rc-graph.is-hovering .rc-gnode:not(.is-hot) {
+    opacity: 0.22;
+  }
+  .rc-graph.is-hovering .rc-gedge:not(.is-hot) {
+    opacity: 0.05;
+  }
+  .rc-graph.is-hovering .rc-gedge.is-hot {
+    stroke: var(--accent);
+    stroke-opacity: 0.85;
+    stroke-dasharray: none;
+  }
+  .rc-graph.is-hovering .rc-gnode.is-hot circle.rc-gnode__dot {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+  }
 </style>
 
 <script>
@@ -544,6 +654,23 @@ const THEMES = [
     const data = JSON.parse(root.dataset.graph ?? '{}') as GPayload;
     const ui = data.ui;
     const byId = new Map(data.nodes.map((n) => [n.id, n]));
+    const clustersG = root.querySelector<SVGGElement>('[data-graph-clusters]');
+
+    // adjacency: 1-hop neighbors + incident edge keys per node (for the
+    // hover-neighborhood highlight). Built once from the edge list.
+    const neighbors = new Map<string, Set<string>>();
+    const incident = new Map<string, Set<string>>();
+    for (const n of data.nodes) {
+      neighbors.set(n.id, new Set());
+      incident.set(n.id, new Set());
+    }
+    for (const e of data.edges) {
+      const key = `${e.source} ${e.target}`;
+      neighbors.get(e.source)?.add(e.target);
+      neighbors.get(e.target)?.add(e.source);
+      incident.get(e.source)?.add(key);
+      incident.get(e.target)?.add(key);
+    }
 
     /* ---------------- deterministic force layout ---------------- */
     // Cluster anchors: one quadrant per theme, so the map reads at a glance.
@@ -798,8 +925,37 @@ const THEMES = [
     const reduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
     ).matches;
+    // Ghosted cluster captions: one faint uppercase label at each theme's
+    // settled centroid, behind the nodes — turns the scatter into a captioned
+    // atlas of four territories. Rendered once the layout settles.
+    const renderClusters = () => {
+      if (!clustersG) return;
+      clustersG.replaceChildren();
+      const sum = new Map<string, { x: number; y: number; n: number }>();
+      for (const n of data.nodes) {
+        const p = pos.get(n.id)!;
+        const s = sum.get(n.theme) ?? { x: 0, y: 0, n: 0 };
+        s.x += p.x;
+        s.y += p.y;
+        s.n += 1;
+        sum.set(n.theme, s);
+      }
+      for (const [theme, s] of sum) {
+        if (s.n < 2) continue;
+        const label = ui.themes[theme];
+        if (!label) continue;
+        const t = document.createElementNS(SVG_NS, 'text');
+        t.setAttribute('class', `rc-gcluster rc-gcluster--${theme}`);
+        t.setAttribute('x', (s.x / s.n).toFixed(1));
+        t.setAttribute('y', (s.y / s.n).toFixed(1));
+        t.setAttribute('font-size', '34');
+        t.textContent = label.toUpperCase();
+        clustersG.append(t);
+      }
+    };
     const settle = () => {
       separate();
+      renderClusters();
       draw();
       fitView();
     };
@@ -960,29 +1116,60 @@ const THEMES = [
       centerOn(id);
     };
 
+    /* ---------------- hover-neighborhood highlight ---------------- */
+    // Light the hovered/focused node + its 1-hop neighbors + connecting edges,
+    // dimming the rest. A transient hover state, independent of the search/filter
+    // is-dim/is-focus state, so it never fights those (e2e-pinned) behaviours.
+    const lightNeighborhood = (n: GNode) => {
+      const hot = neighbors.get(n.id) ?? new Set<string>();
+      for (const [nid, el] of nodeEls)
+        el.classList.toggle('is-hot', nid === n.id || hot.has(nid));
+      const inc = incident.get(n.id) ?? new Set<string>();
+      for (const [key, line] of edgeEls)
+        line.classList.toggle('is-hot', inc.has(key));
+      root.classList.add('is-hovering');
+    };
+    const clearHighlight = () => {
+      root.classList.remove('is-hovering');
+      for (const el of nodeEls.values()) el.classList.remove('is-hot');
+      for (const line of edgeEls.values()) line.classList.remove('is-hot');
+    };
+
     /* ---------------- node events (delegated) ---------------- */
     nodesG.addEventListener(
       'pointerenter',
       (ev) => {
         const g = (ev.target as Element).closest<SVGGElement>('.rc-gnode');
         const n = g && byId.get(g.dataset.id ?? '');
-        if (g && n) showTooltip(n, g);
+        if (g && n) {
+          showTooltip(n, g);
+          lightNeighborhood(n);
+        }
       },
       true
     );
     nodesG.addEventListener(
       'pointerleave',
       (ev) => {
-        if ((ev.target as Element).closest('.rc-gnode')) hideTooltip();
+        if ((ev.target as Element).closest('.rc-gnode')) {
+          hideTooltip();
+          clearHighlight();
+        }
       },
       true
     );
     nodesG.addEventListener('focusin', (ev) => {
       const g = (ev.target as Element).closest<SVGGElement>('.rc-gnode');
       const n = g && byId.get(g.dataset.id ?? '');
-      if (g && n) showTooltip(n, g);
+      if (g && n) {
+        showTooltip(n, g);
+        lightNeighborhood(n);
+      }
     });
-    nodesG.addEventListener('focusout', hideTooltip);
+    nodesG.addEventListener('focusout', () => {
+      hideTooltip();
+      clearHighlight();
+    });
     nodesG.addEventListener('click', (ev) => {
       const g = (ev.target as Element).closest<SVGGElement>('.rc-gnode');
       const n = g && byId.get(g.dataset.id ?? '');
@@ -1068,5 +1255,27 @@ const THEMES = [
         applyVisibility();
       }, 140);
     });
+
+    /* ---------------- explicit zoom / fit controls ---------------- */
+    // Wire the corner buttons onto the existing view-state engine. Zoom keeps the
+    // stage center fixed; Fit reframes the whole settled layout (fitView()).
+    const zoomBy = (factor: number) => {
+      const next = Math.min(4, Math.max(0.45, scale * factor));
+      const cx = W / 2;
+      const cy = H / 2;
+      tx = cx - ((cx - tx) / scale) * next;
+      ty = cy - ((cy - ty) / scale) * next;
+      scale = next;
+      applyView();
+    };
+    root
+      .querySelector('[data-zoom-in]')
+      ?.addEventListener('click', () => zoomBy(1.25));
+    root
+      .querySelector('[data-zoom-out]')
+      ?.addEventListener('click', () => zoomBy(0.8));
+    root
+      .querySelector('[data-zoom-fit]')
+      ?.addEventListener('click', () => fitView());
   }
 </script>
