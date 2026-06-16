@@ -152,6 +152,8 @@ const s = avatarStrings(lang);
     let md: StreamingMarkdown | null = null; // streaming Markdown renderer for the open run
     let lastCitations: Citation[] = []; // citations of the in-flight answer ([n] marker links)
     let fullscreen = false; // full-screen reading view (modeled on the gallery lightbox)
+    let flipId = 0; // monotonic token; the newest docked⇄full-screen transit wins
+    let flipCleanup: (() => void) | null = null; // tears down the in-flight transit
     // Per-article scope: the slug an "ask about this article" trigger set, or null for the
     // corpus-wide launcher. Sent as scopeSlug so the answer (and the honest refusal) is
     // restricted to that article; cleared when the panel closes or the FAB opens fresh.
@@ -177,25 +179,137 @@ const s = avatarStrings(lang);
 
     const isOpen = () => !panel.hidden;
 
+    const prefersReduced = () =>
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // getBoundingClientRect is viewport-relative for BOTH the docked flex child
+    // and the fixed full-screen panel, so one measurement bridges the two
+    // positioning models. (Used by the resize FLIP below.)
+    type Box = { top: number; left: number; width: number; height: number };
+    const boxOf = (el: HTMLElement): Box => {
+      const r = el.getBoundingClientRect();
+      return { top: r.top, left: r.left, width: r.width, height: r.height };
+    };
+    const writeBox = (el: HTMLElement, b: Box) => {
+      el.style.top = `${b.top}px`;
+      el.style.left = `${b.left}px`;
+      el.style.width = `${b.width}px`;
+      el.style.height = `${b.height}px`;
+    };
+    // Strip the transit scaffolding so the CSS resting rules (responsive vw/vh)
+    // govern the box again.
+    const clearFlipStyles = () => {
+      panel.removeAttribute('data-flipping');
+      root.classList.remove('rc-flipping');
+      panel.style.top = '';
+      panel.style.left = '';
+      panel.style.width = '';
+      panel.style.height = '';
+    };
+
     // Full-screen reading view — modeled on the project gallery's lightbox: a dimmed
     // scrim drops behind a large, centered reading surface. The dock toggles the
-    // [data-fullscreen] hook (CSS does the rest); the label/pressed state swap reads
-    // its copy from the button's data-* (COPY NEVER LIVES IN JS). Escape and a scrim
-    // click step back to the docked panel (the lightbox dismiss mental model).
+    // [data-fullscreen] hook (CSS does the rest); the label/pressed copy is read from
+    // the button's data-* (COPY NEVER LIVES IN JS). Escape and a scrim click step
+    // back to the docked panel (the lightbox dismiss mental model).
+    //
+    // When motion is allowed, the RESIZE between docked and full-screen is animated
+    // both ways with a FLIP on layout props (top/left/width/height): the panel is
+    // lifted to a fixed layer and tweened from its prior box to its next box. The
+    // browser relays out every frame, so the header, body, citations, and the
+    // reading-column padding reflow at TRUE size — no scale/skew, unlike a transform
+    // FLIP. State + a11y flip synchronously (the focus trap + e2e see the resting
+    // state at once); the px scaffolding is cleared on transitionend so the resting
+    // boxes are byte-identical to before. Under reduced motion the FLIP is skipped
+    // entirely (instant swap, exactly as it was).
     const setFullscreen = (on: boolean) => {
+      const changed = fullscreen !== on;
+      // Capture the FIRST geometry BEFORE any mutation — only if we will animate.
+      const animate = changed && isOpen() && !panel.hidden && !prefersReduced();
+      const first = animate ? boxOf(panel) : null;
+
+      // Abort any in-flight transit so a rapid re-toggle never leaks stale inline
+      // px or a stale transitionend into the new state — the newest call wins.
+      if (flipCleanup) {
+        flipCleanup();
+        flipCleanup = null;
+      }
+
+      // State + a11y toggle: identical semantics to before, set synchronously.
       fullscreen = on;
       root.toggleAttribute('data-fullscreen', on);
       scrim.hidden = !on;
       fsBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
-      // In full-screen the panel is a true modal over the scrim; docked it is a
-      // non-modal dialog (the page stays interactive). Focus is trapped within the
-      // panel while modal (see the Tab handler) and restored to the toggle on exit.
+      // Full-screen = a true modal over the scrim (focus trapped, see the Tab
+      // handler); docked = a non-modal dialog (the page stays interactive).
       panel.setAttribute('aria-modal', on ? 'true' : 'false');
       const label = on
         ? fsBtn.dataset.labelCollapse
         : fsBtn.dataset.labelExpand;
       if (label) fsBtn.setAttribute('aria-label', label);
-      if (isOpen()) scrollToEnd();
+
+      if (!animate || !first) {
+        // Instant path (reduced motion / panel closed / no-op toggle): settle the
+        // scroll exactly as before; the resting CSS does the rest.
+        if (isOpen()) scrollToEnd();
+        return;
+      }
+
+      // LAST geometry: the attribute is flipped, so the panel now sits in its CSS
+      // resting box. Read it, pin back to FIRST, then animate FIRST → LAST.
+      const last = boxOf(panel);
+      const id = ++flipId;
+      // Degenerate measurement (display:none race / coincident boxes): skip.
+      if (!first.width || !first.height || !last.width || !last.height) {
+        scrollToEnd();
+        return;
+      }
+
+      panel.setAttribute('data-flipping', ''); // fixed + transition context
+      root.classList.add('rc-flipping'); // keep the panel above the masthead
+      writeBox(panel, first); // pin to where it visually was
+      void panel.offsetWidth; // reflow: commit FIRST as the start frame
+
+      let done = false;
+      const finishFlip = () => {
+        if (done || id !== flipId) return; // stale transit: a newer call owns it
+        done = true;
+        panel.removeEventListener('transitionend', onEnd);
+        window.clearTimeout(timer);
+        clearFlipStyles();
+        flipCleanup = null;
+        if (isOpen()) scrollToEnd(); // re-pin to bottom against the FINAL box
+      };
+      const onEnd = (e: TransitionEvent) => {
+        if (e.target !== panel) return; // ignore descendant transitions
+        if (
+          e.propertyName === 'top' ||
+          e.propertyName === 'left' ||
+          e.propertyName === 'width' ||
+          e.propertyName === 'height'
+        )
+          finishFlip();
+      };
+      // Safety net: clean up even if transitionend never fires (a property already
+      // equal, the panel hidden mid-transit by close(), a backgrounded tab).
+      const timer = window.setTimeout(finishFlip, 360); // > --dur-enter (280ms)
+      flipCleanup = finishFlip;
+      panel.addEventListener('transitionend', onEnd);
+
+      // PLAY next frame. Bail if a newer toggle won the token, or if the panel was
+      // hidden meanwhile (close()-from-full-screen hides it right after we return):
+      // then tear the scaffolding down so nothing flies over a closing panel.
+      requestAnimationFrame(() => {
+        // `done` covers an external abort (e.g. the resize handler ran finishFlip
+        // without bumping flipId): without it this orphaned frame would re-apply
+        // writeBox and leak inline px back onto the already-cleaned resting box.
+        if (done || id !== flipId) return;
+        if (panel.hidden) {
+          finishFlip();
+          return;
+        }
+        writeBox(panel, last);
+      });
     };
 
     // Leave full-screen and return focus to the toggle (the modal-dismiss contract).
@@ -604,6 +718,15 @@ const s = avatarStrings(lang);
     document.addEventListener('click', (e) => {
       if (isOpen() && e.target instanceof Node && !root.contains(e.target))
         close();
+    });
+
+    // A viewport resize mid-transit would tween toward a now-stale LAST box; abort
+    // the in-flight FLIP so the panel snaps to the live CSS resting box instead.
+    window.addEventListener('resize', () => {
+      if (flipCleanup) {
+        flipCleanup();
+        flipCleanup = null;
+      }
     });
 
     // Per-article "ask about this article" entry points (ArticleAskButton). A

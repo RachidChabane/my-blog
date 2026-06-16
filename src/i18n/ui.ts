@@ -367,7 +367,7 @@ export const HOME: Record<Locale, HomeStrings> = {
     metaTitle: 'Rachid Chabane · Ingénieur IA',
     heroEyebrow: 'Ingénieur IA · Lille',
     heroLine:
-      'J’écris sur l’ingénierie de l’IA de pointe, et ce site s’en charge tout seul.',
+      'J’écris sur l’ingénierie de l’IA de pointe, et c’est un agent autonome qui rédige ce site.',
     heroSub:
       'Évaluations, agents outillés, garde-fous. Un carnet tenu et publié par un agent, sous revue humaine.',
     heroCta: 'Lire les écrits',
@@ -385,7 +385,7 @@ export const HOME: Record<Locale, HomeStrings> = {
     metaTitle: 'Rachid Chabane · AI engineer',
     heroEyebrow: 'AI engineer · Lille',
     heroLine:
-      'I write about cutting-edge AI engineering, and this site runs itself.',
+      'I write about cutting-edge AI engineering, and this very site is written by an autonomous AI agent.',
     heroSub:
       'Evaluations, tool-using agents, guardrails. A notebook kept and published by an agent, under human review.',
     heroCta: 'Read the writing',

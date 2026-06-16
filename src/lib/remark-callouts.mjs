@@ -20,19 +20,40 @@
  *   note · info → Slate   tip → Pine   important → Ember (max emphasis, not alarm)
  *   warning → Amber   caution · pitfall → Crimson (danger)
  *   confirmed → Pine ✓   inferred → Crimson ≈   (the epistemic pair)
+ *
+ * The displayed LABEL is localized to the article's language (the `lang`
+ * frontmatter Astro exposes on the vfile) so a French article reads ATTENTION,
+ * not CAUTION. Only the visible word changes — the data-callout key, the CSS
+ * class, and the icon stay language-agnostic. Falls back to English when the
+ * frontmatter carries no recognized `lang` (e.g. a doc outside the article/
+ * project collections).
  */
 
-// canonical type → displayed label. Aliases fold onto a canonical key.
+// canonical type → displayed label, per locale. Aliases (info, pitfall) fold
+// onto a canonical CSS key via ALIAS but keep their own display label here.
 const LABELS = {
-  note: 'NOTE',
-  info: 'NOTE',
-  tip: 'TIP',
-  important: 'IMPORTANT',
-  warning: 'WARNING',
-  caution: 'CAUTION',
-  pitfall: 'CAUTION',
-  confirmed: 'CONFIRMED',
-  inferred: 'INFERRED',
+  en: {
+    note: 'NOTE',
+    info: 'NOTE',
+    tip: 'TIP',
+    important: 'IMPORTANT',
+    warning: 'WARNING',
+    caution: 'CAUTION',
+    pitfall: 'CAUTION',
+    confirmed: 'CONFIRMED',
+    inferred: 'INFERRED',
+  },
+  fr: {
+    note: 'NOTE',
+    info: 'NOTE',
+    tip: 'CONSEIL',
+    important: 'IMPORTANT',
+    warning: 'AVERTISSEMENT',
+    caution: 'ATTENTION',
+    pitfall: 'ATTENTION',
+    confirmed: 'CONFIRMÉ',
+    inferred: 'INFÉRÉ',
+  },
 };
 const ALIAS = { info: 'note', pitfall: 'caution' };
 const MARKER = /^\[!(\w+)\][ \t]*\r?\n?/;
@@ -53,7 +74,11 @@ function calloutKey(node) {
 }
 
 export default function remarkCallouts() {
-  return (tree) => {
+  return (tree, file) => {
+    // Astro exposes the source frontmatter on the vfile; pick the matching label
+    // set so a French article reads ATTENTION/CONSEIL, an English one CAUTION/TIP.
+    const lang = file?.data?.astro?.frontmatter?.lang;
+    const labels = LABELS[lang] ?? LABELS.en;
     eachBlockquote(tree, (bq) => {
       const firstPara = bq.children && bq.children[0];
       if (!firstPara || firstPara.type !== 'paragraph') return;
@@ -63,7 +88,7 @@ export default function remarkCallouts() {
       const m = firstText.value.match(MARKER);
       if (!m) return;
       const raw = m[1].toLowerCase();
-      const label = LABELS[raw];
+      const label = labels[raw];
       if (!label) return; // unknown marker → leave as an ordinary blockquote
       const key = ALIAS[raw] || raw;
 

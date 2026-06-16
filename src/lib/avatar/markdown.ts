@@ -84,6 +84,10 @@ function matchInline(
     if (href && opts.isSafeHref(href)) {
       const a = document.createElement('a');
       a.href = href;
+      // Open the cited source in a new tab so following a footnote never discards
+      // the in-progress conversation; rel hardens the cross-tab opener (NFR-7).
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
       a.textContent = cite[1];
       const label = opts.citationLabel?.(n) ?? null;
       if (label) a.setAttribute('aria-label', label); // names the source for SR users

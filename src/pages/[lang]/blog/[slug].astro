@@ -391,7 +391,7 @@ const title = `${entry.data.title} · rachid chabane`;
 
   <script>
     // Active-section highlight in the contents rail (progressive enhancement).
-    const links = document.querySelectorAll('[data-toc-link]');
+    const links = document.querySelectorAll<HTMLElement>('[data-toc-link]');
     if (links.length) {
       const byId = new Map();
       links.forEach((l) => byId.set(l.getAttribute('data-toc-link'), l));
@@ -410,6 +410,35 @@ const title = `${entry.data.title} · rachid chabane`;
         { rootMargin: '-90px 0px -68% 0px', threshold: 0 }
       );
       targets.forEach((t) => obs.observe(t));
+
+      // Smooth-scroll a contents-rail click to its section (progressive
+      // enhancement over the native #anchor jump). Honors reduced motion
+      // (instant), and updates the URL hash without a second jump.
+      // scrollIntoView respects each target's scroll-margin-top, so the section
+      // clears the sticky masthead exactly as the native jump does.
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+      links.forEach((link) => {
+        link.addEventListener('click', (e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          const id = link.getAttribute('data-toc-link');
+          if (!id) return;
+          const target = document.getElementById(id);
+          if (!target) return; // no target in DOM → let the native anchor jump
+          e.preventDefault();
+          target.scrollIntoView({
+            behavior: reduce.matches ? 'auto' : 'smooth',
+            block: 'start',
+          });
+          // Match the native fragment jump's focus semantics: move document focus
+          // (and the sequential-focus starting point) onto the section so the next
+          // Tab continues from the content, not the rail (WCAG 2.4.3). The headings
+          // aren't focusable, so make the target programmatically focusable;
+          // preventScroll keeps this from overriding the smooth scroll above.
+          if (target.tabIndex < 0) target.setAttribute('tabindex', '-1');
+          target.focus({ preventScroll: true });
+          history.pushState(null, '', `#${id}`);
+        });
+      });
     }
   </script>
 </Base>

@@ -67,13 +67,15 @@ describe('renderInline — citation markers', () => {
     expect(out).toBe('grounded <sup class="rc-md-cite">2</sup> here');
   });
 
-  it('links [n] to its source when the map yields a safe URL', () => {
+  it('links [n] to its source (in a new tab) when the map yields a safe URL', () => {
     const out = inlineHTML('grounded [1] here', {
       isSafeHref,
       citationHref: (n) => (n === 1 ? '/en/blog/x/' : null),
     });
+    // Opens in a new tab (target=_blank + hardened rel) so following the footnote
+    // never discards the conversation.
     expect(out).toBe(
-      'grounded <sup class="rc-md-cite"><a href="/en/blog/x/">1</a></sup> here'
+      'grounded <sup class="rc-md-cite"><a href="/en/blog/x/" target="_blank" rel="noopener noreferrer">1</a></sup> here'
     );
   });
 

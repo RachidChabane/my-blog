@@ -823,12 +823,25 @@
 .rc-dock .rc-md-cite::after {
   content: ']';
 }
+/* The marker links to its source. Give it an unmistakable interactive look: a
+   persistent accent underline at rest (so it reads as a link, not plain text),
+   then a filled accent chip on hover/focus. */
 .rc-dock .rc-md-cite a {
-  color: inherit;
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--dur-hover) var(--ease-soft);
+  color: var(--accent-text);
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 3px;
+  padding: 0 2px;
+  border-bottom: 1px solid var(--accent);
+  transition:
+    background var(--dur-hover) var(--ease-soft),
+    color var(--dur-hover) var(--ease-soft),
+    border-color var(--dur-hover) var(--ease-soft);
 }
-.rc-dock .rc-md-cite a:hover {
+.rc-dock .rc-md-cite a:hover,
+.rc-dock .rc-md-cite a:focus-visible {
+  background: var(--accent);
+  color: var(--fg-on-accent);
   border-bottom-color: var(--accent);
 }
 
@@ -910,6 +923,41 @@
   padding-inline: max(var(--sp-4), calc((100% - 720px) / 2));
 }
 
+/* ── Resize transit between docked and full-screen (FLIP on layout props). The
+   island lifts .rc-ava into a FIXED layer and writes explicit px top/left/width/
+   height for the prior and next geometry; this rule supplies only the transition
+   + a fixed positioning context while [data-flipping] is set. The inline px WIN
+   over the responsive vw/vh resting rules during the transit and are cleared on
+   transitionend, so the docked/full-screen resting boxes (which the e2e assert)
+   stay byte-identical. Distortion-free: the panel relays out at true size every
+   frame, so text never scales/skews. Tokens + px only. ── */
+.rc-dock .rc-ava[data-flipping] {
+  position: fixed;
+  /* neutralize the full-screen `margin:auto` centering — auto margins fight an
+     explicit top/left and would re-center the panel mid-transit. */
+  margin: 0;
+  /* match the full-screen rule so the next height is never clamped by the docked
+     min(..., 100vh - 140px) / max-height. */
+  max-height: none;
+  z-index: 90; /* above the masthead for the whole transit, both directions */
+  transition:
+    top var(--dur-enter) var(--ease-out),
+    left var(--dur-enter) var(--ease-out),
+    width var(--dur-enter) var(--ease-out),
+    height var(--dur-enter) var(--ease-out);
+  /* NB: deliberately NO `animation` override. The base rc-ava-rise entrance is
+     finite and already completed by the time a toggle happens, so it never
+     interferes with the transit — and because this rule never changes
+     animation-name, removing [data-flipping] on cleanup can't re-trigger the
+     rise (the footgun the docked rule's comment warns about). */
+}
+/* Raise the dock itself while a transit runs so the fixed panel composites over
+   the masthead even on COLLAPSE — when [data-fullscreen] (and its z-index:90) has
+   already been removed. A class (not :has()) keeps support universal. */
+.rc-dock.rc-flipping {
+  z-index: 90;
+}
+
 /* reduced motion: mark animations off. The radial-depth look is encoded in the
    per-ring base opacity (not in the animation), so the static lattice keeps its
    bright-core-to-faint-corner gradient with no motion. The reveal/scrim entrances
@@ -924,5 +972,11 @@
   .rc-dock .rc-in,
   .rc-dock .rc-md-in {
     animation-delay: 0ms !important;
+  }
+  /* Belt-and-braces: the island already skips the FLIP under reduced motion, and
+     tokens.css zeroes transition-duration on `*`; this guarantees an instant cut
+     even if a [data-flipping] hook is ever set under reduced motion. */
+  .rc-dock .rc-ava[data-flipping] {
+    transition: none !important;
   }
 }
