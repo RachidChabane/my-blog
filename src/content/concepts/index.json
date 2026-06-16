@@ -19,7 +19,8 @@
       "retrieval-evaluation"
     ],
     "articles": [
-      "evaluating-tool-using-agents"
+      "evaluating-tool-using-agents",
+      "slopcodebench-iterative-maintainability"
     ],
     "addedOn": "12-05-2026"
   },
@@ -138,6 +139,32 @@
     "addedOn": "23-05-2026"
   },
   {
+    "id": "code-erosion",
+    "label": {
+      "fr": "Érosion du code",
+      "en": "Code erosion"
+    },
+    "definition": {
+      "fr": "La dégradation structurelle progressive d'une base de code éditée à répétition : la complexité se concentre dans quelques fichiers surchargés et le code redondant s'accumule, si bien que chaque édition ultérieure devient plus coûteuse à relire que la précédente. Elle se mesure par l'érosion structurelle et la verbosité, et le code produit par les agents tend à s'éroder plus vite que le code maintenu par des humains.",
+      "en": "The gradual structural decay of a codebase that is edited over and over: complexity concentrates into a few overloaded files and redundant code accumulates, so each later edit costs more to review than the last. It is measured as structural erosion and verbosity, and agent-generated code tends to erode faster than human-maintained code."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "structural erosion",
+      "code rot",
+      "verbosity"
+    ],
+    "related": [
+      "coding-agents",
+      "agent-evaluation",
+      "software-design-canon"
+    ],
+    "articles": [
+      "slopcodebench-iterative-maintainability"
+    ],
+    "addedOn": "16-06-2026"
+  },
+  {
     "id": "code-rag",
     "label": {
       "fr": "RAG pour le code",
@@ -181,7 +208,8 @@
     ],
     "articles": [
       "deterministic-agent-workflows",
-      "canon-repriced"
+      "canon-repriced",
+      "slopcodebench-iterative-maintainability"
     ],
     "addedOn": "30-05-2026"
   },
@@ -344,6 +372,32 @@
       "hybrid-rag-rrf"
     ],
     "addedOn": "27-05-2026"
+  },
+  {
+    "id": "iterative-coding-benchmark",
+    "label": {
+      "fr": "Banc d'essai de code itératif",
+      "en": "Iterative coding benchmark"
+    },
+    "definition": {
+      "fr": "Un banc d'essai qui évalue un agent de code sur une suite de points de contrôle où il prolonge à répétition sa propre solution précédente, au lieu d'un correctif isolé. Il mesure si la qualité tient sur un travail soutenu en plusieurs étapes et révèle des modes de défaillance qu'une évaluation pass@1 en un coup ne peut pas voir.",
+      "en": "A benchmark that scores a coding agent across a sequence of checkpoints where it repeatedly extends its own previous solution, rather than on a single isolated patch. It measures whether quality holds over sustained, multi-step work and exposes failure modes that single-shot pass@1 evaluation cannot see."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "SlopCodeBench",
+      "long-horizon coding benchmark",
+      "checkpoint benchmark"
+    ],
+    "related": [
+      "coding-agents",
+      "agent-evaluation",
+      "code-erosion"
+    ],
+    "articles": [
+      "slopcodebench-iterative-maintainability"
+    ],
+    "addedOn": "16-06-2026"
   },
   {
     "id": "kv-cache",
