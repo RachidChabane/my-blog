@@ -25,7 +25,7 @@
       "sourceId": "s4",
       "label": "Enhancing the Robustness of LLM-Generated Code (Li et al.)",
       "url": "https://arxiv.org/abs/2503.20197",
-      "excerpt": "Evaluating four state-of-the-art code LLMs, we find that 35.2% of their outputs are less robust than human-written code, with over 90% of deficiencies caused by missing conditional checks."
+      "excerpt": "Evaluating four state-of-the-art code LLMs, we find that on average 43.1% of their generated code is less robust than human-written counterparts, with over 90% of deficiencies caused by missing conditional checks."
     },
     {
       "sourceId": "s5",

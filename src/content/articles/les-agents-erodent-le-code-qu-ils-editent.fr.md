@@ -23,7 +23,7 @@ publishState: published
 ---
 
 
-Le pass@1 en un coup et la maintenabilité itérative ne mesurent pas la même chose, et sur l'axe qui reflète le vrai travail logiciel, les meilleurs agents de code d'aujourd'hui sont faibles et se dégradent sur leur propre code. Le meilleur ne passe que 14,8 % des points de contrôle d'un banc d'essai où l'agent prolonge ses propres solutions [s1], et cet échec reste invisible au classement auquel la plupart des équipes se fient.
+Le pass@1 en un coup et la maintenabilité itérative ne mesurent pas la même chose, et sur l'axe qui reflète le vrai travail logiciel, les meilleurs agents de code d'aujourd'hui sont faibles et se dégradent sur leur propre code. Le meilleur taux de réussite par point de contrôle sur un banc d'essai où l'agent prolonge ses propres solutions n'est que de 17,2 % [s1], et cet échec reste invisible au classement auquel la plupart des équipes se fient.
 
 ## Le mirage du coup unique
 
@@ -33,21 +33,21 @@ Tout l'argumentaire du code agentique repose sur un travail soutenu, en plusieur
 
 ## Ce que mesure SlopCodeBench
 
-SlopCodeBench est conçu pour rompre ce silence. Il enchaîne 36 problèmes sur 196 points de contrôle où les agents prolongent à répétition leurs propres solutions ; le banc évalue donc la boucle que les équipes exécutent réellement, et non un instantané en un coup [s1]. Sur 15 agents de code, modèles ouverts et fermés confondus, le résultat est sans détour : aucun agent ne résout entièrement un problème de bout en bout, et le meilleur ne passe que 14,8 % des points de contrôle [s1]. Mis en regard des gros titres pass@1 quasi saturés, l'écart est tout l'enjeu. Les mêmes modèles qui paraissent aboutis sur des tâches isolées s'effondrent dès qu'il s'agit de continuer à bâtir sur ce qu'ils viennent de livrer.
+SlopCodeBench est conçu pour rompre ce silence. Il enchaîne 20 problèmes sur 93 points de contrôle où les agents prolongent à répétition leurs propres solutions ; le banc évalue donc la boucle que les équipes exécutent réellement, et non un instantané en un coup [s1]. Sur 11 modèles, ouverts et fermés confondus, le résultat est sans détour : aucun agent ne résout entièrement un problème de bout en bout, et le meilleur taux de réussite par point de contrôle n'est que de 17,2 % [s1]. Mis en regard des gros titres pass@1 quasi saturés, l'écart est tout l'enjeu. Les mêmes modèles qui paraissent aboutis sur des tâches isolées s'effondrent dès qu'il s'agit de continuer à bâtir sur ce qu'ils viennent de livrer.
 
 Le choix de conception qui produit ce résultat, c'est la boucle de points de contrôle. Plutôt que de noter un correctif face à une tâche figée, le banc redonne à l'agent sa propre solution précédente et lui demande d'aller plus loin, point de contrôle après point de contrôle. C'est le modèle le plus dépouillé possible du développement réel, et il suffit à séparer les agents qui savent amorcer un problème de ceux qui savent le tenir dans la durée.
 
 ## Le mode de défaillance qui s'aggrave
 
-La défaillance n'est pas une mauvaise réponse à un problème difficile : c'est une lente pourriture. SlopCodeBench suit deux formes de dégradation à mesure que l'agent travaille : l'érosion structurelle, où la complexité se concentre en quelques points surchargés, et la verbosité, où le code redondant s'accumule. Les deux grimpent au fil des points de contrôle : l'érosion structurelle monte dans 77 % des trajectoires et la verbosité dans 75,5 % [s1]. Plus l'agent édite sa propre sortie, plus la forme de cette sortie se dégrade.
+La défaillance n'est pas une mauvaise réponse à un problème difficile : c'est une lente pourriture. SlopCodeBench suit deux formes de dégradation à mesure que l'agent travaille : l'érosion structurelle, où la complexité se concentre en quelques points surchargés, et la verbosité, où le code redondant s'accumule. Les deux grimpent au fil des points de contrôle : l'érosion structurelle monte dans 80 % des trajectoires et la verbosité dans 89,8 % [s1]. Plus l'agent édite sa propre sortie, plus la forme de cette sortie se dégrade.
 
 Cette tendance signifie que la dixième auto-édition coûte plus cher à relire que la première, pas moins, et c'est un dommage facile à manquer. Chaque diff pris isolément peut sembler raisonnable. La pourriture, c'est le fichier qui se voit greffer une branche de plus au lieu d'un refactoring, la fonction utilitaire copiée au lieu d'être mutualisée. C'est précisément la tendance qu'un correctif unique ne peut jamais révéler.
 
 ## Les agents face aux dépôts humains
 
-Une courbe de dégradation ne prouve pas grand-chose à elle seule, car tout code se dégrade ; l'entropie n'est pas un problème propre aux agents. Le contrôle qui fait passer de l'impression à la preuve, c'est la référence humaine. Comparé à 473 dépôts Python open source, le code des agents est 2,3x plus verbeux et 2,0x plus érodé, et les dépôts humains se dégradent moins souvent et par marges plus faibles au fil de leur historique git [s1].
+Une courbe de dégradation ne prouve pas grand-chose à elle seule, car tout code se dégrade ; l'entropie n'est pas un problème propre aux agents. Le contrôle qui fait passer de l'impression à la preuve, c'est la référence humaine. Comparé à 48 dépôts Python open source, le code des agents est 2,2x plus verbeux et nettement plus érodé, et suivre ces dépôts dans le temps montre que le code humain reste stable tandis que le code des agents se dégrade à chaque itération [s1].
 
-Cette comparaison écarte l'hypothèse nulle du « tout code pourrit » : des humains qui éditent de vrais projets sur de vrais historiques pourrissent plus lentement et moins profondément que des agents qui éditent leur propre sortie ; l'érosion mesurée par SlopCodeBench n'est donc pas une propriété du logiciel en général, mais de la manière dont ces agents construisent. C'est l'écart entre la dégradation des agents et celle des humains qu'une décision d'autonomie doit intégrer.
+Cette comparaison écarte l'hypothèse nulle du « tout code pourrit » : sur de vrais historiques git, le code humain reste stable là où les agents qui éditent leur propre sortie se dégradent à chaque itération ; l'érosion mesurée par SlopCodeBench n'est donc pas une propriété du logiciel en général, mais de la manière dont ces agents construisent. C'est l'écart entre la dégradation des agents et celle des humains qu'une décision d'autonomie doit intégrer.
 
 ## Le contre-argument, et sa réponse
 
@@ -62,7 +62,7 @@ Une seconde jambe, plus faible, pointe dans le même sens. L'analyse par GitClea
 Je tiens ce signal pour cohérent avec la thèse, non pour sa preuve. Il est observationnel et ne peut isoler la paternité des agents ; les mêmes années portent des gels d'embauche, une pression sur la vélocité et des recompositions d'équipes, autant de facteurs qui entament à eux seuls la discipline de refactoring. C'est la comparaison contrôlée et adossée à la référence humaine de SlopCodeBench qui porte le poids causal. GitClear corrobore que le résultat de laboratoire n'est pas un artefact de banc d'essai.
 
 > [!CONFIRMED]
-> Face à 473 dépôts Python humains, le code des agents est 2,0x plus érodé et 2,3x plus verbeux, et les dépôts humains se dégradent moins souvent et par marges plus faibles [s1].
+> Face à 48 dépôts Python humains, le code des agents est nettement plus érodé et 2,2x plus verbeux, tandis que le code humain reste stable au fil des historiques git et que le code des agents se dégrade à chaque itération [s1].
 
 > [!INFERRED]
 > D'après mon expérience, c'est cet écart qui compte pour l'autonomie : le risque n'est pas un mauvais premier correctif, que la relecture intercepte, mais une lente dérive structurelle au fil des éditions de l'agent, qu'aucun diff isolé ne paraît assez grave pour arrêter.
@@ -74,4 +74,4 @@ La conclusion bornée est plus étroite que ne le laisse croire le classement, e
 > [!WARNING]
 > N'accordez pas à un agent une autonomie durable sur une base de code au seul vu d'un chiffre pass@1. Ce chiffre est muet sur le mode de défaillance qui décide de l'issue.
 
-Concrètement, que surveiller quand vous confiez à un agent une tâche à long horizon : suivez la tendance au fil de ses propres éditions, pas la qualité du premier correctif. La complexité se concentre-t-elle dans quelques fichiers qu'il rouvre sans cesse ? Colle-t-il des variantes au lieu de refactorer le chemin commun ? Ce sont les premiers contours des courbes à 77 % et 75,5 % [s1], et ils se manifestent à la dixième édition, pas à la première. Verrouillez là-dessus, et le pass@1 redevient ce qu'il a toujours été : un signal réel mais partiel, pas un permis d'autonomie.
+Concrètement, que surveiller quand vous confiez à un agent une tâche à long horizon : suivez la tendance au fil de ses propres éditions, pas la qualité du premier correctif. La complexité se concentre-t-elle dans quelques fichiers qu'il rouvre sans cesse ? Colle-t-il des variantes au lieu de refactorer le chemin commun ? Ce sont les premiers contours des courbes à 80 % et 89,8 % [s1], et ils se manifestent à la dixième édition, pas à la première. Verrouillez là-dessus, et le pass@1 redevient ce qu'il a toujours été : un signal réel mais partiel, pas un permis d'autonomie.

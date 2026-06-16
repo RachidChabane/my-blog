@@ -78,7 +78,7 @@ L'étude dégage tout de même un résultat négatif solide, et il va à rebours
 
 ## Le levier que la plupart des billets ignorent
 
-Pendant que le domaine débat des points de coupe, on règle rarement le modèle d'embedding avec la même rigueur, alors que c'est lui qui creuse les plus grands écarts. Les chiffres le confirment. Sur le benchmark CoIR, CodeXEmbed-7B dépasse le précédent modèle de code de référence Voyage-Code-002 de plus de 20 % en moyenne sur les 10 jeux de données [s4]. Un écart de 20 % sur la qualité de récupération en changeant d'encodeur écrase un écart de 4,3 points de Recall@5 en changeant la coupe, et l'encodeur est un identifiant de modèle qu'on change dans la configuration d'indexation, pas un analyseur d'arbre syntaxique à écrire et déboguer pour chaque langage. D'expérience, c'est le réglage le plus rentable de toute la chaîne, et celui que les équipes touchent en dernier.
+Pendant que le domaine débat des points de coupe, on règle rarement le modèle d'embedding avec la même rigueur, alors que c'est lui qui creuse les plus grands écarts. Les chiffres le confirment. Sur le benchmark CoIR, CodeXEmbed-7B dépasse le précédent modèle de code de référence Voyage-Code-002 de plus de 20 % en moyenne sur les 10 jeux de données [s4]. Un gain relatif de 20 % sur la qualité de récupération en changeant d'encodeur est un levier autrement plus grand, là où changer la coupe ne rapporte que quelques points absolus de Recall@5 sur RepoEval, et l'encodeur est un identifiant de modèle qu'on change dans la configuration d'indexation, pas un analyseur d'arbre syntaxique à écrire et déboguer pour chaque langage. D'expérience, c'est le réglage le plus rentable de toute la chaîne, et celui que les équipes touchent en dernier.
 
 ## Verdict calibré
 
