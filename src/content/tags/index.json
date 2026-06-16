@@ -29,15 +29,5 @@
     "id": "qualite",
     "slug": "qualite",
     "label": { "fr": "qualité", "en": "quality" }
-  },
-  {
-    "id": "benchmarks",
-    "slug": "benchmarks",
-    "label": { "fr": "benchmarks", "en": "benchmarks" }
-  },
-  {
-    "id": "ai-assisted-coding",
-    "slug": "ai-assisted-coding",
-    "label": { "fr": "code assisté par IA", "en": "AI-assisted coding" }
   }
 ]

@@ -6,8 +6,8 @@ title: Les agents érodent le code qu'ils continuent d'éditer
 publishDate: 16-06-2026
 tags:
 - agents
-- benchmarks
-- ai-assisted-coding
+- evaluation
+- agentic-coding
 category: essays
 difficulty: 3
 sources:

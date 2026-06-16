@@ -2,10 +2,10 @@ import { test, expect } from '@playwright/test';
 
 // S4 tag directory + S5 tag index. Both routes exist now, so directory → index is
 // clicked (the task's headline e2e). Counts are pinned to the seed corpus
-// (agents=2, qualite=2) and cross-check tagCounts (S4) against getArticlesByTag (S5).
+// (agents=3, qualite=2) and cross-check tagCounts (S4) against getArticlesByTag (S5).
 
 test.describe('S4 tag directory', () => {
-  test('FR: 7 curated topics with counts; agents shows 2', async ({ page }) => {
+  test('FR: 7 curated topics with counts; agents shows 3', async ({ page }) => {
     await page.goto('/fr/tags/');
     await expect(page.locator('h1')).toHaveText('Sujets');
     await expect(page.locator('.rc-tagdir .rc-tagcard')).toHaveCount(7);
@@ -13,7 +13,7 @@ test.describe('S4 tag directory', () => {
       '.rc-tagdir .rc-tagcard[href="/fr/tags/agents/"]'
     );
     await expect(agents).toBeVisible();
-    await expect(agents.locator('.rc-tagcard__count')).toHaveText('2');
+    await expect(agents.locator('.rc-tagcard__count')).toHaveText('3');
   });
 
   test('EN: parallel directory, English h1, /en/ hrefs', async ({ page }) => {
@@ -27,7 +27,7 @@ test.describe('S4 tag directory', () => {
 });
 
 test.describe('S4 → S5 navigation (the headline flow)', () => {
-  test('FR: click "agents" → its tag index lists 2 articles, chip active, back-link to S4', async ({
+  test('FR: click "agents" → its tag index lists 3 articles, chip active, back-link to S4', async ({
     page,
   }) => {
     await page.goto('/fr/tags/');
@@ -36,8 +36,8 @@ test.describe('S4 → S5 navigation (the headline flow)', () => {
 
     // h1 = the localized tag label
     await expect(page.locator('h1')).toHaveText('agents');
-    // exactly 2 rows — cross-checks S4 count (tagCounts) vs S5 rows (getArticlesByTag)
-    await expect(page.locator('article.rc-arow')).toHaveCount(2);
+    // exactly 3 rows — cross-checks S4 count (tagCounts) vs S5 rows (getArticlesByTag)
+    await expect(page.locator('article.rc-arow')).toHaveCount(3);
     // the chip rail marks THIS tag active (locks the TagChips activeSlug reuse)
     const onChip = page.locator('[data-tag-rail] a.rc-chip.is-on');
     await expect(onChip).toHaveText('agents');

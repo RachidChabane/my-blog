@@ -6,8 +6,8 @@ title: Agents Erode the Code They Keep Editing
 publishDate: 16-06-2026
 tags:
 - agents
-- benchmarks
-- ai-assisted-coding
+- evaluation
+- agentic-coding
 category: essays
 difficulty: 3
 sources:
