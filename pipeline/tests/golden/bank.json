@@ -224,5 +224,27 @@
     },
     "expect_contains": ["fr-diacritics", "modele"],
     "why": "A deaccented French word in the body ('modele' should carry its grave accent) (D-007, house_style.md section 6). The slug is intentionally ASCII and must NOT trip the scan; only the title + body prose are checked. Paired with a CLEAN style verdict so the ONLY block cause is the deterministic FR-diacritics scan. The M-4 style-fr gate must BLOCK."
+  },
+  {
+    "id": "source-fidelity-fabricated-numbers",
+    "gate": "source_fidelity",
+    "args": [
+      "--lang",
+      "en",
+      "--fetch",
+      "fake",
+      "--source-texts",
+      "source_texts.json"
+    ],
+    "artifacts": {
+      "claim_source_map.json": "fixtures/claim_source_map.fabricated_numbers.json",
+      "source_texts.json": "fixtures/source_texts.fabricated_numbers.json"
+    },
+    "expect_contains": [
+      "ABSENT",
+      "14.8",
+      "https://arxiv.example/abs/slopcodebench"
+    ],
+    "why": "REL-2: a cited excerpt invents numbers (196 checkpoints, 14.8% pass, 2.3x verbose) that are absent from the live source (which says 93 / 17.2% / 2.2x) -- a fabricated-or-misquoted excerpt on a real URL, the failure mode factcheck/grounding cannot see because both trust the excerpt. The source-fidelity gate, given the seeded source text, must BLOCK naming the missing figures. Deterministic-only: the FakeSourceFetcher seed (--source-texts) is the proof; the real HTTP backend activates at bring-up (PIPELINE_SOURCE_VERIFY=real)."
   }
 ]

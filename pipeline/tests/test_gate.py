@@ -72,6 +72,8 @@ _DRAFT_GATE_NAMES = [
     "editorial-quality",  # task 4: G3, a draft gate -> precedes the argue gate in load order
     "source-quality",     # task 5: G2 -- draft gate; precedes the argue gate in load order
     "difficulty-rating",  # M-4 difficulty: 1-5 rubric rating present + fr/en parity
+    "source-fidelity-fr",  # REL-2: cited-excerpt numbers must appear in the live source
+    "source-fidelity-en",
 ]
 _ARGUE_GATE_NAMES = ["argument-rigor", "source-independence"]  # task 6 adds source-independence
 _ALL_GATE_NAMES = _DRAFT_GATE_NAMES + _ARGUE_GATE_NAMES  # invariants.yaml load order
@@ -796,7 +798,7 @@ def test_run_fallback_blocked_argue_dry_skip_names_argue(config):
 # ---------------------------------------------------------------------------
 
 
-def test_invariants_load_as_eleven_blocking_shell_gates():
+def test_invariants_load_as_thirteen_blocking_shell_gates():
     ensure_cpe_importable()
     from claude_plan_execute.gates import GateRegistry
     from claude_plan_execute.gates.invariants import (
@@ -808,8 +810,8 @@ def test_invariants_load_as_eleven_blocking_shell_gates():
     with redirect_stdout(out), redirect_stderr(err):
         pairs = load_invariants(_PIPELINE_DIR / "invariants.yaml")
     # load order == _DRAFT_GATE_NAMES + _ARGUE_GATE_NAMES: the 6 M-4 + editorial-quality (task 4)
-    # + source-quality (task 5) + difficulty-rating (the rubric gate) precede argument-rigor
-    # (task 3) and source-independence (task 6), appended LAST.
+    # + source-quality (task 5) + difficulty-rating (the rubric gate) + source-fidelity fr/en
+    # (REL-2) precede argument-rigor (task 3) and source-independence (task 6), appended LAST.
     assert [name for name, _ in pairs] == _ALL_GATE_NAMES
     assert all(gate.kind == "shell" for _, gate in pairs)
     assert all(gate.on_failure == "block" for _, gate in pairs)

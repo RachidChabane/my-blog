@@ -1,0 +1,18 @@
+{
+  "claims": [
+    {
+      "lang": "en",
+      "claim": "The best agent passes only 14.8% of the benchmark's checkpoints.",
+      "source_id": "s1"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "s1",
+      "label": "SlopCodeBench (arXiv)",
+      "url": "https://arxiv.example/abs/slopcodebench",
+      "retrieved_at": "2026-06-16",
+      "excerpt": "We introduce a benchmark of 196 checkpoints; the best agent passes 14.8% of checkpoints; agent code is 2.3x more verbose than human code."
+    }
+  ]
+}

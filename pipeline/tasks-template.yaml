@@ -116,6 +116,8 @@ tasks:
         editorial-quality,
         source-quality,
         difficulty-rating,
+        source-fidelity-fr,
+        source-fidelity-en,
       ]
   - id: publish
     phase: publish

@@ -1,0 +1,3 @@
+{
+  "https://arxiv.example/abs/slopcodebench": "We introduce SlopCodeBench, a benchmark of 93 checkpoints where agents repeatedly extend their own solutions. Across 11 models the highest checkpoint solve rate is 17.2%. Against open-source repositories, agent code is 2.2x more verbose than human code."
+}

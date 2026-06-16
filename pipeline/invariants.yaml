@@ -110,6 +110,34 @@
   timeout_minutes: 5
   comment: 'M-4 difficulty: integer 1-5 rubric rating present in both drafts + fr/en parity.'
 
+# REL-2 SOURCE-FIDELITY (docs/pipeline-audit-2026-06-11.md) -- scoped to the `draft` task via
+# draft.gates_extra, per language. Re-fetches each cited source and BLOCKs when the distinctive
+# numbers in its captured excerpt are absent from the live source (a fabricated/misquoted excerpt
+# on a real URL -- the one failure factcheck/grounding cannot see, since both trust the excerpt).
+# DEFAULT-INERT: the gate's backend is `auto` -> fake unless PIPELINE_SOURCE_VERIFY=real is set in
+# the environment, so the slate stays green offline / in CI with no network. The scheduled run /
+# bring-up opts in by exporting PIPELINE_SOURCE_VERIFY=real (DEPLOY.md), exactly as grounding's
+# real link-checker is deferred. No --fetch flag here keeps the wired tail `--lang {fr,en}` (the
+# golden bank's prefix-match contract). NOTE arxiv version drift: the gate fetches /abs (latest),
+# correct for publish-time verification (the draft cites the latest version captured this run).
+- name: source-fidelity-fr
+  kind: shell
+  command: 'PYTHONPATH=../../.. python3 -m pipeline.gate.source_fidelity --run-dir . --lang fr'
+  on_failure: block
+  when: [always] # scoped to the draft task via draft.gates_extra
+  parallel_safe: true # the gate only READS the artifact the draft phase wrote (+ live HTTP if real)
+  timeout_minutes: 10 # network I/O when PIPELINE_SOURCE_VERIFY=real; a no-op otherwise
+  comment: 'REL-2 source-fidelity: cited-excerpt numbers must appear in the live source (default-inert; PIPELINE_SOURCE_VERIFY=real activates).'
+
+- name: source-fidelity-en
+  kind: shell
+  command: 'PYTHONPATH=../../.. python3 -m pipeline.gate.source_fidelity --run-dir . --lang en'
+  on_failure: block
+  when: [always]
+  parallel_safe: true
+  timeout_minutes: 10
+  comment: 'REL-2 source-fidelity: cited-excerpt numbers must appear in the live source (default-inert; PIPELINE_SOURCE_VERIFY=real activates).'
+
 # G1 ARGUMENT-RIGOR (task 3) -- scoped to the `argue` task via argue.gates_extra, NOT draft.
 # Single gate, NO --lang: the brief's claim_skeleton is language-neutral, so the thesis is
 # judged once, before the bilingual draft is paid for. The empty tail after `--run-dir .`
