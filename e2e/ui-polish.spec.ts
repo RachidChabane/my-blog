@@ -170,3 +170,39 @@ test.describe('inline citation markers are real, new-tab links', () => {
     }
   });
 });
+
+test.describe('article carries a prominent TOP "Ask the agent" entry', () => {
+  test('a featured card sits above the prose AND the quiet button remains below; the feature opens the panel scoped + pre-filled', async ({
+    page,
+  }) => {
+    await page.goto(FR);
+
+    // Two scoped triggers: the feature card (top) and the quiet button (end).
+    const triggers = page.locator('[data-avatar-ask]');
+    await expect(triggers).toHaveCount(2);
+
+    const feature = page.locator('button.rc-askf');
+    const quiet = page.locator('button.rc-ask__btn');
+    await expect(feature).toBeVisible();
+    await expect(quiet).toHaveCount(1);
+    // The feature card carries the punchy "Demander à l'agent" label + the agent
+    // lattice glyph, and is the FIRST trigger in the DOM (above the prose).
+    await expect(feature).toContainText('Demander à l’agent');
+    await expect(feature.locator('.rc-askf__mark')).toBeAttached();
+    await expect(triggers.first()).toHaveClass(/rc-askf/);
+
+    // The feature card sits ABOVE the quiet end-of-article button (top vs end).
+    const featureY = (await feature.boundingBox())!.y;
+    const quietY = (await quiet.boundingBox())!.y;
+    expect(featureY).toBeLessThan(quietY);
+
+    // Clicking it opens the panel, scopes to this article, and pre-fills the seed.
+    const panel = page.locator('[data-avatar-panel]');
+    await expect(panel).toBeHidden();
+    await feature.click();
+    await expect(panel).toBeVisible();
+    const input = page.locator('[data-avatar-input]');
+    await expect(input).toBeFocused();
+    await expect(input).not.toHaveValue('');
+  });
+});

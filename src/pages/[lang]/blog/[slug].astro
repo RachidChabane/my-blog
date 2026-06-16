@@ -310,6 +310,18 @@ const title = `${entry.data.title} · rachid chabane`;
 
       <div class="rc-doc__main">
         {
+          /* Prominent top entry to the scoped assistant — puts the feature forward
+           before the read. Same delegated [data-avatar-ask] wiring as the quiet
+           end-of-article button; OUTSIDE data-pagefind-body (placed before it). */
+        }
+        <ArticleAskButton
+          variant="feature"
+          prompt={s.askFeaturePrompt}
+          label={s.askFeatureLabel}
+          seed={askSeed}
+          scope={entry.data.slug}
+        />
+        {
           /* S9 search corpus (task 15): data-pagefind-body restricts Pagefind to the
             prose. Glossary / Sources / rail sit outside it so neighbour text and
             concept definitions never pollute article search results. */

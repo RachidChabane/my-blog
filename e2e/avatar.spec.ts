@@ -275,10 +275,12 @@ test.describe('S10 avatar overlay', () => {
   });
 });
 
-// Per-article "ask about this article" entry button (ArticleAskButton). A static
-// button at the end of the article opens the always-present avatar panel, pre-fills
-// the composer with a build-time seed, and SCOPES the session to this article
-// (scopeSlug) so the avatar answers from this piece (and honestly refuses otherwise).
+// Per-article "ask about this article" entry buttons (ArticleAskButton). Two
+// static triggers — a prominent feature card at the TOP and a quiet button at the
+// END — open the always-present avatar panel, pre-fill the composer with a
+// build-time seed, and SCOPE the session to this article (scopeSlug) so the avatar
+// answers from this piece (and honestly refuses otherwise). `.first()` is the top
+// feature card; both carry identical scope/seed wiring.
 test.describe('S10 avatar — per-article ask button', () => {
   const EN_ARTICLE = '/en/blog/hybrid-rag-reciprocal-rank-fusion/';
   const EN_SLUG = 'hybrid-rag-reciprocal-rank-fusion';
@@ -288,7 +290,7 @@ test.describe('S10 avatar — per-article ask button', () => {
     page,
   }) => {
     await page.goto(EN_ARTICLE);
-    const ask = page.locator('[data-avatar-ask]');
+    const ask = page.locator('[data-avatar-ask]').first();
     const panel = page.locator('[data-avatar-panel]');
     await expect(ask).toBeVisible();
     await expect(panel).toBeHidden();
@@ -315,7 +317,7 @@ test.describe('S10 avatar — per-article ask button', () => {
       return fulfillSSE(route, GROUNDED_EN);
     });
     await page.goto(EN_ARTICLE);
-    const ask = page.locator('[data-avatar-ask]');
+    const ask = page.locator('[data-avatar-ask]').first();
     await ask.scrollIntoViewIfNeeded();
     await ask.click();
 

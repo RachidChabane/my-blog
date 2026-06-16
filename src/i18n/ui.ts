@@ -152,6 +152,8 @@ export interface ArticleDetailStrings {
   askPrompt: string; // quiet lead-in above the "ask the agent" entry button
   askLabel: string; // entry-button text + aria-label (opens the avatar panel)
   askSeed: string; // seed question template; "{topic}" is filled in the page
+  askFeatureLabel: string; // prominent TOP entry-button text + aria-label ("Ask the agent")
+  askFeaturePrompt: string; // inviting one-liner under the featured top entry
   copyLink: string; // aria-label for the per-heading copy-permalink button
   copyCode: string; // aria-label/text for the copy-code-block button
   copied: string; // transient "copied" confirmation (both link + code)
@@ -169,6 +171,9 @@ export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
     askPrompt: 'Envie d’aller plus loin ?',
     askLabel: 'Interroger l’agent sur cet article',
     askSeed: 'Que dit cet article sur {topic} ?',
+    askFeatureLabel: 'Demander à l’agent',
+    askFeaturePrompt:
+      'Une question sur cet article ? Obtenez une réponse sourcée, tout de suite.',
     copyLink: 'Copier le lien vers cette section',
     copyCode: 'Copier le code',
     copied: 'Copié',
@@ -184,6 +189,9 @@ export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
     askPrompt: 'Want to go deeper?',
     askLabel: 'Ask the agent about this article',
     askSeed: 'What does this article say about {topic}?',
+    askFeatureLabel: 'Ask the agent',
+    askFeaturePrompt:
+      'A question about this article? Get a sourced answer, instantly.',
     copyLink: 'Copy link to this section',
     copyCode: 'Copy code',
     copied: 'Copied',

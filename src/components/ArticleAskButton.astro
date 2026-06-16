@@ -1,41 +1,78 @@
 ---
 /**
- * Per-article "ask the agent about this article" entry point. Sits at the end of
- * the <article>, OUTSIDE data-pagefind-body, so it never pollutes the Pagefind
- * corpus. Ships ZERO JS of its own: a static <button> carrying a build-time seed
- * (data-avatar-seed) and the article slug (data-avatar-scope). The always-present
- * Avatar island (src/components/Avatar.astro) has a delegated [data-avatar-ask]
- * listener that opens the panel, SCOPES the session to this article (scopeSlug),
- * and pre-fills the composer. Scoped retrieval means the avatar answers from THIS
- * article and honestly refuses ("this piece doesn't cover that") when it doesn't.
- * Tokens only; AA-compliant foreground (no sub-AA token). A plain <div>, not a
- * landmark, to avoid landmark collisions.
+ * Per-article "ask the agent about this article" entry point. Ships ZERO JS of
+ * its own: a static control carrying a build-time seed (data-avatar-seed) and the
+ * article slug (data-avatar-scope). The always-present Avatar island has a
+ * delegated [data-avatar-ask] listener that opens the panel, SCOPES the session
+ * to this article (scopeSlug), and pre-fills the composer — so any number of
+ * triggers on a page all work. Scoped retrieval means the avatar answers from THIS
+ * article and honestly refuses ("this piece doesn't cover that") otherwise.
+ *
+ * Two variants:
+ *  - 'quiet'   (default): a restrained bordered button under a hairline, used at
+ *               the END of the article.
+ *  - 'feature': a prominent accent card used at the TOP of the article that puts
+ *               the assistant forward and invites a click. Carries a small static
+ *               echo of the launcher's lattice mark so it reads as "the agent".
+ *
+ * Sits OUTSIDE data-pagefind-body so it never pollutes the search corpus. Tokens
+ * only; AA-compliant foreground. A plain element, not a landmark (no collisions).
  */
 interface Props {
-  prompt: string; // quiet lead-in line
-  label: string; // button text + aria-label
+  prompt: string; // lead-in / invitation line
+  label: string; // button text + aria-label (opens the avatar panel)
   seed: string; // localized seed question, pre-filled into the composer
   scope: string; // article slug -> data-avatar-scope -> scopeSlug (scoped retrieval)
+  variant?: 'quiet' | 'feature';
 }
-const { prompt, label, seed, scope } = Astro.props;
+const { prompt, label, seed, scope, variant = 'quiet' } = Astro.props;
 ---
 
-<div class="rc-ask">
-  <p class="rc-ask__prompt">{prompt}</p>
-  <button
-    class="rc-ask__btn"
-    type="button"
-    data-avatar-ask
-    data-avatar-scope={scope}
-    data-avatar-seed={seed}
-    aria-label={label}
-  >
-    <span class="rc-ask__text">{label}</span>
-    <span class="rc-ask__arrow" aria-hidden="true">→</span>
-  </button>
-</div>
+{
+  variant === 'feature' ? (
+    <button
+      class="rc-askf"
+      type="button"
+      data-avatar-ask
+      data-avatar-scope={scope}
+      data-avatar-seed={seed}
+      aria-label={label}
+    >
+      <span class="rc-askf__mark" aria-hidden="true">
+        {Array.from({ length: 16 }).map(() => (
+          <i />
+        ))}
+      </span>
+      <span class="rc-askf__text">
+        <span class="rc-askf__label">{label}</span>
+        <span class="rc-askf__prompt">{prompt}</span>
+      </span>
+      <span class="rc-askf__arrow" aria-hidden="true">
+        →
+      </span>
+    </button>
+  ) : (
+    <div class="rc-ask">
+      <p class="rc-ask__prompt">{prompt}</p>
+      <button
+        class="rc-ask__btn"
+        type="button"
+        data-avatar-ask
+        data-avatar-scope={scope}
+        data-avatar-seed={seed}
+        aria-label={label}
+      >
+        <span class="rc-ask__text">{label}</span>
+        <span class="rc-ask__arrow" aria-hidden="true">
+          →
+        </span>
+      </button>
+    </div>
+  )
+}
 
 <style>
+  /* ── quiet (end-of-article) ─────────────────────────────────────────────── */
   .rc-ask {
     margin-top: 40px;
     padding-top: 28px;
@@ -77,5 +114,98 @@ const { prompt, label, seed, scope } = Astro.props;
   }
   .rc-ask__btn:hover .rc-ask__arrow {
     transform: translateX(3px);
+  }
+
+  /* ── feature (top-of-article) — a prominent, inviting accent card ───────── */
+  .rc-askf {
+    width: 100%;
+    margin: 0 0 36px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 18px;
+    text-align: left;
+    background: var(--accent-soft);
+    border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition:
+      border-color var(--dur-hover) var(--ease-soft),
+      box-shadow var(--dur-hover) var(--ease-soft),
+      transform var(--dur-hover) var(--ease-soft),
+      background var(--dur-hover) var(--ease-soft);
+  }
+  .rc-askf:hover,
+  .rc-askf:focus-visible {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 13%, var(--surface));
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  /* a static echo of the launcher lattice (radial mesh: bright 2x2 core, faint
+     corners) so the card reads as the same assistant. */
+  .rc-askf__mark {
+    flex: none;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3px;
+    width: 30px;
+    height: 30px;
+  }
+  .rc-askf__mark i {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.5; /* edge ring */
+  }
+  .rc-askf__mark i:nth-child(6),
+  .rc-askf__mark i:nth-child(7),
+  .rc-askf__mark i:nth-child(10),
+  .rc-askf__mark i:nth-child(11) {
+    opacity: 1; /* bright 2x2 core */
+  }
+  .rc-askf__mark i:nth-child(1),
+  .rc-askf__mark i:nth-child(4),
+  .rc-askf__mark i:nth-child(13),
+  .rc-askf__mark i:nth-child(16) {
+    opacity: 0.24; /* faint corners */
+    background: color-mix(in srgb, var(--accent) 60%, var(--accent-deep));
+  }
+  .rc-askf__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .rc-askf__label {
+    font-family: var(--font-display);
+    font-variation-settings:
+      'opsz' 28,
+      'wght' 560;
+    font-size: 16px;
+    color: var(--fg);
+  }
+  .rc-askf__prompt {
+    font-size: var(--text-meta);
+    line-height: 1.4;
+    color: var(--fg-muted);
+  }
+  .rc-askf__arrow {
+    flex: none;
+    font-size: 18px;
+    color: var(--accent);
+    transition: transform var(--dur-hover) var(--ease-soft);
+  }
+  .rc-askf:hover .rc-askf__arrow,
+  .rc-askf:focus-visible .rc-askf__arrow {
+    transform: translateX(4px);
+  }
+  @media (max-width: 720px) {
+    /* tighten on narrow screens: the mark yields, the text + CTA stay */
+    .rc-askf__mark {
+      display: none;
+    }
   }
 </style>
