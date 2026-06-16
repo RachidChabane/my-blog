@@ -657,7 +657,12 @@ def test_G_rendered_crontab_deploy_env_on_run_only():
     out = cron.render_crontab()
     run_line = next(line for line in out.splitlines() if " run    " in line)
     mon_line = next(line for line in out.splitlines() if " monitor " in line)
-    for var in ("PIPELINE_GIT_PUSH=1", "PIPELINE_EMBEDDER=real", "PIPELINE_MODEL=opus"):
+    for var in (
+        "PIPELINE_GIT_PUSH=1",
+        "PIPELINE_EMBEDDER=real",
+        "PIPELINE_MODEL=opus",
+        "PIPELINE_SOURCE_VERIFY=real",  # REL-2 gate activation rides the run command
+    ):
         assert var in run_line, var
         assert var not in mon_line, f"{var} must not ride the monitor command"
 

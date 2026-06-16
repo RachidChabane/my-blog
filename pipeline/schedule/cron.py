@@ -154,12 +154,17 @@ def _cron_weekday(pywd: int) -> int:
 #   PIPELINE_EMBEDDER=real-> select dedups with the multilingual embedder, not the fake.
 #   PIPELINE_MODEL=opus   -> the daily run matches the model that produced the reference
 #                           articles (owner decision 2026-06-11).
+#   PIPELINE_SOURCE_VERIFY=real -> activates the REL-2 source-fidelity gate's live HTTP
+#                           backend so a fabricated/misquoted excerpt is caught at publish
+#                           time (default-inert otherwise). Validated against the published
+#                           corpus with 0 false-blocks before activation (2026-06-17).
 # Owner-supplied notification URLs (ALERT_WEBHOOK_URL / UPTIME_PING_URL) are emitted as
 # commented TODO lines, not baked, because they are secrets the renderer cannot invent.
 DEPLOY_RUN_ENV: tuple[tuple[str, str], ...] = (
     ("PIPELINE_GIT_PUSH", "1"),
     ("PIPELINE_EMBEDDER", "real"),
     ("PIPELINE_MODEL", "opus"),
+    ("PIPELINE_SOURCE_VERIFY", "real"),
 )
 # Dead-man's-switch monitor hour, LOCAL (audit SCHED-4). The Cadence fire is UTC-framed
 # (hour=9); the monitor must run at >= cadence_hour_UTC + grace(6h) = 15:00 UTC for MISSED

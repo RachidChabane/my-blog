@@ -5,6 +5,6 @@
 # notified of failures, ALSO add at the top of the crontab (owner secrets):
 #   ALERT_WEBHOOK_URL=https://...   UPTIME_PING_URL=https://...
 # RUN: daily at 09:00 local - drive one editorial slate.
-0 9 * * *  cd <REPO_ROOT> && PIPELINE_GIT_PUSH=1 PIPELINE_EMBEDDER=real PIPELINE_MODEL=opus python3 -m pipeline.schedule.cron run    >> <STATE_DIR>/cron.log 2>&1
+0 9 * * *  cd <REPO_ROOT> && PIPELINE_GIT_PUSH=1 PIPELINE_EMBEDDER=real PIPELINE_MODEL=opus PIPELINE_SOURCE_VERIFY=real python3 -m pipeline.schedule.cron run    >> <STATE_DIR>/cron.log 2>&1
 # MONITOR: daily 18:00 local dead-man's-switch (alert on missed/stalled).
 0 18 * * *   cd <REPO_ROOT> && python3 -m pipeline.schedule.cron monitor >> <STATE_DIR>/cron.log 2>&1

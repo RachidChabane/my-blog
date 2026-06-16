@@ -17,6 +17,7 @@
     <key>PIPELINE_GIT_PUSH</key><string>1</string>
     <key>PIPELINE_EMBEDDER</key><string>real</string>
     <key>PIPELINE_MODEL</key><string>opus</string>
+    <key>PIPELINE_SOURCE_VERIFY</key><string>real</string>
   </dict>
   <key>ProgramArguments</key>
   <array>
