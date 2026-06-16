@@ -2,10 +2,13 @@ import { test, expect } from '@playwright/test';
 
 // S4 tag directory + S5 tag index. Both routes exist now, so directory → index is
 // clicked (the task's headline e2e). Counts are pinned to the seed corpus
-// (agents=3, qualite=2) and cross-check tagCounts (S4) against getArticlesByTag (S5).
+// Per-tag counts are corpus-robust (the daily engine grows them): assert a positive
+// count and cross-check tagCounts (S4) == getArticlesByTag (S5), never a fixed literal.
 
 test.describe('S4 tag directory', () => {
-  test('FR: 7 curated topics with counts; agents shows 3', async ({ page }) => {
+  test('FR: 7 curated topics; agents card shows a positive count', async ({
+    page,
+  }) => {
     await page.goto('/fr/tags/');
     await expect(page.locator('h1')).toHaveText('Sujets');
     await expect(page.locator('.rc-tagdir .rc-tagcard')).toHaveCount(7);
@@ -13,7 +16,10 @@ test.describe('S4 tag directory', () => {
       '.rc-tagdir .rc-tagcard[href="/fr/tags/agents/"]'
     );
     await expect(agents).toBeVisible();
-    await expect(agents.locator('.rc-tagcard__count')).toHaveText('3');
+    // corpus-robust: the daily engine grows tag counts, so assert a positive
+    // integer, not a fixed literal (the S4<->S5 cross-check below pins the invariant)
+    const n = Number(await agents.locator('.rc-tagcard__count').innerText());
+    expect(n).toBeGreaterThanOrEqual(1);
   });
 
   test('EN: parallel directory, English h1, /en/ hrefs', async ({ page }) => {
@@ -27,17 +33,24 @@ test.describe('S4 tag directory', () => {
 });
 
 test.describe('S4 → S5 navigation (the headline flow)', () => {
-  test('FR: click "agents" → its tag index lists 3 articles, chip active, back-link to S4', async ({
+  test('FR: click "agents" → its tag index lists the same count as the directory, chip active, back-link to S4', async ({
     page,
   }) => {
     await page.goto('/fr/tags/');
+    // read the directory (S4) count, then assert the index (S5) lists exactly that
+    // many rows — the invariant survives the daily engine growing the corpus
+    const s4count = Number(
+      await page
+        .locator('.rc-tagcard[href="/fr/tags/agents/"] .rc-tagcard__count')
+        .innerText()
+    );
     await page.locator('.rc-tagcard[href="/fr/tags/agents/"]').click();
     await expect(page).toHaveURL('/fr/tags/agents/');
 
     // h1 = the localized tag label
     await expect(page.locator('h1')).toHaveText('agents');
-    // exactly 3 rows — cross-checks S4 count (tagCounts) vs S5 rows (getArticlesByTag)
-    await expect(page.locator('article.rc-arow')).toHaveCount(3);
+    // cross-checks S4 count (tagCounts) vs S5 rows (getArticlesByTag)
+    await expect(page.locator('article.rc-arow')).toHaveCount(s4count);
     // the chip rail marks THIS tag active (locks the TagChips activeSlug reuse)
     const onChip = page.locator('[data-tag-rail] a.rc-chip.is-on');
     await expect(onChip).toHaveText('agents');

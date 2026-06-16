@@ -15,6 +15,7 @@ and therefore ``pipeline`` — does not pull ``pipeline.stages.humanize`` into
 the runpy double-import RuntimeWarning the import-light ``stages`` package avoids). Mirrors
 the lazy ``select._make_embedder`` idiom.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -33,7 +34,7 @@ def _draft_paths(run_dir: Path) -> dict[str, Path]:
         "factcheck_fr": draft_dir / "factcheck-fr.json",
         "factcheck_en": draft_dir / "factcheck-en.json",
         "editorial": draft_dir / "editorial.json",
-        "source_quality": draft_dir / "source_quality.json",   # task 5: G2 findings
+        "source_quality": draft_dir / "source_quality.json",  # task 5: G2 findings
     }
 
 
@@ -81,7 +82,13 @@ def _draft_section(repo_root: Path, run_dir: Path) -> str:
         "     translationKey: <IDENTICAL for both languages -- the bilingual join, NFR-11>\n"
         "     slug: <localized slug>\n"
         "     title: <localized title>\n"
-        "     tags: [<at least one tag>]\n"
+        "     tags: [1-3 ids from the controlled tag vocabulary]\n"
+        f"       # Tags are a CLOSED vocabulary, NOT free text. READ\n"
+        f"       # {repo_root}/src/content/tags/index.json and choose 1-3 ids that\n"
+        "       # ALREADY exist there. NEVER invent a new tag. fr and en MUST carry\n"
+        "       # the SAME ids (a tag id is shared across languages; only its label\n"
+        "       # differs). An out-of-vocabulary tag, or a localized id, fails the\n"
+        "       # production build.\n"
         "     category: <one of: essays | explainers | briefings | lessons>\n"
         "       # essays = an argued/opinion take (your position, defended);\n"
         "       # explainers = a technical how-it-works deep dive (mechanisms, trade-offs,\n"
@@ -195,9 +202,7 @@ def _draft_section(repo_root: Path, run_dir: Path) -> str:
 
 
 def _review_section(repo_root: Path, run_dir: Path) -> str:
-    draft_validate = _cmd(
-        repo_root, f"pipeline.stages.draft validate --run-dir {run_dir}"
-    )
+    draft_validate = _cmd(repo_root, f"pipeline.stages.draft validate --run-dir {run_dir}")
     review_check = _cmd(repo_root, f"pipeline.stages.review check --run-dir {run_dir}")
     return (
         "4. REVIEW self-gate (role 4) -- run BOTH and fix until both pass:\n"
@@ -227,13 +232,13 @@ def _humanize_section(
         "     Hand it a context label and point it at the house style so it does not\n"
         "     stall asking for context:\n"
         '       context: "personal practitioner AI-engineering blog post; no emoji;\n'
-        '       no em-dashes (U+2014, the long dash, banned outright).\n'
-        '       voice per pipeline/house_style.md. Flag specifically: any em-dash; flat\n'
-        '       definitional or textbook leads (X is/does Y openers, field-describing\n'
-        '       intros); a\n'
-        '       missing opinionated stance (neutral explainer prose with no take); the\n'
-        '       absence of a concrete number, command, or named failure mode in the\n'
-        '       argument; and, for the FR draft, French that reads like a translation of\n'
+        "       no em-dashes (U+2014, the long dash, banned outright).\n"
+        "       voice per pipeline/house_style.md. Flag specifically: any em-dash; flat\n"
+        "       definitional or textbook leads (X is/does Y openers, field-describing\n"
+        "       intros); a\n"
+        "       missing opinionated stance (neutral explainer prose with no take); the\n"
+        "       absence of a concrete number, command, or named failure mode in the\n"
+        "       argument; and, for the FR draft, French that reads like a translation of\n"
         '       English (calqued clause order, literal idioms like un defaut robuste)."\n'
         f"       (also point it at {house_style})\n"
         f"     Save its JSON output to:\n"
@@ -321,9 +326,7 @@ def _editorial_section(repo_root: Path, run_dir: Path) -> str:
             "(the canonical realization of the shared argument)"
         ),
         out_path=p["editorial"],
-        excludes=(
-            "the FR draft, the claim->source map, or the fact that you authored this"
-        ),
+        excludes=("the FR draft, the claim->source map, or the fact that you authored this"),
         verdict_schema=(
             '{"verdict": "publishable"|"thin", "issues": [{"dimension": '
             '"non_obviousness"|"angle"|"structure", "note": "..."}], "reason": "..."}'
@@ -336,9 +339,9 @@ def _editorial_section(repo_root: Path, run_dir: Path) -> str:
         + dispatch
         + "   - The judge decides whether the piece is NON-OBVIOUS (says something a\n"
         "     knowledgeable reader did not already hold), its ANGLE is sound, and its\n"
-        "     STRUCTURE earns the article's length. The verdict is \"thin\" if the angle is\n"
+        '     STRUCTURE earns the article\'s length. The verdict is "thin" if the angle is\n'
         "     obvious, the structure is incoherent, or the piece does not earn its length;\n"
-        "     otherwise \"publishable\".\n"
+        '     otherwise "publishable".\n'
         "   - MANDATE BOUNDARY (G3 != G1): judge the article's CRAFT, not the thesis as a\n"
         "     claim (that was the argue gate). A 'thin'/obvious angle is NOT fixable by\n"
         "     re-drafting -- it burns one gate-repair round, then the run falls back to a\n"
@@ -392,9 +395,9 @@ def _source_quality_section(repo_root: Path, run_dir: Path) -> str:
         "     source it assesses: primary vs secondary; authority of the origin; and whether\n"
         "     the claim has INDEPENDENT corroboration among the OTHER cited sources. It records\n"
         "     per source_id: primary, authoritative, corroborated (booleans) + a note.\n"
-        "   - The verdict is \"unsound\" iff a load-bearing claim rests on a non-authoritative\n"
+        '   - The verdict is "unsound" iff a load-bearing claim rests on a non-authoritative\n'
         "     / confidently-wrong / single-origin source with no corroboration; otherwise\n"
-        "     \"sound\". The booleans are DESCRIPTIVE, not a checklist: a sound SECONDARY source\n"
+        '     "sound". The booleans are DESCRIPTIVE, not a checklist: a sound SECONDARY source\n'
         "     (primary=false, authoritative=true, corroborated=true) is legitimately sound and\n"
         "     PASSES -- only the verdict blocks the gate.\n"
         "   - SINGLE gate on the cited source SET: it is identical fr/en (review.py\n"

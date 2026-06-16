@@ -13,6 +13,7 @@ crash the scheduler (the next run, or a manual ``git push``, recovers it).
 
 Leaf: stdlib only, no ``pipeline.*`` runtime imports (same contract as ``alert``).
 """
+
 from __future__ import annotations
 
 import subprocess
@@ -25,18 +26,53 @@ if TYPE_CHECKING:
     from ..config import PipelineConfig
 
 
+def build_passes(
+    config: PipelineConfig,
+    *,
+    runner: Callable[..., subprocess.CompletedProcess] = subprocess.run,
+) -> bool:
+    """Run the production build (``pnpm build``); ``True`` iff it exits 0.
+
+    The pre-push gate (R-buildgate). A published article can pass every pipeline
+    gate AND ``astro check`` yet still break ``astro build`` -- e.g. a tag outside
+    the curated ``src/content/tags/index.json`` vocabulary, which only fails at
+    ``getStaticPaths`` build time. Without this gate that article would be pushed
+    and red the CI deploy. Same never-raise discipline as the push: a missing
+    toolchain or a failed build returns ``False`` (skip the push), never crashes.
+    """
+    argv = ["pnpm", "build"]
+    try:
+        proc = runner(argv, cwd=str(config.repo_root))
+    except OSError as exc:  # pnpm/node missing / cwd gone -- surface, do not crash
+        print(f"[DEPLOY-BUILD-ERROR] {' '.join(argv)}: {exc}", file=sys.stderr)
+        return False
+    code = getattr(proc, "returncode", 1)
+    if code != 0:
+        print(
+            f"[DEPLOY-BUILD-FAILED] {' '.join(argv)} exited {code} -- NOT pushing "
+            "(broken article stays local for repair; CI deploy never sees it)",
+            file=sys.stderr,
+        )
+        return False
+    return True
+
+
 def push_after_success(
     config: PipelineConfig,
     *,
     runner: Callable[..., subprocess.CompletedProcess] = subprocess.run,
 ) -> bool:
-    """Push ``config.git_branch`` to ``config.git_remote`` so CI deploys + reindexes.
+    """Build-gate, then push ``config.git_branch`` so CI deploys + reindexes.
 
-    Returns ``True`` iff the push ran and exited 0. No-op returning ``False`` when
-    ``config.git_push`` is off (the default). ``runner`` is injectable so the
-    offline test asserts the argv/gating without touching a real remote.
+    Returns ``True`` iff the production build passed AND the push ran and exited 0.
+    No-op returning ``False`` when ``config.git_push`` is off (the default) or when
+    the build gate fails (the article is already committed locally; the next run or
+    a manual push recovers it once repaired). ``runner`` is injectable so the
+    offline test asserts the argv/gating without touching a real remote or build.
     """
     if not config.git_push:
+        return False
+    if not build_passes(config, runner=runner):
         return False
     argv = ["git", "push", config.git_remote, config.git_branch]
     try:
@@ -52,4 +88,4 @@ def push_after_success(
     return True
 
 
-__all__ = ["push_after_success"]
+__all__ = ["build_passes", "push_after_success"]

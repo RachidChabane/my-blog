@@ -10,6 +10,7 @@ The ``_rec`` helper stamps ``run_id = run_id_for(cadence.fire_on(fire_day))`` so
 every seeded record carries the run_id of its fire day -- the I1 discipline (a
 hand-typed run_id would silently not match the period the monitor computes).
 """
+
 from __future__ import annotations
 
 import ast
@@ -295,7 +296,7 @@ def test_push_after_success_gated_off_by_default(config):
     assert ran is False and calls == []  # git_push defaults off -> no push, no runner call
 
 
-def test_push_after_success_runs_git_push_when_enabled(config):
+def test_push_after_success_builds_then_pushes_when_enabled(config):
     calls: list = []
 
     def _runner(argv, cwd=None):
@@ -304,13 +305,34 @@ def test_push_after_success_runs_git_push_when_enabled(config):
 
     cfg = replace(config, git_push=True, git_remote="origin", git_branch="main")
     assert deploy.push_after_success(cfg, runner=_runner) is True
-    assert calls == [(["git", "push", "origin", "main"], str(cfg.repo_root))]
+    # build gate runs FIRST, then the push -- both with cwd = repo_root
+    assert calls == [
+        (["pnpm", "build"], str(cfg.repo_root)),
+        (["git", "push", "origin", "main"], str(cfg.repo_root)),
+    ]
 
 
-def test_push_after_success_nonzero_exit_is_false_not_raise(config):
+def test_push_after_success_skips_push_when_build_fails(config):
+    calls: list = []
+
+    def _runner(argv, cwd=None):
+        calls.append(argv)
+        # the build gate fails; the push must never run
+        return SimpleNamespace(returncode=1 if argv[0] == "pnpm" else 0)
+
     cfg = replace(config, git_push=True)
-    failed = deploy.push_after_success(cfg, runner=lambda *a, **k: SimpleNamespace(returncode=1))
-    assert failed is False
+    assert deploy.push_after_success(cfg, runner=_runner) is False
+    assert calls == [["pnpm", "build"]]  # built, refused, never reached git push
+
+
+def test_push_after_success_push_nonzero_exit_is_false_not_raise(config):
+    cfg = replace(config, git_push=True)
+
+    def _runner(argv, cwd=None):
+        # build passes, the push itself fails -> False, never raises
+        return SimpleNamespace(returncode=0 if argv[0] == "pnpm" else 1)
+
+    assert deploy.push_after_success(cfg, runner=_runner) is False
 
 
 def test_after_run_pings_and_pushes_only_on_completion(config):
@@ -327,9 +349,9 @@ def test_after_run_pings_and_pushes_only_on_completion(config):
     pings.clear()
     pushes.clear()
     for skip in (
-        cron.ScheduledOutcome(run_id="x", ran=True, alerted=True),     # failed/blocked
-        cron.ScheduledOutcome(run_id="x", paused=True),                # paused
-        cron.ScheduledOutcome(run_id="x", already_complete=True),      # idempotent no-op
+        cron.ScheduledOutcome(run_id="x", ran=True, alerted=True),  # failed/blocked
+        cron.ScheduledOutcome(run_id="x", paused=True),  # paused
+        cron.ScheduledOutcome(run_id="x", already_complete=True),  # idempotent no-op
     ):
         cron._after_run(cfg, skip, ping=fake_ping, push=fake_push)
     assert pings == [] and pushes == []
@@ -567,9 +589,7 @@ def test_F2_import_pipeline_does_not_import_schedule():
         "bad=[m for m in sys.modules if m.startswith('pipeline.schedule.')]; "
         "assert not bad, bad"
     )
-    proc = subprocess.run(
-        [sys.executable, "-c", code], capture_output=True, text=True, env=env
-    )
+    proc = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=env)
     assert proc.returncode == 0, proc.stdout + proc.stderr
 
 
@@ -588,9 +608,7 @@ def test_F3_heartbeat_has_no_cron_back_edge():
         "import pipeline.schedule.heartbeat, sys; "
         "assert 'pipeline.schedule.cron' not in sys.modules"
     )
-    proc = subprocess.run(
-        [sys.executable, "-c", code], capture_output=True, text=True, env=env
-    )
+    proc = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=env)
     assert proc.returncode == 0, proc.stdout + proc.stderr
 
 
@@ -605,9 +623,7 @@ def test_G_crontab_example_matches_render():
 
 
 def test_G_plist_example_matches_render():
-    committed = (_PIPELINE_DIR / "schedule" / "scheduler.plist.example").read_text(
-        encoding="utf-8"
-    )
+    committed = (_PIPELINE_DIR / "schedule" / "scheduler.plist.example").read_text(encoding="utf-8")
     assert committed == cron.render_launchd_plist()
 
 
@@ -658,9 +674,7 @@ def test_G_monitor_hour_clears_grace_window():
     cron_out = cron.render_crontab()
     assert f"0 {cron.DEFAULT_MONITOR_HOUR} * * *" in cron_out
     plist_out = cron.render_launchd_plist()
-    assert (
-        f"<key>Hour</key><integer>{cron.DEFAULT_MONITOR_HOUR}</integer>" in plist_out
-    )
+    assert f"<key>Hour</key><integer>{cron.DEFAULT_MONITOR_HOUR}</integer>" in plist_out
 
 
 def test_G_rendered_plist_env_on_run_agent_only():
