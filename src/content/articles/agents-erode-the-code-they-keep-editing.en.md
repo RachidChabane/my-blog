@@ -23,7 +23,7 @@ publishState: published
 ---
 
 
-Single-shot pass@1 and iterative maintainability measure different things, and on the axis that mirrors real software work, today's strongest coding agents are weak and get weaker on their own code. The highest checkpoint solve rate on an extend-your-own-solution benchmark is just 17.2% [s1], and that failure is invisible to the leaderboard most teams trust.
+Single-shot pass@1 and iterative maintainability measure different things, and on the axis that mirrors real software work, today's strongest coding agents are weak and get weaker on their own code. The best one passes only 14.8% of an extend-your-own-solution benchmark's checkpoints [s1], and that failure is invisible to the leaderboard most teams trust.
 
 ## The single-shot mirage
 
@@ -33,21 +33,21 @@ The whole pitch for agentic coding is sustained, multi-step work, and every step
 
 ## What SlopCodeBench measures
 
-SlopCodeBench is built to break that silence. It runs 20 problems across 93 checkpoints where agents repeatedly extend their own solutions, so the harness scores the loop teams actually run rather than a one-shot snapshot [s1]. Evaluated across 11 models spanning open and closed systems, the result is blunt: no agent solves any problem end to end, and the highest checkpoint solve rate is just 17.2% [s1]. Read that against the near-saturated pass@1 headlines and the gap is the whole point. The same models that look finished on single issues fall apart once the task is to keep building on what they just shipped.
+SlopCodeBench is built to break that silence. It runs 36 problems across 196 checkpoints where agents repeatedly extend their own solutions, so the harness scores the loop teams actually run rather than a one-shot snapshot [s1]. Evaluated across 15 coding agents spanning open and closed models, the result is blunt: no agent fully solves any problem end to end, and the best passes only 14.8% of checkpoints [s1]. Read that against the near-saturated pass@1 headlines and the gap is the whole point. The same models that look finished on single issues fall apart once the task is to keep building on what they just shipped.
 
 The checkpoint loop is what produces this result. Rather than scoring one patch against one fixed task, the benchmark feeds the agent its own previous solution and asks it to go further, checkpoint after checkpoint. That single loop is enough to expose the gap between starting a problem and sustaining it.
 
 ## The compounding failure mode
 
-The failure is not a wrong answer on a hard problem; it is slow rot. SlopCodeBench tracks two forms of degradation as the agent works: structural erosion, where complexity concentrates into a few overloaded spots, and verbosity, where redundant code accumulates. Both climb across checkpoints: structural erosion rises in 80% of trajectories and verbosity in 89.8% [s1]. The longer the agent edits its own output, the worse the shape of that output gets.
+The failure is not a wrong answer on a hard problem; it is slow rot. SlopCodeBench tracks two forms of degradation as the agent works: structural erosion, where complexity concentrates into a few overloaded spots, and verbosity, where redundant code accumulates. Both climb across checkpoints: structural erosion rises in 77% of trajectories and verbosity in 75.5% [s1]. The longer the agent edits its own output, the worse the shape of that output gets.
 
 That trend means the tenth self-edit costs more to review than the first, not less, and it is the kind of damage that is easy to miss. Each individual diff can look reasonable; the rot is in the accumulation, in the file that keeps growing a new branch instead of a refactor, in the helper that gets copied rather than shared. That is exactly the trend a single patch can never reveal.
 
 ## Agents versus human repositories
 
-All code degrades; entropy is not an agent problem, so a degradation curve on its own proves little. The human baseline is what makes the degradation specific to how these agents build rather than a property of software in general. Measured against 48 open-source Python repositories, agent code is 2.2x more verbose and markedly more eroded, and tracking those repositories over time shows human code stays flat while agent code deteriorates with each iteration [s1].
+All code degrades; entropy is not an agent problem, so a degradation curve on its own proves little. The human baseline is what makes the degradation specific to how these agents build rather than a property of software in general. Measured against 473 open-source Python repositories, agent code is 2.3x more verbose and 2.0x more eroded, and the human repositories degrade less often and by smaller margins across their git histories [s1].
 
-That comparison is the spine of the causal argument. It rules out the "all code rots" null: across real git histories, human code stays flat where agents editing their own output deteriorate with each iteration. The gap between agent and human degradation is the thing an autonomy decision should price in.
+That comparison is the spine of the causal argument. It rules out the "all code rots" null: humans editing real projects over real histories rot slower and shallower than agents editing their own output. The gap between agent and human degradation is the thing an autonomy decision should price in.
 
 ## The steelman, answered
 
@@ -62,7 +62,7 @@ A second, weaker leg points the same way. GitClear's analysis of real-world git 
 I treat this as consistent with the thesis, not proof of it. The signal is observational and cannot isolate agent authorship; the same years carry hiring slumps, velocity pressure, and shifting team composition, any of which dents refactoring discipline on its own. The controlled, human-baselined comparison in SlopCodeBench carries the causal weight. GitClear corroborates that the lab result is not a benchmark artifact.
 
 > [!CONFIRMED]
-> Against 48 human Python repositories, agent code is markedly more eroded and 2.2x more verbose, while human code stays flat across git histories and agent code deteriorates with each iteration [s1].
+> Against 473 human Python repositories, agent code is 2.0x more eroded and 2.3x more verbose, and the human repos degrade less often and by smaller margins [s1].
 
 > [!INFERRED]
 > In my experience that gap is the tell that matters for autonomy: the risk is not a bad first patch, which review catches, but a slow structural drift across the agent's own edits that no single diff looks bad enough to stop.
@@ -74,4 +74,4 @@ The bounded conclusion is narrower than the leaderboard implies and sharper than
 > [!WARNING]
 > Do not grant an agent sustained autonomy over a codebase on the strength of a pass@1 number alone. That number is silent on the failure mode that decides the outcome.
 
-When you hand an agent a long-horizon task, track the trend across its own edits, not the quality of the first patch. Is complexity concentrating into a few files it keeps reopening? Is it pasting variants instead of refactoring the shared path? Those are the early shape of the 80% and 89.8% curves [s1], and they show up at edit number ten, not edit number one. Gate on that, and pass@1 goes back to being what it always was: a real but partial signal, not a license for autonomy.
+When you hand an agent a long-horizon task, track the trend across its own edits, not the quality of the first patch. Is complexity concentrating into a few files it keeps reopening? Is it pasting variants instead of refactoring the shared path? Those are the early shape of the 77% and 75.5% curves [s1], and they show up at edit number ten, not edit number one. Gate on that, and pass@1 goes back to being what it always was: a real but partial signal, not a license for autonomy.

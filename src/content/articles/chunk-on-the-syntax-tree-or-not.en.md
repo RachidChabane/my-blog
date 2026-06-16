@@ -78,7 +78,7 @@ The study does surface one robust negative rule, and it cuts against the folk ad
 
 ## The lever most posts ignore
 
-While the field argues about cut points, the embedding model sits off to the side as its own axis and rarely gets tuned with the same energy. That is a mistake on the numbers. On the CoIR benchmark, CodeXEmbed-7B exceeds the prior state-of-the-art code-specific model Voyage-Code-002 by over 20% averaged across all 10 datasets [s4]. A 20% relative retrieval-quality gain from swapping the encoder is a large lever, where changing the cut buys only a few absolute Recall@5 points on RepoEval, and the encoder is a model id you change in your indexing config, not a tree-walker you write and debug per language. In my experience this is the cheapest large lever in the whole pipeline, and it is the one teams reach for last.
+While the field argues about cut points, the embedding model sits off to the side as its own axis and rarely gets tuned with the same energy. That is a mistake on the numbers. On the CoIR benchmark, CodeXEmbed-7B exceeds the prior state-of-the-art code-specific model Voyage-Code-002 by over 20% averaged across all 10 datasets [s4]. A 20% retrieval-quality swing from swapping the encoder dwarfs a 4.3-point Recall@5 swing from changing the cut, and the encoder is a model id you change in your indexing config, not a tree-walker you write and debug per language. In my experience this is the cheapest large lever in the whole pipeline, and it is the one teams reach for last.
 
 ## Calibrated verdict
 
