@@ -70,6 +70,121 @@
     0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
+/* ---- first-visit attention cue (T3) --------------------------------------- */
+/* A subtle, low-frequency bob that draws the eye to the launcher on a first visit.
+   The dock carries [data-attn] only until the visitor engages the agent (the island
+   drops it for good), so it never nags a returning reader. Transform-only, so it
+   composes with the mark's scale animations; on hover/focus the bob yields so the
+   hover-lift transition takes over cleanly. Disabled under reduced motion (the media
+   query at the foot of this file + the global duration-zero in tokens.css). */
+@keyframes rc-fab-nudge {
+  0%,
+  84%,
+  100% {
+    transform: translateY(0);
+  }
+  89% {
+    transform: translateY(-7px);
+  }
+  93% {
+    transform: translateY(0);
+  }
+  97% {
+    transform: translateY(-3px);
+  }
+}
+.rc-dock[data-attn] .rc-fab {
+  animation: rc-fab-nudge 7s var(--ease-soft) 1.4s infinite;
+}
+.rc-dock[data-attn] .rc-fab:hover,
+.rc-dock[data-attn] .rc-fab:focus-visible {
+  animation: none;
+}
+
+/* hint bubble: a small speech bubble above the launcher, with a tail pointing down
+   at it. Token-only surface; hidden until the island reveals it; the whole bubble is
+   clickable to open the panel. Entrance fades+rises in once — base state fully
+   visible, opacity:0 only in the keyframe `from` with `both` fill (the .rc-in
+   pattern), so a reduced-motion visitor (duration-zeroed) still sees it. */
+.rc-dock .rc-hint {
+  position: relative;
+  max-width: 232px;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin-bottom: 2px;
+  padding: 10px 10px 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  animation: rc-hint-in var(--dur-enter) var(--ease-out) both;
+}
+.rc-dock .rc-hint[hidden] {
+  display: none;
+}
+.rc-dock .rc-hint__text {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--fg);
+}
+.rc-dock .rc-hint__close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin: -2px -2px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition:
+    background var(--dur-hover) var(--ease-soft),
+    color var(--dur-hover) var(--ease-soft);
+}
+.rc-dock .rc-hint__close:hover {
+  background: var(--fill-subtle);
+  color: var(--fg);
+}
+.rc-dock .rc-hint__close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+.rc-dock .rc-hint__close svg {
+  width: 14px;
+  height: 14px;
+}
+/* tail: a small rotated square notch pointing down at the launcher (right side) */
+.rc-dock .rc-hint::after {
+  content: '';
+  position: absolute;
+  right: 24px;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  background: var(--surface);
+  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  transform: rotate(45deg);
+}
+@keyframes rc-hint-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ---- the lattice mark ----------------------------------------------------- */
 /* Base static look lives on the node itself, UNCONDITIONALLY, so the default
    idle mark and the reduced-motion fallback both still show the lattice. State
@@ -770,6 +885,10 @@
 .rc-dock[data-fullscreen] .rc-fab {
   display: none;
 }
+/* the hint points at the launcher, which is gone in full-screen — hide it too */
+.rc-dock[data-fullscreen] .rc-hint {
+  display: none;
+}
 .rc-dock[data-fullscreen] .rc-ava {
   position: fixed;
   inset: 0;
@@ -798,7 +917,8 @@
    reveal DELAY so nothing lingers invisible for a reduced-motion visitor. */
 @media (prefers-reduced-motion: reduce) {
   .rc-dock .rc-mark,
-  .rc-dock .rc-mark__node {
+  .rc-dock .rc-mark__node,
+  .rc-dock[data-attn] .rc-fab {
     animation: none !important;
   }
   .rc-dock .rc-in,

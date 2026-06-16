@@ -25,6 +25,35 @@ const s = avatarStrings(lang);
 <div class="rc-dock" data-avatar-root>
   <div class="rc-scrim" data-avatar-scrim aria-hidden="true" hidden></div>
   <Panel strings={s} lang={lang} />
+  <!-- First-visit hint bubble (T3): a discrete cue that the agent is here. Server-
+       rendered with localized copy (COPY NEVER LIVES IN JS), hidden until the island
+       reveals it on a first visit, and clickable to open the panel. Retired for good
+       once the visitor engages or dismisses it. -->
+  <div class="rc-hint" data-avatar-hint role="status" hidden>
+    <p class="rc-hint__text" id="rc-hint-text">{s.hint}</p>
+    <button
+      class="rc-hint__close"
+      type="button"
+      data-avatar-hint-close
+      aria-label={s.hintDismiss}
+      aria-describedby="rc-hint-text"
+    >
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
   <button
     class="rc-fab"
     data-avatar-slot
@@ -70,6 +99,10 @@ const s = avatarStrings(lang);
   );
   const fsBtn = root?.querySelector<HTMLButtonElement>('[data-avatar-fs]');
   const scrim = root?.querySelector<HTMLElement>('[data-avatar-scrim]');
+  const hint = root?.querySelector<HTMLElement>('[data-avatar-hint]');
+  const hintClose = root?.querySelector<HTMLButtonElement>(
+    '[data-avatar-hint-close]'
+  );
   const launchMark = root?.querySelector<HTMLElement>(
     '[data-avatar-launchmark]'
   );
@@ -100,6 +133,8 @@ const s = avatarStrings(lang);
     closeBtn &&
     fsBtn &&
     scrim &&
+    hint &&
+    hintClose &&
     launchMark &&
     headMark &&
     errorLine &&
@@ -169,7 +204,35 @@ const s = avatarStrings(lang);
       fsBtn.focus();
     };
 
+    // First-visit attention cue (T3): a subtle launcher nudge + a one-time hint
+    // bubble, both retired the instant the visitor engages the agent — every open
+    // path funnels through open(), so that one call point governs the cue. Gated on
+    // a localStorage flag so a returning visitor (or anyone who dismissed the hint)
+    // is never nagged again. A blocked/throwing localStorage (private mode) reads as
+    // "already engaged": no nudge, no hint — fail quiet, never nag.
+    const ENGAGED_KEY = 'rc-ava-engaged';
+    const hasEngaged = (): boolean => {
+      try {
+        return localStorage.getItem(ENGAGED_KEY) === '1';
+      } catch {
+        return true;
+      }
+    };
+    const retireAttention = () => {
+      root.removeAttribute('data-attn'); // stop the launcher nudge
+      hint.hidden = true; // drop the hint bubble
+    };
+    const markEngaged = () => {
+      try {
+        localStorage.setItem(ENGAGED_KEY, '1');
+      } catch {
+        /* storage blocked: the in-page retire still stops the cue this visit */
+      }
+      retireAttention();
+    };
+
     const open = () => {
+      markEngaged(); // any open is engagement — retire the first-visit cue for good
       panel.hidden = false;
       panel.dataset.state = 'idle';
       launcher.setAttribute('aria-expanded', 'true');
@@ -480,6 +543,22 @@ const s = avatarStrings(lang);
     // panel (it does NOT close the panel — the lightbox-dismiss mental model).
     scrim.addEventListener('click', exitFullscreen);
 
+    // The first-visit hint bubble is a friendly entry point: a click anywhere on it
+    // (but its dismiss button) opens the panel; the dismiss button retires the cue
+    // without opening. open() and markEngaged() both persist the engagement.
+    hint.addEventListener('click', (e) => {
+      if (
+        e.target instanceof Element &&
+        e.target.closest('[data-avatar-hint-close]')
+      )
+        return;
+      if (!isOpen()) open();
+    });
+    hintClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      markEngaged();
+    });
+
     // Focus trap: while modal (full-screen), keep Tab within the panel so focus can
     // never reach the page behind the scrim. Docked, the dialog is non-modal and Tab
     // flows normally. Only visible, focusable controls participate.
@@ -549,5 +628,22 @@ const s = avatarStrings(lang);
       },
       true
     );
+
+    // Reveal the first-visit cue once the page has settled — only on a true first
+    // visit, and never while the panel is already open. The hint bubble auto-retires
+    // after a while so it never lingers; the subtle launcher nudge persists until the
+    // visitor engages (reduced motion disables the motion — see avatar.css).
+    if (!hasEngaged()) {
+      root.setAttribute('data-attn', '');
+      window.setTimeout(() => {
+        if (!hasEngaged() && !isOpen()) hint.hidden = false;
+      }, 3200);
+      window.setTimeout(() => {
+        // Never yank the bubble out from under a keyboard/SR user sitting on its
+        // dismiss button — that would drop focus to <body> (WCAG 2.4.3). Retire it
+        // only when it does not contain focus; an engaged user dismisses it anyway.
+        if (!hint.contains(document.activeElement)) hint.hidden = true;
+      }, 15000);
+    }
   }
 </script>

@@ -512,6 +512,28 @@ function projectMd(o: {
   ].join('\n');
 }
 
+function knowledgeMd(o: {
+  slug: string;
+  lang: 'fr' | 'en';
+  title: string;
+  sourcePath: string;
+  publishState: 'published' | 'draft';
+  body: string;
+}): string {
+  return [
+    '---',
+    `lang: ${o.lang}`,
+    `slug: ${o.slug}`,
+    `title: ${JSON.stringify(o.title)}`,
+    `sourcePath: ${JSON.stringify(o.sourcePath)}`,
+    `publishState: ${o.publishState}`,
+    '---',
+    '',
+    o.body,
+    '',
+  ].join('\n');
+}
+
 describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures)', () => {
   let contentRoot: string;
   let tmpRoot: string;
@@ -521,8 +543,10 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
     contentRoot = join(tmpRoot, 'content');
     const articlesDir = join(contentRoot, 'articles');
     const projectsDir = join(contentRoot, 'projects');
+    const knowledgeDir = join(contentRoot, 'knowledge');
     mkdirSync(articlesDir, { recursive: true });
     mkdirSync(projectsDir, { recursive: true });
+    mkdirSync(knowledgeDir, { recursive: true });
 
     writeFileSync(
       join(articlesDir, 'a-pub.en.md'),
@@ -569,6 +593,30 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
         body: 'Project body paragraph about serverless edge functions.',
       })
     );
+    // Knowledge sources (avatar-only; no Astro collection / public page). Neutral
+    // body so it never competes with the on-topic retrieval query below.
+    writeFileSync(
+      join(knowledgeDir, 'k-pub.en.md'),
+      knowledgeMd({
+        slug: 'k-pub-en',
+        lang: 'en',
+        title: 'About The Owner',
+        sourcePath: 'about',
+        publishState: 'published',
+        body: 'The owner builds autonomous systems and ships them to production.',
+      })
+    );
+    writeFileSync(
+      join(knowledgeDir, 'k-draft.en.md'),
+      knowledgeMd({
+        slug: 'k-draft-en',
+        lang: 'en',
+        title: 'Draft Knowledge',
+        sourcePath: 'about',
+        publishState: 'draft',
+        body: 'This knowledge draft must never enter the public artifact.',
+      })
+    );
   });
 
   afterAll(() => {
@@ -581,6 +629,7 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
     expect(sources.map((s) => s.slug).sort()).toEqual([
       'a-pub-en',
       'a-pub-fr',
+      'k-pub-en',
       'p-pub-en',
     ]);
 
@@ -616,6 +665,37 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
     );
   });
 
+  it('loads published knowledge docs citing their sourcePath page; draft excluded', () => {
+    const sources = loadPublishedSources({ contentRoot, siteUrl: SITE });
+    const k = sources.find((s) => s.slug === 'k-pub-en');
+    expect(k?.kind).toBe('knowledge');
+    expect(k?.title).toBe('About The Owner'); // from frontmatter `title`
+    expect(k?.summary).toBe('');
+    // A knowledge doc has NO page of its own — its citation points at an existing
+    // page (sourcePath -> localePath), not a /blog/ or /work/ route it can't serve.
+    expect(k?.pageUrl).toBe(`${SITE}/en/about/`);
+    // The same public-safety draft filter as articles/projects.
+    expect(sources.map((s) => s.slug)).not.toContain('k-draft-en');
+  });
+
+  it('knowledge chunks cite the clean sourcePath URL (heading-less → no fragment)', async () => {
+    const { artifact } = await buildIndex({
+      sources: loadPublishedSources({ contentRoot, siteUrl: SITE }),
+      embedder: new FakeEmbedder(),
+      prior: null,
+      generatedAt: GEN,
+    });
+    const kChunks = artifact.chunks.filter((c) => c.slug === 'k-pub-en');
+    expect(kChunks.length).toBeGreaterThan(0);
+    // Every knowledge chunk cites the page itself (no #heading-anchor that the
+    // rendered page would not actually have), with the doc title as the label.
+    for (const c of kChunks) {
+      expect(c.sourceUrl).toBe(`${SITE}/en/about/`);
+      expect(c.headingAnchor).toBe('');
+      expect(c.title).toBe('About The Owner');
+    }
+  });
+
   // -- Group 3 — DRAFT-EXCLUSION SAFETY (non-negotiable) -------------------
   it('the draft never enters the public artifact (no chunks, no hash)', async () => {
     const sources = loadPublishedSources({ contentRoot, siteUrl: SITE });
@@ -629,6 +709,28 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
     });
     expect(artifact.sourceHashes['a-draft-en']).toBeUndefined();
     expect(artifact.chunks.some((c) => c.slug === 'a-draft-en')).toBe(false);
+  });
+
+  // -- Group 6 — real knowledge corpus stays single-chunk (dedupe no-op) ----
+  // dedupeChunksByArticle keeps ONE chunk per slug at synthesis. A knowledge doc
+  // that split into 2+ chunks would strand half its facts (e.g. the contact details)
+  // outside the LLM's context even when retrieved. Keeping each knowledge doc under
+  // MAX_CHUNK_CHARS → exactly one chunk → every fact survives dedupe. This guards the
+  // REAL src/content/knowledge corpus, so an over-long future edit fails loudly here.
+  it('every published knowledge doc chunks to exactly one seed', () => {
+    const knowledge = loadPublishedSources().filter(
+      (s) => s.kind === 'knowledge'
+    );
+    expect(knowledge.length).toBeGreaterThanOrEqual(8); // 4 topics × 2 languages
+    for (const doc of knowledge) {
+      const seeds = chunkDocument(doc);
+      expect(
+        seeds.length,
+        `${doc.slug} must be a single chunk (≤ ${MAX_CHUNK_CHARS} chars) so dedupe keeps all its facts`
+      ).toBe(1);
+      // Heading-less → clean page-level citation (no #fragment the page lacks).
+      expect(seeds[0].headingAnchor).toBe('');
+    }
   });
 
   // -- Group 5 — build → retrieve loop-closing (monolingual-fake-safe) -----

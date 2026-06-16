@@ -87,6 +87,21 @@ export const projectFrontmatterSchema = z.object({
   gallery: z.array(galleryImageSchema).min(1).optional(),
 });
 
+// Avatar-only "knowledge" sources (about the site owner + how the site works).
+// These feed the RAG index (src/lib/avatar/index-build.ts reads src/content/knowledge/)
+// but are NOT an Astro content collection — there is no public page or route for them,
+// so the bio/site-explainer never leaks into the blog index, portfolio, RSS, or sitemap.
+// `sourcePath` is the locale-relative page a citation should link to (e.g. 'about'),
+// resolved through localePath at load time, so the agent's citations point at a real
+// page that genuinely carries this material (the About page).
+export const knowledgeFrontmatterSchema = z.object({
+  lang: z.enum(['fr', 'en']),
+  slug: z.string().min(1),
+  title: z.string().min(1),
+  sourcePath: z.string().min(1),
+  publishState: z.enum(['published', 'draft']),
+});
+
 export const tagSchema = z.object({
   slug: z.string().min(1),
   label: z.object({
@@ -162,6 +177,7 @@ export const conceptSchema = z.object({
 
 export type ArticleFrontmatter = z.infer<typeof articleFrontmatterSchema>;
 export type ProjectFrontmatter = z.infer<typeof projectFrontmatterSchema>;
+export type KnowledgeFrontmatter = z.infer<typeof knowledgeFrontmatterSchema>;
 export type Tag = z.infer<typeof tagSchema>;
 export type Category = z.infer<typeof categorySchema>;
 export type Provenance = z.infer<typeof provenanceSchema>;

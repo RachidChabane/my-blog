@@ -17,6 +17,7 @@ import type { Locale } from '../../i18n/index';
 import {
   articleFrontmatterSchema,
   projectFrontmatterSchema,
+  knowledgeFrontmatterSchema,
 } from '../../content/schemas';
 import { CHUNKER_VERSION, chunkDocument } from './chunk';
 import type { ChunkSeed } from './chunk';
@@ -25,7 +26,7 @@ import type { Embedder, IndexArtifact, IndexChunk } from './contracts';
 /** Mirrors astro.config.mjs `site` default so baked citation origins never drift. */
 const DEFAULT_SITE_URL = 'https://rachid-chabane.com';
 
-export type SourceKind = 'article' | 'project';
+export type SourceKind = 'article' | 'project' | 'knowledge';
 
 /** One published source variant, normalized to the chunker's inputs. */
 export interface SourceDoc {
@@ -86,10 +87,13 @@ function readMarkdownDir(dir: string): { path: string; raw: string }[] {
 }
 
 /**
- * Load every PUBLISHED article + project as a SourceDoc. Scoped to `articles/`
- * and `projects/` only — never the whole content tree (which holds test
- * fixtures + tags). Frontmatter is parsed with gray-matter and validated with
- * the PINNED Zod schemas; an invalid file throws (mirrors Astro's build-time
+ * Load every PUBLISHED article + project + knowledge doc as a SourceDoc. Scoped
+ * to `articles/`, `projects/`, and `knowledge/` only — never the whole content
+ * tree (which holds test fixtures + tags). `knowledge/` is an avatar-only source
+ * (the agent's bio + how-the-site-works grounding); it is NOT an Astro collection,
+ * so it never renders a page — its chunks cite an existing page (sourcePath, e.g.
+ * the About page). Frontmatter is parsed with gray-matter and validated with the
+ * PINNED Zod schemas; an invalid file throws (mirrors Astro's build-time
  * fail-loud). Drafts are excluded — the public-safety filter (the artifact is
  * served publicly; NFR-6/FR-D3). Returned sorted by slug for determinism.
  */
@@ -143,6 +147,30 @@ export function loadPublishedSources(opts: LoadOptions = {}): SourceDoc[] {
     });
   }
 
+  for (const { path, raw } of readMarkdownDir(join(contentRoot, 'knowledge'))) {
+    const { data, content } = matter(raw);
+    const parsed = knowledgeFrontmatterSchema.safeParse(data);
+    if (!parsed.success) {
+      throw new Error(
+        `Invalid knowledge frontmatter in ${path}: ${parsed.error.message}`
+      );
+    }
+    const fm = parsed.data;
+    if (fm.publishState !== 'published') continue;
+    docs.push({
+      kind: 'knowledge',
+      slug: fm.slug,
+      lang: fm.lang,
+      title: fm.title,
+      summary: '',
+      body: content,
+      // No own page: the citation points at an existing page (e.g. About) that
+      // genuinely carries this material, resolved through the SAME localePath the
+      // article/project citations use.
+      pageUrl: new URL(localePath(fm.lang, fm.sourcePath), siteUrl).href,
+    });
+  }
+
   return docs.sort((a, b) => a.slug.localeCompare(b.slug));
 }
 
@@ -185,7 +213,7 @@ export async function buildIndex(input: BuildInput): Promise<BuildResult> {
   for (const doc of sources) {
     if (seenSlugs.has(doc.slug)) {
       throw new Error(
-        `buildIndex: duplicate slug "${doc.slug}" — slugs must be globally unique across articles + projects.`
+        `buildIndex: duplicate slug "${doc.slug}" — slugs must be globally unique across articles + projects + knowledge.`
       );
     }
     seenSlugs.add(doc.slug);

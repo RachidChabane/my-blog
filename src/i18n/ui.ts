@@ -677,6 +677,8 @@ export interface AvatarStrings {
   send: string; // send button aria-label
   expand: string; // enter full-screen view (button aria-label)
   collapse: string; // leave full-screen view (button aria-label)
+  hint: string; // first-visit nudge bubble copy (invites a question)
+  hintDismiss: string; // hint-bubble dismiss button aria-label
   error: string; // network-failure line (generic, localized, no internals)
 }
 
@@ -697,6 +699,8 @@ export const AVATAR: Record<Locale, AvatarStrings> = {
     send: 'Envoyer',
     expand: 'Afficher en plein écran',
     collapse: 'Quitter le plein écran',
+    hint: 'Une question sur Rachid ou sur ce site ? Demandez-moi.',
+    hintDismiss: 'Masquer cette suggestion',
     error: 'Une erreur est survenue. Réessayez.',
   },
   en: {
@@ -715,6 +719,8 @@ export const AVATAR: Record<Locale, AvatarStrings> = {
     send: 'Send',
     expand: 'Show full screen',
     collapse: 'Exit full screen',
+    hint: 'Curious about Rachid or this site? Ask me.',
+    hintDismiss: 'Dismiss this hint',
     error: 'Something went wrong. Try again.',
   },
 };
