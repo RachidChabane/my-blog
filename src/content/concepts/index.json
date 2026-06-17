@@ -20,9 +20,34 @@
     ],
     "articles": [
       "evaluating-tool-using-agents",
-      "slopcodebench-iterative-maintainability"
+      "slopcodebench-iterative-maintainability",
+      "ai-evaluation-compute-cost"
     ],
     "addedOn": "12-05-2026"
+  },
+  {
+    "id": "agent-scaffold",
+    "label": {
+      "fr": "Scaffold d'agent",
+      "en": "Agent scaffold"
+    },
+    "definition": {
+      "fr": "Boucle de contrôle qui enveloppe un modèle pour résoudre une tâche : appels d'outils, politique de réessai, budget d'échantillonnage et mise en cache. Sa configuration déplace à la fois le coût et l'exactitude d'une évaluation, si bien que deux passages du même modèle peuvent différer de plus d'un ordre de grandeur en prix.",
+      "en": "The control loop wrapped around a model to solve a task: tool calls, retry policy, sampling budget, and caching. Its configuration moves both the cost and the accuracy of an evaluation, so two runs of the same model can differ by more than an order of magnitude in price."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "scaffold",
+      "agent harness"
+    ],
+    "related": [
+      "agent-evaluation",
+      "tool-use"
+    ],
+    "articles": [
+      "ai-evaluation-compute-cost"
+    ],
+    "addedOn": "17-06-2026"
   },
   {
     "id": "ast-chunking",
@@ -47,6 +72,30 @@
       "ast-code-chunking"
     ],
     "addedOn": "10-06-2026"
+  },
+  {
+    "id": "best-of-n-sampling",
+    "label": {
+      "fr": "Échantillonnage best-of-N",
+      "en": "Best-of-N sampling"
+    },
+    "definition": {
+      "fr": "Stratégie de scaffold qui génère N réponses candidates puis en retient la meilleure. Elle a tendance à relever le score sur les tâches difficiles, au prix de plusieurs fois plus de calcul par tâche que la tentative unique, ce qui en fait un levier majeur du coût d'une évaluation.",
+      "en": "A scaffold strategy that generates N candidate answers and keeps the best one. It tends to raise the score on hard tasks at the price of several times more compute per task than a single-shot run, making it a major driver of evaluation cost."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "best-of-N",
+      "BoN sampling"
+    ],
+    "related": [
+      "agent-scaffold",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "ai-evaluation-compute-cost"
+    ],
+    "addedOn": "17-06-2026"
   },
   {
     "id": "bm25",
@@ -280,6 +329,29 @@
       "serving-oss-llm-production-cost"
     ],
     "addedOn": "04-05-2026"
+  },
+  {
+    "id": "cost-aware-evaluation",
+    "label": {
+      "fr": "Évaluation attentive au coût",
+      "en": "Cost-aware evaluation"
+    },
+    "definition": {
+      "fr": "Pratique d'évaluation qui rapporte le coût de calcul comme une colonne de premier plan à côté de l'exactitude, normalisée à ses facteurs (tokens, rollouts, échantillons, configuration du scaffold, politique de cache) pour rester reproductible d'un régime de prix à l'autre. Un score d'agent sans coût associé y est tenu pour une mesure incomplète.",
+      "en": "An evaluation practice that reports compute cost as a first-class column beside accuracy, normalized to its drivers (tokens, rollouts, samples, scaffold configuration, caching policy) so the figure stays reproducible across price regimes. An agent score with no cost attached is treated as an incomplete measurement."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "cost-aware evals",
+      "compute cost of evaluation"
+    ],
+    "related": [
+      "agent-evaluation"
+    ],
+    "articles": [
+      "ai-evaluation-compute-cost"
+    ],
+    "addedOn": "17-06-2026"
   },
   {
     "id": "deterministic-workflows",
