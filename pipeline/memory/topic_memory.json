@@ -244,5 +244,34 @@
     ],
     "published_at": "2026-06-16",
     "embedding": null
+  },
+  {
+    "translation_key": "ai-evaluation-compute-cost",
+    "topic_id": "ai-evaluation-compute-cost-bottleneck",
+    "dedup_key": "ai-evaluation-is-the-new-compute-cost-bottleneck",
+    "title": "Evaluation is the new compute bottleneck",
+    "slugs": {
+      "fr": "l-evaluation-est-le-nouveau-goulot-de-calcul",
+      "en": "evaluation-is-the-new-compute-bottleneck"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Hugging Face: AI evals are becoming the new compute bottleneck",
+        "url": "https://huggingface.co/blog/evaleval/eval-costs-bottleneck",
+        "retrieved_at": "2026-06-17",
+        "excerpt": "The Holistic Agent Leaderboard (HAL) recently spent about $40,000 to run 21,730 agent rollouts across 9 models and 9 benchmarks. A single GAIA run on a frontier model can cost $2,829 before caching. Exgentic's $22,000 sweep across agent configurations found a 33x cost spread on identical tasks.",
+        "source_date": "2026-04-29"
+      },
+      {
+        "source_id": "s2",
+        "label": "Yehudai et al., A Survey on Evaluation of LLM-based Agents (arXiv 2503.16416)",
+        "url": "https://arxiv.org/abs/2503.16416",
+        "retrieved_at": "2026-06-17",
+        "excerpt": "Current evaluations often prioritize performance while overlooking cost and efficiency measurements. Many current benchmarks rely on coarse-grained, end-to-end success metrics that, while useful for gauging overall performance, fall short in diagnosing specific agent failures."
+      }
+    ],
+    "published_at": "2026-06-17",
+    "embedding": null
   }
 ]
