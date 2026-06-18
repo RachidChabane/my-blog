@@ -273,5 +273,43 @@
     ],
     "published_at": "2026-06-17",
     "embedding": null
+  },
+  {
+    "translation_key": "coding-agent-scaffold-confound",
+    "topic_id": "coding-agent-scaffold-confound",
+    "dedup_key": "coding-agent-scaffold-confounds-benchmark-scores",
+    "title": "The scaffold, not the model, decides your SWE-bench score",
+    "slugs": {
+      "fr": "scaffold-pas-modele-score-swe-bench",
+      "en": "scaffold-not-model-swe-bench-score"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Inside the Scaffold: A Source-Code Taxonomy of Coding Agent Architectures (arXiv:2604.03515)",
+        "url": "https://arxiv.org/abs/2604.03515",
+        "retrieved_at": "2026-06-18",
+        "excerpt": "control strategies range from fixed pipelines to Monte Carlo Tree Search, tool counts range from 0 to 37, and context compaction spans seven distinct strategies",
+        "source_date": "2026-04-03"
+      },
+      {
+        "source_id": "s2",
+        "label": "SWE-bench in 2026: Benchmarks vs Scaffolding Reality (Digital Applied)",
+        "url": "https://www.digitalapplied.com/blog/swe-bench-verified-june-2026-benchmark-vs-scaffolding-analysis",
+        "retrieved_at": "2026-06-18",
+        "excerpt": "Three different agent systems each ran the same Claude Opus 4.5 model against SWE-bench Pro and produced scores from 50.2% to 55.4%",
+        "source_date": "2026-06-16"
+      },
+      {
+        "source_id": "s3",
+        "label": "SWE-bench in 2026: Benchmarks vs Scaffolding Reality (Digital Applied)",
+        "url": "https://www.digitalapplied.com/blog/swe-bench-verified-june-2026-benchmark-vs-scaffolding-analysis",
+        "retrieved_at": "2026-06-18",
+        "excerpt": "Of the 100 models listed on llm-stats as of June 16, 2026, only one carries an independent verification badge - the other 99 scores were submitted by the model vendors themselves.",
+        "source_date": "2026-06-16"
+      }
+    ],
+    "published_at": "2026-06-18",
+    "embedding": null
   }
 ]

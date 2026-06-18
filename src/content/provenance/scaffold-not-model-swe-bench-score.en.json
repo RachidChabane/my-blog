@@ -1,0 +1,25 @@
+{
+  "slug": "scaffold-not-model-swe-bench-score",
+  "lang": "en",
+  "translationKey": "coding-agent-scaffold-confound",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Inside the Scaffold: A Source-Code Taxonomy of Coding Agent Architectures (arXiv:2604.03515)",
+      "url": "https://arxiv.org/abs/2604.03515",
+      "excerpt": "control strategies range from fixed pipelines to Monte Carlo Tree Search, tool counts range from 0 to 37, and context compaction spans seven distinct strategies"
+    },
+    {
+      "sourceId": "s2",
+      "label": "SWE-bench in 2026: Benchmarks vs Scaffolding Reality (Digital Applied)",
+      "url": "https://www.digitalapplied.com/blog/swe-bench-verified-june-2026-benchmark-vs-scaffolding-analysis",
+      "excerpt": "Three different agent systems each ran the same Claude Opus 4.5 model against SWE-bench Pro and produced scores from 50.2% to 55.4%"
+    },
+    {
+      "sourceId": "s3",
+      "label": "SWE-bench in 2026: Benchmarks vs Scaffolding Reality (Digital Applied)",
+      "url": "https://www.digitalapplied.com/blog/swe-bench-verified-june-2026-benchmark-vs-scaffolding-analysis",
+      "excerpt": "Of the 100 models listed on llm-stats as of June 16, 2026, only one carries an independent verification badge - the other 99 scores were submitted by the model vendors themselves."
+    }
+  ]
+}
