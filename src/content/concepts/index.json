@@ -21,7 +21,8 @@
     "articles": [
       "evaluating-tool-using-agents",
       "slopcodebench-iterative-maintainability",
-      "ai-evaluation-compute-cost"
+      "ai-evaluation-compute-cost",
+      "coding-agent-scaffold-confound"
     ],
     "addedOn": "12-05-2026"
   },
@@ -45,7 +46,8 @@
       "tool-use"
     ],
     "articles": [
-      "ai-evaluation-compute-cost"
+      "ai-evaluation-compute-cost",
+      "coding-agent-scaffold-confound"
     ],
     "addedOn": "17-06-2026"
   },
@@ -72,6 +74,31 @@
       "ast-code-chunking"
     ],
     "addedOn": "10-06-2026"
+  },
+  {
+    "id": "benchmark-self-reporting",
+    "label": {
+      "fr": "Scores auto-déclarés",
+      "en": "Self-reported benchmark scores"
+    },
+    "definition": {
+      "fr": "Pratique où l'éditeur d'un modèle soumet lui-même son score de benchmark, sans audit indépendant. L'éditeur choisit alors aussi la configuration sous laquelle il mesure, ce qui rend le nombre difficile à reproduire et à comparer.",
+      "en": "The practice where a model vendor submits its own benchmark score with no independent audit. The vendor then also chooses the configuration it measures under, which makes the number hard to reproduce or compare across systems."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "vendor self-reporting",
+      "independent verification badge",
+      "unaudited leaderboard"
+    ],
+    "related": [
+      "agent-evaluation",
+      "swe-bench"
+    ],
+    "articles": [
+      "coding-agent-scaffold-confound"
+    ],
+    "addedOn": "18-06-2026"
   },
   {
     "id": "best-of-n-sampling",
@@ -258,7 +285,8 @@
     "articles": [
       "deterministic-agent-workflows",
       "canon-repriced",
-      "slopcodebench-iterative-maintainability"
+      "slopcodebench-iterative-maintainability",
+      "coding-agent-scaffold-confound"
     ],
     "addedOn": "30-05-2026"
   },
@@ -285,6 +313,31 @@
       "context-budget"
     ],
     "addedOn": "10-06-2026"
+  },
+  {
+    "id": "context-compaction",
+    "label": {
+      "fr": "Compaction du contexte",
+      "en": "Context compaction"
+    },
+    "definition": {
+      "fr": "Stratégie par laquelle un agent réduit l'historique qu'il garde en contexte (résumé, élagage, réécriture) lorsque la tâche dépasse la fenêtre. C'est une dimension du scaffold qui fait varier les résultats à modèle figé.",
+      "en": "The strategy by which an agent shrinks the history it keeps in context (summarizing, pruning, rewriting) when a task outgrows the window. It is a scaffold dimension that shifts results even with the model held fixed."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "context compression",
+      "history compaction"
+    ],
+    "related": [
+      "agent-scaffold",
+      "context-window",
+      "context-budget"
+    ],
+    "articles": [
+      "coding-agent-scaffold-confound"
+    ],
+    "addedOn": "18-06-2026"
   },
   {
     "id": "context-window",
@@ -783,6 +836,31 @@
     "addedOn": "12-05-2026"
   },
   {
+    "id": "swe-bench",
+    "label": {
+      "fr": "SWE-bench",
+      "en": "SWE-bench"
+    },
+    "definition": {
+      "fr": "Banc d'essai qui mesure la capacité d'un système à résoudre de vraies issues GitHub en produisant un correctif qui fait passer les tests du dépôt. Le score dépend autant du scaffold qui pilote le modèle que du modèle lui-même.",
+      "en": "A benchmark that measures whether a system can resolve real GitHub issues by producing a patch that passes the repository's tests. The reported score depends as much on the scaffold driving the model as on the model itself."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "SWE-bench Pro",
+      "SWE-bench Verified"
+    ],
+    "related": [
+      "agent-evaluation",
+      "coding-agents",
+      "agent-scaffold"
+    ],
+    "articles": [
+      "coding-agent-scaffold-confound"
+    ],
+    "addedOn": "18-06-2026"
+  },
+  {
     "id": "tool-use",
     "label": {
       "fr": "Usage d'outils",
@@ -803,7 +881,8 @@
     ],
     "articles": [
       "evaluating-tool-using-agents",
-      "deterministic-agent-workflows"
+      "deterministic-agent-workflows",
+      "coding-agent-scaffold-confound"
     ],
     "addedOn": "12-05-2026"
   },
