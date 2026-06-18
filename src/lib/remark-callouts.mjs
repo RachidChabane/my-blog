@@ -57,6 +57,15 @@ const LABELS = {
 };
 const ALIAS = { info: 'note', pitfall: 'caution' };
 const MARKER = /^\[!(\w+)\][ \t]*\r?\n?/;
+// Every recognized marker key, language-agnostic (the EN table holds them all).
+const KNOWN = new Set(Object.keys(LABELS.en));
+// A marker that begins a *new* line inside a paragraph: the signature of two
+// callouts an author ran together without the required blank line, e.g.
+//   > [!CONFIRMED]
+//   > …text…
+//   > [!INFERRED]      ← no blank `>` line above, so markdown merges both into
+//   > …text…             one blockquote and this marker leaks as literal text.
+const EMBEDDED_MARKER = /\r?\n\[!(\w+)\]/;
 
 /** Call `fn` on every blockquote node in the tree (depth-first, dependency-free). */
 function eachBlockquote(node, fn) {
@@ -65,6 +74,86 @@ function eachBlockquote(node, fn) {
   for (const child of node.children) {
     if (child && child.type === 'blockquote') fn(child);
     eachBlockquote(child, fn);
+  }
+}
+
+/** The known marker type a paragraph leads with (e.g. 'inferred'), or null. */
+function leadMarker(para) {
+  const first = para && para.type === 'paragraph' && para.children?.[0];
+  if (!first || first.type !== 'text') return null;
+  const m = first.value.match(MARKER);
+  const raw = m && m[1].toLowerCase();
+  return raw && KNOWN.has(raw) ? raw : null;
+}
+
+/**
+ * Split one paragraph into several at every embedded `\n[!TYPE]` boundary, so a
+ * run-together pair of callouts becomes the separate paragraphs it should have
+ * been. Non-text inline nodes (links, emphasis) after a boundary follow into the
+ * new paragraph. Returns the original (single-element) array when nothing splits.
+ */
+function explodeParagraph(para) {
+  const groups = [[]];
+  for (const node of para.children) {
+    if (node.type !== 'text') {
+      groups[groups.length - 1].push(node);
+      continue;
+    }
+    let value = node.value;
+    let m;
+    while ((m = value.match(EMBEDDED_MARKER)) && KNOWN.has(m[1].toLowerCase())) {
+      const before = value.slice(0, m.index); // text up to (not incl.) the newline
+      if (before) groups[groups.length - 1].push({ type: 'text', value: before });
+      groups.push([]); // new line-starting marker → new paragraph
+      value = value.slice(m.index).replace(/^\r?\n/, ''); // drop the leading newline
+    }
+    if (value) groups[groups.length - 1].push({ type: 'text', value });
+  }
+  if (groups.length === 1) return [para];
+  return groups
+    .filter((children) => children.length)
+    .map((children, i) => ({
+      type: 'paragraph',
+      // keep the source paragraph's hint data on the first slice only
+      ...(i === 0 && para.data ? { data: para.data } : {}),
+      children,
+    }));
+}
+
+/**
+ * Pre-pass: rewrite each blockquote's parent so a blockquote that secretly holds
+ * two (or more) callouts — markers run together without a blank line — becomes
+ * the separate sibling blockquotes markdown would have produced with the blank
+ * line present. After this, the normal one-marker-per-blockquote conversion and
+ * the CONFIRMED/INFERRED pair sweep both see well-formed input.
+ */
+function splitMergedCallouts(node) {
+  if (!node || typeof node !== 'object' || !Array.isArray(node.children)) return;
+  for (let i = 0; i < node.children.length; i++) {
+    const child = node.children[i];
+    if (child.type !== 'blockquote') {
+      splitMergedCallouts(child);
+      continue;
+    }
+    // 1. Break soft-break-merged markers out into their own paragraphs.
+    const paras = child.children.flatMap((c) =>
+      c.type === 'paragraph' ? explodeParagraph(c) : [c],
+    );
+    // 2. Group paragraphs, starting a fresh group at each leading marker, so each
+    //    group is one callout's worth of content.
+    const groups = [];
+    for (const para of paras) {
+      if (!groups.length || leadMarker(para)) groups.push([para]);
+      else groups[groups.length - 1].push(para);
+    }
+    if (groups.length <= 1) {
+      splitMergedCallouts(child);
+      continue;
+    }
+    const split = groups.map((children) => ({ type: 'blockquote', children }));
+    node.children.splice(i, 1, ...split);
+    i += split.length - 1;
+    for (const bq of split) splitMergedCallouts(bq);
   }
 }
 
@@ -79,6 +168,9 @@ export default function remarkCallouts() {
     // set so a French article reads ATTENTION/CONSEIL, an English one CAUTION/TIP.
     const lang = file?.data?.astro?.frontmatter?.lang;
     const labels = LABELS[lang] ?? LABELS.en;
+    // Forgive a missing blank line between two callouts: split a blockquote that
+    // merged them before the marker conversion below ever runs.
+    splitMergedCallouts(tree);
     eachBlockquote(tree, (bq) => {
       const firstPara = bq.children && bq.children[0];
       if (!firstPara || firstPara.type !== 'paragraph') return;
