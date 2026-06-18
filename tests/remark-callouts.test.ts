@@ -92,7 +92,9 @@ function runBlockquote(text: string, lang = 'fr'): MdNode {
     children: [
       {
         type: 'blockquote',
-        children: [{ type: 'paragraph', children: [{ type: 'text', value: text }] }],
+        children: [
+          { type: 'paragraph', children: [{ type: 'text', value: text }] },
+        ],
       },
     ],
   };
@@ -109,7 +111,7 @@ describe('remark-callouts merged-pair recovery (missing blank line)', () => {
   // literal text inside the first card. It must split back into a verdict pair.
   it('splits a soft-break-merged CONFIRMED/INFERRED into a paired aside', () => {
     const tree = runBlockquote(
-      "[!CONFIRMED]\nUne taxonomie a relevé 0 à 37 outils [s4].\n[!INFERRED]\nD'après mon expérience, deux lignes voisines.",
+      "[!CONFIRMED]\nUne taxonomie a relevé 0 à 37 outils [s4].\n[!INFERRED]\nD'après mon expérience, deux lignes voisines."
     );
     expect(tree.children).toHaveLength(1);
     const pair = tree.children![0];
@@ -118,10 +120,12 @@ describe('remark-callouts merged-pair recovery (missing blank line)', () => {
     expect(calloutOf(confirmed)).toBe('confirmed');
     expect(calloutOf(inferred)).toBe('inferred');
     // The second marker must NOT leak into the first card's body.
-    expect(bodyOf(confirmed)).toBe('Une taxonomie a relevé 0 à 37 outils [s4].');
+    expect(bodyOf(confirmed)).toBe(
+      'Une taxonomie a relevé 0 à 37 outils [s4].'
+    );
     expect(bodyOf(confirmed)).not.toContain('[!INFERRED]');
     expect(bodyOf(inferred)).toBe(
-      "D'après mon expérience, deux lignes voisines.",
+      "D'après mon expérience, deux lignes voisines."
     );
   });
 
@@ -144,7 +148,9 @@ describe('remark-callouts merged-pair recovery (missing blank line)', () => {
         },
       ],
     };
-    remarkCallouts()(tree, { data: { astro: { frontmatter: { lang: 'fr' } } } });
+    remarkCallouts()(tree, {
+      data: { astro: { frontmatter: { lang: 'fr' } } },
+    });
     expect(tree.children).toHaveLength(1);
     expect(classOf(tree.children![0])).toContain('cl-pair');
   });

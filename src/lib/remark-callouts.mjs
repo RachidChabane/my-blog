@@ -101,9 +101,13 @@ function explodeParagraph(para) {
     }
     let value = node.value;
     let m;
-    while ((m = value.match(EMBEDDED_MARKER)) && KNOWN.has(m[1].toLowerCase())) {
+    while (
+      (m = value.match(EMBEDDED_MARKER)) &&
+      KNOWN.has(m[1].toLowerCase())
+    ) {
       const before = value.slice(0, m.index); // text up to (not incl.) the newline
-      if (before) groups[groups.length - 1].push({ type: 'text', value: before });
+      if (before)
+        groups[groups.length - 1].push({ type: 'text', value: before });
       groups.push([]); // new line-starting marker → new paragraph
       value = value.slice(m.index).replace(/^\r?\n/, ''); // drop the leading newline
     }
@@ -128,7 +132,8 @@ function explodeParagraph(para) {
  * the CONFIRMED/INFERRED pair sweep both see well-formed input.
  */
 function splitMergedCallouts(node) {
-  if (!node || typeof node !== 'object' || !Array.isArray(node.children)) return;
+  if (!node || typeof node !== 'object' || !Array.isArray(node.children))
+    return;
   for (let i = 0; i < node.children.length; i++) {
     const child = node.children[i];
     if (child.type !== 'blockquote') {
@@ -137,7 +142,7 @@ function splitMergedCallouts(node) {
     }
     // 1. Break soft-break-merged markers out into their own paragraphs.
     const paras = child.children.flatMap((c) =>
-      c.type === 'paragraph' ? explodeParagraph(c) : [c],
+      c.type === 'paragraph' ? explodeParagraph(c) : [c]
     );
     // 2. Group paragraphs, starting a fresh group at each leading marker, so each
     //    group is one callout's worth of content.
