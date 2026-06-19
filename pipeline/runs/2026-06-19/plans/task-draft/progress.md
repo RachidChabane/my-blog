@@ -6,4 +6,4 @@
 - [x] 2.4 fact-check: fresh sub-agent (fr,en) -> factcheck-{lang}.json; gate.factcheck OK
 - [x] 2.5 editorial: fresh judge on EN -> editorial.json; gate.editorial OK
 - [x] 2.6 source-quality: fresh judge on source SET -> source_quality.json; gate.source_quality OK
-- [ ] 2.7 final nine-gate green sweep
+- [x] 2.7 final nine-gate green sweep
