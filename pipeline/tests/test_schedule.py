@@ -379,6 +379,41 @@ def test_after_run_pings_and_pushes_only_on_completion(config):
     assert pings == [] and pushes == []
 
 
+def test_after_run_alerts_when_requested_push_does_not_land(config):
+    # git_push ON but the push returns False (diverged/conflict/auth) -> alert, not silence
+    sink = CollectingAlertSink()
+    cfg = replace(config, git_push=True)
+    cron._after_run(
+        cfg,
+        cron.ScheduledOutcome(run_id="2026-06-19", ran=True),
+        now=datetime(2026, 6, 19, 9, 0, tzinfo=UTC),
+        push=lambda c: False,  # push did not land
+        sink=sink,
+    )
+    assert len(sink.alerts) == 1
+    assert sink.alerts[0].kind == "deploy_push_failed"
+    assert sink.alerts[0].run_id == "2026-06-19"
+
+
+def test_after_run_no_alert_when_push_lands_or_not_requested(config):
+    sink = CollectingAlertSink()
+    # (a) push lands -> no alert
+    cron._after_run(
+        replace(config, git_push=True),
+        cron.ScheduledOutcome(run_id="x", ran=True),
+        push=lambda c: True,
+        sink=sink,
+    )
+    # (b) push not requested (git_push off) -> no alert even when push returns falsy
+    cron._after_run(
+        config,  # git_push defaults off
+        cron.ScheduledOutcome(run_id="x", ran=True),
+        push=lambda c: None,
+        sink=sink,
+    )
+    assert sink.alerts == []
+
+
 def test_after_run_skips_ping_when_no_uptime_url(config):
     pings: list = []
     pushes: list = []

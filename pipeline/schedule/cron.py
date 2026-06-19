@@ -17,6 +17,7 @@ the Cloudflare Pages deploy + reindex while tests/CI never push. ``wrangler``/CI
 config itself stays out of this module. Do NOT add a ``pipeline/schedule/__main__.py``:
 the entry is the ``cron`` module, and a package ``__main__`` would re-import it.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -118,8 +119,7 @@ def run_scheduled(
         status = "blocked"
     else:  # incomplete, not a clean block (e.g. a non-0/75 exit the loop wrapper propagated)
         reason = (
-            f"run incomplete (exit {rr.result.exit_code}, "
-            f"usage_limited={rr.result.usage_limited})"
+            f"run incomplete (exit {rr.result.exit_code}, usage_limited={rr.result.usage_limited})"
         )
         sink.emit(alert.Alert(alert.RUN_FAILED, run_id, reason, end))
         status = "failed"
@@ -347,14 +347,29 @@ def _default_sink(config: PipelineConfig) -> AlertSink:
     return MultiAlertSink(sinks)
 
 
-def _after_run(config: PipelineConfig, outcome: ScheduledOutcome, *, ping=None, push=None) -> None:
+def _after_run(
+    config: PipelineConfig,
+    outcome: ScheduledOutcome,
+    *,
+    now: datetime | None = None,
+    ping=None,
+    push=None,
+    sink=None,
+) -> None:
     """Side effects after a run (M-13/M-14), ONLY on a run-to-completion.
 
     Lazy-imports ``alert``/``deploy`` to preserve the import-light contract; both
     helpers are injectable for the offline test. Healthy beat -> ping the external
     dead-man's-switch (M-14); then push so CI deploys + reindexes (M-13). Paused /
     already-complete / failed / blocked outcomes are skipped (they did not just
-    produce a fresh published article)."""
+    produce a fresh published article).
+
+    A push that was REQUESTED (``git_push`` on) but did NOT land is a silent deploy
+    failure: the article is committed locally yet never reaches CI, exactly the
+    2026-06-17..19 wedge where a diverged remote rejected the push and the only trace
+    was ``cron.log``. So an un-landed requested push raises a ``deploy_push_failed``
+    alert through the default sink (file + log + any webhook), turning a silent miss
+    into a surfaced one."""
     if not (outcome.ran and not outcome.alerted):
         return
     from . import alert, deploy
@@ -363,7 +378,20 @@ def _after_run(config: PipelineConfig, outcome: ScheduledOutcome, *, ping=None, 
     do_push = push if push is not None else deploy.push_after_success
     if config.uptime_ping_url:
         do_ping(config.uptime_ping_url)
-    do_push(config)
+    pushed = do_push(config)
+    if config.git_push and not pushed:
+        out = sink if sink is not None else _default_sink(config)
+        out.emit(
+            alert.Alert(
+                kind="deploy_push_failed",
+                run_id=outcome.run_id,
+                reason=(
+                    "article committed locally but the push to origin did not land; "
+                    "the site was NOT updated (see cron.log for the git error)"
+                ),
+                when=now if now is not None else datetime.now(UTC),
+            )
+        )
 
 
 def _run_summary(outcome: ScheduledOutcome) -> str:
@@ -381,7 +409,7 @@ def _cmd_run(config: PipelineConfig, *, now: datetime) -> int:
 
     outcome = run_scheduled(config, CpeLoopDriver(config), _default_sink(config), now=now)
     print(_run_summary(outcome))
-    _after_run(config, outcome)  # M-13 push + M-14 uptime ping (run-to-completion only)
+    _after_run(config, outcome, now=now)  # M-13 push + M-14 uptime ping (run-to-completion only)
     return 0  # ran / idempotent / paused are all success; only a harness error raises
 
 
