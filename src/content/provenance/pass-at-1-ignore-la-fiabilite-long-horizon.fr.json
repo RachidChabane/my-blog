@@ -1,0 +1,31 @@
+{
+  "slug": "pass-at-1-ignore-la-fiabilite-long-horizon",
+  "lang": "fr",
+  "translationKey": "agent-pass-at-1-long-horizon-reliability",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Beyond pass@1: A Reliability Science Framework for Long-Horizon LLM Agents (arXiv:2603.29231)",
+      "url": "https://arxiv.org/abs/2603.29231",
+      "excerpt": "We show these properties diverge systematically as task duration grows, and that pass@1 on short tasks is structurally blind to this divergence."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Can LLM Agents Be CFOs? Benchmarking Long-Horizon Resource Allocation in an Uncertain Enterprise Environment (arXiv:2603.23638)",
+      "url": "https://arxiv.org/abs/2603.23638",
+      "excerpt": "Experiments across 23 LLMs and four agent frameworks show that current agents remain far from robust: only 15.4% of trials survive the full horizon, larger models do not reliably outperform smaller ones, and failures cascade across observation, action timing, and capital sizing."
+    },
+    {
+      "sourceId": "s3",
+      "label": "The Long-Horizon Task Mirage? Diagnosing Where and Why Agentic Systems Break (arXiv:2604.11978)",
+      "url": "https://arxiv.org/abs/2604.11978",
+      "excerpt": "collecting 3100+ trajectories across four representative agentic domains to study horizon-dependent degradation patterns"
+    },
+    {
+      "sourceId": "s4",
+      "label": "Measuring AI Ability to Complete Long Tasks (METR)",
+      "url": "https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/",
+      "excerpt": "The length of tasks (measured by how long they take human professionals) that generalist frontier model agents can complete autonomously with 50% reliability has been doubling approximately every 7 months for the last 6 years."
+    }
+  ]
+}
