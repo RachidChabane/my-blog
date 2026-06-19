@@ -32,6 +32,14 @@
           "retrieved_at": "2026-06-19",
           "source_date": "2026-04-13",
           "excerpt": "collecting 3100+ trajectories across four representative agentic domains to study horizon-dependent degradation patterns"
+        },
+        {
+          "source_id": "s4",
+          "label": "Measuring AI Ability to Complete Long Tasks (METR)",
+          "url": "https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2025-03-19",
+          "excerpt": "The length of tasks (measured by how long they take human professionals) that generalist frontier model agents can complete autonomously with 50% reliability has been doubling approximately every 7 months for the last 6 years."
         }
       ]
     },

@@ -15,8 +15,10 @@ claim_skeleton:
   - id: c1
     statement: >-
       Capability and reliability diverge systematically as task duration grows,
-      so pass@1 on short tasks is structurally blind to long-horizon failure.
-    source_ids: [s1]
+      so pass@1 on short tasks is structurally blind to long-horizon failure;
+      the achievable task length is itself a function of the reliability bar you
+      demand, which an independent longitudinal measurement makes concrete.
+    source_ids: [s1, s4]
   - id: c2
     statement: >-
       Across 23 LLMs and four agent frameworks in an enterprise simulation, only
@@ -55,8 +57,10 @@ pass@1.
 
 ## Claim skeleton
 
-- c1 (s1): Capability and reliability diverge systematically as task duration
-  grows, so pass@1 on short tasks is structurally blind to long-horizon failure.
+- c1 (s1, s4): Capability and reliability diverge systematically as task duration
+  grows, so pass@1 on short tasks is structurally blind to long-horizon failure;
+  the achievable task length tracks the reliability bar demanded, per an
+  independent longitudinal measurement.
 - c2 (s2): Across 23 LLMs and four agent frameworks in an enterprise simulation,
   only 15.4% of trials survive the full horizon, and larger models do not reliably
   outperform smaller ones.
