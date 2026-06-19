@@ -22,7 +22,8 @@
       "evaluating-tool-using-agents",
       "slopcodebench-iterative-maintainability",
       "ai-evaluation-compute-cost",
-      "coding-agent-scaffold-confound"
+      "coding-agent-scaffold-confound",
+      "agent-pass-at-1-long-horizon-reliability"
     ],
     "addedOn": "12-05-2026"
   },
@@ -453,6 +454,31 @@
     "addedOn": "27-05-2026"
   },
   {
+    "id": "error-compounding",
+    "label": {
+      "fr": "Composition des erreurs",
+      "en": "Error compounding"
+    },
+    "definition": {
+      "fr": "Mécanisme par lequel un faible taux d'erreur par étape se multiplie le long d'une trajectoire : invisible à une étape, il domine sur des dizaines d'étapes et fait s'effondrer la survie d'un agent long-horizon par accumulation et défaillances en cascade.",
+      "en": "The mechanism by which a small per-step error rate multiplies along a trajectory: invisible at one step, it dominates over dozens of steps and collapses a long-horizon agent's survival through accumulation and cascading failures."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "error accumulation",
+      "cascading failures",
+      "compounding errors"
+    ],
+    "related": [
+      "long-horizon-reliability",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "agent-pass-at-1-long-horizon-reliability"
+    ],
+    "addedOn": "19-06-2026"
+  },
+  {
     "id": "fact-checking",
     "label": {
       "fr": "Vérification automatique des faits",
@@ -598,6 +624,30 @@
     "addedOn": "10-06-2026"
   },
   {
+    "id": "long-horizon-reliability",
+    "label": {
+      "fr": "Fiabilité long-horizon",
+      "en": "Long-horizon reliability"
+    },
+    "definition": {
+      "fr": "Capacité d'un agent à mener à bien une tâche autonome sur de nombreuses étapes sans dériver ni échouer. Elle se sépare de la capacité brute à mesure que l'horizon s'allonge : un modèle fort sur tâche courte peut figurer parmi les moins fiables sur un travail long.",
+      "en": "An agent's ability to complete an autonomous task across many steps without drifting or failing. It diverges from raw capability as the horizon grows: a model that leads on short tasks can rank among the least reliable on a long job."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "long horizon reliability",
+      "horizon reliability"
+    ],
+    "related": [
+      "agent-evaluation",
+      "pass-at-1"
+    ],
+    "articles": [
+      "agent-pass-at-1-long-horizon-reliability"
+    ],
+    "addedOn": "19-06-2026"
+  },
+  {
     "id": "open-weight-models",
     "label": {
       "fr": "Modèles à poids ouverts",
@@ -621,6 +671,31 @@
       "serving-oss-llm-production-cost"
     ],
     "addedOn": "04-05-2026"
+  },
+  {
+    "id": "pass-at-1",
+    "label": {
+      "fr": "pass@1",
+      "en": "pass@1"
+    },
+    "definition": {
+      "fr": "Métrique de réussite en un seul essai : la fraction de tâches qu'un modèle résout correctement à la première tentative. Bon marché et lisible sur une tâche bornée, elle n'échantillonne qu'un seul point et reste muette sur la fiabilité quand la tâche s'allonge.",
+      "en": "A single-attempt success metric: the fraction of tasks a model solves correctly on the first try. Cheap and honest on a bounded task, it samples only one point and says nothing about reliability as the task horizon grows."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "pass@1",
+      "pass-at-1",
+      "one-shot success"
+    ],
+    "related": [
+      "agent-evaluation",
+      "retrieval-evaluation"
+    ],
+    "articles": [
+      "agent-pass-at-1-long-horizon-reliability"
+    ],
+    "addedOn": "19-06-2026"
   },
   {
     "id": "prompt-caching",
@@ -763,6 +838,31 @@
       "hybrid-rag-rrf"
     ],
     "addedOn": "27-05-2026"
+  },
+  {
+    "id": "reliability-over-horizon",
+    "label": {
+      "fr": "Courbe de fiabilité selon l'horizon",
+      "en": "Reliability-over-horizon curve"
+    },
+    "definition": {
+      "fr": "Méthode d'évaluation qui fait tourner un agent à plusieurs longueurs d'horizon, fixe une barre de fiabilité et rapporte la longueur tenue à cette barre, avec les modes de défaillance. Elle remplace un score unique et révèle l'inversion de rang qu'un classement pass@1 masque.",
+      "en": "An evaluation method that runs an agent at several horizon lengths, fixes a reliability bar, and reports the length it sustains at that bar, plus the failure modes. It replaces a single score and surfaces the rank inversion a pass@1 leaderboard hides."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "reliability curve",
+      "horizon reliability curve"
+    ],
+    "related": [
+      "long-horizon-reliability",
+      "pass-at-1",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "agent-pass-at-1-long-horizon-reliability"
+    ],
+    "addedOn": "19-06-2026"
   },
   {
     "id": "retrieval-evaluation",
