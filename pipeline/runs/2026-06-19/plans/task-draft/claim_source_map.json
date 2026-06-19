@@ -1,0 +1,77 @@
+{
+  "claims": [
+    {
+      "lang": "en",
+      "claim": "Capability and reliability diverge systematically as task duration grows, so pass@1 on short tasks is structurally blind to long-horizon failure.",
+      "source_id": "s1"
+    },
+    {
+      "lang": "en",
+      "claim": "The task length frontier model agents complete autonomously at 50% reliability has been doubling roughly every 7 months.",
+      "source_id": "s4"
+    },
+    {
+      "lang": "en",
+      "claim": "Across 23 LLMs and four agent frameworks, only 15.4% of trials survive the full horizon, and larger models do not reliably outperform smaller ones.",
+      "source_id": "s2"
+    },
+    {
+      "lang": "en",
+      "claim": "A diagnostic collecting more than 3100 trajectories across four agentic domains characterizes horizon-dependent degradation patterns.",
+      "source_id": "s3"
+    },
+    {
+      "lang": "fr",
+      "claim": "Capacité et fiabilité divergent de façon systématique quand la durée de la tâche augmente, si bien que le pass@1 sur tâches courtes est structurellement aveugle à la défaillance long-horizon.",
+      "source_id": "s1"
+    },
+    {
+      "lang": "fr",
+      "claim": "La longueur de tâche que les agents de modèles de pointe accomplissent en autonomie avec 50 % de fiabilité double environ tous les 7 mois.",
+      "source_id": "s4"
+    },
+    {
+      "lang": "fr",
+      "claim": "Sur 23 LLM et quatre frameworks d'agents, seuls 15,4 % des essais survivent à l'horizon complet, et les modèles plus gros ne surpassent pas de façon fiable les plus petits.",
+      "source_id": "s2"
+    },
+    {
+      "lang": "fr",
+      "claim": "Un diagnostic rassemblant plus de 3100 trajectoires sur quatre domaines agentiques caractérise des schémas de dégradation dépendants de l'horizon.",
+      "source_id": "s3"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "s1",
+      "label": "Beyond pass@1: A Reliability Science Framework for Long-Horizon LLM Agents (arXiv:2603.29231)",
+      "url": "https://arxiv.org/abs/2603.29231",
+      "retrieved_at": "2026-06-19",
+      "source_date": "2026-03-31",
+      "excerpt": "We show these properties diverge systematically as task duration grows, and that pass@1 on short tasks is structurally blind to this divergence."
+    },
+    {
+      "source_id": "s2",
+      "label": "Can LLM Agents Be CFOs? Benchmarking Long-Horizon Resource Allocation in an Uncertain Enterprise Environment (arXiv:2603.23638)",
+      "url": "https://arxiv.org/abs/2603.23638",
+      "retrieved_at": "2026-06-19",
+      "source_date": "2026-03-24",
+      "excerpt": "Experiments across 23 LLMs and four agent frameworks show that current agents remain far from robust: only 15.4% of trials survive the full horizon, larger models do not reliably outperform smaller ones, and failures cascade across observation, action timing, and capital sizing."
+    },
+    {
+      "source_id": "s3",
+      "label": "The Long-Horizon Task Mirage? Diagnosing Where and Why Agentic Systems Break (arXiv:2604.11978)",
+      "url": "https://arxiv.org/abs/2604.11978",
+      "retrieved_at": "2026-06-19",
+      "excerpt": "collecting 3100+ trajectories across four representative agentic domains to study horizon-dependent degradation patterns"
+    },
+    {
+      "source_id": "s4",
+      "label": "Measuring AI Ability to Complete Long Tasks (METR)",
+      "url": "https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/",
+      "retrieved_at": "2026-06-19",
+      "source_date": "2025-03-19",
+      "excerpt": "The length of tasks (measured by how long they take human professionals) that generalist frontier model agents can complete autonomously with 50% reliability has been doubling approximately every 7 months for the last 6 years."
+    }
+  ]
+}

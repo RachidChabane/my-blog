@@ -1,0 +1,18 @@
+{
+  "verdict": "APPROVED",
+  "problems": [],
+  "coverage": {
+    "fr": [
+      "s1",
+      "s2",
+      "s3",
+      "s4"
+    ],
+    "en": [
+      "s1",
+      "s2",
+      "s3",
+      "s4"
+    ]
+  }
+}
