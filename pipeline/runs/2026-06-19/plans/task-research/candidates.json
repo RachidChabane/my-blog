@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "candidates": [
+    {
+      "topic_id": "agent-reliability-pass-at-1-mirage",
+      "dedup_key": "pass-at-1-misleads-long-horizon-agent-reliability",
+      "title": "Your agent's pass@1 score is blind to long-horizon reliability",
+      "summary": "A reliability-science framework shows capability and reliability diverge as tasks lengthen, so pass@1 on short tasks is structurally blind to long-horizon failure [s1]; in one enterprise simulation across 23 LLMs and four agent frameworks, only 15.4% of trials survive the full horizon [s2].",
+      "why_relevant": "The contestable claim: the single-attempt scores teams pick agents on do not predict production reliability, because capability and reliability rankings diverge as horizons grow [s1], so a model that tops a short-task leaderboard can be among the least reliable on a long, multi-step job. The depth is concrete and measured: a 23-model, four-framework enterprise simulation where only 15.4% of trials survive the full horizon [s2], and a 3100-trajectory diagnostic of where and why agentic systems break [s3]. The steelman to answer: pass@1 is cheap and correlates well enough for short bounded tasks, so the divergence only bites teams shipping genuinely long-horizon autonomy.",
+      "tags": ["agents", "evaluation", "reliability", "benchmarks"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Beyond pass@1: A Reliability Science Framework for Long-Horizon LLM Agents (arXiv:2603.29231)",
+          "url": "https://arxiv.org/abs/2603.29231",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2026-03-31",
+          "excerpt": "We show these properties diverge systematically as task duration grows, and that pass@1 on short tasks is structurally blind to this divergence."
+        },
+        {
+          "source_id": "s2",
+          "label": "Can LLM Agents Be CFOs? Benchmarking Long-Horizon Resource Allocation in an Uncertain Enterprise Environment (arXiv:2603.23638)",
+          "url": "https://arxiv.org/abs/2603.23638",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2026-03-24",
+          "excerpt": "Experiments across 23 LLMs and four agent frameworks show that current agents remain far from robust: only 15.4% of trials survive the full horizon, larger models do not reliably outperform smaller ones, and failures cascade across observation, action timing, and capital sizing."
+        },
+        {
+          "source_id": "s3",
+          "label": "The Long-Horizon Task Mirage? Diagnosing Where and Why Agentic Systems Break (arXiv:2604.11978)",
+          "url": "https://arxiv.org/abs/2604.11978",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2026-04-13",
+          "excerpt": "collecting 3100+ trajectories across four representative agentic domains to study horizon-dependent degradation patterns"
+        }
+      ]
+    },
+    {
+      "topic_id": "lethal-trifecta-agent-security",
+      "dedup_key": "lethal-trifecta-makes-agent-data-exfiltration-architectural",
+      "title": "The lethal trifecta is an architecture problem, not a prompt-injection bug to patch",
+      "summary": "Four production AI tools (IBM Bob, Superhuman AI, Notion AI, Claude Cowork) were disclosed vulnerable to the same indirect-prompt-injection pattern within nine days in January 2026 [s3]; the shared cause is the lethal trifecta, private data plus untrusted content plus external communication in one agent [s1], which Meta's Agents Rule of Two answers by capping any session at two of those three capabilities [s2].",
+      "why_relevant": "The contestable claim: you cannot patch your way out of agent data exfiltration, because the lethal trifecta is a property of the agent's capability set, not a single exploitable bug, so the only durable mitigation is to remove a capability. Simon Willison's framing names the three ingredients [s1]; the January 2026 cluster of four production disclosures in nine days shows it is not theoretical [s3]; and Meta's Rule of Two is the design response, allowing at most two of the three properties per session [s2]. The steelman to answer: stronger input filtering and prompt-injection classifiers might eventually make the full trifecta safe, so capability-capping is an overreaction that cripples otherwise useful agents.",
+      "tags": ["agents", "security", "prompt-injection"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "The lethal trifecta for AI agents: private data, untrusted content, and external communication (Simon Willison)",
+          "url": "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2025-06-16",
+          "excerpt": "The lethal trifecta of capabilities is: Access to your private data; Exposure to untrusted content; The ability to externally communicate in a way that could be used to steal your data"
+        },
+        {
+          "source_id": "s2",
+          "label": "Agents Rule of Two: A Practical Approach to AI Agent Security (Meta AI)",
+          "url": "https://ai.meta.com/blog/practical-ai-agent-security/",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2025-10-31",
+          "excerpt": "Agents must satisfy no more than two of the following three properties within a session to avoid the highest impact consequences of prompt injection. [A] An agent can process untrustworthy inputs [B] An agent can have access to sensitive systems or private data [C] An agent can change state or communicate externally"
+        },
+        {
+          "source_id": "s3",
+          "label": "The Lethal Trifecta Strikes: Four Major AI Agent Vulnerabilities in Five Days (Breached.Company)",
+          "url": "https://breached.company/the-lethal-trifecta-strikes-four-major-ai-agent-vulnerabilities-in-five-days/",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2026-01-21",
+          "excerpt": "Between January 7th and January 15th, 2026, security researchers publicly disclosed critical vulnerabilities in four major AI-powered productivity tools: IBM Bob, Superhuman AI, Notion AI, and Anthropic's Claude Cowork."
+        }
+      ]
+    },
+    {
+      "topic_id": "mcp-protocol-rce",
+      "dedup_key": "mcp-protocol-design-enables-remote-code-execution",
+      "title": "MCP's security problem is in the protocol design, not just careless servers",
+      "summary": "A security analysis of the Model Context Protocol finds its architectural choices amplify attack success rates by 23 to 41% over equivalent non-MCP integrations [s1], tracing the gap to three protocol-level weaknesses: absent capability attestation, unauthenticated sampling, and implicit trust propagation [s2]; one concrete case let attacker-controlled HTML drive arbitrary command execution through Windsurf [s3].",
+      "why_relevant": "The contestable claim: MCP's prompt-injection and remote-code-execution incidents are not just sloppy server implementations, they follow from the specification itself, so hardening individual servers cannot close the gap. The measured amplification, 23 to 41% higher attack success than non-MCP integrations, ties the risk to design [s1]; the three named protocol weaknesses are the mechanism [s2]; and a live RCE in Windsurf, where attacker HTML rewrote the MCP config and ran arbitrary commands, is the named failure mode [s3]. The steelman to answer: these are early-spec growing pains that capability attestation and signed servers will fix without touching the protocol's trust model.",
+      "tags": ["security", "mcp", "agents"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Breaking the Protocol: Security Analysis of the Model Context Protocol Specification (arXiv:2601.17549)",
+          "url": "https://arxiv.org/abs/2601.17549",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2026-01-24",
+          "excerpt": "MCP's architectural choices amplify attack success rates by 23-41% compared to equivalent non-MCP integrations"
+        },
+        {
+          "source_id": "s2",
+          "label": "Breaking the Protocol: Security Analysis of the Model Context Protocol Specification (arXiv:2601.17549)",
+          "url": "https://arxiv.org/abs/2601.17549",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2026-01-24",
+          "excerpt": "(1) absence of capability attestation allowing servers to claim arbitrary permissions, (2) bidirectional sampling without origin authentication enabling server-side prompt injection, and (3) implicit trust propagation in multi-server configurations"
+        },
+        {
+          "source_id": "s3",
+          "label": "MCP STDIO Command Injection: MCP Supply Chain Advisory, RCE Vulnerabilities Across the AI Ecosystem (OX Security)",
+          "url": "https://www.ox.security/blog/mcp-supply-chain-advisory-rce-vulnerabilities-across-the-ai-ecosystem/",
+          "retrieved_at": "2026-06-19",
+          "excerpt": "A prompt injection vulnerability in Windsurf 1.9544.26 allows remote attackers to execute arbitrary commands on a victim system."
+        }
+      ]
+    },
+    {
+      "topic_id": "llm-as-judge-contamination",
+      "dedup_key": "llm-as-judge-evaluation-is-contaminated-by-construction",
+      "title": "Your LLM-as-judge eval is contaminated when the judge shares lineage with the generator",
+      "summary": "LLM-as-a-judge inherits a contamination problem, preference leakage, when the judge and the data generator are related models, biasing scores toward the related student [s1]; judges also carry previously unstudied scoring biases (rubric order, score ID, reference answer score) [s2], and stay unstable on long-form outputs as of mid-2026 [s3].",
+      "why_relevant": "The contestable claim: the LLM-as-judge pipelines most teams now trust to gate releases are biased by construction, so a rising eval score can reflect judge-generator relatedness rather than real quality. Preference leakage gives the mechanism, a judge favouring models related to its own training data [s1]; a formal study names three fresh scoring biases, rubric order, score ID, and reference answer score [s2]; and a June 2026 benchmark finds judges still unstable on long-form output [s3]. The steelman to answer: with a held-out judge from a different model family and randomized rubric order, LLM-as-judge is cheap and good enough, so the contamination is a fixable process error rather than a reason to distrust the method.",
+      "tags": ["evaluation", "llm-as-judge", "benchmarks"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Preference Leakage: A Contamination Problem in LLM-as-a-judge (arXiv:2502.01534)",
+          "url": "https://arxiv.org/abs/2502.01534",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2025-02-03",
+          "excerpt": "we expose preference leakage, a contamination problem in LLM-as-a-judge caused by the relatedness between the synthetic data generators and LLM-based evaluators."
+        },
+        {
+          "source_id": "s2",
+          "label": "Evaluating Scoring Bias in LLM-as-a-Judge (arXiv:2506.22316)",
+          "url": "https://arxiv.org/abs/2506.22316",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2025-06-27",
+          "excerpt": "We formally define scoring bias and identify three novel, previously unstudied types: rubric order bias, score ID bias, and reference answer score bias."
+        },
+        {
+          "source_id": "s3",
+          "label": "Benchmarking LLM-as-a-Judge for Long-Form Output Evaluation (arXiv:2606.01629)",
+          "url": "https://arxiv.org/abs/2606.01629",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2026-06-01",
+          "excerpt": "Our results reveal a substantial reliability gap: current LLM judges remain unstable across scenarios"
+        }
+      ]
+    },
+    {
+      "topic_id": "complexity-aware-finetuning",
+      "dedup_key": "complexity-aware-finetuning-beats-blind-distillation-small-models",
+      "title": "Blindly distilling a big model's reasoning is the expensive default, not the best one",
+      "summary": "On three roughly 3B open models, complexity-aware fine-tuning that reasons only over hard examples beats standard SFT (0.58 vs 0.45 average accuracy) and matches full distillation (0.58 vs 0.56) while using 81% less data [s1]; a separate in-context-learning distillation route shrinks a model from 1.3B to 125M and cuts memory by up to 60% [s2].",
+      "why_relevant": "The contestable claim: the reflex to specialize a small model by distilling a larger model's full chain-of-thought is usually the wrong default, because it spends many expensive teacher calls and a large dataset to buy little over cheaper, more selective routes. Complexity-aware fine-tuning matches distillation with 81% less data on roughly 3B models [s1], and in-context-learning distillation reaches a 125M model with up to 60% less memory [s2], both undercutting the brute-force teacher-distillation recipe. The steelman to answer: when the teacher is far stronger than the student and labelled data is scarce, full chain-of-thought distillation still transfers capability that selective fine-tuning cannot reach.",
+      "tags": ["fine-tuning", "distillation", "llm", "training"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Complexity-aware fine-tuning (arXiv:2506.21220)",
+          "url": "https://arxiv.org/abs/2506.21220",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2025-06-26",
+          "excerpt": "our pipeline significantly outperforms the standard SFT approach (0.58 vs 0.45 average accuracy) and outperforms the distillation approach (0.58 vs 0.56 average accuracy) while using 81% less data"
+        },
+        {
+          "source_id": "s2",
+          "label": "In-Context Learning Distillation for Efficient Few-Shot Fine-Tuning (arXiv:2412.13243)",
+          "url": "https://arxiv.org/abs/2412.13243",
+          "retrieved_at": "2026-06-19",
+          "source_date": "2024-12-17",
+          "excerpt": "reducing model parameter from 1.3B to 125M, achieving a size reduction from 2.5GB to 0.25GB"
+        }
+      ]
+    }
+  ]
+}
