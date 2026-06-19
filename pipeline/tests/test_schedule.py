@@ -296,7 +296,7 @@ def test_push_after_success_gated_off_by_default(config):
     assert ran is False and calls == []  # git_push defaults off -> no push, no runner call
 
 
-def test_push_after_success_builds_then_pushes_when_enabled(config):
+def test_push_after_success_reconciles_builds_then_pushes_when_enabled(config):
     calls: list = []
 
     def _runner(argv, cwd=None):
@@ -305,10 +305,28 @@ def test_push_after_success_builds_then_pushes_when_enabled(config):
 
     cfg = replace(config, git_push=True, git_remote="origin", git_branch="main")
     assert deploy.push_after_success(cfg, runner=_runner) is True
-    # build gate runs FIRST, then the push -- both with cwd = repo_root
+    # reconcile (pull --rebase) runs FIRST, then the build gate, then the push
     assert calls == [
+        (["git", "pull", "--rebase", "origin", "main"], str(cfg.repo_root)),
         (["pnpm", "build"], str(cfg.repo_root)),
         (["git", "push", "origin", "main"], str(cfg.repo_root)),
+    ]
+
+
+def test_push_after_success_skips_when_reconcile_fails(config):
+    calls: list = []
+
+    def _runner(argv, cwd=None):
+        calls.append(argv)
+        # the rebase is rejected (conflict / diverged); push must never run
+        return SimpleNamespace(returncode=1 if argv[:2] == ["git", "pull"] else 0)
+
+    cfg = replace(config, git_push=True, git_remote="origin", git_branch="main")
+    assert deploy.push_after_success(cfg, runner=_runner) is False
+    # reconcile fails -> abort the rebase, never build, never push
+    assert calls == [
+        ["git", "pull", "--rebase", "origin", "main"],
+        ["git", "rebase", "--abort"],
     ]
 
 
@@ -317,20 +335,24 @@ def test_push_after_success_skips_push_when_build_fails(config):
 
     def _runner(argv, cwd=None):
         calls.append(argv)
-        # the build gate fails; the push must never run
+        # reconcile ok; the build gate fails; the push must never run
         return SimpleNamespace(returncode=1 if argv[0] == "pnpm" else 0)
 
     cfg = replace(config, git_push=True)
     assert deploy.push_after_success(cfg, runner=_runner) is False
-    assert calls == [["pnpm", "build"]]  # built, refused, never reached git push
+    # reconciled, built, refused, never reached git push
+    assert calls == [
+        ["git", "pull", "--rebase", config.git_remote, config.git_branch],
+        ["pnpm", "build"],
+    ]
 
 
 def test_push_after_success_push_nonzero_exit_is_false_not_raise(config):
     cfg = replace(config, git_push=True)
 
     def _runner(argv, cwd=None):
-        # build passes, the push itself fails -> False, never raises
-        return SimpleNamespace(returncode=0 if argv[0] == "pnpm" else 1)
+        # reconcile + build pass, the push itself fails -> False, never raises
+        return SimpleNamespace(returncode=1 if argv[0] == "git" and argv[1] == "push" else 0)
 
     assert deploy.push_after_success(cfg, runner=_runner) is False
 

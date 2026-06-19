@@ -57,20 +57,60 @@ def build_passes(
     return True
 
 
+def reconcile_with_remote(
+    config: PipelineConfig,
+    *,
+    runner: Callable[..., subprocess.CompletedProcess] = subprocess.run,
+) -> bool:
+    """``git pull --rebase`` onto the remote branch so the later push fast-forwards.
+
+    The publish commit is local-only; if the remote has ANY commit the local branch
+    lacks (a hotfix pushed from elsewhere, a CI-side commit), a bare ``git push`` is
+    rejected with ``! [rejected] ... (fetch first)`` and stays wedged FOREVER -- every
+    subsequent daily run piles another unpushed article on a diverged branch. This
+    rebases the local article commits on top of the remote tip first. Same never-raise
+    discipline: a conflicting rebase (rare -- the pipeline edits content, hotfixes edit
+    code) is aborted and reported, returning ``False`` so the push is skipped and the
+    work stays local for manual repair rather than crashing the scheduler.
+    """
+    pull = ["git", "pull", "--rebase", config.git_remote, config.git_branch]
+    try:
+        proc = runner(pull, cwd=str(config.repo_root))
+    except OSError as exc:  # git missing / cwd gone -- surface, do not crash the run
+        print(f"[DEPLOY-RECONCILE-ERROR] {' '.join(pull)}: {exc}", file=sys.stderr)
+        return False
+    code = getattr(proc, "returncode", 1)
+    if code != 0:
+        print(
+            f"[DEPLOY-RECONCILE-FAILED] {' '.join(pull)} exited {code} -- aborting "
+            "rebase, NOT pushing (article stays local for manual reconcile)",
+            file=sys.stderr,
+        )
+        try:  # leave the worktree clean; ignore if no rebase was in progress
+            runner(["git", "rebase", "--abort"], cwd=str(config.repo_root))
+        except OSError:
+            pass
+        return False
+    return True
+
+
 def push_after_success(
     config: PipelineConfig,
     *,
     runner: Callable[..., subprocess.CompletedProcess] = subprocess.run,
 ) -> bool:
-    """Build-gate, then push ``config.git_branch`` so CI deploys + reindexes.
+    """Reconcile, build-gate, then push ``config.git_branch`` so CI deploys.
 
-    Returns ``True`` iff the production build passed AND the push ran and exited 0.
-    No-op returning ``False`` when ``config.git_push`` is off (the default) or when
-    the build gate fails (the article is already committed locally; the next run or
-    a manual push recovers it once repaired). ``runner`` is injectable so the
-    offline test asserts the argv/gating without touching a real remote or build.
+    Returns ``True`` iff the rebase onto the remote was clean AND the production build
+    passed AND the push ran and exited 0. No-op returning ``False`` when ``config.git_push``
+    is off (the default), when the remote can't be reconciled cleanly, or when the build
+    gate fails (the article is already committed locally; the next run or a manual push
+    recovers it once repaired). ``runner`` is injectable so the offline test asserts the
+    argv/gating without touching a real remote or build.
     """
     if not config.git_push:
+        return False
+    if not reconcile_with_remote(config, runner=runner):
         return False
     if not build_passes(config, runner=runner):
         return False
@@ -88,4 +128,4 @@ def push_after_success(
     return True
 
 
-__all__ = ["build_passes", "push_after_success"]
+__all__ = ["build_passes", "push_after_success", "reconcile_with_remote"]
