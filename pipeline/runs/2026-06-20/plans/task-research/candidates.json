@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "candidates": [
+    {
+      "topic_id": "minimax-m3-open-weight-frontier-coding",
+      "dedup_key": "open-weight-llm-reaches-frontier-agentic-coding-via-sparse-attention",
+      "title": "An open-weight model just posted frontier coding scores, on its own benchmark harness",
+      "summary": "MiniMax M3 launched June 1, 2026 claiming 59 percent on SWE-Bench Pro, on par with GPT-5.5, on a 1M-token context built from MiniMax Sparse Attention at one-twentieth the per-token compute of the prior generation [s1][s3]; but the headline numbers are MiniMax's own and the weights were still pending at launch [s2].",
+      "why_relevant": "The contestable take: a self-reported 59 percent on SWE-Bench Pro from a vendor that ran its own harness and had not yet shipped the weights is a marketing artifact until reproduced, so the real engineering story is the architecture, not the leaderboard line. MiniMax Sparse Attention is the concrete mechanism: a learned index branch selects which key-value blocks matter, cutting per-token compute to one-twentieth at 1M context with 9x prefilling and 15x decoding speedups [s3]. The named failure mode is benchmark provenance, every headline figure produced on MiniMax's own infrastructure with weights to be released roughly ten days after launch [s1][s2]. The steelman to answer: for a sparse-attention design this is exactly how you would expect a frontier open-weight model to arrive, and the harness caveat is normal release sequencing, not evidence the scores are wrong.",
+      "tags": ["llm", "oss", "agents", "long-context"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "MiniMax M3: open-weight model with a million-token context challenges proprietary leaders (The Decoder)",
+          "url": "https://the-decoder.com/minimax-m3-open-weight-model-with-a-million-token-context-challenges-proprietary-leaders/",
+          "retrieved_at": "2026-06-20",
+          "source_date": "2026-06-01",
+          "excerpt": "On SWE-Bench Pro, an established software development benchmark, M3 scores 59 percent according to MiniMax."
+        },
+        {
+          "source_id": "s2",
+          "label": "MiniMax M3 model page (Together AI)",
+          "url": "https://www.together.ai/models/minimax-m3",
+          "retrieved_at": "2026-06-20",
+          "excerpt": "Open-weight; weights to be released approximately 10 days after launch"
+        },
+        {
+          "source_id": "s3",
+          "label": "MiniMax M3 model page (Together AI), sparse-attention specification",
+          "url": "https://www.together.ai/models/minimax-m3",
+          "retrieved_at": "2026-06-20",
+          "excerpt": "MiniMax Sparse Attention delivers 1M token context at 1/20 per-token compute vs the previous generation, with 9x prefilling and 15x decoding speedups"
+        }
+      ]
+    },
+    {
+      "topic_id": "turboquant-kv-cache-3bit-quantization",
+      "dedup_key": "kv-cache-quantization-to-low-bits-removes-the-long-context-memory-ceiling",
+      "title": "The long-context memory wall is a quantization problem you can mostly solve today",
+      "summary": "TurboQuant, a data-oblivious KV-cache quantizer from Google Research at ICLR 2026, reaches near-optimal distortion within a small constant factor across all bit-widths with no training [s1], and the March 24, 2026 announcement reports at least 6x KV-cache memory reduction at 3-bit storage without accuracy compromise [s2].",
+      "why_relevant": "The contestable take: teams treat the KV cache that grows linearly with context as a fixed hardware ceiling and buy more GPUs, when a training-free quantizer recovers most of that memory for the cost of a kernel swap. The concrete mechanism is data-oblivious quantization that achieves near-optimal distortion within a small constant factor across all bit-widths and dimensions, so it needs no calibration data and works online [s1]; the measured payoff is at least 6x memory reduction at roughly 3-bit storage without reported accuracy loss [s2]. The named failure mode it targets is the long-context cache blowing past GPU memory bandwidth and capacity. The steelman to answer: near-lossless on reported benchmarks is not lossless everywhere, and quantization artifacts can surface on the exact long-context retrieval tasks that motivate the big cache in the first place.",
+      "tags": ["inference", "long-context", "llm", "serving"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "TurboQuant, data-oblivious vector quantization (arXiv:2504.19874)",
+          "url": "https://arxiv.org/abs/2504.19874",
+          "retrieved_at": "2026-06-20",
+          "source_date": "2025-04-28",
+          "excerpt": "Our data-oblivious algorithms, suitable for online applications, achieve near-optimal distortion rates (within a small constant factor) across all bit-widths and dimensions."
+        },
+        {
+          "source_id": "s2",
+          "label": "TurboQuant Explained: How Google Compresses KV Caches to 3 Bits (Louis Wang)",
+          "url": "https://louiswang524.github.io/blog/turboquant-explained/",
+          "retrieved_at": "2026-06-20",
+          "source_date": "2026-03-24",
+          "excerpt": "at least 6x reduction in KV-cache memory according to Google's March 24, 2026 announcement"
+        }
+      ]
+    },
+    {
+      "topic_id": "colbert-late-interaction-retrieval-latency",
+      "dedup_key": "late-interaction-colbert-beats-cross-encoder-reranking-at-production-latency",
+      "title": "Your cross-encoder reranker is a latency time bomb late interaction defuses",
+      "summary": "On a 40 QPS benchmark in April 2026, a cross-encoder reranker's p99.9 latency exceeds 21 seconds while ColBERT late interaction holds a 23ms p50 [s1], because late interaction precomputes per-token document embeddings offline and scores with a cheap MaxSim at query time instead of a full forward pass per pair [s2][s3].",
+      "why_relevant": "The contestable take: the cross-encoder reranker most RAG stacks bolt on as the precision layer is the wrong default under real load, because it re-runs a transformer over every query-document pair and collapses at concurrency. The measured contrast is stark: at 40 QPS the cross-encoder's p99.9 passes 21 seconds while ColBERT's p50 stays at 23ms [s1]. The mechanism is late interaction: documents are encoded into per-token embeddings offline, then scored by taking, for each query token, its maximum similarity over document tokens and summing [s2][s3], moving the expensive work out of the request path. The named failure mode is tail latency under concurrency, not mean latency in a notebook. The steelman to answer: a full cross-encoder still wins top-k precision on hard queries, and ColBERT's per-token index trades disk and memory for that speed, so the right call is workload-dependent rather than a blanket swap.",
+      "tags": ["retrieval", "rag", "inference"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Advanced RAG Retrieval: Cross-Encoders and Reranking (Towards Data Science)",
+          "url": "https://towardsdatascience.com/advanced-rag-retrieval-cross-encoders-reranking/",
+          "retrieved_at": "2026-06-20",
+          "source_date": "2026-04-11",
+          "excerpt": "At 40 QPS, the cross-encoder's p99.9 is over 21 seconds. ColBERT's p50 is 23ms."
+        },
+        {
+          "source_id": "s2",
+          "label": "An Overview of Late Interaction Retrieval Models: ColBERT, ColPali, and ColQwen (Weaviate)",
+          "url": "https://weaviate.io/blog/late-interaction-overview",
+          "retrieved_at": "2026-06-20",
+          "excerpt": "However, in late interaction, the embeddings that are stored are for each token, rather than a single embedding for the whole document."
+        },
+        {
+          "source_id": "s3",
+          "label": "Advanced RAG Retrieval: Cross-Encoders and Reranking (Towards Data Science), MaxSim description",
+          "url": "https://towardsdatascience.com/advanced-rag-retrieval-cross-encoders-reranking/",
+          "retrieved_at": "2026-06-20",
+          "source_date": "2026-04-11",
+          "excerpt": "For each query token, find its best-matching document token (the one with the highest cosine similarity) and take that maximum. Then sum all the maxima across query tokens."
+        }
+      ]
+    },
+    {
+      "topic_id": "litellm-supply-chain-pypi-backdoor",
+      "dedup_key": "ai-model-gateway-is-the-supply-chain-attack-surface-via-stolen-publish-token",
+      "title": "Your AI gateway is the blast radius: the LiteLLM PyPI backdoor",
+      "summary": "On March 24, 2026 two PyPI releases of LiteLLM, 1.82.7 and 1.82.8, shipped a credential stealer that launches the moment the Python interpreter starts via a litellm_init.pth file [s1][s2]; the official advisory tells operators to treat every secret on affected systems, API keys, cloud keys, database passwords, SSH keys, and Kubernetes tokens, as compromised [s4].",
+      "why_relevant": "The contestable take: the LLM gateway you added for convenience is your single highest-value supply-chain target, because it sits in the credential path of every model call and runs untrusted package code on install. The mechanism is brutally simple: a malicious litellm_init.pth inside the wheel runs at interpreter startup, before any of your code, so importing the library is enough to execute the payload [s2]; both compromised builds were the real 1.82.7 and 1.82.8 published to PyPI [s1][s3]. The named failure mode is install-time code execution turning a dependency bump into full credential theft. The steelman to answer: this is a generic PyPI .pth abuse that pinning, hash-locking, and an offline mirror already mitigate, so it is a packaging-hygiene failure rather than anything specific to AI gateways.",
+      "tags": ["security", "supply-chain", "agents"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "LiteLLM and Telnyx compromised on PyPI: the TeamPCP supply chain campaign (Datadog Security Labs)",
+          "url": "https://securitylabs.datadoghq.com/articles/litellm-compromised-pypi-teampcp-supply-chain-campaign/",
+          "retrieved_at": "2026-06-20",
+          "source_date": "2026-03-24",
+          "excerpt": "litellm 1.82.7 and 1.82.8 were both released on March 24, 2026"
+        },
+        {
+          "source_id": "s2",
+          "label": "LiteLLM compromised on PyPI (Datadog Security Labs), execution mechanism",
+          "url": "https://securitylabs.datadoghq.com/articles/litellm-compromised-pypi-teampcp-supply-chain-campaign/",
+          "retrieved_at": "2026-06-20",
+          "source_date": "2026-03-24",
+          "excerpt": "will launch the malicious payload when the Python interpreter is started"
+        },
+        {
+          "source_id": "s3",
+          "label": "Security Update: Suspected Supply Chain Incident (LiteLLM official docs)",
+          "url": "https://docs.litellm.ai/blog/security-update-march-2026",
+          "retrieved_at": "2026-06-20",
+          "source_date": "2026-03-24",
+          "excerpt": "The compromised PyPI packages were litellm==1.82.7 and litellm==1.82.8."
+        },
+        {
+          "source_id": "s4",
+          "label": "Security Update: Suspected Supply Chain Incident (LiteLLM official docs), remediation",
+          "url": "https://docs.litellm.ai/blog/security-update-march-2026",
+          "retrieved_at": "2026-06-20",
+          "source_date": "2026-03-24",
+          "excerpt": "Treat any credentials present on the affected systems as compromised, including: API keys, Cloud access keys, Database passwords, SSH keys, Kubernetes tokens."
+        }
+      ]
+    },
+    {
+      "topic_id": "prompt-injection-permanent-architectural-flaw",
+      "dedup_key": "prompt-injection-is-an-architectural-property-not-a-patchable-bug",
+      "title": "Stop patching prompt injection: OWASP's 2026 list says it is structural",
+      "summary": "OWASP's 2026 Top 10 for Agentic Applications maps prompt injection to six of its ten categories and, unlike the 2025 edition, backs them with real CVEs and breach reports rather than hypotheticals [s1]; a formal-security framework reframes indirect and direct injection, jailbreak, task drift, and memory poisoning as violations of security properties, not isolated bugs [s2].",
+      "why_relevant": "The contestable take: prompt injection is a property of how LLMs read input, not a defect you can patch, so a security program built around input filters and per-CVE fixes is structurally behind. The evidence that it is systemic, not incidental: OWASP now ties prompt injection to six of ten agentic-risk categories and grounds the 2026 list in actual CVEs and advisories instead of plausible scenarios [s1]. The mechanism, made precise by a formalization that recasts indirect and direct injection, jailbreak, task drift, and memory poisoning as violations of one or more security properties [s2], is that instructions and data share one token stream the model cannot reliably separate. The named failure mode is the patched-yet-exploited agent: closing one injection path leaves the capability intact. The steelman to answer: dedicated injection classifiers and capability scoping are improving fast, so treating it as unsolvable understates defenses that already block most production attacks.",
+      "tags": ["security", "agents", "prompt-injection"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Prompt injection still drives most agentic AI security failures in production (Help Net Security)",
+          "url": "https://www.helpnetsecurity.com/2026/06/11/owasp-prompt-injection-ai-security-failures/",
+          "retrieved_at": "2026-06-20",
+          "source_date": "2026-06-11",
+          "excerpt": "One technique ties most of these incidents together: prompt injection. OWASP maps it to six of the ten categories in its Top 10 for Agentic Applications."
+        },
+        {
+          "source_id": "s2",
+          "label": "A Framework for Formalizing LLM Agent Security (arXiv:2603.19469)",
+          "url": "https://arxiv.org/abs/2603.19469",
+          "retrieved_at": "2026-06-20",
+          "source_date": "2026-03-19",
+          "excerpt": "indirect prompt injection, direct prompt injection, jailbreak, task drift, and memory poisoning, as violations of one or more security properties"
+        }
+      ]
+    }
+  ]
+}
