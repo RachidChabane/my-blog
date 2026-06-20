@@ -1,0 +1,50 @@
+{
+  "threshold": 0.82,
+  "results": [
+    {
+      "topic_id": "minimax-m3-open-weight-frontier-coding",
+      "dedup_key": "open-weight-llm-reaches-frontier-agentic-coding-via-sparse-attention",
+      "max_similarity": 0.1698415551216894,
+      "nearest_prior_id": "context-budget-not-window",
+      "too_similar": false
+    },
+    {
+      "topic_id": "turboquant-kv-cache-3bit-quantization",
+      "dedup_key": "kv-cache-quantization-to-low-bits-removes-the-long-context-memory-ceiling",
+      "max_similarity": 0.283069258536149,
+      "nearest_prior_id": "context-budget-not-window",
+      "too_similar": false
+    },
+    {
+      "topic_id": "colbert-late-interaction-retrieval-latency",
+      "dedup_key": "late-interaction-colbert-beats-cross-encoder-reranking-at-production-latency",
+      "max_similarity": 0.20000000000000007,
+      "nearest_prior_id": "agent-reliability-pass-at-1-mirage",
+      "too_similar": false
+    },
+    {
+      "topic_id": "litellm-supply-chain-pypi-backdoor",
+      "dedup_key": "ai-model-gateway-is-the-supply-chain-attack-surface-via-stolen-publish-token",
+      "max_similarity": 0.29417420270727607,
+      "nearest_prior_id": "ai-evaluation-compute-cost-bottleneck",
+      "too_similar": false
+    },
+    {
+      "topic_id": "prompt-injection-permanent-architectural-flaw",
+      "dedup_key": "prompt-injection-is-an-architectural-property-not-a-patchable-bug",
+      "max_similarity": 0.24806946917841702,
+      "nearest_prior_id": "context-budget-not-window",
+      "too_similar": false
+    }
+  ],
+  "selection": {
+    "chosen_topic_id": "minimax-m3-open-weight-frontier-coding",
+    "fallback_topic_ids": [
+      "turboquant-kv-cache-3bit-quantization",
+      "colbert-late-interaction-retrieval-latency",
+      "litellm-supply-chain-pypi-backdoor",
+      "prompt-injection-permanent-architectural-flaw"
+    ],
+    "all_too_similar": false
+  }
+}
