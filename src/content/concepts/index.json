@@ -77,6 +77,30 @@
     "addedOn": "10-06-2026"
   },
   {
+    "id": "batch-invariant-kernels",
+    "label": {
+      "fr": "Noyaux invariants au batch",
+      "en": "Batch-invariant kernels"
+    },
+    "definition": {
+      "fr": "Noyaux d'inférence dont l'ordre de réduction ne dépend pas de la taille du batch, de sorte qu'une même requête produit le même résultat quel que soit le nombre de requêtes traitées simultanément. Ils suppriment le non-déterminisme dû au batching dynamique, au prix d'un débit réduit.",
+      "en": "Inference kernels whose reduction order does not depend on the batch size, so the same request yields the same result regardless of how many requests are processed together. They remove the nondeterminism caused by dynamic batching, at the cost of lower throughput."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "batch-invariant kernel",
+      "deterministic kernels"
+    ],
+    "related": [
+      "continuous-batching",
+      "llm-serving"
+    ],
+    "articles": [
+      "llm-temp0-nondeterminism-batch-invariant"
+    ],
+    "addedOn": "22-06-2026"
+  },
+  {
     "id": "benchmark-self-reporting",
     "label": {
       "fr": "Scores auto-déclarés",
@@ -380,7 +404,8 @@
       "llm-serving"
     ],
     "articles": [
-      "serving-oss-llm-production-cost"
+      "serving-oss-llm-production-cost",
+      "llm-temp0-nondeterminism-batch-invariant"
     ],
     "addedOn": "04-05-2026"
   },
@@ -525,6 +550,32 @@
     "addedOn": "27-05-2026"
   },
   {
+    "id": "inference-determinism",
+    "label": {
+      "fr": "Déterminisme de l'inférence",
+      "en": "Inference determinism"
+    },
+    "definition": {
+      "fr": "Propriété d'un système d'inférence qui renvoie une sortie bit à bit identique pour une même entrée. À température 0, elle n'est pas garantie en pratique : elle dépend de la pile de service et non du matériel, et son obtention a un coût de débit mesurable.",
+      "en": "The property of an inference system returning a bit-identical output for the same input. At temperature 0 it is not guaranteed in practice: it depends on the serving stack rather than the hardware, and achieving it carries a measurable throughput cost."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "reproducibility",
+      "deterministic inference",
+      "temperature-zero determinism"
+    ],
+    "related": [
+      "llm-serving",
+      "continuous-batching",
+      "batch-invariant-kernels"
+    ],
+    "articles": [
+      "llm-temp0-nondeterminism-batch-invariant"
+    ],
+    "addedOn": "22-06-2026"
+  },
+  {
     "id": "iterative-coding-benchmark",
     "label": {
       "fr": "Banc d'essai de code itératif",
@@ -595,7 +646,8 @@
       "quantization"
     ],
     "articles": [
-      "serving-oss-llm-production-cost"
+      "serving-oss-llm-production-cost",
+      "llm-temp0-nondeterminism-batch-invariant"
     ],
     "addedOn": "04-05-2026"
   },
@@ -1007,6 +1059,32 @@
       "hybrid-rag-rrf"
     ],
     "addedOn": "27-05-2026"
+  },
+  {
+    "id": "verified-speculation",
+    "label": {
+      "fr": "Spéculation vérifiée",
+      "en": "Verified speculation"
+    },
+    "definition": {
+      "fr": "Technique qui décode sur un chemin rapide non déterministe puis impose le déterminisme par une boucle légère de vérification et de rollback, ne recalculant que le trafic devant être certifié. Le surcoût n'est encouru qu'en proportion des requêtes qui exigent une sortie reproductible.",
+      "en": "A technique that decodes on a non-deterministic fast path, then enforces determinism through a lightweight verify-rollback loop, recomputing only the traffic that must be certified. The overhead is incurred only in proportion to the requests that require a reproducible output."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "verify-rollback",
+      "verified speculation",
+      "selective determinism"
+    ],
+    "related": [
+      "inference-determinism",
+      "batch-invariant-kernels",
+      "llm-serving"
+    ],
+    "articles": [
+      "llm-temp0-nondeterminism-batch-invariant"
+    ],
+    "addedOn": "22-06-2026"
   },
   {
     "id": "vllm",
