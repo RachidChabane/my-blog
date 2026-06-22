@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "candidates": [
+    {
+      "topic_id": "mcp-stdio-rce-by-design",
+      "dedup_key": "mcp stdio transport enables remote code execution by design a supply chain risk not a patchable bug",
+      "title": "MCP's RCE Problem Is Architectural, Not a Bug You Can Patch",
+      "summary": "A systemic flaw in MCP's STDIO transport lets a server config become a command that runs whether or not the process starts, reaching over 150 million downloads with more than 10 CVEs and live RCE on Letta AI and LangFlow. Treat MCP servers as untrusted code execution, not a config format.",
+      "why_relevant": "The reflex is to wait for a patched SDK, but the take I want to defend is that this is a design property of giving a protocol shell-launch semantics across Python, TypeScript, Java, and Rust, so the only real mitigation is sandboxing and least-privilege around every MCP server you mount, not a version bump. Concrete mechanism (config-to-command execution over STDIO), named failure modes (authenticated RCE on Letta, unauthenticated takeover on LangFlow), and a dated 2026 scope make it defensible and contestable for teams shipping agents on MCP today.",
+      "tags": ["mcp", "security", "agents", "supply-chain"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Infosecurity Magazine: systemic flaw in MCP could expose 150 million downloads",
+          "url": "https://www.infosecurity-magazine.com/news/systemic-flaw-mcp-expose-150/",
+          "retrieved_at": "2026-06-22",
+          "source_date": "2026-04-16",
+          "excerpt": "MCP's STDIO interface was designed to launch a local server process. But the command is executed regardless of whether the process starts successfully ... over 200 open source projects, 150 million downloads, 7000+ publicly accessible servers ... over 10 high or critical-severity CVEs were discovered across individual open source projects."
+        },
+        {
+          "source_id": "s2",
+          "label": "authzed: A Timeline of Model Context Protocol (MCP) Security Breaches",
+          "url": "https://authzed.com/blog/timeline-mcp-breaches",
+          "retrieved_at": "2026-06-22",
+          "source_date": "2026-04-15",
+          "excerpt": "A technical deep-dive identified a systemic design flaw in the core Anthropic Model Context Protocol (MCP) where the standard input/output (STDIO) transport allows direct configuration-to-command execution without sufficient input sanitization. The vulnerability affects over 150 million downloads. It has been weaponized to achieve authenticated Remote Code Execution (RCE) on Letta AI and unauthenticated server takeover on LangFlow. The research has led to over 30 disclosures and 10 CVEs across multiple languages."
+        }
+      ]
+    },
+    {
+      "topic_id": "llm-inference-nondeterminism-batch-invariant-kernels",
+      "dedup_key": "llm inference nondeterminism is a batch variant kernel bug not floating point and is fixable with batch invariant kernels",
+      "title": "Temperature Zero Is Not Deterministic, and the GPU Is Not to Blame",
+      "summary": "At temperature 0, Qwen3-235B produced 80 unique completions over 1000 runs; with batch-invariant kernels all 1000 were identical, at roughly 1.6x to 2x slowdown. The cause is batch-size-variant reductions in matmul, RMSNorm, and attention, not floating-point concurrency.",
+      "why_relevant": "The common excuse is that GPU floating-point nondeterminism is unavoidable, and the position I want to argue is that this is wrong: nondeterminism is an engineering choice in how kernels reduce across a fluctuating batch size, and you can buy bit-identical reproducibility for a measurable throughput cost. Thinking Machines names the mechanism and the 1000-run result; the January 2026 LLM-42 paper shows you can keep dynamic batching and pay overhead only on traffic that needs determinism, which gives a concrete trade-off to take a side on.",
+      "tags": ["inference", "reproducibility", "llm", "serving"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Thinking Machines Lab: Defeating Nondeterminism in LLM Inference",
+          "url": "https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/",
+          "retrieved_at": "2026-06-22",
+          "source_date": "2025-09-10",
+          "excerpt": "even when we adjust the temperature down to 0 (thus making the sampling theoretically deterministic), LLM APIs are still not deterministic in practice ... the primary reason nearly all LLM inference endpoints are nondeterministic is that the load (and thus batch-size) nondeterministically varies ... With batch-invariant kernels enabled, all of our 1000 completions are identical [versus 80 unique completions unoptimized] ... approximately 2x slower (55 seconds vs. 26 seconds), reducing to 1.6x slowdown with improved attention kernels (42 seconds)."
+        },
+        {
+          "source_id": "s2",
+          "label": "LLM-42: Enabling Determinism in LLM Inference with Verified Speculation (arXiv 2601.17768)",
+          "url": "https://arxiv.org/abs/2601.17768",
+          "retrieved_at": "2026-06-22",
+          "source_date": "2026-01-25",
+          "excerpt": "the same prompt may yield different outputs across different runs. At the system level, this non-determinism arises from floating-point non-associativity combined with dynamic batching ... LLM-42 decodes tokens using a non-deterministic fast path and enforces determinism via a lightweight verify-rollback loop ... LLM-42 mostly re-uses existing kernels unchanged and incurs overhead only in proportion to the traffic that requires determinism."
+        }
+      ]
+    },
+    {
+      "topic_id": "prompt-injection-defend-by-design-camel",
+      "dedup_key": "prompt injection is unsolvable inside the model and must be contained by capability based system design like camel",
+      "title": "Stop Trying to Train Prompt Injection Away; Contain It Instead",
+      "summary": "On AgentDojo, CaMeL solved 77% of tasks with provable security versus 84% for an undefended baseline, a 7-point utility cost, while adaptive human red-teamers still hit 100% across all defenses. The fix is structural: separate untrusted data from control flow, not better refusal training.",
+      "why_relevant": "Most teams still chase a model that resists injection, and the take I want to defend is that this is the wrong layer: OpenAI, Anthropic, and Google DeepMind have conceded injection cannot be solved inside an architecture where instructions and data share one token stream, so containment by capabilities and information-flow control is the only durable answer. CaMeL gives a concrete mechanism (privileged versus quarantined LLM, a tainting interpreter) and an honest cost (7-point utility hit, and red-teamers still winning), which is exactly the contestable, measured ground a real argument needs.",
+      "tags": ["security", "agents", "prompt-injection", "llm"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Zylos Research: Indirect Prompt Injection, Attacks, Defenses, and the 2026 State of the Art",
+          "url": "https://zylos.ai/research/2026-04-12-indirect-prompt-injection-defenses-agents-untrusted-content/",
+          "retrieved_at": "2026-06-22",
+          "source_date": "2026-04-12",
+          "excerpt": "the honest answer, acknowledged by OpenAI, Anthropic, and Google DeepMind in 2025 publications, is that prompt injection cannot be fully solved within current LLM architectures ... instructions and data share the same token stream, and the model cannot reliably distinguish one from the other ... On AgentDojo, CaMeL solved 77% of tasks with provable security guarantees, compared to 84% for the undefended baseline ... Human red-teamers testing adaptive attacks achieved the most concerning outcome: 100% across all defenses."
+        },
+        {
+          "source_id": "s2",
+          "label": "Debenedetti et al., Defeating Prompt Injections by Design (CaMeL, arXiv 2503.18813v2)",
+          "url": "https://arxiv.org/abs/2503.18813",
+          "retrieved_at": "2026-06-22",
+          "source_date": "2025-06-24",
+          "excerpt": "explicitly extracts the control and data flows from the (trusted) query; therefore, the untrusted data retrieved by the LLM can never impact the program flow ... a notion of a capability to prevent the exfiltration of private data over unauthorized data flows by enforcing security policies when tools are called ... 77% of tasks with provable security (compared to 84% with an undefended system) in AgentDojo."
+        }
+      ]
+    },
+    {
+      "topic_id": "open-weight-agentic-coding-matches-proprietary",
+      "dedup_key": "open weight models have matched proprietary frontier models on agentic coding so the moat is harness and infra not weights",
+      "title": "Open Weights Caught Up on Agentic Coding; the Moat Moved",
+      "summary": "MiniMax M3, released June 1, 2026, posts 59.0% on SWE-Bench Pro (beating GPT-5.5 and Gemini 3.1 Pro) and 66.0% on Terminal-Bench 2.1, while DeepSeek V4-Pro takes #1 on LiveCodeBench at 93.5 among all models including closed APIs. The frontier coding gap is no longer about weights.",
+      "why_relevant": "The default assumption is that closed frontier labs hold a durable lead on agentic coding, and the position I want to defend is that for the coding work most teams do, open weights have closed it, so the remaining advantage lives in the harness, tool orchestration, and serving infrastructure rather than the checkpoint. The claim is anchored in dated 2026 releases and head-to-head numbers against named proprietary models, which makes it a contestable engineering call about where to spend, not a leaderboard recap.",
+      "tags": ["oss", "agents", "llm", "coding"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Kilo: Best Open Source and Open-Weight Coding Models (2026)",
+          "url": "https://kilo.ai/open-source-models",
+          "retrieved_at": "2026-06-22",
+          "source_date": "2026-06-01",
+          "excerpt": "MiniMax M3 ... 59.0% SWE-Bench Pro (beats GPT-5.5 and Gemini 3.1 Pro), 66.0% Terminal-Bench 2.1 ... Release: June 1, 2026 ... DeepSeek V4-Pro ... 80.6% SWE-Bench Verified; #1 on LiveCodeBench (93.5) among all evaluated models including closed APIs."
+        },
+        {
+          "source_id": "s2",
+          "label": "MindStudio: The Best Open-Source LLMs for Agentic Coding in 2026",
+          "url": "https://www.mindstudio.ai/blog/best-open-source-llms-agentic-coding-2026",
+          "retrieved_at": "2026-06-22",
+          "excerpt": "DeepSeek V4, Kimi K2.6, Qwen 3.6 Plus, GLM 5.1, and a handful of others have closed the gap on closed-source frontier models in ways that matter for the actual work ... Qwen 3.6 Plus ... demonstrated SWE-Bench Verified scores that put it in the same conversation as Claude Opus and GPT-5.4."
+        }
+      ]
+    },
+    {
+      "topic_id": "agentic-rag-logical-retrieval-beyond-embeddings",
+      "dedup_key": "agentic rag should let the llm drive logical retrieval over a lightweight interface instead of engineering ever more complex embedding backends",
+      "title": "Your Agentic RAG Is Over-Engineering the Retriever",
+      "summary": "LogicalRAG matched embedding-based hybrid retrieval on accuracy (0.717 vs 0.716 LLM-as-judge on a KILT-scale corpus) while cutting offline build time 41x and serving at 2.3x higher throughput and 3.1x lower latency. The lever is LLM-driven logical retrieval, not heavier dense or graph backends.",
+      "why_relevant": "Teams keep pouring effort into denser, hybrid, and graph retrieval backends, and the take I want to defend is that for agentic RAG this is misplaced: hand the LLM a lightweight retrieval interface and let it drive intent-faithful, multi-granularity lookups, because refined queries in hybrid pipelines mostly re-surface what you already had. Two 2026 papers give the mechanism and near-parity accuracy with large efficiency wins, which is a concrete, contestable design stance rather than a survey of retrieval tricks.",
+      "tags": ["rag", "retrieval", "agents", "llm"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Rethinking Agentic RAG: Toward LLM-Driven Logical Retrieval Beyond Embeddings (arXiv 2605.27123v1)",
+          "url": "https://arxiv.org/abs/2605.27123",
+          "retrieved_at": "2026-06-22",
+          "source_date": "2026-05-26",
+          "excerpt": "Contemporary RAG systems remain heavily focused on engineering complex retrieval backends, including dense, hybrid, and graph-based retrieval architectures ... refined queries tend to remain semantically similar to previous ones ... On the KILT-scale corpus, average LLM-as-a-Judge accuracy was 0.717 for LogicalRAG versus 0.716 for Agentic Hybrid ... LogicalRAG required 41x lower offline construction time and delivered 2.3x higher throughput with 3.1x lower mean latency during serving."
+        },
+        {
+          "source_id": "s2",
+          "label": "A-RAG: Scaling Agentic Retrieval-Augmented Generation via Hierarchical Retrieval Interfaces (arXiv 2602.03442)",
+          "url": "https://arxiv.org/abs/2602.03442",
+          "retrieved_at": "2026-06-22",
+          "source_date": "2026-02-03",
+          "excerpt": "information within a corpus is inherently organized at multiple granularities, ranging from fine-grained keyword-level signals to coarser sentence-level and chunk-level representations ... A-RAG (Full) achieves the best performance on 3 out of 5 datasets ... retrieving comparable or fewer tokens than traditional RAG methods while achieving superior accuracy."
+        }
+      ]
+    }
+  ]
+}
