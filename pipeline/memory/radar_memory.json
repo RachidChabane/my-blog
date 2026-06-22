@@ -144,5 +144,29 @@
     ],
     "published_at": "2026-06-22",
     "embedding": null
+  },
+  {
+    "translation_key": "minimax-m3-open-weight-multimodal",
+    "topic_id": "minimax-m3-open-weight-multimodal",
+    "dedup_key": "minimax m3 open weight multimodal",
+    "title": "MiniMax-M3: an open-weight 1M-context multimodal MoE on sparse attention",
+    "slugs": {
+      "fr": "minimax-m3-poids-ouverts-1m-multimodal",
+      "en": "minimax-m3-open-weight-1m-multimodal"
+    },
+    "sources": [
+      {
+        "label": "MiniMaxAI/MiniMax-M3 official Hugging Face model card",
+        "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3",
+        "date": "01-06-2026"
+      },
+      {
+        "label": "DataNorth news - MiniMax launches M3",
+        "url": "https://datanorth.ai/news/minimax-launches-m3",
+        "date": "01-06-2026"
+      }
+    ],
+    "published_at": "2026-06-22",
+    "embedding": null
   }
 ]
