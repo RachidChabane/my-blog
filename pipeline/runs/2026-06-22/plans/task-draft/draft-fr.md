@@ -8,13 +8,13 @@ difficulty: 4
 title: "La température zéro n'est pas déterministe, et le GPU n'est pas en cause"
 ---
 
-Réglez un LLM sur la température 0, relancez mille fois la même requête, et vous n'obtiendrez pas mille réponses identiques ; l'excuse habituelle veut que l'arithmétique flottante du GPU soit intrinsèquement irreproductible, et cette excuse est fausse. Le non-déterminisme est un choix d'ingénierie dans la façon dont les noyaux de service réduisent sur un batch dont la taille dérive avec la charge, pas une loi du silicium. La preuve tient en une intervention à variable unique : à température 0, un modèle à l'échelle de la production a produit 80 complétions uniques sur 1000 exécutions, et avec des noyaux invariants au batch les 1000 se sont effondrées sur une sortie identique [s1]. Cette mesure devrait, selon moi, mettre à la retraite la formule « le non-déterminisme, c'est juste le GPU ».
+Réglez un LLM sur la température 0, relancez mille fois la même requête, et vous n'obtiendrez pas mille réponses identiques ; l'excuse habituelle veut que l'arithmétique flottante du GPU soit intrinsèquement non reproductible, et cette excuse est fausse. Le non-déterminisme est un choix d'ingénierie dans la façon dont les noyaux de service réduisent sur un batch dont la taille dérive avec la charge, pas une loi du silicium. La preuve tient en une intervention à variable unique : à température 0, un modèle à l'échelle de la production a produit 80 complétions uniques sur 1000 exécutions, et avec des noyaux invariants au batch les 1000 se sont effondrées sur une sortie identique [s1]. Cette mesure devrait, selon moi, mettre à la retraite la formule « le non-déterminisme, c'est juste le GPU ».
 
 Si cela compte au-delà de l'anecdote, c'est que la reproductibilité est d'ordinaire tenue pour une propriété qu'on a ou qu'on n'a pas, une caractéristique du matériel reçu. Elle n'en est pas une. C'est un réglage de la pile de service, doté d'un prix que vous pouvez lire, et la plupart du temps vous n'avez même pas à pousser le curseur à fond.
 
 ## Le mensonge de la température zéro
 
-Le décodage glouton à température 0 est censé être le cas déterministe : on prend l'argmax à chaque étape, sans échantillonnage, même entrée donc même sortie. En pratique, les API dérivent quand même. La mesure de Thinking Machines rend l'écart concret : même en rendant l'échantillonnage théoriquement déterministe, la même requête sur 1000 exécutions a donné 80 complétions distinctes [s1]. Ce n'est pas un frémissement d'arrondi sur la dernière décimale d'un logit ; ce sont 80 textes différents qu'un utilisateur pourrait lire.
+Le décodage glouton à température 0 est censé être le cas déterministe : on prend l'argmax à chaque étape, sans échantillonnage, même entrée donc même sortie. En pratique, les API dérivent quand même. La mesure de Thinking Machines rend l'écart concret : même avec un échantillonnage rendu théoriquement déterministe, ces sorties distinctes ne sont pas un frémissement d'arrondi sur la dernière décimale d'un logit [s1]. Ce sont des textes entiers qu'un utilisateur pourrait lire, différents d'une exécution à l'autre.
 
 L'explication populaire invoque le flottant et la concurrence : un GPU lance des milliers de threads, l'addition n'est pas associative, donc, à les en croire, l'ordre des opérations est insondable et la sortie de ce fait incorrigible. Ce récit nomme un fait réel et en tire la mauvaise conclusion. La non-associativité est nécessaire à la dérive, mais ce n'est pas elle qui fait qu'une exécution donnée diffère de la suivante.
 
@@ -22,7 +22,7 @@ L'explication populaire invoque le flottant et la concurrence : un GPU lance des
 
 La vraie variable, c'est le batch. Les serveurs d'inférence pratiquent le batching dynamique : votre requête est réduite avec les autres requêtes qui se trouvent en vol, or la raison première du non-déterminisme des endpoints est que la charge, et donc la taille de batch, varie d'une exécution à l'autre [s1]. Le matmul, le RMSNorm et l'attention réduisent tous le long de cette dimension de batch, et une forme de batch différente signifie un ordre de réduction différent. Donnez à l'addition flottante non associative un ordre différent et vous obtenez une somme différente, qui se propage en un argmax différent quelques couches plus loin.
 
-La cause n'est donc pas que le calcul serait aléatoire. La cause est que la même requête tombe dans une forme de batch différente selon qui d'autre appelle l'endpoint à cette milliseconde. C'est un mode de défaillance nommé et localisable, et il est contrôlable. Les noyaux invariants au batch figent l'ordre de réduction pour qu'il ne dépende plus de la taille de batch, et l'effondrement de 80 à 1 est ce qui arrive quand on change cette seule chose et qu'on regarde la variation disparaître.
+La cause n'est donc pas que le calcul serait aléatoire. La cause est que la même requête tombe dans une forme de batch différente selon qui d'autre appelle l'endpoint à cette milliseconde. C'est un mode de défaillance identifié et localisable, et il est contrôlable. Les noyaux invariants au batch figent l'ordre de réduction pour qu'il ne dépende plus de la taille de batch, et l'effondrement de 80 à 1 est ce qui arrive quand on change cette seule chose et qu'on regarde la variation disparaître.
 
 ## Le prix d'une sortie bit à bit identique
 
@@ -34,7 +34,7 @@ Le déterminisme n'est pas gratuit, mais son coût est borné et vous pouvez l'a
 > [!INFERRED]
 > Je lis cet effondrement à variable unique comme la preuve que la cause tient à l'ordonnancement des réductions, non au silicium : le déterminisme est une décision de pile de service que l'on tarife, pas une limite matérielle que l'on subit.
 
-C'est le pivot de tout l'argument. Dès que le coût a un chiffre, « on ne peut pas le rendre déterministe » cesse d'être un énoncé vrai sur le matériel et devient une décision de budget sur le débit.
+Dès que le coût a un chiffre, « on ne peut pas le rendre déterministe » cesse d'être un énoncé vrai sur le matériel et devient une décision de budget sur le débit.
 
 ## Vous n'avez pas à le payer partout
 
