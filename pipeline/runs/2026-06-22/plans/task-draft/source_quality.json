@@ -1,0 +1,20 @@
+{
+  "verdict": "sound",
+  "claims": [
+    {
+      "source_id": "s1",
+      "primary": true,
+      "authoritative": true,
+      "corroborated": true,
+      "note": "First-hand origin of the 80/1000 collapse and 2x->1.6x cost figures from its own batch-invariant-kernel experiment. Thinking Machines Lab is a credible expert publisher on LLM inference. Its core mechanism (dynamic/load-varying batch size as the primary cause of temperature-0 nondeterminism) is independently echoed by s2, which names floating-point non-associativity combined with dynamic batching."
+    },
+    {
+      "source_id": "s2",
+      "primary": true,
+      "authoritative": true,
+      "corroborated": true,
+      "note": "Original arXiv paper introducing LLM-42's verify-rollback design and its traffic-proportional overhead claim; first-hand for that contribution. arXiv preprint with a concrete system and method is credible on the topic. Its mechanism account (dynamic batching + FP non-associativity drives nondeterminism) is independently corroborated by s1, and the selective-overhead framing mirrors s1's slowdown trade-off."
+    }
+  ],
+  "reason": "Two independent origins (an industry lab blog and an academic preprint, three-plus months apart) converge on the same root mechanism: temperature-0 nondeterminism stems from dynamic/load-varying batching (with floating-point non-associativity). Each is primary for the distinct claim it backs (s1 the 80/1000 + 2x->1.6x cost, s2 the selective verify-rollback overhead), both publishers are credible, and they mutually reinforce the underlying mechanism without circular dependence. The set adequately supports the claims."
+}
