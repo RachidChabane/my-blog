@@ -357,5 +357,35 @@
     ],
     "published_at": "2026-06-19",
     "embedding": null
+  },
+  {
+    "translation_key": "llm-temp0-nondeterminism-batch-invariant",
+    "topic_id": "llm-inference-nondeterminism-batch-invariant-kernels",
+    "dedup_key": "llm inference nondeterminism is a batch variant kernel bug not floating point and is fixable with batch invariant kernels",
+    "title": "Temperature zero is not deterministic, and the GPU is not to blame",
+    "slugs": {
+      "fr": "la-temperature-zero-n-est-pas-deterministe",
+      "en": "temperature-zero-is-not-deterministic"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Thinking Machines Lab: Defeating Nondeterminism in LLM Inference",
+        "url": "https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/",
+        "retrieved_at": "2026-06-22",
+        "excerpt": "even when we adjust the temperature down to 0 (thus making the sampling theoretically deterministic), LLM APIs are still not deterministic in practice ... the primary reason nearly all LLM inference endpoints are nondeterministic is that the load (and thus batch-size) nondeterministically varies ... With batch-invariant kernels enabled, all of our 1000 completions are identical [versus 80 unique completions unoptimized] ... approximately 2x slower (55 seconds vs. 26 seconds), reducing to 1.6x slowdown with improved attention kernels (42 seconds).",
+        "source_date": "2025-09-10"
+      },
+      {
+        "source_id": "s2",
+        "label": "LLM-42: Enabling Determinism in LLM Inference with Verified Speculation (arXiv 2601.17768)",
+        "url": "https://arxiv.org/abs/2601.17768",
+        "retrieved_at": "2026-06-22",
+        "excerpt": "the same prompt may yield different outputs across different runs. At the system level, this non-determinism arises from floating-point non-associativity combined with dynamic batching ... LLM-42 decodes tokens using a non-deterministic fast path and enforces determinism via a lightweight verify-rollback loop ... LLM-42 mostly re-uses existing kernels unchanged and incurs overhead only in proportion to the traffic that requires determinism.",
+        "source_date": "2026-01-25"
+      }
+    ],
+    "published_at": "2026-06-22",
+    "embedding": null
   }
 ]
