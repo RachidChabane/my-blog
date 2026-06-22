@@ -1,0 +1,17 @@
+# my-blog RADAR engine -- reference crontab (a SECOND daily job beside the essay run).
+#
+# The essay run is at 09:00 (pipeline/schedule/scheduler.cron.example); the radar run is
+# at 07:00. They are independent: the radar config (pipeline/radar/config.py) points
+# runs_root -> pipeline/runs-radar, template -> pipeline/radar/tasks-template.yaml, and
+# schedule_state_dir -> pipeline/schedule/state-radar, so a same-calendar-day radar run
+# can never find / resume the essay slate (cadence.run_id_for is a bare %Y-%m-%d).
+#
+# Install: `crontab -e` and add the line below (replace <REPO_ROOT> / <STATE_DIR>), or
+# render the resolved form with:
+#   python3 -m pipeline.radar.cron render --resolve
+#
+# To be alerted on radar failures, add the owner secret at the top of the crontab:
+#   ALERT_WEBHOOK_URL=https://...
+#
+# RADAR: daily at 07:00 local -- drive one radar slate (and push so CI deploys).
+0 7 * * *  cd <REPO_ROOT> && PIPELINE_GIT_PUSH=1 PIPELINE_MODEL=opus python3 -m pipeline.radar.cron run >> <STATE_DIR>/radar-cron.log 2>&1

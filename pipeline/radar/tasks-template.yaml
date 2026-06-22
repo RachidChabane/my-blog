@@ -1,0 +1,73 @@
+# Radar slate template -- the SHAPE of one autonomous RADAR run (short release/spec/tool
+# brief). Lighter than the essay slate: research -> draft -> publish, no select/argue and
+# no judge gates. A radar brief's integrity rests on the research + adversarial-verify pass
+# and the deterministic STRUCTURAL validation in pipeline/radar/stages.py (the four mandated
+# sections, kind enum, >= 1 source, no em-dash), which the publish stage enforces.
+#
+# cpe v2 (zero loader warnings: version 2 + caps block + explicit on_max_review_rounds; no
+# legacy *_timeout_minutes / top-level max_review_rounds). pipeline/radar/runner.py deep-
+# copies this via runner.assemble_slate, stamps per-run knobs + the radar stage
+# descriptions, and writes pipeline/runs-radar/<run_id>/tasks.yaml. No invariants_file: radar
+# runs no M-4 shell gates (the lighter subset is "deterministic publish validation only").
+# publish depends_on [draft] => a malformed draft never publishes (bilingual-or-nothing).
+version: 2
+defaults:
+  model: sonnet
+  effort: medium
+  plans_dir: plans
+  claude_backend: tmux
+  on_max_review_rounds: fail
+  persona_file: pipeline/house_style.md
+  parallelism: 1
+  branch_per_task: false
+  base_branch: main
+  caps:
+    max_minutes_per_phase: 20
+    max_review_rounds: 1
+    max_gate_repair_rounds: 1
+phases:
+  - id: source
+    title: 'Radar research -- web-search sweep for the freshest release/spec/tool, capture sources'
+  - id: draft
+    title: 'Radar draft -- FR+EN brief with the schema/code/impact section contract'
+  - id: publish
+    title: 'Radar publish -- project + validate + write FR+EN into src/content/radar'
+tasks:
+  - id: research
+    phase: source
+    title: 'Research the freshest AI-engineering release/spec/tool with captured sources'
+    description: |
+      [STAGE: Radar research. Prompt body authored by pipeline/radar/prompts.py;
+      this is a substrate placeholder.]
+      Native web-search sweep for the freshest (last ~3 weeks) AI-engineering release,
+      spec change, new tool, or benchmark. Capture, per source, the verbatim excerpt +
+      URL + date (>= 2 independent sources). Pin the real schema/API field names. Write
+      the ranked candidate(s) to plans/task-research/radar-candidates.json.
+    key_files: [pipeline/radar/prompts.py]
+    commit_message: 'radar(research): candidates'
+    depends_on: []
+  - id: draft
+    phase: draft
+    title: 'Draft the bilingual FR+EN radar brief (schema/code/impact sections)'
+    description: |
+      [STAGE: Radar draft. Authored by pipeline/radar/prompts.py.]
+      Write the FR+EN brief with the four mandated H2 sections per language (what
+      changed / the schema / in practice / impact) and the structured entry to
+      plans/task-draft/entry.json (translationKey, kind, tags, slugs, titles, summaries,
+      bodies, sources). The schema + code blocks must use real field names from the
+      sources; no invention. No emojis, no em-dashes.
+    key_files: [pipeline/radar/prompts.py, pipeline/radar/stages.py]
+    commit_message: 'radar(draft): entry.json + FR/EN bodies'
+    depends_on: [research]
+  - id: publish
+    phase: publish
+    title: 'Publish FR+EN radar brief into src/content/radar; append radar memory'
+    description: |
+      [STAGE: Radar publish. Authored by pipeline/radar/prompts.py.]
+      Shell out to `python3 -m pipeline.radar.stages publish` to project + validate BOTH
+      languages + write BOTH or NEITHER into src/content/radar and append the radar topic
+      memory. Deterministic structural validation only (no judge gates). No manual step
+      (D-002).
+    key_files: [pipeline/radar/stages.py]
+    commit_message: 'radar(publish): FR + EN brief'
+    depends_on: [draft]

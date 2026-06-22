@@ -13,9 +13,12 @@ import { chrome } from '@/i18n/ui';
 interface Props {
   lang: Locale;
   slugMap?: Partial<Record<Locale, string>>;
+  // Content section the slugMap lives under ('blog' default; 'radar' on radar pages),
+  // so the switch resolves /<lang>/<section>/<slug>/.
+  section?: string;
 }
 
-const { lang, slugMap } = Astro.props;
+const { lang, slugMap, section = 'blog' } = Astro.props;
 const c = chrome(lang);
 const ariaFor = (l: Locale): string =>
   l === 'fr' ? c.switchToFr : c.switchToEn;
@@ -26,7 +29,7 @@ const ariaFor = (l: Locale): string =>
     LOCALES.map((locale) => (
       <a
         class:list={['lang-switch__btn', { 'is-on': locale === lang }]}
-        href={switcherHref(locale, slugMap)}
+        href={switcherHref(locale, slugMap, section)}
         lang={locale}
         hreflang={locale}
         aria-current={locale === lang ? 'true' : undefined}

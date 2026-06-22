@@ -6,12 +6,14 @@
  * French literals so the single-quoted strings need no escaping (Prettier-stable).
  */
 import type { Locale } from '@/i18n/index';
+import type { RadarKind } from '@/content/schemas';
 
 export interface ChromeStrings {
   skipToContent: string; // a11y skip link
   homeAria: string; // wordmark aria-label
   navAria: string; // primary <nav> aria-label
   navArticles: string; // → /[lang]/blog/
+  navRadar: string; // → /[lang]/radar/
   navWork: string; // → /[lang]/work/
   navGraph: string; // → /[lang]/graph/ (the knowledge map)
   navAbout: string; // → /[lang]/about/
@@ -33,6 +35,7 @@ export const CHROME: Record<Locale, ChromeStrings> = {
     homeAria: 'rachid chabane, accueil',
     navAria: 'Navigation principale',
     navArticles: 'Articles',
+    navRadar: 'Radar',
     navWork: 'Projets',
     navGraph: 'Graphe',
     navAbout: 'À propos',
@@ -52,6 +55,7 @@ export const CHROME: Record<Locale, ChromeStrings> = {
     homeAria: 'rachid chabane, home',
     navAria: 'Main navigation',
     navArticles: 'Articles',
+    navRadar: 'Radar',
     navWork: 'Projects',
     navGraph: 'Graph',
     navAbout: 'About',
@@ -79,6 +83,7 @@ export function chrome(lang: Locale): ChromeStrings {
  */
 export const NAV_ITEMS = [
   { key: 'navArticles', path: 'blog' },
+  { key: 'navRadar', path: 'radar' },
   { key: 'navWork', path: 'work' },
   { key: 'navGraph', path: 'graph' },
   { key: 'navAbout', path: 'about' },
@@ -851,4 +856,108 @@ export const GRAPH: Record<Locale, GraphStrings> = {
 
 export function graphStrings(lang: Locale): GraphStrings {
   return GRAPH[lang];
+}
+
+/**
+ * Radar (the /[lang]/radar/ surface) copy. Dedicated tables — siblings to the other
+ * *_INDEX / *_DETAIL tables, kept out of ChromeStrings per this file's header. Radar
+ * is the short-dated AI-engineering release/spec/tool feed; its copy mirrors the
+ * Articles tone (no marketing chrome). The `·` / `→` are typographic punctuation,
+ * not emoji (INV-9 safe). FR apostrophes use U+2019 ’ (file convention).
+ */
+export interface RadarIndexStrings {
+  eyebrow: string; // mono kicker — "Veille" / "Radar"
+  title: string; // <h1> — "Radar"
+  intro: string; // one-line explainer under the title
+  countSuffix: string; // follows the count: "brèves · du plus récent" / "briefs · newest first"
+  empty: string; // empty-state line
+}
+
+export const RADAR_INDEX: Record<Locale, RadarIndexStrings> = {
+  fr: {
+    eyebrow: 'Veille',
+    title: 'Radar',
+    intro:
+      'Ce qui vient de sortir en ingénierie de l’IA : specs, modèles, outils. Brèves datées, sourcées, avec schéma, code et impact pour une équipe.',
+    countSuffix: 'brèves · du plus récent',
+    empty: 'Aucune brève pour le moment.',
+  },
+  en: {
+    eyebrow: 'Radar',
+    title: 'Radar',
+    intro:
+      'What just shipped in AI engineering: specs, models, tools. Dated, sourced briefs, each with a schema, code, and what it means for an engineering team.',
+    countSuffix: 'briefs · newest first',
+    empty: 'No briefs yet.',
+  },
+};
+
+export function radarIndexStrings(lang: Locale): RadarIndexStrings {
+  return RADAR_INDEX[lang];
+}
+
+export interface RadarDetailStrings {
+  back: string; // index back-link — "Tout le radar" / "All radar"
+  maintained: string; // eyebrow tail (= ARTICLE_DETAIL.maintained)
+  sourcesH: string; // "Sources"
+  bilingualNote: string; // "FR / EN"
+  onThisPage: string; // contents-rail label
+  copyLink: string; // per-heading copy-permalink button aria-label
+  copyCode: string; // copy-code-block button aria-label/text
+  copied: string; // transient "copied" confirmation
+}
+
+export const RADAR_DETAIL: Record<Locale, RadarDetailStrings> = {
+  fr: {
+    back: 'Tout le radar',
+    maintained: 'maintenu par l’agent',
+    sourcesH: 'Sources',
+    bilingualNote: 'FR / EN',
+    onThisPage: 'Sur cette page',
+    copyLink: 'Copier le lien vers cette section',
+    copyCode: 'Copier le code',
+    copied: 'Copié',
+  },
+  en: {
+    back: 'All radar',
+    maintained: 'agent-maintained',
+    sourcesH: 'Sources',
+    bilingualNote: 'FR / EN',
+    onThisPage: 'On this page',
+    copyLink: 'Copy link to this section',
+    copyCode: 'Copy code',
+    copied: 'Copied',
+  },
+};
+
+export function radarDetailStrings(lang: Locale): RadarDetailStrings {
+  return RADAR_DETAIL[lang];
+}
+
+/**
+ * Localized labels for the radar `kind` (the news TYPE, rendered in the eyebrow and
+ * as the list-row kind tag). Keyed by the RADAR_KINDS enum in content/schemas.ts.
+ * CSS-uppercases them where shown as an eyebrow.
+ */
+export const RADAR_KIND_LABEL: Record<Locale, Record<RadarKind, string>> = {
+  fr: {
+    'spec-change': 'Évolution de spec',
+    release: 'Sortie',
+    tool: 'Outil',
+    benchmark: 'Benchmark',
+    security: 'Sécurité',
+    research: 'Recherche',
+  },
+  en: {
+    'spec-change': 'Spec change',
+    release: 'Release',
+    tool: 'Tool',
+    benchmark: 'Benchmark',
+    security: 'Security',
+    research: 'Research',
+  },
+};
+
+export function radarKindLabel(kind: RadarKind, lang: Locale): string {
+  return RADAR_KIND_LABEL[lang][kind];
 }

@@ -17,6 +17,7 @@ import { localePath } from '@/i18n/index';
 import type { Locale } from '@/i18n/index';
 import type {
   ArticleFrontmatter,
+  RadarFrontmatter,
   ProjectFrontmatter,
   Tag,
   Category,
@@ -540,6 +541,96 @@ export function unknownArticleTags(
     for (const slug of e.data.tags) if (!vocab.has(slug)) unknown.add(slug);
   }
   return [...unknown].sort();
+}
+
+/* ================================================================== Radar */
+/**
+ * Pure radar query + view-model helpers — the radar analog of the article seam.
+ * Radar briefs are short dated release/spec/tool notes (src/content/radar). Like
+ * projects (and unlike articles), a radar brief has a real `summary` dek field, so
+ * the card needs no body. No `difficulty`/`category`; instead a `kind` whose label
+ * is localized at the route. Still no `astro:content` import (vitest-friendly).
+ */
+
+/** Structural shape of a glob-loaded radar markdown entry (the subset we use). */
+export interface RadarEntryLike {
+  id: string;
+  body?: string;
+  data: RadarFrontmatter;
+}
+
+/** View-model the radar list row renders — built once, decoupled from collection internals. */
+export interface RadarCard {
+  slug: string;
+  lang: Locale;
+  href: string; // /<lang>/radar/<slug>/
+  title: string;
+  dek: string; // the `summary` field verbatim
+  dateDisplay: string; // DD-MM-YYYY (as stored)
+  kind: RadarFrontmatter['kind'];
+  kindLabel: string; // localized kind label (resolved at the route)
+  tags: string[]; // plain labels (radar tags are not linked to the article tag pages)
+}
+
+/**
+ * Published radar briefs for `lang`, newest-first with a stable slug tiebreak
+ * (same discipline as getPublishedArticles → deterministic builds). No mutation.
+ */
+export function getPublishedRadar(
+  entries: RadarEntryLike[],
+  lang: Locale
+): RadarEntryLike[] {
+  return entries
+    .filter((e) => e.data.publishState === 'published' && e.data.lang === lang)
+    .sort((a, b) => {
+      const byDate =
+        parsePublishDate(b.data.publishDate) -
+        parsePublishDate(a.data.publishDate);
+      if (byDate !== 0) return byDate;
+      return a.data.slug < b.data.slug ? -1 : a.data.slug > b.data.slug ? 1 : 0;
+    });
+}
+
+/** Assemble the radar list-row view-model for one entry (kindLabel localized by the route). */
+export function toRadarCard(
+  entry: RadarEntryLike,
+  lang: Locale,
+  kindLabel: string
+): RadarCard {
+  const { slug, title, summary, publishDate, kind, tags } = entry.data;
+  return {
+    slug,
+    lang,
+    href: localePath(lang, `radar/${slug}`),
+    title,
+    dek: summary,
+    dateDisplay: publishDate,
+    kind,
+    kindLabel,
+    tags: [...tags],
+  };
+}
+
+/**
+ * locale → published slug for a radar translationKey, across both languages
+ * (published counterparts only). The radar analog of buildSlugMap — kept separate
+ * because RadarFrontmatter is not assignable to ArticleEntryLike (no difficulty/
+ * category). Feeds the language switcher with section='radar'.
+ */
+export function buildRadarSlugMap(
+  entries: RadarEntryLike[],
+  translationKey: string
+): Partial<Record<Locale, string>> {
+  const map: Partial<Record<Locale, string>> = {};
+  for (const e of entries) {
+    if (
+      e.data.translationKey === translationKey &&
+      e.data.publishState === 'published'
+    ) {
+      map[e.data.lang] = e.data.slug;
+    }
+  }
+  return map;
 }
 
 /* ============================================================ Portfolio (S6) */

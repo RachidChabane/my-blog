@@ -1,0 +1,182 @@
+[
+  {
+    "translation_key": "mcp-2026-07-28-stateless-revision",
+    "topic_id": "mcp-2026-07-28-stateless-revision",
+    "dedup_key": "mcp 2026 07 28 stateless revision",
+    "title": "MCP goes stateless: the 2026-07-28 revision drops the handshake",
+    "slugs": {
+      "fr": "revision-mcp-2026-07-28-sans-etat",
+      "en": "mcp-2026-07-28-stateless-revision"
+    },
+    "sources": [
+      {
+        "label": "Model Context Protocol specification - draft Key Changes / changelog",
+        "url": "https://modelcontextprotocol.io/specification/draft/changelog",
+        "date": "21-05-2026"
+      },
+      {
+        "label": "Model Context Protocol official blog - The 2026-07-28 MCP Specification Release Candidate",
+        "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/",
+        "date": "21-05-2026"
+      },
+      {
+        "label": "GitHub - modelcontextprotocol/modelcontextprotocol Releases",
+        "url": "https://github.com/modelcontextprotocol/modelcontextprotocol/releases",
+        "date": "29-05-2026"
+      },
+      {
+        "label": "Context Studios blog - MCP v2 Alpha: The July 28 Protocol Shift to Plan For",
+        "url": "https://www.contextstudios.ai/blog/mcp-v2-alpha-the-july-28-protocol-shift-to-plan-for",
+        "date": "14-06-2026"
+      }
+    ],
+    "published_at": "2026-06-22",
+    "embedding": null
+  },
+  {
+    "translation_key": "github-spec-kit-sdd",
+    "topic_id": "github-spec-kit-sdd",
+    "dedup_key": "github spec kit sdd",
+    "title": "GitHub Spec Kit: driving an agent with Markdown specs",
+    "slugs": {
+      "fr": "github-spec-kit-developpement-pilote-par-specification",
+      "en": "github-spec-kit-spec-driven-development"
+    },
+    "sources": [
+      {
+        "label": "github/spec-kit - official repository README",
+        "url": "https://github.com/github/spec-kit",
+        "date": "19-06-2026"
+      },
+      {
+        "label": "Spec Kit Documentation - github.github.com/spec-kit",
+        "url": "https://github.github.com/spec-kit/",
+        "date": "27-05-2026"
+      },
+      {
+        "label": "Microsoft for Developers - Diving Into Spec-Driven Development With GitHub Spec Kit",
+        "url": "https://developer.microsoft.com/blog/spec-driven-development-spec-kit",
+        "date": "15-09-2025"
+      }
+    ],
+    "published_at": "2026-06-22",
+    "embedding": null
+  },
+  {
+    "translation_key": "glm-5-2-mit-1m-coding-open-weight",
+    "topic_id": "glm-5-2-mit-1m-coding-open-weight",
+    "dedup_key": "glm 5 2 mit 1m coding open weight",
+    "title": "GLM-5.2: a 753B coding MoE with 1M context, MIT-licensed",
+    "slugs": {
+      "fr": "glm-5-2-mit-contexte-1m-poids-ouverts",
+      "en": "glm-5-2-mit-1m-context-open-weights"
+    },
+    "sources": [
+      {
+        "label": "Hugging Face model card - zai-org/GLM-5.2",
+        "url": "https://huggingface.co/zai-org/GLM-5.2",
+        "date": "13-06-2026"
+      },
+      {
+        "label": "Hugging Face config.json - zai-org/GLM-5.2",
+        "url": "https://huggingface.co/zai-org/GLM-5.2/blob/main/config.json",
+        "date": "13-06-2026"
+      },
+      {
+        "label": "Z.AI Developer Docs - GLM-5.2 Overview",
+        "url": "https://docs.z.ai/guides/llm/glm-5.2",
+        "date": "13-06-2026"
+      },
+      {
+        "label": "The Decoder - Zhipu's GLM-5.2 closes in on closed-source leaders",
+        "url": "https://the-decoder.com/zhipu-ais-glm-5-2-closes-in-on-closed-source-leaders-in-coding-marathons/",
+        "date": "17-06-2026"
+      },
+      {
+        "label": "Simon Willison - GLM-5.2 is probably the most powerful text-only open weights LLM",
+        "url": "https://simonwillison.net/2026/jun/17/glm-52/",
+        "date": "17-06-2026"
+      },
+      {
+        "label": "MarkTechPost - Z.ai Launches GLM-5.2 with usable 1M context, two thinking-effort levels",
+        "url": "https://www.marktechpost.com/2026/06/14/z-ai-launches-glm-5-2-with-a-usable-1m-token-context-two-thinking-effort-levels-and-no-benchmarks-at-launch/",
+        "date": "14-06-2026"
+      }
+    ],
+    "published_at": "2026-06-22",
+    "embedding": null
+  },
+  {
+    "translation_key": "github-copilot-ai-credits-usage-billing",
+    "topic_id": "github-copilot-ai-credits-usage-billing",
+    "dedup_key": "github copilot ai credits usage billing",
+    "title": "GitHub Copilot moves to usage-based AI Credits",
+    "slugs": {
+      "fr": "github-copilot-credits-ia-facturation-usage",
+      "en": "github-copilot-ai-credits-usage-based-billing"
+    },
+    "sources": [
+      {
+        "label": "GitHub Changelog - Updates to GitHub Copilot billing and plans",
+        "url": "https://github.blog/changelog/2026-06-01-updates-to-github-copilot-billing-and-plans/",
+        "date": "01-06-2026"
+      },
+      {
+        "label": "GitHub Docs - Models and pricing for GitHub Copilot",
+        "url": "https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing",
+        "date": "01-06-2026"
+      },
+      {
+        "label": "GitHub Docs - Usage-based billing for organizations and enterprises",
+        "url": "https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-organizations-and-enterprises",
+        "date": "01-06-2026"
+      },
+      {
+        "label": "Visual Studio Magazine - Devs Sound Off on Usage-Based Copilot Pricing Change",
+        "url": "https://visualstudiomagazine.com/articles/2026/04/27/devs-sound-off-on-usage-based-copilot-pricing-change-you-will-get-less-but-pay-the-same-price.aspx",
+        "date": "27-04-2026"
+      }
+    ],
+    "published_at": "2026-06-22",
+    "embedding": null
+  },
+  {
+    "translation_key": "rtk-caveman-token-stack",
+    "topic_id": "rtk-caveman-token-stack",
+    "dedup_key": "rtk caveman token stack",
+    "title": "RTK + Caveman: cutting agent tokens at both ends of the loop",
+    "slugs": {
+      "fr": "rtk-caveman-deux-bouts-tokens-agents",
+      "en": "rtk-caveman-token-stack-both-ends"
+    },
+    "sources": [
+      {
+        "label": "RTK primary repo README",
+        "url": "https://raw.githubusercontent.com/rtk-ai/rtk/master/README.md",
+        "date": "21-06-2026"
+      },
+      {
+        "label": "RTK GitHub API",
+        "url": "https://api.github.com/repos/rtk-ai/rtk",
+        "date": "22-06-2026"
+      },
+      {
+        "label": "Caveman primary repo README",
+        "url": "https://raw.githubusercontent.com/JuliusBrussee/caveman/main/README.md",
+        "date": "12-06-2026"
+      },
+      {
+        "label": "Caveman GitHub API",
+        "url": "https://api.github.com/repos/JuliusBrussee/caveman",
+        "date": "22-06-2026"
+      },
+      {
+        "label": "azrod.me - independent corroboration of the combined RTK/Caveman stack",
+        "url": "https://azrod.me/en/articles/token-economy-rtk-dcp-caveman/",
+        "date": "07-05-2026"
+      }
+    ],
+    "published_at": "2026-06-22",
+    "embedding": null
+  }
+]

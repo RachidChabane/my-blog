@@ -15,6 +15,9 @@ export interface Props {
   lang?: Locale;
   translationKey?: string | null;
   slugMap?: Partial<Record<Locale, string>>;
+  // Section the slugMap lives under, for the language switcher ('blog' default;
+  // 'radar' on radar detail pages). Forwarded to Masthead + Footer switchers.
+  switchSection?: string;
 }
 
 const {
@@ -22,6 +25,7 @@ const {
   description = 'Rachid Chabane · AI engineering blog & portfolio',
   lang = 'fr',
   slugMap,
+  switchSection,
 } = Astro.props;
 const c = chrome(lang);
 ---
@@ -45,9 +49,9 @@ const c = chrome(lang);
   </head>
   <body>
     <a class="skip-link" href="#main">{c.skipToContent}</a>
-    <Masthead lang={lang} slugMap={slugMap} />
+    <Masthead lang={lang} slugMap={slugMap} switchSection={switchSection} />
     <main id="main"><slot /></main>
-    <Footer lang={lang} slugMap={slugMap} />
+    <Footer lang={lang} slugMap={slugMap} switchSection={switchSection} />
     <Avatar lang={lang} />
   </body>
 </html>

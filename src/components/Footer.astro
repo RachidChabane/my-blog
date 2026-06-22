@@ -17,9 +17,10 @@ import ThemeToggle from '@/components/ThemeToggle.astro';
 interface Props {
   lang: Locale;
   slugMap?: Partial<Record<Locale, string>>;
+  switchSection?: string; // forwarded to the language switcher (default 'blog')
 }
 
-const { lang, slugMap } = Astro.props;
+const { lang, slugMap, switchSection } = Astro.props;
 const c = chrome(lang);
 const year = new Date().getFullYear(); // build-time; not asserted (year-brittleness)
 ---
@@ -53,7 +54,7 @@ const year = new Date().getFullYear(); // build-time; not asserted (year-brittle
     </a>
     <span class="footer__spacer"></span>
     <div class="footer__controls">
-      <LanguageSwitcher lang={lang} slugMap={slugMap} />
+      <LanguageSwitcher lang={lang} slugMap={slugMap} section={switchSection} />
       <ThemeToggle label={c.themeToggleAria} />
     </div>
   </div>

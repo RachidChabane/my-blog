@@ -1,0 +1,138 @@
+---
+/**
+ * Radar index. `/[lang]/radar/` on a `[...page]` rest route (mirrors the blog index
+ * shape so both /fr/radar/ and /en/radar/ render from one path-per-locale). Unlike
+ * the article index, radar is a FLAT newest-first feed — short dated release/spec/
+ * tool briefs, no category grouping. View-models + ordering come from
+ * src/lib/content.ts (getPublishedRadar filters published+lang, newest-first; the
+ * route maps each entry through toRadarCard with a localized kind label). Copy from
+ * src/i18n/ui.ts; chrome from Base. No slugMap on the index → the language switcher
+ * falls back to the localized home (NFR-11 holds: both /fr/radar/ and /en/radar/
+ * exist). data-pagefind-ignore keeps radar out of the article search index (v1).
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import { LOCALES } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import {
+  radarIndexStrings,
+  radarKindLabel,
+  articleIndexStrings,
+} from '@/i18n/ui';
+import { getPublishedRadar, toRadarCard } from '@/lib/content';
+import type { RadarCard } from '@/lib/content';
+import Base from '@/layouts/Base.astro';
+import RadarListItem from '@/components/RadarListItem.astro';
+
+export const getStaticPaths = (async () => {
+  const radar = await getCollection('radar');
+  return LOCALES.map((lang) => {
+    const cards: RadarCard[] = getPublishedRadar(radar, lang).map((e) =>
+      toRadarCard(e, lang, radarKindLabel(e.data.kind, lang))
+    );
+    return {
+      params: { lang, page: undefined },
+      props: { lang, cards },
+    };
+  });
+}) satisfies GetStaticPaths;
+
+const { lang, cards } = Astro.props as { lang: Locale; cards: RadarCard[] };
+const s = radarIndexStrings(lang);
+const readCta = articleIndexStrings(lang).readCta;
+const title = `${s.title} · rachid chabane`;
+---
+
+<Base title={title} description={s.intro} lang={lang} switchSection="radar">
+  <div class="rc-index rc-enter" data-pagefind-ignore>
+    <header class="rc-pagehd">
+      <span class="t-eyebrow">{s.eyebrow}</span>
+      <h1 class="rc-pagehd__title">{s.title}</h1>
+      <p class="rc-pagehd__intro">{s.intro}</p>
+      <span class="rc-pagehd__meta">{cards.length} {s.countSuffix}</span>
+    </header>
+
+    {
+      cards.length > 0 ? (
+        <div class="rc-arows">
+          {cards.map((card) => (
+            <RadarListItem card={card} readCta={readCta} reveal />
+          ))}
+        </div>
+      ) : (
+        <p class="rc-empty-note">{s.empty}</p>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  /* Same centered column as the article index (824px, tokens only). */
+  .rc-index {
+    width: 100%;
+    max-width: 824px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+  }
+  @media (max-width: 720px) {
+    .rc-index {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+  .rc-pagehd {
+    padding-top: 52px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 22px;
+  }
+  .rc-pagehd__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-head);
+    font-size: var(--text-h1);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
+    color: var(--fg);
+  }
+  .rc-pagehd__intro {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--fg-muted);
+    max-width: 60ch;
+  }
+  .rc-pagehd__meta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--fg-subtle);
+  }
+  .rc-arows {
+    display: flex;
+    flex-direction: column;
+  }
+  .rc-empty-note {
+    margin: 0;
+    padding: 48px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>

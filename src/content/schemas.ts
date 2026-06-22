@@ -66,6 +66,39 @@ export const articleFrontmatterSchema = z.object({
   publishState: z.enum(['published', 'draft']),
 });
 
+// RADAR — short, dated AI-engineering release/spec/tool briefs (the "what shipped
+// this week that an AI engineer must know" surface the evergreen essay pipeline
+// deliberately skips, W-5). A radar brief is lighter than an article: no difficulty
+// rubric, no 4-way essay category. Instead it carries a `kind` (what TYPE of news it
+// is) and an explicit `summary` dek (briefs lead with a one-liner rather than deriving
+// it from the body). `sources` needs >= 1 (release news may rest on a single primary
+// source + corroboration; the pipeline still aims for >= 2). Mirrors the article
+// publish projection: `<slug>.<lang>.md`, joined FR/EN via `translationKey`.
+export const RADAR_KINDS = [
+  'spec-change',
+  'release',
+  'tool',
+  'benchmark',
+  'security',
+  'research',
+] as const;
+
+export const radarFrontmatterSchema = z.object({
+  translationKey: z.string().min(1),
+  lang: z.enum(['fr', 'en']),
+  slug: z.string().min(1),
+  title: z.string().min(1),
+  publishDate: z.string().regex(/^\d{2}-\d{2}-\d{4}$/),
+  // What TYPE of development this brief reports — drives the eyebrow/kind label.
+  kind: z.enum(RADAR_KINDS),
+  tags: z.array(z.string().min(1)).min(1),
+  // The dek: a real frontmatter field (unlike the article dek, derived from the body).
+  summary: z.string().min(1),
+  sources: z.array(sourceSchema).min(1),
+  contentHash: z.string().min(1),
+  publishState: z.enum(['published', 'draft']),
+});
+
 export const projectFrontmatterSchema = z.object({
   translationKey: z.string().min(1),
   lang: z.enum(['fr', 'en']),
@@ -176,6 +209,8 @@ export const conceptSchema = z.object({
 });
 
 export type ArticleFrontmatter = z.infer<typeof articleFrontmatterSchema>;
+export type RadarFrontmatter = z.infer<typeof radarFrontmatterSchema>;
+export type RadarKind = (typeof RADAR_KINDS)[number];
 export type ProjectFrontmatter = z.infer<typeof projectFrontmatterSchema>;
 export type KnowledgeFrontmatter = z.infer<typeof knowledgeFrontmatterSchema>;
 export type Tag = z.infer<typeof tagSchema>;

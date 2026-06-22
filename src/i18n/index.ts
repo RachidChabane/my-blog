@@ -34,18 +34,23 @@ export function localePath(locale: Locale, subPath?: string): string {
  * @param slugMap       Optional map of locale → slug for the current article/project.
  *                      If the target locale has a slug, returns the full content URL.
  *                      If not, falls back to the localized index for targetLocale.
+ * @param section       The content section the slug lives under (default 'blog').
+ *                      Radar detail pages pass 'radar' so the switch resolves
+ *                      /<lang>/radar/<slug>/ instead of /<lang>/blog/<slug>/.
  *
  * switcherHref('en')                          → '/en/'
  * switcherHref('en', { fr: 'mon-article', en: 'my-article' })  → '/en/blog/my-article/'
  * switcherHref('en', { fr: 'mon-article' })   → '/en/'  (no EN translation → index)
+ * switcherHref('en', { en: 'mcp-spec' }, 'radar')  → '/en/radar/mcp-spec/'
  */
 export function switcherHref(
   targetLocale: Locale,
-  slugMap?: Partial<Record<Locale, string>>
+  slugMap?: Partial<Record<Locale, string>>,
+  section: string = 'blog'
 ): string {
   if (slugMap) {
     const slug = slugMap[targetLocale];
-    if (slug) return localePath(targetLocale, `blog/${slug}`);
+    if (slug) return localePath(targetLocale, `${section}/${slug}`);
   }
   return localePath(targetLocale);
 }

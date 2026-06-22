@@ -24,8 +24,15 @@ import {
   homeStrings,
   GRAPH,
   graphStrings,
+  RADAR_INDEX,
+  radarIndexStrings,
+  RADAR_DETAIL,
+  radarDetailStrings,
+  RADAR_KIND_LABEL,
+  radarKindLabel,
 } from '@/i18n/ui';
 import { LOCALES } from '@/i18n/index';
+import { RADAR_KINDS } from '@/content/schemas';
 
 // Property escape + `u` flag — NOT a control-char range, so this satisfies
 // eslint `no-control-regex`. Use Emoji_Presentation (NOT Extended_Pictographic):
@@ -149,10 +156,11 @@ describe('project-detail string table (PROJECT_DETAIL)', () => {
 });
 
 describe('NAV_ITEMS', () => {
-  it('maps four localized labels to shared route slugs', () => {
-    expect(NAV_ITEMS).toHaveLength(4);
+  it('maps the localized labels to shared route slugs', () => {
+    expect(NAV_ITEMS).toHaveLength(5);
     expect(NAV_ITEMS.map((it) => it.path)).toEqual([
       'blog',
+      'radar',
       'work',
       'graph',
       'about',
@@ -528,5 +536,60 @@ describe('graph string table (GRAPH)', () => {
   it('graphStrings(lang) returns the locale record', () => {
     expect(graphStrings('fr')).toBe(GRAPH.fr);
     expect(graphStrings('en')).toBe(GRAPH.en);
+  });
+});
+
+describe('radar string tables (RADAR_INDEX / RADAR_DETAIL)', () => {
+  it('fr and en expose identical key sets (bilingual parity — NFR-11)', () => {
+    expect(Object.keys(RADAR_INDEX.fr).sort()).toEqual(
+      Object.keys(RADAR_INDEX.en).sort()
+    );
+    expect(Object.keys(RADAR_DETAIL.fr).sort()).toEqual(
+      Object.keys(RADAR_DETAIL.en).sort()
+    );
+  });
+
+  it('every radar string is a non-empty string in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const table of [RADAR_INDEX[locale], RADAR_DETAIL[locale]]) {
+        for (const [key, value] of Object.entries(table)) {
+          expect(typeof value, `${locale}.${key}`).toBe('string');
+          expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0);
+        }
+      }
+    }
+  });
+
+  it('contains no emoji in any string (INV-9)', () => {
+    for (const locale of LOCALES) {
+      for (const table of [RADAR_INDEX[locale], RADAR_DETAIL[locale]]) {
+        for (const [key, value] of Object.entries(table)) {
+          expect(EMOJI.test(value), `${locale}.${key} = "${value}"`).toBe(
+            false
+          );
+        }
+      }
+    }
+  });
+
+  it('radarIndexStrings/radarDetailStrings(lang) return the locale records', () => {
+    expect(radarIndexStrings('fr')).toBe(RADAR_INDEX.fr);
+    expect(radarIndexStrings('en')).toBe(RADAR_INDEX.en);
+    expect(radarDetailStrings('fr')).toBe(RADAR_DETAIL.fr);
+    expect(radarDetailStrings('en')).toBe(RADAR_DETAIL.en);
+  });
+});
+
+describe('radar kind labels (RADAR_KIND_LABEL)', () => {
+  it('labels every RADAR_KINDS value, non-empty, no emoji, in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const kind of RADAR_KINDS) {
+        const label = RADAR_KIND_LABEL[locale][kind];
+        expect(typeof label, `${locale}.${kind}`).toBe('string');
+        expect(label.trim().length, `${locale}.${kind}`).toBeGreaterThan(0);
+        expect(EMOJI.test(label), `${locale}.${kind} = "${label}"`).toBe(false);
+        expect(radarKindLabel(kind, locale)).toBe(label);
+      }
+    }
   });
 });

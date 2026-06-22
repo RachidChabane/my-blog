@@ -1,0 +1,381 @@
+---
+/**
+ * Radar detail. `/[lang]/radar/[slug]/`, one page per PUBLISHED radar brief per
+ * locale (FR/EN). A trimmed version of the article DOSSIER: header masthead (kind
+ * eyebrow, title, summary lead, date meta), a sticky contents rail built from the
+ * brief's ## sections (What changed / The schema / In practice / Impact), the Prose
+ * reading surface (which already styles the schema + code-example fenced blocks),
+ * and the Sources card. The heavy article apparatus (glossary, color legend, ask
+ * buttons, provenance sidenotes, prev/next) is intentionally dropped for a short
+ * brief. slugMap + switchSection="radar" wire the FR/EN language switch to the
+ * parallel radar URL. data-pagefind-ignore keeps radar out of article search (v1).
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { radarDetailStrings, radarKindLabel } from '@/i18n/ui';
+import {
+  getPublishedRadar,
+  buildRadarSlugMap,
+  toSourceViews,
+} from '@/lib/content';
+import type { SourceView } from '@/lib/content';
+import Base from '@/layouts/Base.astro';
+import Prose from '@/components/Prose.astro';
+import SourceList from '@/components/SourceList.astro';
+import ReadingProgress from '@/components/ReadingProgress.astro';
+import ArticleTools from '@/components/ArticleTools.astro';
+
+export const getStaticPaths = (async () => {
+  const radar = await getCollection('radar');
+  return LOCALES.flatMap((lang) =>
+    getPublishedRadar(radar, lang).map((entry) => ({
+      params: { lang, slug: entry.data.slug },
+      props: {
+        lang,
+        entry,
+        sources: toSourceViews(entry.data.sources),
+        slugMap: buildRadarSlugMap(radar, entry.data.translationKey),
+      },
+    }))
+  );
+}) satisfies GetStaticPaths;
+
+const { lang, entry, sources, slugMap } = Astro.props as {
+  lang: Locale;
+  entry: CollectionEntry<'radar'>;
+  sources: SourceView[];
+  slugMap: Partial<Record<Locale, string>>;
+};
+
+const s = radarDetailStrings(lang);
+const { Content, headings } = await render(entry);
+const toc: { slug: string; text: string }[] = headings
+  .filter((h: { depth: number }) => h.depth === 2)
+  .map((h: { slug: string; text: string }) => ({ slug: h.slug, text: h.text }));
+const dek = entry.data.summary;
+const kindLabel = radarKindLabel(entry.data.kind, lang);
+const eyebrow = `${kindLabel} · ${s.maintained}`;
+const hasBoth = Boolean(slugMap.fr && slugMap.en);
+const title = `${entry.data.title} · rachid chabane`;
+---
+
+<Base
+  title={title}
+  description={dek}
+  lang={lang}
+  slugMap={slugMap}
+  switchSection="radar"
+>
+  <article
+    class={`rc-article rc-enter${toc.length === 0 ? ' rc-article--solo' : ''}`}
+    data-pagefind-ignore
+  >
+    <ReadingProgress />
+    <a class="rc-back" href={localePath(lang, 'radar')}>← {s.back}</a>
+
+    <header class="rc-ah">
+      <span class="rc-eyebrow">{eyebrow}</span>
+      <h1 class="rc-article__title">{entry.data.title}</h1>
+      <p class="rc-ah__lead">{dek}</p>
+      <div class="rc-ah__meta">
+        <div class="rc-meta">
+          <span>{entry.data.publishDate}</span>
+          {
+            hasBoth && (
+              <>
+                <span class="rc-meta__dot" />
+                <span>{s.bilingualNote}</span>
+              </>
+            )
+          }
+        </div>
+        <div class="rc-ah__tags">
+          {entry.data.tags.map((t: string) => <span class="rc-chip">{t}</span>)}
+        </div>
+      </div>
+    </header>
+
+    <div class={`rc-doc${toc.length === 0 ? ' rc-doc--solo' : ''}`}>
+      {
+        toc.length > 0 && (
+          <aside class="rc-rail">
+            <nav class="rc-toc" aria-label={s.onThisPage}>
+              <p class="rc-toc__label">{s.onThisPage}</p>
+              <ul class="rc-toc__list">
+                {toc.map((h, i) => (
+                  <li>
+                    <a
+                      class="rc-toc__link"
+                      href={`#${h.slug}`}
+                      data-toc-link={h.slug}
+                    >
+                      <span class="rc-toc__n">{i + 1}</span>
+                      <span class="rc-toc__t">{h.text}</span>
+                    </a>
+                  </li>
+                ))}
+                <li class="rc-toc__extra">
+                  <a
+                    class="rc-toc__link"
+                    href="#sources"
+                    data-toc-link="sources"
+                  >
+                    <span class="rc-toc__t">{s.sourcesH}</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+        )
+      }
+
+      <div class="rc-doc__main">
+        <Prose><Content /></Prose>
+        <SourceList sources={sources} heading={s.sourcesH} />
+      </div>
+    </div>
+
+    <ArticleTools
+      copyLink={s.copyLink}
+      copyCode={s.copyCode}
+      copied={s.copied}
+    />
+  </article>
+
+  <script>
+    // Active-section highlight in the contents rail (progressive enhancement) —
+    // same behavior as the article DOSSIER.
+    const links = document.querySelectorAll<HTMLElement>('[data-toc-link]');
+    if (links.length) {
+      const byId = new Map();
+      links.forEach((l) => byId.set(l.getAttribute('data-toc-link'), l));
+      const targets = [...byId.keys()]
+        .map((id) => document.getElementById(id))
+        .filter((el): el is HTMLElement => el !== null);
+      const obs = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              links.forEach((l) => l.classList.remove('is-active'));
+              byId.get(e.target.id)?.classList.add('is-active');
+            }
+          }
+        },
+        { rootMargin: '-90px 0px -68% 0px', threshold: 0 }
+      );
+      targets.forEach((t) => obs.observe(t));
+
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+      links.forEach((link) => {
+        link.addEventListener('click', (e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          const id = link.getAttribute('data-toc-link');
+          if (!id) return;
+          const target = document.getElementById(id);
+          if (!target) return;
+          e.preventDefault();
+          target.scrollIntoView({
+            behavior: reduce.matches ? 'auto' : 'smooth',
+            block: 'start',
+          });
+          if (target.tabIndex < 0) target.setAttribute('tabindex', '-1');
+          target.focus({ preventScroll: true });
+          history.pushState(null, '', `#${id}`);
+        });
+      });
+    }
+  </script>
+</Base>
+
+<style>
+  /* DOSSIER reading surface, trimmed for a short brief. Ported 1:1 from the article
+     detail (rc-article / rc-back / rc-ah / rc-doc / rc-rail / rc-toc). Tokens only. */
+  .rc-article {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 44px 40px 0;
+  }
+  .rc-article--solo {
+    max-width: 768px;
+  }
+  @media (max-width: 720px) {
+    .rc-article {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+  .rc-back {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--fg-muted);
+    margin-bottom: 26px;
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-back:hover {
+    color: var(--accent-text);
+  }
+  .rc-ah {
+    max-width: 760px;
+  }
+  .rc-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-meta);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--accent-text);
+  }
+  .rc-article__title {
+    margin: 14px 0 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-title);
+    font-size: var(--text-h1);
+    line-height: 1.07;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    text-wrap: balance;
+  }
+  .rc-ah__lead {
+    margin: 18px 0 0;
+    font-size: 1.2rem;
+    line-height: 1.55;
+    color: var(--fg-muted);
+    max-width: 60ch;
+  }
+  .rc-ah__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 18px;
+    margin-top: 22px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .rc-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-subtle);
+  }
+  .rc-meta__dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--fg-subtle);
+    display: inline-block;
+  }
+  .rc-ah__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .rc-chip {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-soft);
+    color: var(--accent-text);
+    border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+  }
+  .rc-doc {
+    margin-top: 38px;
+  }
+  @media (min-width: 1000px) {
+    .rc-doc:not(.rc-doc--solo) {
+      display: grid;
+      grid-template-columns: 210px minmax(0, 1fr);
+      gap: 56px;
+      align-items: start;
+    }
+  }
+  .rc-doc__main {
+    min-width: 0;
+    max-width: 760px;
+  }
+  .rc-doc--solo .rc-doc__main {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .rc-rail {
+    display: none;
+  }
+  @media (min-width: 1000px) {
+    .rc-rail {
+      display: block;
+      position: sticky;
+      top: 88px;
+    }
+  }
+  .rc-toc__label {
+    margin: 0 0 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+  .rc-toc__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid var(--border);
+  }
+  .rc-toc__link {
+    display: flex;
+    gap: 9px;
+    padding: 6px 0 6px 14px;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--fg-muted);
+    transition:
+      color var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-toc__link:hover {
+    color: var(--fg);
+    border-left-color: var(--border);
+  }
+  .rc-toc__link.is-active {
+    color: var(--accent-text);
+    border-left-color: var(--accent);
+  }
+  .rc-toc__n {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    flex: none;
+    padding-top: 1px;
+  }
+  .rc-toc__link.is-active .rc-toc__n {
+    color: var(--accent-text);
+  }
+  .rc-toc__extra {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--hairline);
+  }
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>

@@ -41,9 +41,15 @@ coverage/
 
 # Content-engine per-run working dirs (assembled slate + cpe state + artifacts)
 pipeline/runs/
+pipeline/runs-radar/
 
 # Content-engine schedule runtime state (heartbeat/alerts ledgers, pause flag, cron log)
 pipeline/schedule/state/
+pipeline/schedule/state-radar/
+
+# uv-managed local virtualenv + lockfile (py3.14 pipeline toolchain via `uv run`)
+.venv/
+uv.lock
 
 # Python tooling caches
 __pycache__/

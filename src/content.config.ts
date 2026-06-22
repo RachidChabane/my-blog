@@ -2,6 +2,7 @@ import { defineCollection } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 import {
   articleFrontmatterSchema,
+  radarFrontmatterSchema,
   projectFrontmatterSchema,
   tagSchema,
   categorySchema,
@@ -13,6 +14,13 @@ export const collections = {
   articles: defineCollection({
     loader: glob({ pattern: '**/*.md', base: './src/content/articles' }),
     schema: articleFrontmatterSchema,
+  }),
+  // Radar — short dated AI-engineering release/spec/tool briefs. Same `<slug>.<lang>.md`
+  // bilingual layout as articles, written by the radar pipeline's publish stage. Empty
+  // until the pipeline (or the seed batch) runs.
+  radar: defineCollection({
+    loader: glob({ pattern: '**/*.md', base: './src/content/radar' }),
+    schema: radarFrontmatterSchema,
   }),
   projects: defineCollection({
     loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
