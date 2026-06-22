@@ -20,8 +20,9 @@ import GithubSlugger from 'github-slugger';
 import type { IndexChunk } from './contracts';
 
 /** Bump when chunking LOGIC changes; folded into the content hash (index-build)
- *  so a logic change forces a full re-embed even when source text is unchanged. */
-export const CHUNKER_VERSION = 1;
+ *  so a logic change forces a full re-embed even when source text is unchanged.
+ *  2: strip inline <svg>/figure diagram markup before embedding (radar briefs). */
+export const CHUNKER_VERSION = 2;
 
 /** Soft per-chunk size cap; longer sections are paragraph-split. */
 export const MAX_CHUNK_CHARS = 1200;
@@ -60,8 +61,18 @@ export interface ChunkInput {
  * Regex hygiene: no control-char ranges; emits no emoji.
  */
 function toPlainText(markdown: string): string {
+  // Drop inline diagram markup before the line pass: a <svg>…</svg> block is
+  // presentational noise — a dense 2.5k-char blob of coordinates that carries no
+  // retrieval signal and that bge-m3 rejects (HTTP 400) at index time. The radar
+  // briefs render diagrams as inline SVG, so this is load-bearing. The <figure>/
+  // <figcaption> WRAPPER tags are stripped too, but the caption TEXT is kept (it is
+  // a real one-line summary of the diagram). Targeted on purpose (not a blanket
+  // <[^>]+> strip) so code chunks keep their `<...>` (generics, comparisons, JSX).
+  const cleaned = markdown
+    .replace(/<svg\b[\s\S]*?<\/svg>/gi, '')
+    .replace(/<\/?(?:figure|figcaption)\b[^>]*>/gi, '');
   const out: string[] = [];
-  for (const rawLine of markdown.split('\n')) {
+  for (const rawLine of cleaned.split('\n')) {
     // Drop the fence delimiter itself; keep code content (handled as a normal line).
     if (/^\s*(```|~~~)/.test(rawLine)) continue;
 

@@ -110,6 +110,45 @@ describe('chunkDocument', () => {
     expect(c.text).not.toContain('https://x.test');
   });
 
+  it('strips inline <svg>/figure diagram markup but keeps the caption text', () => {
+    // Radar briefs render diagrams as inline SVG. The coordinate noise must not
+    // reach the embedder (bge-m3 400s on the dense ~2.6k-char blob, and it carries
+    // zero retrieval signal); the <figcaption> TEXT, a real one-line summary, stays.
+    const seeds = chunkDocument({
+      slug: 'brief',
+      lang: 'en',
+      title: 'Diagram Brief',
+      summary: '',
+      pageUrl: `${SITE}/en/radar/brief/`,
+      body: [
+        '## The round-trip',
+        '',
+        'The server answers and the client re-sends the call.',
+        '',
+        '<figure class="rc-diagram">',
+        '<svg viewBox="0 0 660 296" role="img" aria-label="Sequence diagram">',
+        '<rect x="58" y="10" width="124" height="34"></rect>',
+        '<text x="120" y="32">Client</text>',
+        '<line x1="120" y1="46" x2="120" y2="288"></line>',
+        '</svg>',
+        '<figcaption>One stateless tool call: repeated round-trips.</figcaption>',
+        '</figure>',
+      ].join('\n'),
+    });
+    const section = seeds.find((s) => s.headingAnchor === 'the-round-trip');
+    expect(section).toBeDefined();
+    // SVG coordinate noise + anything inside the <svg> is gone…
+    expect(section?.text).not.toContain('viewBox');
+    expect(section?.text).not.toContain('<rect');
+    expect(section?.text).not.toContain('<svg');
+    expect(section?.text).not.toContain('Client'); // only ever inside the <svg>
+    // …but the prose and the figcaption text survive as retrieval signal.
+    expect(section?.text).toContain('the client re-sends');
+    expect(section?.text).toContain('One stateless tool call');
+    // The oversized blob is gone: this section is now a normal-sized chunk.
+    expect(section?.text.length).toBeLessThan(400);
+  });
+
   it('article with two ## headings → 3 chunks (lead + 2), anchors/urls/ordinals', () => {
     const pageUrl = `${SITE}/en/blog/p/`;
     const seeds = chunkDocument({
