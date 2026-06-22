@@ -107,40 +107,6 @@
     "embedding": null
   },
   {
-    "translation_key": "github-copilot-ai-credits-usage-billing",
-    "topic_id": "github-copilot-ai-credits-usage-billing",
-    "dedup_key": "github copilot ai credits usage billing",
-    "title": "GitHub Copilot moves to usage-based AI Credits",
-    "slugs": {
-      "fr": "github-copilot-credits-ia-facturation-usage",
-      "en": "github-copilot-ai-credits-usage-based-billing"
-    },
-    "sources": [
-      {
-        "label": "GitHub Changelog - Updates to GitHub Copilot billing and plans",
-        "url": "https://github.blog/changelog/2026-06-01-updates-to-github-copilot-billing-and-plans/",
-        "date": "01-06-2026"
-      },
-      {
-        "label": "GitHub Docs - Models and pricing for GitHub Copilot",
-        "url": "https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing",
-        "date": "01-06-2026"
-      },
-      {
-        "label": "GitHub Docs - Usage-based billing for organizations and enterprises",
-        "url": "https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-organizations-and-enterprises",
-        "date": "01-06-2026"
-      },
-      {
-        "label": "Visual Studio Magazine - Devs Sound Off on Usage-Based Copilot Pricing Change",
-        "url": "https://visualstudiomagazine.com/articles/2026/04/27/devs-sound-off-on-usage-based-copilot-pricing-change-you-will-get-less-but-pay-the-same-price.aspx",
-        "date": "27-04-2026"
-      }
-    ],
-    "published_at": "2026-06-22",
-    "embedding": null
-  },
-  {
     "translation_key": "rtk-caveman-token-stack",
     "topic_id": "rtk-caveman-token-stack",
     "dedup_key": "rtk caveman token stack",
