@@ -140,6 +140,11 @@ const { strings } = Astro.props;
     letter-spacing: 0.12em;
     font-size: 11px;
   }
+  /* Radar result tag — the news kind stands in for difficulty stars (accent ink
+     so radar rows read as distinct from articles in the merged index). */
+  .rc-search .rc-kind {
+    color: var(--accent-text);
+  }
   .rc-search .rc-arow__title {
     margin: 0;
     font-family: var(--font-display);
@@ -238,33 +243,45 @@ const { strings } = Astro.props;
       for (const d of docs) {
         const row = document.createElement('article');
         row.className = 'rc-arow';
-        // Graceful meta line: only when BOTH best-effort values are present.
-        if (d.meta.date && d.meta.reading) {
+        // Graceful meta line: rendered whenever a date is present. Articles add
+        // reading time + difficulty stars; radar briefs (no reading/difficulty) add
+        // the news-kind label instead. Each segment after the first gets a dot.
+        if (d.meta.date) {
           const m = document.createElement('div');
           m.className = 'rc-meta';
-          const a = document.createElement('span');
-          a.textContent = d.meta.date;
-          const dot = document.createElement('span');
-          dot.className = 'rc-meta__dot';
-          const b = document.createElement('span');
-          b.textContent = d.meta.reading;
-          m.append(a, dot, b);
-          // Difficulty stars (next to reading time, like the static rows). The
-          // level comes from data-pagefind-meta; the aria template is server-
-          // rendered into data-diff-aria — copy never lives in JS.
+          // Append a meta segment, dot-separated from the previous one. Arrow const
+          // (not a hoisted `function`) so TS keeps the captured-node narrowing.
+          const seg = (text: string, cls?: string): HTMLSpanElement => {
+            if (m.childElementCount > 0) {
+              const dot = document.createElement('span');
+              dot.className = 'rc-meta__dot';
+              m.append(dot);
+            }
+            const span = document.createElement('span');
+            if (cls) span.className = cls;
+            span.textContent = text;
+            m.append(span);
+            return span;
+          };
+          seg(d.meta.date);
+          if (d.meta.reading) seg(d.meta.reading);
+          // Difficulty stars (articles). The level comes from data-pagefind-meta;
+          // the aria template is server-rendered into data-diff-aria — copy never
+          // lives in JS. A missing/NaN level (radar) skips the stars.
           const level = Number.parseInt(d.meta.difficulty ?? '', 10);
           if (level >= 1 && level <= 5) {
-            const dot2 = document.createElement('span');
-            dot2.className = 'rc-meta__dot';
-            const stars = document.createElement('span');
-            stars.className = 'rc-stars';
+            const stars = seg(
+              '★'.repeat(level) + '☆'.repeat(5 - level),
+              'rc-stars'
+            );
             stars.setAttribute('role', 'img');
             stars.setAttribute(
               'aria-label',
               (status.dataset.diffAria ?? '{n}/5').replace('{n}', String(level))
             );
-            stars.textContent = '★'.repeat(level) + '☆'.repeat(5 - level);
-            m.append(dot2, stars);
+          } else if (d.meta.kind) {
+            // Radar: the news TYPE (Release / Spec change / …) stands in for stars.
+            seg(d.meta.kind, 'rc-kind');
           }
           row.append(m);
         }

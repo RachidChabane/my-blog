@@ -534,6 +534,40 @@ function knowledgeMd(o: {
   ].join('\n');
 }
 
+function radarMd(o: {
+  slug: string;
+  lang: 'fr' | 'en';
+  translationKey: string;
+  title: string;
+  kind: string;
+  summary: string;
+  publishState: 'published' | 'draft';
+  body: string;
+}): string {
+  return [
+    '---',
+    `translationKey: ${o.translationKey}`,
+    `lang: ${o.lang}`,
+    `slug: ${o.slug}`,
+    `title: ${JSON.stringify(o.title)}`,
+    `publishDate: '22-06-2026'`,
+    `kind: ${o.kind}`,
+    'tags:',
+    '  - mcp',
+    `summary: ${JSON.stringify(o.summary)}`,
+    'sources:',
+    `  - label: 'Primary Source'`,
+    `    url: 'https://example.com/spec'`,
+    `    date: '21-05-2026'`,
+    `contentHash: 'hash-${o.slug}'`,
+    `publishState: ${o.publishState}`,
+    '---',
+    '',
+    o.body,
+    '',
+  ].join('\n');
+}
+
 describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures)', () => {
   let contentRoot: string;
   let tmpRoot: string;
@@ -544,9 +578,11 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
     const articlesDir = join(contentRoot, 'articles');
     const projectsDir = join(contentRoot, 'projects');
     const knowledgeDir = join(contentRoot, 'knowledge');
+    const radarDir = join(contentRoot, 'radar');
     mkdirSync(articlesDir, { recursive: true });
     mkdirSync(projectsDir, { recursive: true });
     mkdirSync(knowledgeDir, { recursive: true });
+    mkdirSync(radarDir, { recursive: true });
 
     writeFileSync(
       join(articlesDir, 'a-pub.en.md'),
@@ -617,6 +653,33 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
         body: 'This knowledge draft must never enter the public artifact.',
       })
     );
+    // Radar briefs (own collection + own /radar/ page; the dek is a real field).
+    writeFileSync(
+      join(radarDir, 'r-pub.en.md'),
+      radarMd({
+        slug: 'r-pub-en',
+        lang: 'en',
+        translationKey: 'r-pub',
+        title: 'MCP Goes Stateless',
+        kind: 'spec-change',
+        summary: 'The 2026-07-28 MCP revision removes the session handshake.',
+        publishState: 'published',
+        body: '## What changed\n\nThe handshake is gone; protocol state moves into per-request metadata.',
+      })
+    );
+    writeFileSync(
+      join(radarDir, 'r-draft.en.md'),
+      radarMd({
+        slug: 'r-draft-en',
+        lang: 'en',
+        translationKey: 'r-draft',
+        title: 'Draft Radar Brief',
+        kind: 'release',
+        summary: 'This radar draft must never enter the public artifact.',
+        publishState: 'draft',
+        body: 'This radar draft body must never be indexed.',
+      })
+    );
   });
 
   afterAll(() => {
@@ -631,6 +694,7 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
       'a-pub-fr',
       'k-pub-en',
       'p-pub-en',
+      'r-pub-en',
     ]);
 
     const article = sources.find((s) => s.slug === 'a-pub-en');
@@ -694,6 +758,37 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
       expect(c.headingAnchor).toBe('');
       expect(c.title).toBe('About The Owner');
     }
+  });
+
+  // -- Group 4b — radar briefs (own collection + /radar/ page, dek-as-lead) --
+  it('loads published radar briefs as kind "radar" citing /radar/<slug>; draft excluded', () => {
+    const sources = loadPublishedSources({ contentRoot, siteUrl: SITE });
+    const r = sources.find((s) => s.slug === 'r-pub-en');
+    expect(r?.kind).toBe('radar');
+    expect(r?.title).toBe('MCP Goes Stateless'); // from frontmatter `title`
+    // The dek is a real frontmatter field on radar; it rides as the SourceDoc summary.
+    expect(r?.summary).toContain('2026-07-28 MCP revision');
+    // Radar has its OWN public page (unlike knowledge): cite /<lang>/radar/<slug>/.
+    expect(r?.pageUrl).toBe(`${SITE}/en/radar/r-pub-en/`);
+    // Same public-safety draft filter as articles/projects/knowledge.
+    expect(sources.map((s) => s.slug)).not.toContain('r-draft-en');
+  });
+
+  it('radar dek (summary) lands in the lead chunk so the one-liner is retrievable', async () => {
+    const { artifact } = await buildIndex({
+      sources: loadPublishedSources({ contentRoot, siteUrl: SITE }),
+      embedder: new FakeEmbedder(),
+      prior: null,
+      generatedAt: GEN,
+    });
+    const rChunks = artifact.chunks.filter((c) => c.slug === 'r-pub-en');
+    expect(rChunks.length).toBeGreaterThan(0);
+    // The lead chunk (ordinal 0, anchorless) prepends the dek and cites the page
+    // itself with no fragment — exactly the projects' summary-as-lead behavior.
+    const lead = rChunks.find((c) => c.id.endsWith('#0'));
+    expect(lead?.text).toContain('2026-07-28 MCP revision');
+    expect(lead?.sourceUrl).toBe(`${SITE}/en/radar/r-pub-en/`);
+    expect(lead?.headingAnchor).toBe('');
   });
 
   // -- Group 3 — DRAFT-EXCLUSION SAFETY (non-negotiable) -------------------

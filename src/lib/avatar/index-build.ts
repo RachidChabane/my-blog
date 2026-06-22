@@ -16,6 +16,7 @@ import { localePath } from '../../i18n/index';
 import type { Locale } from '../../i18n/index';
 import {
   articleFrontmatterSchema,
+  radarFrontmatterSchema,
   projectFrontmatterSchema,
   knowledgeFrontmatterSchema,
 } from '../../content/schemas';
@@ -26,16 +27,16 @@ import type { Embedder, IndexArtifact, IndexChunk } from './contracts';
 /** Mirrors astro.config.mjs `site` default so baked citation origins never drift. */
 const DEFAULT_SITE_URL = 'https://rachid-chabane.com';
 
-export type SourceKind = 'article' | 'project' | 'knowledge';
+export type SourceKind = 'article' | 'radar' | 'project' | 'knowledge';
 
 /** One published source variant, normalized to the chunker's inputs. */
 export interface SourceDoc {
   kind: SourceKind;
   slug: string;
   lang: Locale;
-  /** article.title | project.name */
+  /** article.title | radar.title | project.name */
   title: string;
-  /** project.summary | '' for articles */
+  /** project.summary | radar.summary (dek) | '' for articles */
   summary: string;
   /** frontmatter-stripped markdown */
   body: string;
@@ -87,9 +88,12 @@ function readMarkdownDir(dir: string): { path: string; raw: string }[] {
 }
 
 /**
- * Load every PUBLISHED article + project + knowledge doc as a SourceDoc. Scoped
- * to `articles/`, `projects/`, and `knowledge/` only — never the whole content
- * tree (which holds test fixtures + tags). `knowledge/` is an avatar-only source
+ * Load every PUBLISHED article + radar brief + project + knowledge doc as a
+ * SourceDoc. Scoped to `articles/`, `radar/`, `projects/`, and `knowledge/` only —
+ * never the whole content tree (which holds test fixtures + tags). A radar brief
+ * carries its `summary` dek into the lead chunk (like a project summary) so the
+ * one-liner is retrievable even when the body is all schema/code. `knowledge/` is
+ * an avatar-only source
  * (the agent's bio + how-the-site-works grounding); it is NOT an Astro collection,
  * so it never renders a page — its chunks cite an existing page (sourcePath, e.g.
  * the About page). Frontmatter is parsed with gray-matter and validated with the
@@ -123,6 +127,29 @@ export function loadPublishedSources(opts: LoadOptions = {}): SourceDoc[] {
       summary: '',
       body: content,
       pageUrl: new URL(localePath(fm.lang, `blog/${fm.slug}`), siteUrl).href,
+    });
+  }
+
+  for (const { path, raw } of readMarkdownDir(join(contentRoot, 'radar'))) {
+    const { data, content } = matter(raw);
+    const parsed = radarFrontmatterSchema.safeParse(data);
+    if (!parsed.success) {
+      throw new Error(
+        `Invalid radar frontmatter in ${path}: ${parsed.error.message}`
+      );
+    }
+    const fm = parsed.data;
+    if (fm.publishState !== 'published') continue;
+    docs.push({
+      kind: 'radar',
+      slug: fm.slug,
+      lang: fm.lang,
+      title: fm.title,
+      // The dek is a real frontmatter field on radar (unlike articles); prepend it
+      // to the lead chunk so the brief's one-liner is retrievable.
+      summary: fm.summary,
+      body: content,
+      pageUrl: new URL(localePath(fm.lang, `radar/${fm.slug}`), siteUrl).href,
     });
   }
 

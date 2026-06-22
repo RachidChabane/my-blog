@@ -8,7 +8,9 @@
  * and the Sources card. The heavy article apparatus (glossary, color legend, ask
  * buttons, provenance sidenotes, prev/next) is intentionally dropped for a short
  * brief. slugMap + switchSection="radar" wire the FR/EN language switch to the
- * parallel radar URL. data-pagefind-ignore keeps radar out of article search (v1).
+ * parallel radar URL. The brief prose joins the merged Pagefind index via a
+ * data-pagefind-body wrapper (date + kind ride as meta; radar carries no
+ * difficulty, so Search renders the kind label where articles show stars).
  */
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render } from 'astro:content';
@@ -71,14 +73,15 @@ const title = `${entry.data.title} · rachid chabane`;
 >
   <article
     class={`rc-article rc-enter${toc.length === 0 ? ' rc-article--solo' : ''}`}
-    data-pagefind-ignore
   >
     <ReadingProgress />
     <a class="rc-back" href={localePath(lang, 'radar')}>← {s.back}</a>
 
     <header class="rc-ah">
       <span class="rc-eyebrow">{eyebrow}</span>
-      <h1 class="rc-article__title">{entry.data.title}</h1>
+      <h1 class="rc-article__title" data-pagefind-meta="title">
+        {entry.data.title}
+      </h1>
       <p class="rc-ah__lead">{dek}</p>
       <div class="rc-ah__meta">
         <div class="rc-meta">
@@ -133,7 +136,20 @@ const title = `${entry.data.title} · rachid chabane`;
       }
 
       <div class="rc-doc__main">
-        <Prose><Content /></Prose>
+        {
+          /* S9 search corpus: data-pagefind-body restricts Pagefind to the brief
+            prose so radar joins the merged article index (A1). The publish date +
+            localized kind label ride as meta; Sources sit OUTSIDE the body so source
+            text never pollutes results. Radar has no difficulty → Search renders the
+            kind label where articles render difficulty stars. */
+        }
+        <div
+          class="rc-pf-body"
+          data-pagefind-body
+          data-pagefind-meta={`date:${entry.data.publishDate}, kind:${kindLabel}`}
+        >
+          <Prose><Content /></Prose>
+        </div>
         <SourceList sources={sources} heading={s.sourcesH} />
       </div>
     </div>
@@ -305,6 +321,10 @@ const title = `${entry.data.title} · rachid chabane`;
   .rc-doc--solo .rc-doc__main {
     margin-left: auto;
     margin-right: auto;
+  }
+  /* Pagefind body wrapper is layout-transparent (mirrors the article DOSSIER). */
+  .rc-pf-body {
+    display: contents;
   }
   .rc-rail {
     display: none;
