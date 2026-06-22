@@ -29,7 +29,7 @@ sources:
     For'
   url: https://www.contextstudios.ai/blog/mcp-v2-alpha-the-july-28-protocol-shift-to-plan-for
   date: 14-06-2026
-contentHash: sha256:14e3a05e4d7580be
+contentHash: sha256:f0f7ed362a9425d1
 publishState: published
 ---
 
@@ -59,7 +59,33 @@ Per-connection handshake state is gone. Every request now carries the context th
 }
 ```
 
-Server-initiated calls (`roots/list`, `sampling/createMessage`, `elicitation/create`) become Multi Round-Trip Requests: the server returns `InputRequiredResult` with `resultType: "input_required"` and an `inputRequests` field; the client retries the original request with `inputResponses` (SEP-2322). All results now carry a required `resultType` of `"complete"` or `"input_required"`.
+## The round-trip
+
+Server-initiated calls (`roots/list`, `sampling/createMessage`, `elicitation/create`) become Multi Round-Trip Requests: instead of pushing a separate request, the server answers the client's call with `input_required`, and the client re-sends carrying the answer. Statelessly, one logical tool call becomes a sequence of self-contained round-trips, each message carrying its own `_meta` (SEP-2322). All results now declare a required `resultType` of `"complete"` or `"input_required"`.
+
+<figure class="rc-diagram">
+<svg viewBox="0 0 660 296" role="img" aria-label="Sequence diagram: a stateless MCP tool call that needs server-side input takes multiple round-trips. The client sends tools/call with _meta; the server replies result input_required with inputRequests; the client retries with inputResponses; the server replies result complete.">
+<rect x="58" y="10" width="124" height="34" rx="8" style="fill: var(--surface); stroke: var(--border)"></rect>
+<text x="120" y="32" text-anchor="middle" style="fill: var(--fg); font-family: var(--font-mono); font-size: 13px">Client</text>
+<rect x="478" y="10" width="124" height="34" rx="8" style="fill: var(--surface); stroke: var(--border)"></rect>
+<text x="540" y="32" text-anchor="middle" style="fill: var(--fg); font-family: var(--font-mono); font-size: 13px">Server</text>
+<line x1="120" y1="46" x2="120" y2="288" style="stroke: var(--border-subtle)" stroke-dasharray="3 4"></line>
+<line x1="540" y1="46" x2="540" y2="288" style="stroke: var(--border-subtle)" stroke-dasharray="3 4"></line>
+<text x="330" y="80" text-anchor="middle" style="fill: var(--fg-muted); font-family: var(--font-mono); font-size: 12px">tools/call + _meta</text>
+<line x1="120" y1="90" x2="532" y2="90" style="stroke: var(--accent)" stroke-width="1.5"></line>
+<polygon points="532,85 543,90 532,95" style="fill: var(--accent)"></polygon>
+<text x="330" y="130" text-anchor="middle" style="fill: var(--fg-muted); font-family: var(--font-mono); font-size: 12px">result: input_required + inputRequests</text>
+<line x1="540" y1="140" x2="128" y2="140" style="stroke: var(--accent)" stroke-width="1.5" stroke-dasharray="5 4"></line>
+<polygon points="128,135 117,140 128,145" style="fill: var(--accent)"></polygon>
+<text x="330" y="190" text-anchor="middle" style="fill: var(--fg-muted); font-family: var(--font-mono); font-size: 12px">retry + inputResponses</text>
+<line x1="120" y1="200" x2="532" y2="200" style="stroke: var(--accent)" stroke-width="1.5"></line>
+<polygon points="532,195 543,200 532,205" style="fill: var(--accent)"></polygon>
+<text x="330" y="240" text-anchor="middle" style="fill: var(--fg-muted); font-family: var(--font-mono); font-size: 12px">result: complete</text>
+<line x1="540" y1="250" x2="128" y2="250" style="stroke: var(--accent)" stroke-width="1.5" stroke-dasharray="5 4"></line>
+<polygon points="128,245 117,250 128,255" style="fill: var(--accent)"></polygon>
+</svg>
+<figcaption>One stateless tool call that needs server-side input: repeated round-trips, each message self-contained. No session, no handshake to resume.</figcaption>
+</figure>
 
 ## In practice
 

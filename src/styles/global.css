@@ -187,3 +187,26 @@ svg {
   font-size: var(--text-code);
   font-weight: 450;
 }
+
+/* Radar inline-SVG diagrams (authored in the brief body; rendered as static SVG, no
+   client JS). Global because the figure is slotted into <Prose>, outside scoped styles.
+   The SVG themes itself via the design tokens (inline `style="... var(--token)"`). */
+.rc-diagram {
+  margin: 28px 0;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.rc-diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.rc-diagram figcaption {
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--fg-muted);
+  text-align: center;
+}

@@ -14,8 +14,9 @@ from pathlib import Path
 
 from ..config import PipelineConfig
 
-_FR_SECTIONS = "## Ce qui change / ## Le schéma / ## En pratique / ## Impact pour une équipe"
-_EN_SECTIONS = "## What changed / ## The schema / ## In practice / ## Impact on your team"
+# Only the load-bearing opening + closing sections are required; the middle is discretionary.
+_FR_REQUIRED = ("## Ce qui change", "## Impact pour une équipe")
+_EN_REQUIRED = ("## What changed", "## Impact on your team")
 
 
 def build_radar_research_prompt(
@@ -62,21 +63,30 @@ def build_radar_draft_prompt(*, repo_root: Path, run_dir: Path) -> str:
         "STAGE: Radar draft (bilingual FR+EN).\n\n"
         f"You run with cwd = the run dir, INSIDE the repo at repo_root: {repo_root}\n\n"
         f"1. READ the chosen candidate at: {candidates} (use the top-ranked one).\n\n"
-        "2. WRITE a bilingual radar brief. The FR body MUST use EXACTLY these H2 headers\n"
-        f"   in order: {_FR_SECTIONS}\n"
-        f"   The EN body MUST use EXACTLY these H2 headers in order: {_EN_SECTIONS}\n"
-        "   Rules:\n"
-        "   - 'The schema'/'Le schéma': the REAL schema/type/config/protocol/API surface\n"
-        "     (real field names from the sources, never invented). Use a FENCED CODE BLOCK\n"
-        "     when it is genuinely code (json/typescript/python/yaml/bash); use a real\n"
-        "     MARKDOWN TABLE when the content is inherently tabular (e.g. a pricing or\n"
-        "     capability matrix) -- never cram a table into a plaintext code fence.\n"
-        "   - 'In practice'/'En pratique': a second FENCED CODE BLOCK -- a minimal usage\n"
-        "     example an engineer could adapt.\n"
-        "   - 'Impact on your team'/'Impact pour une équipe': concrete prose (who cares,\n"
-        "     what to do, a deadline/risk/migration). A '> [!IMPORTANT]' callout is fine.\n"
-        "   - 'What changed'/'Ce qui change': 2-4 sentences, what is new and WHEN (real date).\n"
-        "   - ~250-450 words/language. Same brief in both languages. No emojis, no em-dashes.\n\n"
+        "2. WRITE a bilingual radar brief. Only TWO H2 sections are REQUIRED, and they\n"
+        "   must open and close the body:\n"
+        f"   FR: '{_FR_REQUIRED[0]}' first, '{_FR_REQUIRED[1]}' last.\n"
+        f"   EN: '{_EN_REQUIRED[0]}' first, '{_EN_REQUIRED[1]}' last.\n"
+        "   Everything BETWEEN them is editorial discretion - add what THIS brief needs to\n"
+        "   land, nothing boilerplate. Tools to reach for, ONLY when they genuinely help:\n"
+        "   - A DIAGRAM, when a flow / round-trip / relationship is the crux (e.g. a request\n"
+        "     sequence). Author it as INLINE SVG (the site renders raw SVG; no library, no\n"
+        "     client JS). Keep it simple and theme it with the site tokens via inline style\n"
+        "     so it adapts to light/dark. Template:\n"
+        '       <figure class="rc-diagram"><svg viewBox="0 0 W H" role="img"\n'
+        '         aria-label="...">...lines/rects/text using style="stroke: var(--accent)",\n'
+        '         style="fill: var(--fg)", font-family via var(--font-mono)...</svg>\n'
+        "         <figcaption>one-line caption</figcaption></figure>\n"
+        "     Do NOT add a diagram just to have one. Most briefs need none.\n"
+        "   - A CODE EXAMPLE, when a real snippet (request, config, CLI) helps an engineer\n"
+        "     act: a FENCED CODE BLOCK with real field names from the sources, never invented.\n"
+        "   - A real MARKDOWN TABLE for inherently tabular facts (pricing/capability matrix);\n"
+        "     never cram a table into a plaintext code fence.\n"
+        "   - '> [!IMPORTANT]' callouts for the load-bearing caveat.\n"
+        "   Use your own H2 headings for any middle sections (e.g. '## In practice',\n"
+        "   '## The round-trip'). 'What changed' = 2-4 sentences, what is new and WHEN (real\n"
+        "   date). 'Impact' = who cares + what to do (deadline/risk/migration).\n"
+        "   ~250-450 words/language. Same brief in both languages. No emojis, no em-dashes.\n\n"
         f"3. WRITE the structured entry as JSON to: {entry}\n"
         "   {translationKey, kind, tags:[..], slug_fr, slug_en, title_fr, title_en,\n"
         "    summary_fr, summary_en, body_fr, body_en, sources:[{label,url,date,excerpt}]}\n"

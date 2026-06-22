@@ -29,7 +29,7 @@ sources:
     For'
   url: https://www.contextstudios.ai/blog/mcp-v2-alpha-the-july-28-protocol-shift-to-plan-for
   date: 14-06-2026
-contentHash: sha256:473df3d9f7dfd0c2
+contentHash: sha256:ed39b419edacf5ea
 publishState: published
 ---
 
@@ -59,7 +59,33 @@ L'etat de handshake par connexion disparait. Chaque requete porte maintenant le 
 }
 ```
 
-Les appels inities par le serveur (`roots/list`, `sampling/createMessage`, `elicitation/create`) deviennent des Multi Round-Trip Requests : le serveur renvoie `InputRequiredResult` avec `resultType: "input_required"` et un champ `inputRequests` ; le client renvoie la requete d'origine avec `inputResponses` (SEP-2322). Tout resultat porte desormais un champ obligatoire `resultType` valant `"complete"` ou `"input_required"`.
+## L'aller-retour
+
+Les appels inities par le serveur (`roots/list`, `sampling/createMessage`, `elicitation/create`) deviennent des Multi Round-Trip Requests : au lieu d'emettre une requete separee, le serveur repond a l'appel du client par `input_required`, et le client renvoie en portant la reponse. Sans etat, un appel d'outil logique devient une suite d'allers-retours autonomes, chaque message portant son propre `_meta` (SEP-2322). Tout resultat declare un `resultType` obligatoire valant `"complete"` ou `"input_required"`.
+
+<figure class="rc-diagram">
+<svg viewBox="0 0 660 296" role="img" aria-label="Diagramme de sequence : un appel d'outil MCP sans etat qui necessite une entree cote serveur prend plusieurs allers-retours. Le client envoie tools/call avec _meta ; le serveur repond result input_required avec inputRequests ; le client renvoie avec inputResponses ; le serveur repond result complete.">
+<rect x="58" y="10" width="124" height="34" rx="8" style="fill: var(--surface); stroke: var(--border)"></rect>
+<text x="120" y="32" text-anchor="middle" style="fill: var(--fg); font-family: var(--font-mono); font-size: 13px">Client</text>
+<rect x="478" y="10" width="124" height="34" rx="8" style="fill: var(--surface); stroke: var(--border)"></rect>
+<text x="540" y="32" text-anchor="middle" style="fill: var(--fg); font-family: var(--font-mono); font-size: 13px">Serveur</text>
+<line x1="120" y1="46" x2="120" y2="288" style="stroke: var(--border-subtle)" stroke-dasharray="3 4"></line>
+<line x1="540" y1="46" x2="540" y2="288" style="stroke: var(--border-subtle)" stroke-dasharray="3 4"></line>
+<text x="330" y="80" text-anchor="middle" style="fill: var(--fg-muted); font-family: var(--font-mono); font-size: 12px">tools/call + _meta</text>
+<line x1="120" y1="90" x2="532" y2="90" style="stroke: var(--accent)" stroke-width="1.5"></line>
+<polygon points="532,85 543,90 532,95" style="fill: var(--accent)"></polygon>
+<text x="330" y="130" text-anchor="middle" style="fill: var(--fg-muted); font-family: var(--font-mono); font-size: 12px">result: input_required + inputRequests</text>
+<line x1="540" y1="140" x2="128" y2="140" style="stroke: var(--accent)" stroke-width="1.5" stroke-dasharray="5 4"></line>
+<polygon points="128,135 117,140 128,145" style="fill: var(--accent)"></polygon>
+<text x="330" y="190" text-anchor="middle" style="fill: var(--fg-muted); font-family: var(--font-mono); font-size: 12px">renvoi + inputResponses</text>
+<line x1="120" y1="200" x2="532" y2="200" style="stroke: var(--accent)" stroke-width="1.5"></line>
+<polygon points="532,195 543,200 532,205" style="fill: var(--accent)"></polygon>
+<text x="330" y="240" text-anchor="middle" style="fill: var(--fg-muted); font-family: var(--font-mono); font-size: 12px">result: complete</text>
+<line x1="540" y1="250" x2="128" y2="250" style="stroke: var(--accent)" stroke-width="1.5" stroke-dasharray="5 4"></line>
+<polygon points="128,245 117,250 128,255" style="fill: var(--accent)"></polygon>
+</svg>
+<figcaption>Un appel d'outil sans etat qui necessite une entree cote serveur : des allers-retours repetes, chaque message autonome. Pas de session, pas de handshake a reprendre.</figcaption>
+</figure>
 
 ## En pratique
 

@@ -40,12 +40,14 @@ _DDMMYYYY_RE = re.compile(r"^\d{2}-\d{2}-\d{4}$")
 _HTTP_RE = re.compile(r"^https?://", re.IGNORECASE)
 _FRONTMATTER_RE = re.compile(r"\A---[ \t]*\r?\n(.*?)\r?\n---[ \t]*\r?\n?", re.DOTALL)
 
-# The four mandated H2 section headers per language (the schema/code/impact contract the
-# radar brief promises every reader). Validated structurally so a malformed brief is
-# caught in Python before the Astro/zod build.
+# The mandated H2 section headers per language. Only the two LOAD-BEARING ones are
+# required ("what changed" + "impact"); everything between them is editorial discretion:
+# a flow diagram (inline SVG) and/or a code example appear ONLY when they genuinely clarify
+# that brief, never systematically. Validated structurally so a malformed brief is caught
+# in Python before the Astro/zod build.
 REQUIRED_SECTIONS = {
-    "fr": ("## Ce qui change", "## Le schéma", "## En pratique", "## Impact pour une équipe"),
-    "en": ("## What changed", "## The schema", "## In practice", "## Impact on your team"),
+    "fr": ("## Ce qui change", "## Impact pour une équipe"),
+    "en": ("## What changed", "## Impact on your team"),
 }
 
 
@@ -383,6 +385,29 @@ def _cmd_publish(args) -> int:
     return 0
 
 
+def stamp_file(path: Path) -> bool:
+    """Recompute a radar brief's frontmatter ``contentHash`` from its body, in place.
+
+    Used after a brief's body is hand-edited (e.g. adding a diagram). The hash is
+    ``content_hash(translationKey, lang, stripped_body)`` -- the same formula
+    ``build_radar_article`` uses -- so re-stamping an unchanged body is a no-op (returns
+    False). The body text is preserved byte-for-byte; only the frontmatter hash changes.
+    """
+    text = Path(path).read_text(encoding="utf-8")
+    match = _FRONTMATTER_RE.match(text)
+    if not match:
+        raise ValueError(f"{path}: no frontmatter fence")
+    fm = yaml.safe_load(match.group(1))
+    body = text[match.end():]  # the raw body after the fence (leading blank line preserved)
+    new_hash = content_hash(fm["translationKey"], fm["lang"], body.strip())
+    if fm.get("contentHash") == new_hash:
+        return False
+    fm["contentHash"] = new_hash
+    fence = yaml.safe_dump(fm, sort_keys=False, allow_unicode=True)
+    Path(path).write_text(f"---\n{fence}---\n{body}", encoding="utf-8")
+    return True
+
+
 def _cmd_validate(args) -> int:
     problems = validate_radar_published(Path(args.path).read_text(encoding="utf-8"))
     if problems:
@@ -390,6 +415,20 @@ def _cmd_validate(args) -> int:
             print(p)
         return 1
     print("OK")
+    return 0
+
+
+def _cmd_stamp(args) -> int:
+    paths = sorted(Path(args.dir).glob("*.md")) if args.dir else [Path(p) for p in args.paths]
+    changed = 0
+    for p in paths:
+        try:
+            if stamp_file(p):
+                changed += 1
+                print(f"restamped {p}")
+        except (ValueError, OSError, KeyError) as exc:
+            print(f"SKIP {p}: {exc}", file=sys.stderr)
+    print(f"stamp: {changed}/{len(paths)} files updated")
     return 0
 
 
@@ -416,11 +455,17 @@ def _main(argv: list[str] | None = None) -> int:
     p_val = sub.add_parser("validate", help="validate one radar .md file")
     p_val.add_argument("path")
 
+    p_stamp = sub.add_parser("stamp", help="recompute contentHash for hand-edited briefs")
+    p_stamp.add_argument("--dir", default=None, help="stamp every *.md in this dir")
+    p_stamp.add_argument("paths", nargs="*", help="explicit .md paths (if no --dir)")
+
     args = parser.parse_args(argv)
     if args.cmd == "from-json":
         return _cmd_from_json(args)
     if args.cmd == "publish":
         return _cmd_publish(args)
+    if args.cmd == "stamp":
+        return _cmd_stamp(args)
     return _cmd_validate(args)
 
 
@@ -441,4 +486,5 @@ __all__ = [
     "validate_radar_published",
     "write_entry",
     "write_entries",
+    "stamp_file",
 ]
