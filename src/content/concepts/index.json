@@ -28,6 +28,32 @@
     "addedOn": "12-05-2026"
   },
   {
+    "id": "agent-memory",
+    "label": {
+      "fr": "Mémoire d'agent",
+      "en": "Agent memory"
+    },
+    "definition": {
+      "fr": "Composant qui gère ce qu'un agent retient entre les étapes d'une tâche : consolidation des apprentissages clés dans un état persistant, récupération à la demande et élagage de l'historique brut. Distincte de la simple fenêtre de contexte, la mémoire d'agent est évaluée par ses propres bancs d'essai (par exemple LoCoMo) et arbitre coût des tokens contre fidélité du rappel.",
+      "en": "The component that governs what an agent keeps between steps of a task: consolidating key learnings into persistent state, retrieving on demand, and pruning the raw history. Unlike the bare context window, agent memory is measured by its own benchmarks (for instance LoCoMo) and trades token cost against recall fidelity."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "memory management",
+      "agent memory management",
+      "autonomous memory management"
+    ],
+    "related": [
+      "context-compaction",
+      "context-window",
+      "long-context-degradation"
+    ],
+    "articles": [
+      "active-context-compression-prune-history"
+    ],
+    "addedOn": "23-06-2026"
+  },
+  {
     "id": "agent-scaffold",
     "label": {
       "fr": "Scaffold d'agent",
@@ -360,7 +386,8 @@
       "context-budget"
     ],
     "articles": [
-      "coding-agent-scaffold-confound"
+      "coding-agent-scaffold-confound",
+      "active-context-compression-prune-history"
     ],
     "addedOn": "18-06-2026"
   },
@@ -383,7 +410,8 @@
     ],
     "articles": [
       "context-budget",
-      "ast-code-chunking"
+      "ast-code-chunking",
+      "active-context-compression-prune-history"
     ],
     "addedOn": "10-06-2026"
   },
@@ -621,7 +649,8 @@
       "prompt-caching"
     ],
     "articles": [
-      "serving-oss-llm-production-cost"
+      "serving-oss-llm-production-cost",
+      "active-context-compression-prune-history"
     ],
     "addedOn": "04-05-2026"
   },
@@ -671,7 +700,8 @@
       "context-budget"
     ],
     "articles": [
-      "context-budget"
+      "context-budget",
+      "active-context-compression-prune-history"
     ],
     "addedOn": "10-06-2026"
   },
@@ -695,7 +725,8 @@
       "pass-at-1"
     ],
     "articles": [
-      "agent-pass-at-1-long-horizon-reliability"
+      "agent-pass-at-1-long-horizon-reliability",
+      "active-context-compression-prune-history"
     ],
     "addedOn": "19-06-2026"
   },
