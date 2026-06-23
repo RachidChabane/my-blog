@@ -168,5 +168,29 @@
     ],
     "published_at": "2026-06-22",
     "embedding": null
+  },
+  {
+    "translation_key": "diffusiongemma-26b-a4b-text-diffusion",
+    "topic_id": "diffusiongemma-26b-a4b-text-diffusion",
+    "dedup_key": "diffusiongemma 26b a4b text diffusion",
+    "title": "DiffusionGemma 26B-A4B: Google's first open text-diffusion model",
+    "slugs": {
+      "fr": "diffusiongemma-modele-diffusion-texte-ouvert",
+      "en": "diffusiongemma-open-text-diffusion-model"
+    },
+    "sources": [
+      {
+        "label": "Google Hugging Face model card - google/diffusiongemma-26B-A4B-it",
+        "url": "https://huggingface.co/google/diffusiongemma-26B-A4B-it",
+        "date": "10-06-2026"
+      },
+      {
+        "label": "MarkTechPost - independent coverage of DiffusionGemma",
+        "url": "https://www.marktechpost.com/2026/06/10/google-ai-releases-diffusiongemma-a-26b-moe-open-model-using-text-diffusion-for-up-to-4x-faster-generation/",
+        "date": "10-06-2026"
+      }
+    ],
+    "published_at": "2026-06-23",
+    "embedding": null
   }
 ]
