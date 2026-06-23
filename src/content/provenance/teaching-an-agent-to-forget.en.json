@@ -1,0 +1,19 @@
+{
+  "slug": "teaching-an-agent-to-forget",
+  "lang": "en",
+  "translationKey": "active-context-compression-prune-history",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Active Context Compression: Autonomous Memory Management in LLM Agents (arXiv 2601.07190)",
+      "url": "https://arxiv.org/abs/2601.07190",
+      "excerpt": "LLM agents struggle with long-horizon software engineering tasks due to 'Context Bloat.' As interaction history grows, computational costs explode, latency increases, and reasoning capabilities degrade due to distraction by irrelevant past errors. ... autonomously decides when to consolidate key learnings into a persistent 'Knowledge' block and actively withdraws (prunes) the raw interaction history. ... 22.7% token reduction (14.9M -> 11.5M tokens) ... maintaining identical accuracy (3/5 = 60% for both agents) ... Focus performed 6.0 autonomous compressions per task on average ... token savings up to 57% on individual instances."
+    },
+    {
+      "sourceId": "s2",
+      "label": "State of AI Agent Memory 2026 (Mem0)",
+      "url": "https://mem0.ai/blog/state-of-ai-agent-memory-2026",
+      "excerpt": "In 2026, memory is a first-class architectural component: its own benchmark suite, its own research literature, a measurable performance gap between approaches, and a growing ecosystem built specifically around it. ... 6,956 tokens per retrieval call on LoCoMo vs ~26,000 for full-context ... Biggest gains: +29.6 points on temporal reasoning and +23.1 on multi-hop."
+    }
+  ]
+}
