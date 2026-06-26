@@ -147,7 +147,8 @@
       "swe-bench"
     ],
     "articles": [
-      "coding-agent-scaffold-confound"
+      "coding-agent-scaffold-confound",
+      "glm-5-2-open-weight-where-you-run-it"
     ],
     "addedOn": "18-06-2026"
   },
@@ -337,7 +338,8 @@
       "deterministic-agent-workflows",
       "canon-repriced",
       "slopcodebench-iterative-maintainability",
-      "coding-agent-scaffold-confound"
+      "coding-agent-scaffold-confound",
+      "glm-5-2-open-weight-where-you-run-it"
     ],
     "addedOn": "30-05-2026"
   },
@@ -456,9 +458,35 @@
       "agent-evaluation"
     ],
     "articles": [
-      "ai-evaluation-compute-cost"
+      "ai-evaluation-compute-cost",
+      "glm-5-2-open-weight-where-you-run-it"
     ],
     "addedOn": "17-06-2026"
+  },
+  {
+    "id": "data-residency",
+    "label": {
+      "fr": "Résidence des données",
+      "en": "Data residency"
+    },
+    "definition": {
+      "en": "The guarantee that data is stored and processed only within a specified jurisdiction or infrastructure boundary. For a hosted LLM it is set by the operator's contract and infrastructure, not by the model's license, so it must be procured separately through a VPC, on-premises, or jurisdiction-bound hosting agreement.",
+      "fr": "La garantie que des données sont stockées et traitées uniquement dans une juridiction ou un périmètre d'infrastructure donné. Pour un LLM hébergé, elle dépend du contrat et de l'infrastructure de l'opérateur, pas de la licence du modèle ; elle s'obtient donc séparément, via un déploiement en VPC, sur site, ou chez un hébergeur lié à une juridiction."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "data residency",
+      "data governance",
+      "data-processing agreement"
+    ],
+    "related": [
+      "open-weight-models",
+      "llm-serving"
+    ],
+    "articles": [
+      "glm-5-2-open-weight-where-you-run-it"
+    ],
+    "addedOn": "26-06-2026"
   },
   {
     "id": "deterministic-workflows",
@@ -676,7 +704,8 @@
     ],
     "articles": [
       "serving-oss-llm-production-cost",
-      "llm-temp0-nondeterminism-batch-invariant"
+      "llm-temp0-nondeterminism-batch-invariant",
+      "glm-5-2-open-weight-where-you-run-it"
     ],
     "addedOn": "04-05-2026"
   },
@@ -726,7 +755,8 @@
     ],
     "articles": [
       "agent-pass-at-1-long-horizon-reliability",
-      "active-context-compression-prune-history"
+      "active-context-compression-prune-history",
+      "glm-5-2-open-weight-where-you-run-it"
     ],
     "addedOn": "19-06-2026"
   },
@@ -751,7 +781,8 @@
     ],
     "articles": [
       "quantizing-open-models",
-      "serving-oss-llm-production-cost"
+      "serving-oss-llm-production-cost",
+      "glm-5-2-open-weight-where-you-run-it"
     ],
     "addedOn": "04-05-2026"
   },
