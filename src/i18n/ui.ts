@@ -17,6 +17,7 @@ export interface ChromeStrings {
   navWork: string; // → /[lang]/work/
   navGraph: string; // → /[lang]/graph/ (the knowledge map)
   navAbout: string; // → /[lang]/about/
+  menuToggleAria: string; // hamburger button aria-label (mobile nav disclosure)
   searchLabel: string; // search button visible text + aria-label
   langGroupAria: string; // switcher group aria-label
   switchToFr: string; // FR link aria-label
@@ -39,6 +40,7 @@ export const CHROME: Record<Locale, ChromeStrings> = {
     navWork: 'Projets',
     navGraph: 'Graphe',
     navAbout: 'À propos',
+    menuToggleAria: 'Ouvrir le menu',
     searchLabel: 'Rechercher',
     langGroupAria: 'Langue',
     switchToFr: 'Afficher en français',
@@ -59,6 +61,7 @@ export const CHROME: Record<Locale, ChromeStrings> = {
     navWork: 'Projects',
     navGraph: 'Graph',
     navAbout: 'About',
+    menuToggleAria: 'Open menu',
     searchLabel: 'Search',
     langGroupAria: 'Language',
     switchToFr: 'View in French',

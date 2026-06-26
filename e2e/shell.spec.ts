@@ -38,6 +38,48 @@ test.describe('masthead — landmarks, wordmark, nav', () => {
   });
 });
 
+test.describe('masthead — mobile nav (hamburger disclosure)', () => {
+  // Below 720px the inline nav row collapses behind a hamburger. Regression
+  // guard for the gap where the whole primary nav (Radar + Graph included) was
+  // display:none on mobile with no way to reach it.
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('EN: nav is hidden until the toggle opens it, then every route is reachable', async ({
+    page,
+  }) => {
+    await page.goto('/en/');
+    const toggle = page.locator('.masthead__toggle');
+    const radar = page.locator('header nav a[href="/en/radar/"]');
+    const graph = page.locator('header nav a[href="/en/graph/"]');
+
+    await expect(toggle).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(radar).toBeHidden(); // collapsed by default on mobile
+
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    // all five links, with Radar + Graph (the reported gap) now reachable
+    await expect(page.locator('header nav a[href="/en/blog/"]')).toBeVisible();
+    await expect(radar).toBeVisible();
+    await expect(page.locator('header nav a[href="/en/work/"]')).toBeVisible();
+    await expect(graph).toBeVisible();
+    await expect(page.locator('header nav a[href="/en/about/"]')).toBeVisible();
+
+    await radar.click();
+    await expect(page).toHaveURL('/en/radar/');
+  });
+
+  test('FR: Escape closes the open menu', async ({ page }) => {
+    await page.goto('/fr/');
+    const toggle = page.locator('.masthead__toggle');
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('Escape');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('header nav a[href="/fr/radar/"]')).toBeHidden();
+  });
+});
+
 test.describe('search affordance (inert in task 6)', () => {
   test('FR: present in the masthead with an accessible name', async ({
     page,

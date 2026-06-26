@@ -31,15 +31,71 @@ const c = chrome(lang);
       >rachid chabane<span class="masthead__dot">.</span></span
     >
   </a>
-  <nav class="masthead__nav" aria-label={c.navAria}>
+  <nav class="masthead__nav" id="masthead-nav" aria-label={c.navAria}>
     {NAV_ITEMS.map((it) => <a href={localePath(lang, it.path)}>{c[it.key]}</a>)}
   </nav>
   <div class="masthead__right">
     <SearchTrigger lang={lang} />
     <LanguageSwitcher lang={lang} slugMap={slugMap} section={switchSection} />
     <ThemeToggle label={c.themeToggleAria} />
+    <button
+      type="button"
+      class="masthead__toggle"
+      aria-label={c.menuToggleAria}
+      aria-controls="masthead-nav"
+      aria-expanded="false"
+    >
+      <svg
+        class="masthead__burger"
+        viewBox="0 0 20 20"
+        width="20"
+        height="20"
+        aria-hidden="true"
+      >
+        <line x1="3" y1="6" x2="17" y2="6"></line>
+        <line x1="3" y1="10" x2="17" y2="10"></line>
+        <line x1="3" y1="14" x2="17" y2="14"></line>
+      </svg>
+    </button>
   </div>
 </header>
+
+<script>
+  // Mobile nav disclosure. Below 720px the primary nav collapses behind a
+  // hamburger; this wires the toggle, then closes on link click, Escape, an
+  // outside click, or a resize back to the wide layout. Desktop is untouched
+  // (the button is display:none above the breakpoint). Const arrow fns + a null
+  // guard keep the bundled island narrowing intact.
+  const masthead = document.querySelector<HTMLElement>('.masthead');
+  const toggle =
+    masthead?.querySelector<HTMLButtonElement>('.masthead__toggle');
+  const nav = masthead?.querySelector<HTMLElement>('.masthead__nav');
+  if (masthead && toggle && nav) {
+    const isOpen = (): boolean => masthead.dataset.menu === 'open';
+    const setOpen = (open: boolean): void => {
+      masthead.dataset.menu = open ? 'open' : 'closed';
+      toggle.setAttribute('aria-expanded', String(open));
+    };
+    setOpen(false);
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
+    nav.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen()) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (isOpen() && !masthead.contains(e.target as Node)) setOpen(false);
+    });
+    const wide = window.matchMedia('(min-width: 721px)');
+    wide.addEventListener('change', (e) => {
+      if (e.matches) setOpen(false);
+    });
+  }
+</script>
 
 <style>
   /* Ported from design .rc-nav / .rc-wordmark / .rc-nav__links / .rc-nav__right.
@@ -110,14 +166,68 @@ const c = chrome(lang);
     align-items: center;
     gap: 10px;
   }
-  /* Design parity: nav links hide below 720px; search/lang/theme/avatar stay
-     reachable. Mobile menu is a flagged follow-up, out of task-6 scope (R7). */
+  /* Hamburger toggle: hidden on the wide layout, shown only below the breakpoint. */
+  .masthead__toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-sm);
+    color: var(--fg-muted);
+    cursor: pointer;
+    transition:
+      color var(--dur-hover) var(--ease-soft),
+      border-color var(--dur-hover) var(--ease-soft);
+  }
+  .masthead__toggle:hover {
+    color: var(--fg);
+    border-color: var(--fg-muted);
+  }
+  .masthead__burger line {
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+
+  /* Below 720px the inline nav row collapses into a dropdown behind the toggle.
+     Closed, the nav is display:none (no hit-testing, so it never occludes the
+     page); open, it anchors under the sticky masthead as a tokenized card. */
   @media (max-width: 720px) {
     .masthead {
       padding-left: 22px;
       padding-right: 22px;
     }
+    .masthead__toggle {
+      display: inline-flex;
+    }
     .masthead__nav {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 22px;
+      flex-direction: column;
+      gap: var(--sp-1);
+      min-width: 168px;
+      margin-left: 0;
+      padding: var(--sp-3);
+      background: var(--bg);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+    }
+    .masthead[data-menu='open'] .masthead__nav {
+      display: flex;
+    }
+    .masthead__nav a {
+      padding: var(--sp-2) var(--sp-1);
+      font-size: 15px;
+    }
+    /* The animated underline reads as a stray bar in the stacked menu. */
+    .masthead__nav a::after {
       display: none;
     }
   }
