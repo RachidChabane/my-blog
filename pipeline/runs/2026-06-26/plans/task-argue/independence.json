@@ -1,7 +1,9 @@
 {
-  "verdict": "single_origin",
+  "verdict": "independent",
   "origins": [
-    "Alibaba Cloud vendor announcement (alibabacloud.com blog post _603304, the Qwen-AgentWorld primary announcement)"
+    "Z.AI vendor primary (docs.z.ai GLM-5.2 guide) -- the SOTA-among-open-models framing",
+    "Labellerr independent review (labellerr.com) -- the load-bearing FrontierSWE benchmark numbers (74.4% vs 75.1%; 72.6%)",
+    "Simon Willison independent practitioner (simonwillison.net) -- the 753B / 1.51TB deployment figures"
   ],
-  "reason": "s1 and s3 are the identical vendor URL (_603304), so they are one origin. s2 (cryptobriefing.com) is a distinct host but performs no independent testing or corroborating primary source; it re-reports the vendor's own framing (the world-model mechanism described in Alibaba's terms) and predates the vendor post by a day, signalling embargoed re-publication of the announcement rather than independent verification. The load-bearing numbers (58.71 vs 58.25 average; seven-benchmark, three-OOD transfer) trace solely to the vendor announcement. All cited sourcing therefore traces to a single origin."
+  "reason": "The three cited sources span three distinct registrable domains (z.ai, labellerr.com, simonwillison.net) and, more importantly, three independent origins. The vendor (s1) supplies only the SOTA-among-open-models framing. The load-bearing benchmark numbers (74.4% vs Opus 4.8's 75.1% on FrontierSWE; edging GPT-5.5 at 72.6%) come from Labellerr (s2), an independent reviewer running its own comparison, not a re-print of the vendor post. The deployment-cost figures that anchor the counter-argument (753B parameters, 1.51TB) come from Simon Willison (s3), an independent practitioner. No single origin carries the argument: the benchmark half and the deployment-cost half each trace to a distinct independent source rather than to the vendor announcement."
 }
