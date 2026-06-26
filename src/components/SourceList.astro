@@ -22,7 +22,7 @@ const { sources, heading } = Astro.props;
   <div class="rc-sources__grid">
     {
       sources.map((s) => (
-        <div class="rc-source">
+        <div class="rc-source" id={`source-${parseInt(s.n, 10)}`}>
           <span class="rc-source__n">{s.n}</span>
           <div class="rc-source__main">
             <div class="rc-source__title">
@@ -78,6 +78,7 @@ const { sources, heading } = Astro.props;
     gap: 14px;
     align-items: flex-start;
     padding: 14px 16px;
+    scroll-margin-top: 92px; /* clear the sticky masthead when a [sN] cite jumps here */
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--surface);
