@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "candidates": [
+    {
+      "topic_id": "qwen-agentworld-language-world-models",
+      "dedup_key": "language world models simulate agent environments to improve agent reliability without agentic rl finetuning",
+      "title": "Qwen-AgentWorld bets on simulating the environment, not scaling the agent",
+      "summary": "Alibaba's Qwen team shipped a language world model that predicts what a terminal, browser, or API will return after an action, then uses that as warm-up. It lifts agent scores across seven benchmarks, three of them out of domain, with no agentic RL fine-tuning. The flagship 397B-A17B variant posts the top average and edges past GPT-5.4.",
+      "why_relevant": "The contestable take: the field has been scaling the policy model to make agents reliable, and this release argues the missing piece is a model of the environment instead. Worth arguing because the steelman cuts both ways. A world model that transfers to three out-of-domain benchmarks with zero agentic RL is either a cheaper path to reliability than another round of RLHF, or a benchmark artifact that will not survive a real production toolchain whose APIs the simulator never saw. The article can name the engineering so-what: where you would actually drop a learned environment-simulator into an agent loop, and the failure mode when the simulated observation and the real tool output diverge.",
+      "tags": ["agentic-ai", "world-models", "agent-reliability", "qwen"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Alibaba Cloud blog (primary announcement)",
+          "url": "https://www.alibabacloud.com/blog/qwen-agentworld-language-world-models-for-general-agents_603304",
+          "retrieved_at": "2026-06-26",
+          "source_date": "2026-06-25",
+          "excerpt": "LWM warm-up enables effective transfer to multi-turn agentic tasks across seven benchmarks, including three entirely out of domain, without requiring any RL fine-tuning on agentic tasks"
+        },
+        {
+          "source_id": "s2",
+          "label": "Crypto Briefing (independent coverage)",
+          "url": "https://cryptobriefing.com/alibaba-qwen-agentworld-benchmarks/",
+          "retrieved_at": "2026-06-26",
+          "source_date": "2026-06-24",
+          "excerpt": "a language world model trained to simulate what tools and environments return when an agent takes an action"
+        },
+        {
+          "source_id": "s3",
+          "label": "Alibaba Cloud blog (benchmark result)",
+          "url": "https://www.alibabacloud.com/blog/qwen-agentworld-language-world-models-for-general-agents_603304",
+          "retrieved_at": "2026-06-26",
+          "source_date": "2026-06-25",
+          "excerpt": "Qwen-AgentWorld-397B-A17B achieves the highest overall average (58.71), surpassing GPT-5.4 (58.25) and all other frontier models"
+        }
+      ]
+    },
+    {
+      "topic_id": "glm-5-2-open-weight-long-horizon-coding",
+      "dedup_key": "open weight coding model beats proprietary frontier on long horizon coding at a fraction of cost but carries local hardware and data governance tradeoffs",
+      "title": "GLM-5.2 closes the long-horizon coding gap, and the catch is where you run it",
+      "summary": "Z.AI's MIT-licensed GLM-5.2 lands within a point of Opus 4.8 on FrontierSWE and undercuts GPT-5.5 on long-horizon coding at roughly a sixth of the price. The benchmark story is real. The deployment story is a 753B, 1.51TB model that almost nobody self-hosts, so most teams hit it through a hosted API and inherit that operator's data governance.",
+      "why_relevant": "The argue-able gap is between the open-weight headline and the open-weight reality. MIT weights at one-sixth the cost reads like a default-switch moment, but a 1.51TB model is not something a team runs on its own GPUs, so the practical choice is a third-party API endpoint and the open license stops protecting your data flow. The article can take a position on when GLM-5.2 actually belongs in a coding stack versus when the local-hardware and data-residency tax makes a proprietary frontier model the cheaper call once you price the whole system, not just the per-token rate.",
+      "tags": ["open-weight-llm", "coding-agents", "cost-engineering", "glm"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Z.AI developer docs (primary)",
+          "url": "https://docs.z.ai/guides/llm/glm-5.2",
+          "retrieved_at": "2026-06-26",
+          "source_date": "2026-06-17",
+          "excerpt": "GLM-5.2 delivers state-of-the-art long-horizon coding performance among open-source models."
+        },
+        {
+          "source_id": "s2",
+          "label": "Labellerr review (independent, benchmarks)",
+          "url": "https://www.labellerr.com/blog/glm-5-2-open-weight-ai-model/",
+          "retrieved_at": "2026-06-26",
+          "excerpt": "GLM-5.2 trails Opus 4.8 by only 1% (74.4% vs 75.1%), while edging out GPT-5.5 by 1% (72.6%)"
+        },
+        {
+          "source_id": "s3",
+          "label": "Simon Willison (independent practitioner)",
+          "url": "https://simonwillison.net/2026/jun/17/glm-52/",
+          "retrieved_at": "2026-06-26",
+          "source_date": "2026-06-17",
+          "excerpt": "Similar in size to their previous GLM-5 and GLM-5.1 releases this is a 753B parameter, 1.51TB monster"
+        }
+      ]
+    },
+    {
+      "topic_id": "fable-5-mythos-safety-routing-capability",
+      "dedup_key": "frontier model deploys non uniform capability via topic based safety routing to a weaker fallback model",
+      "title": "Fable 5 ships a capability ceiling that moves with your query",
+      "summary": "Anthropic released Claude Fable 5, a Mythos-class model it positions above its Opus tier, but on sensitive topics the request is silently answered by the weaker Opus 4.8 instead. Three days later a US export directive pulled it offline after a reported jailbreak. The deployed capability is no longer a single number; it depends on what you ask.",
+      "why_relevant": "The non-obvious second-order consequence for builders: model-level safety routing means the model you benchmarked is not always the model that answers, and the swap to a less capable fallback is invisible at the API boundary. That breaks the assumption that one model id equals one capability ceiling, which is the assumption every eval harness and every latency budget is built on. The article can argue what changes when capability becomes query-conditional: how you would even detect a silent downgrade, and whether the suspension three days in is a one-off or the first sign that frontier-tier access now comes with a moving floor.",
+      "tags": ["frontier-llm", "ai-safety", "model-routing", "anthropic"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Anthropic announcement (primary)",
+          "url": "https://www.anthropic.com/news/claude-fable-5-mythos-5",
+          "retrieved_at": "2026-06-26",
+          "source_date": "2026-06-09",
+          "excerpt": "Today we're launching Claude Fable 5: a Mythos-class model that we've made safe for general use."
+        },
+        {
+          "source_id": "s2",
+          "label": "Anthropic announcement (routing mechanism)",
+          "url": "https://www.anthropic.com/news/claude-fable-5-mythos-5",
+          "retrieved_at": "2026-06-26",
+          "source_date": "2026-06-09",
+          "excerpt": "queries on some topics will instead receive a response from our next-most-capable model, Claude Opus 4.8."
+        },
+        {
+          "source_id": "s3",
+          "label": "InfoQ (independent, suspension)",
+          "url": "https://www.infoq.com/news/2026/06/claude-5-release/",
+          "retrieved_at": "2026-06-26",
+          "source_date": "2026-06-15",
+          "excerpt": "On June 9, 2026, Anthropic released Claude Fable 5, the first publicly available model in its Mythos class, and within three days, a United States government export directive temporarily forced it back offline."
+        }
+      ]
+    },
+    {
+      "topic_id": "monolith-to-subagents-multi-agent-debate",
+      "dedup_key": "single linear agent versus orchestrated sub agents for production reliability multi agent architecture tradeoff",
+      "title": "Split the agent or keep it single-threaded: the production reliability fight",
+      "summary": "Google's team published a refactoring teardown arguing that narrow specialized sub-agents run more reliably than one LLM driving a giant multi-step prompt. Cognition argues the opposite: split context across agents and their implicit decisions conflict, so a single-threaded linear agent wins. Two credible shops, opposite defaults, same goal of reliability.",
+      "why_relevant": "This is a live architecture disagreement with a real cost on either side, which is exactly the contested trade-off a practitioner piece should adjudicate rather than summarize. The take to defend: the split-versus-single choice is not a style preference, it turns on whether your task can be cut into pieces whose intermediate decisions do not need to see each other, and most teams reach for orchestration before they have checked that. The article can name the test that decides it, cite Google's structured-output contract as the mechanism that makes sub-agents safe to compose, and steelman Cognition's conflicting-decisions failure mode as the reason to stay single-threaded longer than feels comfortable.",
+      "tags": ["building-with-ai", "multi-agent", "agent-architecture", "context-engineering"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "Google Developers Blog (primary, pro sub-agents)",
+          "url": "https://developers.googleblog.com/production-ready-ai-agents-5-lessons-from-refactoring-a-monolith/",
+          "retrieved_at": "2026-06-26",
+          "source_date": "2026-04-21",
+          "excerpt": "Separation of concerns. Specialized agents with narrow tasks run more reliably than a single LLM trying to execute a massive, multi-step prompt."
+        },
+        {
+          "source_id": "s2",
+          "label": "Cognition blog (contrarian, single-threaded)",
+          "url": "https://cognition.com/blog/dont-build-multi-agents",
+          "retrieved_at": "2026-06-26",
+          "excerpt": "Actions carry implicit decisions, and conflicting decisions carry bad results"
+        },
+        {
+          "source_id": "s3",
+          "label": "Google Developers Blog (structured-output mechanism)",
+          "url": "https://developers.googleblog.com/production-ready-ai-agents-5-lessons-from-refactoring-a-monolith/",
+          "retrieved_at": "2026-06-26",
+          "source_date": "2026-04-21",
+          "excerpt": "By shifting the 'contract' from a fuzzy natural language request to a runtime-validated Python object, we guarantee structural integrity and eliminate brittle custom parsing."
+        }
+      ]
+    },
+    {
+      "topic_id": "projdevbench-agentic-project-dev-ceiling",
+      "dedup_key": "cost and system design ceiling of autonomous end to end project build agents measured in turns and tokens",
+      "title": "ProjDevBench prices end-to-end agent builds, and finds a system-design ceiling",
+      "summary": "ProjDevBench hands coding agents a whole project and grades the repo. The headline numbers are the cost: 138 interaction turns and 4.81M tokens per problem, with the best agent at a 27.38% overall acceptance rate. Agents clear basic functionality and data structures, then stall on system design, time complexity, and resource management.",
+      "why_relevant": "The angle is the part the SWE-bench scoreboards hide: a single-issue pass rate says nothing about what a full project build actually costs or where it breaks. 138 turns and 4.81M tokens per problem reframes agentic project work as a token-burn problem before it is a capability problem, and the acceptance rate collapsing on system design and complexity optimization names the exact ceiling. The article can take the position that the binding constraint on autonomous project work in 2026 is architecture-level judgment, not line-level coding, and that pricing an agent by tokens-per-accepted-build is the metric teams should track instead of leaderboard pass@1.",
+      "tags": ["ai-assisted-coding", "agent-evaluation", "cost-engineering", "benchmarks"],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "ProjDevBench arXiv abstract (primary)",
+          "url": "https://arxiv.org/abs/2602.01655",
+          "retrieved_at": "2026-06-26",
+          "source_date": "2026-02-02",
+          "excerpt": "agents handle basic functionality and data structures but struggle with complex system design, time complexity optimization, and resource management"
+        },
+        {
+          "source_id": "s2",
+          "label": "ProjDevBench arXiv full text (turns and tokens)",
+          "url": "https://arxiv.org/html/2602.01655v1",
+          "retrieved_at": "2026-06-26",
+          "source_date": "2026-02-02",
+          "excerpt": "with agents averaging 138 interaction turns and 4.81M tokens per problem"
+        },
+        {
+          "source_id": "s3",
+          "label": "Morph leaderboard (independent corroboration)",
+          "url": "https://www.morphllm.com/best-ai-coding-agents-2026",
+          "retrieved_at": "2026-06-26",
+          "excerpt": "ProjDevBench (arXiv 2602.01655, Feb 2026) adds an end-to-end project-development view: agents average 138 turns and 4.81M tokens per problem, and Codex on GPT-5 leads at 77.85% overall with a 27.38% mean acceptance rate."
+        }
+      ]
+    }
+  ]
+}
