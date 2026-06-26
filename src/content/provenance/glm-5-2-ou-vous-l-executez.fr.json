@@ -1,0 +1,25 @@
+{
+  "slug": "glm-5-2-ou-vous-l-executez",
+  "lang": "fr",
+  "translationKey": "glm-5-2-open-weight-where-you-run-it",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Z.AI developer docs (primary)",
+      "url": "https://docs.z.ai/guides/llm/glm-5.2",
+      "excerpt": "GLM-5.2 delivers state-of-the-art long-horizon coding performance among open-source models."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Labellerr review (independent, benchmarks)",
+      "url": "https://www.labellerr.com/blog/glm-5-2-open-weight-ai-model/",
+      "excerpt": "GLM-5.2 trails Opus 4.8 by only 1% (74.4% vs 75.1%), while edging out GPT-5.5 by 1% (72.6%)"
+    },
+    {
+      "sourceId": "s3",
+      "label": "Simon Willison (independent practitioner)",
+      "url": "https://simonwillison.net/2026/jun/17/glm-52/",
+      "excerpt": "Similar in size to their previous GLM-5 and GLM-5.1 releases this is a 753B parameter, 1.51TB monster"
+    }
+  ]
+}

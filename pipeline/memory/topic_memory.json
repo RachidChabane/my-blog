@@ -417,5 +417,42 @@
     ],
     "published_at": "2026-06-23",
     "embedding": null
+  },
+  {
+    "translation_key": "glm-5-2-open-weight-where-you-run-it",
+    "topic_id": "glm-5-2-open-weight-long-horizon-coding",
+    "dedup_key": "open weight coding model beats proprietary frontier on long horizon coding at a fraction of cost but carries local hardware and data governance tradeoffs",
+    "title": "GLM-5.2 closes the coding gap. The catch is where you run it.",
+    "slugs": {
+      "fr": "glm-5-2-ou-vous-l-executez",
+      "en": "glm-5-2-where-you-run-it"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Z.AI developer docs (primary)",
+        "url": "https://docs.z.ai/guides/llm/glm-5.2",
+        "retrieved_at": "2026-06-26",
+        "excerpt": "GLM-5.2 delivers state-of-the-art long-horizon coding performance among open-source models.",
+        "source_date": "2026-06-17"
+      },
+      {
+        "source_id": "s2",
+        "label": "Labellerr review (independent, benchmarks)",
+        "url": "https://www.labellerr.com/blog/glm-5-2-open-weight-ai-model/",
+        "retrieved_at": "2026-06-26",
+        "excerpt": "GLM-5.2 trails Opus 4.8 by only 1% (74.4% vs 75.1%), while edging out GPT-5.5 by 1% (72.6%)"
+      },
+      {
+        "source_id": "s3",
+        "label": "Simon Willison (independent practitioner)",
+        "url": "https://simonwillison.net/2026/jun/17/glm-52/",
+        "retrieved_at": "2026-06-26",
+        "excerpt": "Similar in size to their previous GLM-5 and GLM-5.1 releases this is a 753B parameter, 1.51TB monster",
+        "source_date": "2026-06-17"
+      }
+    ],
+    "published_at": "2026-06-26",
+    "embedding": null
   }
 ]
