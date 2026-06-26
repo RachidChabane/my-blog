@@ -192,5 +192,39 @@
     ],
     "published_at": "2026-06-23",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-fable-5-mythos-5",
+    "topic_id": "claude-fable-5-mythos-5",
+    "dedup_key": "claude fable 5 mythos 5",
+    "title": "Claude Fable 5: a top tier at 2x Opus, with a silent Opus fallback",
+    "slugs": {
+      "fr": "claude-fable-5-palier-mythos-repli",
+      "en": "claude-fable-5-mythos-tier-fallback"
+    },
+    "sources": [
+      {
+        "label": "Anthropic news - Claude Fable 5 and Claude Mythos 5",
+        "url": "https://www.anthropic.com/news/claude-fable-5-mythos-5",
+        "date": "09-06-2026"
+      },
+      {
+        "label": "TechCrunch - independent coverage",
+        "url": "https://techcrunch.com/2026/06/09/anthropic-released-claude-fable-5-its-most-powerful-model-publicly-days-after-warning-ai-is-getting-too-dangerous/",
+        "date": "09-06-2026"
+      },
+      {
+        "label": "Artificial Analysis - independent benchmark outlet",
+        "url": "https://artificialanalysis.ai/articles/claude-fable-5-mythos",
+        "date": "09-06-2026"
+      },
+      {
+        "label": "Claude Cookbook - classifier fallback and billing for Fable 5",
+        "url": "https://platform.claude.com/cookbook/fable-5-fallback-billing-guide",
+        "date": "09-06-2026"
+      }
+    ],
+    "published_at": "2026-06-26",
+    "embedding": null
   }
 ]
