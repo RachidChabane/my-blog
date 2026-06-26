@@ -1,0 +1,7 @@
+{
+  "verdict": "single_origin",
+  "origins": [
+    "Alibaba Cloud vendor announcement (alibabacloud.com blog post _603304, the Qwen-AgentWorld primary announcement)"
+  ],
+  "reason": "s1 and s3 are the identical vendor URL (_603304), so they are one origin. s2 (cryptobriefing.com) is a distinct host but performs no independent testing or corroborating primary source; it re-reports the vendor's own framing (the world-model mechanism described in Alibaba's terms) and predates the vendor post by a day, signalling embargoed re-publication of the announcement rather than independent verification. The load-bearing numbers (58.71 vs 58.25 average; seven-benchmark, three-OOD transfer) trace solely to the vendor announcement. All cited sourcing therefore traces to a single origin."
+}
