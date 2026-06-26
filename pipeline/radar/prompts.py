@@ -20,7 +20,11 @@ _EN_REQUIRED = ("## What changed", "## Impact on your team")
 
 
 def build_radar_research_prompt(
-    *, repo_root: Path, run_dir: Path, topic_memory_summary: str = ""
+    *,
+    repo_root: Path,
+    run_dir: Path,
+    topic_memory_summary: str = "",
+    editorial_steer: str = "",
 ) -> str:
     repo_root, run_dir = Path(repo_root), Path(run_dir)
     out = run_dir / "plans" / "task-research" / "radar-candidates.json"
@@ -30,15 +34,24 @@ def build_radar_research_prompt(
         if topic_memory_summary.strip()
         else "AVOID re-covering already-published radar topics (none supplied this run).\n"
     )
+    steer = (
+        "EDITORIAL STEER FOR THIS RUN (honor it unless no genuine, well-sourced\n"
+        "candidate fits it; never fabricate or stretch a topic to comply):\n"
+        f"{editorial_steer.strip()}\n\n"
+        if editorial_steer.strip()
+        else ""
+    )
     return (
         "STAGE: Radar research.\n\n"
         f"You run with cwd = the run dir, INSIDE the repo at repo_root: {repo_root}\n\n"
+        f"{steer}"
         "GOAL: native web-search sweep for the FRESHEST (last ~3 weeks) AI-engineering\n"
         "RELEASES / SPEC CHANGES / NEW TOOLS / BENCHMARKS in: agentic AI and AI-assisted\n"
-        "coding, frontier and open-weight LLMs, MCP and agent infrastructure, evals,\n"
-        "RAG/retrieval, inference/serving. Unlike the essay pipeline, a release, a spec\n"
-        "revision, a version bump, or a new tool IS exactly what belongs here -- this is\n"
-        "the 'what shipped this week an AI engineer must know' feed.\n\n"
+        "coding, frontier and open-weight LLMs (Anthropic / Claude, OpenAI / GPT,\n"
+        "Google / Gemini, and the open-weight families), MCP and agent infrastructure,\n"
+        "evals, RAG/retrieval, inference/serving. Unlike the essay pipeline, a release, a\n"
+        "spec revision, a version bump, or a new tool IS exactly what belongs here -- this\n"
+        "is the 'what shipped this week an AI engineer must know' feed.\n\n"
         "For the single best candidate, capture >= 2 INDEPENDENT real sources (a primary/\n"
         "origin source -- the spec, the release notes, the repo -- plus an independent\n"
         "corroboration). Per source record: label, url, the source's own date (ISO), and a\n"
@@ -47,7 +60,13 @@ def build_radar_research_prompt(
         "must NOT invent any. If you cannot confirm a candidate from >= 2 independent\n"
         "sources, do not pick it.\n\n"
         f"{avoid}\n"
-        "Pick the kind from: spec-change, release, tool, benchmark, security, research.\n"
+        "Pick the kind from: spec-change, release, tool, benchmark, security, research.\n\n"
+        "TAGS are how a reader filters the radar by what they actually use, so they must\n"
+        "name the concrete things involved, not vague themes. INCLUDE the proper names of\n"
+        "every vendor, product, model, protocol, or library the brief is about: e.g.\n"
+        "'Claude', 'GPT-5', 'Gemini', 'MCP', 'vLLM', 'LangGraph'. A brief about an\n"
+        "Anthropic / Claude development MUST carry the 'Claude' tag. Add 1-2 topical tags\n"
+        "(e.g. 'agents', 'evals', 'rag') alongside the proper-name tags. 2-5 tags total.\n"
         "No emojis, no em-dashes (use ' - ').\n\n"
         f"Write the chosen candidate (ranked list, best first) to: {out}\n"
         "Each candidate: {topic_id, kind, title, summary, why_relevant, tags[], "
@@ -87,6 +106,19 @@ def build_radar_draft_prompt(*, repo_root: Path, run_dir: Path) -> str:
         "   '## The round-trip'). 'What changed' = 2-4 sentences, what is new and WHEN (real\n"
         "   date). 'Impact' = who cares + what to do (deadline/risk/migration).\n"
         "   ~250-450 words/language. Same brief in both languages. No emojis, no em-dashes.\n\n"
+        "   REFLECT, DO NOT PARAPHRASE. A radar brief is short, but it is not a press\n"
+        "   release in your own words. 'What changed' may state the facts plainly; but the\n"
+        "   middle and 'Impact' must carry a THOUGHT a reader could not get from the\n"
+        "   release notes themselves. Earn the brief by doing at least one of: take a\n"
+        "   stance (is this worth adopting, what is overhyped, what would you actually\n"
+        "   use); connect it to what came before or to a competing option (how it differs\n"
+        "   from the prior version or a rival, what it makes obsolete); surface the\n"
+        "   non-obvious (the hidden cost, the migration trap, the failure mode, what the\n"
+        "   announcement does NOT say); or give a concrete practitioner call (what to do\n"
+        "   now, what to wait on, what to ignore). 'Impact' is never a generic 'teams\n"
+        "   should evaluate this' -- it names a specific decision, risk, or deadline. If\n"
+        "   the whole brief could be reconstructed from the release notes alone, it is not\n"
+        "   yet worth publishing.\n\n"
         f"3. WRITE the structured entry as JSON to: {entry}\n"
         "   {translationKey, kind, tags:[..], slug_fr, slug_en, title_fr, title_en,\n"
         "    summary_fr, summary_en, body_fr, body_en, sources:[{label,url,date,excerpt}]}\n"
@@ -114,12 +146,24 @@ def build_radar_publish_prompt(*, repo_root: Path, run_dir: Path) -> str:
 
 
 def radar_stage_descriptions(
-    config: PipelineConfig, run_dir: Path, *, topic_memory_summary: str = ""
+    config: PipelineConfig,
+    run_dir: Path,
+    *,
+    topic_memory_summary: str = "",
+    editorial_steer: str = "",
 ) -> dict[str, str]:
-    """Compose per-stage prompt descriptions keyed by radar cpe task id."""
+    """Compose per-stage prompt descriptions keyed by radar cpe task id.
+
+    ``editorial_steer`` is an optional one-run nudge for the research stage (e.g. a
+    vendor/topic focus passed via the ``RADAR_STEER`` env var); it never overrides the
+    "must be genuine and well-sourced" bar.
+    """
     return {
         "research": build_radar_research_prompt(
-            repo_root=config.repo_root, run_dir=run_dir, topic_memory_summary=topic_memory_summary
+            repo_root=config.repo_root,
+            run_dir=run_dir,
+            topic_memory_summary=topic_memory_summary,
+            editorial_steer=editorial_steer,
         ),
         "draft": build_radar_draft_prompt(repo_root=config.repo_root, run_dir=run_dir),
         "publish": build_radar_publish_prompt(repo_root=config.repo_root, run_dir=run_dir),

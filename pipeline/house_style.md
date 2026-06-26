@@ -35,6 +35,48 @@ draft clears the `style-auditor` and the no-emoji scan without rework.
   so the fact-check gate reads it as opinion, not an uncited claim (section 4) -- an
   opinion is a judgment, never a licence to state an unsourced number.
 
+## 1b. Reflect, do not paraphrase (the interesting bar)
+
+A summary of the sources is not an article. If a reader who already skimmed the
+paper, the release notes, or the repo would learn nothing from your piece, the piece
+has failed, however clean the prose. The job is not to report what a source says; it
+is to think about it in front of the reader and hand them something they could not
+have gotten by reading the source themselves.
+
+"Interesting" is not a vibe, it is a bar. A piece clears it when it does at least
+two of the following, and never fewer than one:
+
+- Takes a stance. A judgment the reader could disagree with: which default is wrong
+  and what you do instead, what the release quietly gets right or wrong, what you
+  would actually ship. Neutral reportage ("X shipped Y, which does Z") is the thing
+  to avoid, not the thing to write.
+- Connects what the source leaves unconnected. Tie the development to a prior result,
+  an opposing trend, a tension in the field, or the reader's real stack. Synthesis
+  across two sources beats a recap of one; the insight usually lives in the gap
+  between sources, not inside any single one.
+- Surfaces the non-obvious. The second-order consequence, the hidden cost, the
+  failure mode that only shows up in production, who this quietly hurts, or what the
+  announcement is conspicuously NOT saying. Say the thing the press release will not.
+- Applies practitioner judgment. What you would do with this, what you would ignore,
+  what to watch for, and the gap between the demo and a real repo. Earn it with
+  specifics, not adjectives.
+- Names the concrete so-what. The specific decision this changes, the risk it
+  introduces, or the capability it unlocks for the person reading. "Significant
+  because it advances the field" is not a so-what.
+
+The test for every paragraph: does it carry a thought of yours, or only relay a fact
+from a source? Relayed facts are scaffolding (cited, per section 4); your thinking is
+the building. Lead with the thought and support it with the cited fact, never the
+reverse. A paragraph that only restates a source, with the citation carrying all the
+weight, should be cut or compressed into one sentence of evidence under a claim that
+is yours.
+
+This raises the bar; it does not lower the rigor. Every stance is still a contestable
+thesis you defend, every number is still cited `[sN]`, and an opinion is still marked
+as your own (section 1). Interesting and unsupported is worse than dull and correct.
+The target is interesting AND supported: a take the reader could argue with, grounded
+in evidence they can check.
+
 ## 2. No emoji (D-007)
 
 - Never use emoji in prose or in headings. Not as decoration, not as bullets, not as

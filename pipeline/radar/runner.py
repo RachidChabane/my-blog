@@ -35,7 +35,14 @@ class RadarRunResult:
 
 
 def _radar_descriptions(run_id: str, config: PipelineConfig) -> dict[str, str]:
-    """Radar stage descriptions, with an AVOID list from the radar topic memory."""
+    """Radar stage descriptions, with an AVOID list from the radar topic memory.
+
+    An optional one-run ``RADAR_STEER`` env var is threaded into the research stage as
+    an editorial nudge (e.g. a vendor focus); it never relaxes the genuine-and-sourced
+    bar and leaves the default (unset) behavior unchanged.
+    """
+    import os
+
     from ..memory.topic_memory import TopicMemory
     from .config import radar_memory_path
 
@@ -45,7 +52,10 @@ def _radar_descriptions(run_id: str, config: PipelineConfig) -> dict[str, str]:
     except Exception:  # advisory AVOID list only -- never gate the run on it
         records = []
     summary = "\n".join(f"- {r.title} :: {r.dedup_key}" for r in records if r.dedup_key)
-    return radar_stage_descriptions(config, run_dir, topic_memory_summary=summary)
+    steer = os.environ.get("RADAR_STEER", "")
+    return radar_stage_descriptions(
+        config, run_dir, topic_memory_summary=summary, editorial_steer=steer
+    )
 
 
 def run(
