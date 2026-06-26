@@ -8,7 +8,7 @@ category: essays
 difficulty: 3
 ---
 
-A near-frontier coding model under an MIT license reads like the moment your default flips, and that read is wrong: the license hands you the weights, not your data flow, because GLM-5.2 is a 753B parameter, 1.51TB model [s3] that almost no team runs on its own GPUs. The benchmark half of the story holds up. GLM-5.2 trails Opus 4.8 by a single point on long-horizon coding, 74.4% against 75.1%, and edges out GPT-5.5 at 72.6% [s2]. What the open-weight headline quietly fuses is two things that used to travel together, model access and data control, and a 1.51TB model is exactly the wedge that splits them apart.
+A near-frontier coding model under an MIT license reads like the moment your default flips, and that read is wrong: the license hands you the weights, not your data flow, because GLM-5.2 is a 753B parameter, 1.51TB model [s3] that almost no team runs on its own GPUs. The benchmark half of the story holds up. GLM-5.2 trails Opus 4.8 by a single point on long-horizon coding, 74.4% against 75.1%, and edges out GPT-5.5 at 72.6% [s2].
 
 ## The benchmark story is real
 
@@ -18,12 +18,12 @@ Z.AI frames this as state-of-the-art long-horizon coding among open-source model
 
 ## The deployment story is where the win leaks
 
-Here is the spine of the argument. The capability is open; the data control everyone assumes comes with it is not, and the reason is physical, not legal. GLM-5.2 is similar in size to the earlier GLM-5 and GLM-5.1 releases, a 753B parameter, 1.51TB model [s3]. That is not a weight file you drop onto a spare A100. Serving it means a multi-GPU deployment most teams will never stand up, so the practical path to GLM-5.2 is a hosted endpoint run by someone else, and the moment you send your code to someone else's inference cluster you inherit that operator's data governance exactly as you would with a closed API.
+The capability is open; the data control everyone assumes comes with it is not, and the reason is physical, not legal. GLM-5.2 is similar in size to the earlier GLM-5 and GLM-5.1 releases, and at 1.51TB [s3] it is not a weight file you drop onto a spare A100. Serving it means a multi-GPU deployment most teams will never stand up, so the practical path to GLM-5.2 is a hosted endpoint run by someone else, and the moment you send your code to someone else's inference cluster you inherit that operator's data governance exactly as you would with a closed API.
 
 The MIT license governs the artifact. It says nothing about where the artifact runs or who sees the tokens you feed it. A closed frontier model and a GLM-5.2 endpoint rented from a third party put your source code on infrastructure you do not own in both cases. The open license changed what you are allowed to do with the weights; it did not, on its own, change your data flow. That is the gap the headline papers over, and it is the gap a team that switches its default on the strength of "MIT plus a great benchmark" will discover only after the code has already left the building.
 
 > [!WARNING]
-> An MIT license on the weights does not govern your data flow once you rent inference. If data residency is the reason you are looking at open weights, the license alone buys you nothing; you still have to contract for where the model runs.
+> If data residency is your reason for reaching for open weights, budget for it as procurement, not as a license property. The lever is a signed residency and data-processing clause with a jurisdiction-bound host, or a VPC or on-premises contract. The MIT text is not that contract and will not stand in for it.
 
 > [!CONFIRMED]
 > GLM-5.2 trails Opus 4.8 by one point (74.4% vs 75.1%), edges GPT-5.5 (72.6%) [s2], and ships as a 753B parameter, 1.51TB model [s3].
@@ -50,4 +50,4 @@ The decision rule that survives both objections is narrower than the headline an
 | Whole-system cost on long-horizon work | rises with retries from the 1% deficit | retry overhead priced in already |
 | Self-host feasibility | needs multi-GPU for 1.51TB | not applicable |
 
-What this changes for a team picking a coding model is the question you ask first. Not "is the benchmark good and the license permissive," because for GLM-5.2 both answers are yes [s1][s2]. The first question is where the model will physically run and what that endpoint costs you per finished task, residency included. The MIT license changed the procurement surface, and that is genuinely worth something. It did not change your data flow, and treating it as if it did is how a default-switch decision turns into a compliance surprise. Open weights moved the boundary of what you can negotiate. They did not move the boundary of where your code goes.
+What this changes for a team picking a coding model is the question you ask first. Not "is the benchmark good and the license permissive," because for GLM-5.2 both answers are yes [s1][s2]. The first question is where the model will physically run and what that endpoint costs you per finished task, residency included. The MIT license changed the procurement surface, and that is genuinely worth something. It did not change your data flow, and treating it as if it did is how a default-switch decision turns into a compliance surprise.
