@@ -1,0 +1,59 @@
+{
+  "claims": [
+    {
+      "lang": "en",
+      "claim": "GLM-5.2 trails Opus 4.8 by only 1% on long-horizon coding (74.4% vs 75.1%) while edging out GPT-5.5 (72.6%).",
+      "source_id": "s2"
+    },
+    {
+      "lang": "en",
+      "claim": "Z.AI positions GLM-5.2 as delivering state-of-the-art long-horizon coding performance among open-source models.",
+      "source_id": "s1"
+    },
+    {
+      "lang": "en",
+      "claim": "GLM-5.2 is a 753B parameter, 1.51TB model, similar in size to the earlier GLM-5 and GLM-5.1 releases.",
+      "source_id": "s3"
+    },
+    {
+      "lang": "fr",
+      "claim": "GLM-5.2 ne concède qu'un point à Opus 4.8 sur le code de longue haleine (74,4 % contre 75,1 %) tout en devançant GPT-5.5 (72,6 %).",
+      "source_id": "s2"
+    },
+    {
+      "lang": "fr",
+      "claim": "Z.AI présente GLM-5.2 comme offrant la meilleure performance de code de longue haleine parmi les modèles open source.",
+      "source_id": "s1"
+    },
+    {
+      "lang": "fr",
+      "claim": "GLM-5.2 est un modèle de 753 milliards de paramètres et 1,51 To, de taille comparable aux versions GLM-5 et GLM-5.1 précédentes.",
+      "source_id": "s3"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "s1",
+      "label": "Z.AI developer docs (primary)",
+      "url": "https://docs.z.ai/guides/llm/glm-5.2",
+      "retrieved_at": "2026-06-26",
+      "source_date": "2026-06-17",
+      "excerpt": "GLM-5.2 delivers state-of-the-art long-horizon coding performance among open-source models."
+    },
+    {
+      "source_id": "s2",
+      "label": "Labellerr review (independent, benchmarks)",
+      "url": "https://www.labellerr.com/blog/glm-5-2-open-weight-ai-model/",
+      "retrieved_at": "2026-06-26",
+      "excerpt": "GLM-5.2 trails Opus 4.8 by only 1% (74.4% vs 75.1%), while edging out GPT-5.5 by 1% (72.6%)"
+    },
+    {
+      "source_id": "s3",
+      "label": "Simon Willison (independent practitioner)",
+      "url": "https://simonwillison.net/2026/jun/17/glm-52/",
+      "retrieved_at": "2026-06-26",
+      "source_date": "2026-06-17",
+      "excerpt": "Similar in size to their previous GLM-5 and GLM-5.1 releases this is a 753B parameter, 1.51TB monster"
+    }
+  ]
+}
