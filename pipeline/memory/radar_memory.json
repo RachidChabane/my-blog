@@ -221,5 +221,39 @@
     ],
     "published_at": "2026-06-26",
     "embedding": null
+  },
+  {
+    "translation_key": "qwen-agentworld-language-world-model",
+    "topic_id": "qwen-agentworld-language-world-model",
+    "dedup_key": "qwen agentworld language world model",
+    "title": "Qwen-AgentWorld: an open-weight world model that simulates the environments agents train on",
+    "slugs": {
+      "fr": "qwen-agentworld-modele-de-monde-langagier",
+      "en": "qwen-agentworld-language-world-model"
+    },
+    "sources": [
+      {
+        "label": "Hugging Face model card - Qwen/Qwen-AgentWorld-35B-A3B",
+        "url": "https://huggingface.co/Qwen/Qwen-AgentWorld-35B-A3B",
+        "date": "24-06-2026"
+      },
+      {
+        "label": "GitHub - QwenLM/Qwen-AgentWorld README",
+        "url": "https://github.com/QwenLM/Qwen-AgentWorld",
+        "date": "24-06-2026"
+      },
+      {
+        "label": "Technical report - arXiv:2606.24597 Qwen-AgentWorld: Language World Models for General Agents",
+        "url": "https://arxiv.org/html/2606.24597",
+        "date": "23-06-2026"
+      },
+      {
+        "label": "NxCode - independent analysis",
+        "url": "https://www.nxcode.io/resources/news/qwen-agentworld-language-world-models-ai-agents-2026",
+        "date": "24-06-2026"
+      }
+    ],
+    "published_at": "2026-06-27",
+    "embedding": null
   }
 ]
