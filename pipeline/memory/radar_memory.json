@@ -255,5 +255,34 @@
     ],
     "published_at": "2026-06-27",
     "embedding": null
+  },
+  {
+    "translation_key": "doubao-seed-2-1-gdpval-mcp-atlas",
+    "topic_id": "doubao-seed-2-1-gdpval-mcp-atlas",
+    "dedup_key": "doubao seed 2 1 gdpval mcp atlas",
+    "title": "Doubao Seed 2.1: ByteDance's agent model tops GDPval, and you can call it today",
+    "slugs": {
+      "fr": "doubao-seed-2-1-gdpval-appels-outils-mcp",
+      "en": "doubao-seed-2-1-gdpval-mcp-tool-calling"
+    },
+    "sources": [
+      {
+        "label": "ByteDance Seed team blog - Seed2.1 Officially Released",
+        "url": "https://seed.bytedance.com/en/blog/seed2-1-officially-released-advancing-ai-productivity",
+        "date": "23-06-2026"
+      },
+      {
+        "label": "Macrostream - Doubao LLM 2.1 Launches as Token Volume Surges 10-Fold",
+        "url": "https://www.macrostream.ai/articles/6a3a30738bef2323d23d20d6",
+        "date": "23-06-2026"
+      },
+      {
+        "label": "llm-stats catalog - Seed 2.1 Pro model page",
+        "url": "https://llm-stats.com/models/seed-2.1-pro",
+        "date": "24-06-2026"
+      }
+    ],
+    "published_at": "2026-06-28",
+    "embedding": null
   }
 ]
