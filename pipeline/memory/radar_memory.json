@@ -284,5 +284,34 @@
     ],
     "published_at": "2026-06-28",
     "embedding": null
+  },
+  {
+    "translation_key": "microsoft-foundry-hosted-agents",
+    "topic_id": "microsoft-foundry-hosted-agents",
+    "dedup_key": "microsoft foundry hosted agents",
+    "title": "Foundry Hosted Agents: a framework-agnostic managed runtime for production agents (preview, GA end of June 2026)",
+    "slugs": {
+      "fr": "microsoft-foundry-hosted-agents-runtime-execution-agents",
+      "en": "microsoft-foundry-hosted-agents-managed-runtime"
+    },
+    "sources": [
+      {
+        "label": "Microsoft Foundry blog - What's New in Hosted Agents in Foundry Agent Service",
+        "url": "https://devblogs.microsoft.com/foundry/hosted-agents-build26/",
+        "date": "02-06-2026"
+      },
+      {
+        "label": "Microsoft Learn - Hosted agents in Foundry Agent Service",
+        "url": "https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/hosted-agents",
+        "date": "25-06-2026"
+      },
+      {
+        "label": "InfoQ - Microsoft Foundry Adds Runtime, Tooling, and Governance for Production Agents",
+        "url": "https://www.infoq.com/news/2026/06/microsoft-foundry-agents/",
+        "date": "09-06-2026"
+      }
+    ],
+    "published_at": "2026-06-29",
+    "embedding": null
   }
 ]
