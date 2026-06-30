@@ -74,7 +74,8 @@
     ],
     "articles": [
       "ai-evaluation-compute-cost",
-      "coding-agent-scaffold-confound"
+      "coding-agent-scaffold-confound",
+      "prompt-caching-prefix-stability"
     ],
     "addedOn": "17-06-2026"
   },
@@ -196,6 +197,30 @@
       "hybrid-rag-rrf"
     ],
     "addedOn": "27-05-2026"
+  },
+  {
+    "id": "cache-block-control",
+    "label": {
+      "fr": "Contrôle des blocs de cache",
+      "en": "Cache-block control"
+    },
+    "definition": {
+      "fr": "La discipline qui consiste à garder le préfixe de prompt mis en cache identique octet pour octet d'une requête à l'autre et à placer le contenu volatil en dernier, afin que la frontière du cache reste profonde et que le préremplissage réutilisé soit maximal. Elle décide si le cache de prompt réduit ou augmente la latence.",
+      "en": "The discipline of keeping a cached prompt prefix byte-identical across turns and placing volatile content last, so the cache boundary stays deep and reused prefill is maximized. It decides whether prompt caching lowers or raises latency."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "prefix stability",
+      "cache-block control"
+    ],
+    "related": [
+      "prompt-caching",
+      "kv-cache"
+    ],
+    "articles": [
+      "prompt-caching-prefix-stability"
+    ],
+    "addedOn": "30-06-2026"
   },
   {
     "id": "change-cost",
@@ -363,7 +388,8 @@
       "long-context-degradation"
     ],
     "articles": [
-      "context-budget"
+      "context-budget",
+      "prompt-caching-prefix-stability"
     ],
     "addedOn": "10-06-2026"
   },
@@ -678,7 +704,8 @@
     ],
     "articles": [
       "serving-oss-llm-production-cost",
-      "active-context-compression-prune-history"
+      "active-context-compression-prune-history",
+      "prompt-caching-prefix-stability"
     ],
     "addedOn": "04-05-2026"
   },
@@ -828,7 +855,8 @@
       "kv-cache"
     ],
     "articles": [
-      "context-budget"
+      "context-budget",
+      "prompt-caching-prefix-stability"
     ],
     "addedOn": "10-06-2026"
   },
@@ -1075,6 +1103,30 @@
     "addedOn": "18-06-2026"
   },
   {
+    "id": "time-to-first-token",
+    "label": {
+      "fr": "Temps jusqu'au premier jeton",
+      "en": "Time to first token"
+    },
+    "definition": {
+      "fr": "Le temps jusqu'au premier jeton (TTFT) est la latence entre l'envoi d'une requête et la réception du premier jeton de sortie, dominée par le préremplissage du contexte d'entrée. C'est la métrique de service que le cache de prompt fait varier lorsqu'il réutilise un préfixe.",
+      "en": "Time to first token (TTFT) is the latency from sending a request to receiving the first output token, dominated by prefill over the input context. It is the serving metric prompt caching moves when it reuses a prefix."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "TTFT",
+      "time to first token"
+    ],
+    "related": [
+      "llm-serving",
+      "kv-cache"
+    ],
+    "articles": [
+      "prompt-caching-prefix-stability"
+    ],
+    "addedOn": "30-06-2026"
+  },
+  {
     "id": "tool-use",
     "label": {
       "fr": "Usage d'outils",
@@ -1096,7 +1148,8 @@
     "articles": [
       "evaluating-tool-using-agents",
       "deterministic-agent-workflows",
-      "coding-agent-scaffold-confound"
+      "coding-agent-scaffold-confound",
+      "prompt-caching-prefix-stability"
     ],
     "addedOn": "12-05-2026"
   },
