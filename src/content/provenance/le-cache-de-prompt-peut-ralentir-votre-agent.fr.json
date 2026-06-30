@@ -1,0 +1,19 @@
+{
+  "slug": "le-cache-de-prompt-peut-ralentir-votre-agent",
+  "lang": "fr",
+  "translationKey": "prompt-caching-prefix-stability",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Don't Break the Cache: An Evaluation of Prompt Caching for Long-Horizon Agentic Tasks (arXiv 2601.06007)",
+      "url": "https://arxiv.org/abs/2601.06007",
+      "excerpt": "Our results demonstrate that prompt caching reduces API costs by 41-80% and improves time to first token by 13-31% across providers. We find that strategic prompt cache block control, such as placing dynamic content at the end of the system prompt, avoiding dynamic traditional function calling, and excluding dynamic tool results, provides more consistent benefits than naive full-context caching, which can paradoxically increase latency."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Spheron: Context Engineering for Production AI Agents (KV cache, prefix caching)",
+      "url": "https://www.spheron.network/blog/context-engineering-production-ai-agents-kv-cache-long-context/",
+      "excerpt": "A 90% KV cache hit rate means the server skips 90% of that prefill work, reducing effective compute cost per request by 80-90%."
+    }
+  ]
+}
