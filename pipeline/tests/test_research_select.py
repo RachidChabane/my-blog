@@ -383,24 +383,26 @@ def test_24_research_prompt_substrings_deterministic_no_emoji():
         "two sources",
         "FR-D3",
         "schema_version",
-        # the no-news LESSON fallback: deterministic recommendation, lesson- topic_id
-        "NO-NEWS FALLBACK",
+        # the no-(usable-)news LESSON fallback: deterministic recommendation, lesson- topic_id
+        "NO-USABLE-NEWS FALLBACK",
         "python3 -m pipeline.stages.lesson next-topic",
         "'lesson-' prefix",
         "exactly one\n  lesson candidate",
     ]:
         assert needle in prompt, f"research prompt missing {needle!r}"
-    # task 6: the broadened multi-angle ask wraps across lines, so assert the multi-word
-    # needles against the flattened prompt (mirrors test_argue.py's flatten).
+    # task 6 + the independence-as-hard-bar fix: the multi-angle ask wraps across lines,
+    # so assert the multi-word needles against the flattened prompt (mirrors test_argue.py).
     flat = " ".join(prompt.split())
     for needle in [
-        "INDEPENDENT corroboration",
-        "different origin",
+        "SOURCE INDEPENDENCE IS A HARD BAR",
+        "TWO GENUINELY INDEPENDENT origins",
+        "merely restates the primary",
+        "source-independence judge that BLOCKS",
         "skeptical or contrarian",
-        "PRIMARY or origin source",
-        "NOT two independent sources",
+        "independent benchmarks",
+        "independently sourced to the HARD BAR above",
     ]:
-        assert needle in flat, f"research prompt missing broadening needle {needle!r}"
+        assert needle in flat, f"research prompt missing independence needle {needle!r}"
     assert "no emoji" in prompt.lower()
     assert prompt.isascii()  # ASCII-only => no emoji in the prompt itself
 
