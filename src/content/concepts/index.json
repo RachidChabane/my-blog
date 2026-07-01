@@ -632,6 +632,28 @@
     "addedOn": "27-05-2026"
   },
   {
+    "id": "indirect-prompt-injection",
+    "label": {
+      "fr": "Injection de prompt indirecte",
+      "en": "Indirect prompt injection"
+    },
+    "definition": {
+      "fr": "Attaque où des instructions malveillantes atteignent le modèle non pas par la saisie de l'utilisateur, mais par un contenu tiers que le système ingère (page web, document, description d'outil). Le modèle traite ce texte comme des consignes, si bien qu'une source non fiable pilote son comportement.",
+      "en": "An attack where malicious instructions reach the model not through the user's input but through third-party content the system ingests (a web page, a document, a tool description). The model treats that text as guidance, so an untrusted source steers its behaviour."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "prompt injection"
+    ],
+    "related": [
+      "tool-use"
+    ],
+    "articles": [
+      "mcp-tool-poisoning-client-trust"
+    ],
+    "addedOn": "01-07-2026"
+  },
+  {
     "id": "inference-determinism",
     "label": {
       "fr": "Déterminisme de l'inférence",
@@ -786,6 +808,28 @@
       "glm-5-2-open-weight-where-you-run-it"
     ],
     "addedOn": "19-06-2026"
+  },
+  {
+    "id": "model-context-protocol",
+    "label": {
+      "fr": "Model Context Protocol (MCP)",
+      "en": "Model Context Protocol (MCP)"
+    },
+    "definition": {
+      "fr": "Protocole ouvert qui standardise la connexion d'un agent à des outils et des données externes : un serveur décrit ses outils et le client transmet ces descriptions au modèle, qui choisit lesquels appeler. Il rend le câblage trivial en déplaçant vers le client la responsabilité de vérifier ce que le serveur déclare.",
+      "en": "An open protocol that standardizes how an agent connects to external tools and data: a server describes its tools and the client forwards those descriptions to the model, which chooses which to call. It makes wiring trivial by moving the job of vetting what the server declares onto the client."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "MCP"
+    ],
+    "related": [
+      "tool-use"
+    ],
+    "articles": [
+      "mcp-tool-poisoning-client-trust"
+    ],
+    "addedOn": "01-07-2026"
   },
   {
     "id": "open-weight-models",
@@ -1127,6 +1171,28 @@
     "addedOn": "30-06-2026"
   },
   {
+    "id": "tool-poisoning",
+    "label": {
+      "fr": "Empoisonnement d'outils",
+      "en": "Tool poisoning"
+    },
+    "definition": {
+      "fr": "Cas d'injection de prompt indirecte propre à l'usage d'outils : un serveur glisse des instructions coercitives dans les métadonnées que le modèle lit comme des consignes (description, documentation des paramètres, exemples), et non dans le code de l'outil. Le modèle lit ces métadonnées tandis que l'utilisateur ne voit qu'un nom d'outil, ce qui rend l'attaque silencieuse.",
+      "en": "A tool-use-specific case of indirect prompt injection: a server embeds coercive instructions in the metadata the model reads as guidance (the description, parameter docs, examples), not in the tool's code. The model reads that metadata while the user sees only a tool name, which makes the attack silent."
+    },
+    "theme": "agentic-ai",
+    "aliases": [],
+    "related": [
+      "indirect-prompt-injection",
+      "model-context-protocol",
+      "tool-use"
+    ],
+    "articles": [
+      "mcp-tool-poisoning-client-trust"
+    ],
+    "addedOn": "01-07-2026"
+  },
+  {
     "id": "tool-use",
     "label": {
       "fr": "Usage d'outils",
@@ -1149,9 +1215,30 @@
       "evaluating-tool-using-agents",
       "deterministic-agent-workflows",
       "coding-agent-scaffold-confound",
-      "prompt-caching-prefix-stability"
+      "prompt-caching-prefix-stability",
+      "mcp-tool-poisoning-client-trust"
     ],
     "addedOn": "12-05-2026"
+  },
+  {
+    "id": "trust-boundary",
+    "label": {
+      "fr": "Frontière de confiance",
+      "en": "Trust boundary"
+    },
+    "definition": {
+      "fr": "Ligne d'un système où des données franchissent d'une zone non fiable vers une zone privilégiée et doivent donc être validées. Dans une pile d'agents, savoir qui écrit le texte que le modèle traite comme des instructions, et quel composant est censé le contrôler, détermine où se place cette frontière.",
+      "en": "The line in a system where data crosses from an untrusted zone into a privileged one and therefore must be validated. In an agent stack, knowing who authors the text the model treats as instructions, and which component is expected to police it, decides where that boundary sits."
+    },
+    "theme": "agentic-ai",
+    "aliases": [],
+    "related": [
+      "model-context-protocol"
+    ],
+    "articles": [
+      "mcp-tool-poisoning-client-trust"
+    ],
+    "addedOn": "01-07-2026"
   },
   {
     "id": "vector-search",
