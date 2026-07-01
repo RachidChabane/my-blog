@@ -1,0 +1,50 @@
+{
+  "threshold": 0.82,
+  "results": [
+    {
+      "topic_id": "rlvr-gaming-verifiers-reward-hacking",
+      "dedup_key": "rlvr verifiable rewards get gamed models reward hack imperfect verifiers that check only extensional correctness",
+      "max_similarity": 0.20254787341673336,
+      "nearest_prior_id": "context-budget-not-window",
+      "too_similar": false
+    },
+    {
+      "topic_id": "mcp-tool-poisoning-client-trust-boundary",
+      "dedup_key": "model context protocol tool poisoning moves the security burden client side where most clients do not statically validate tool metadata",
+      "max_similarity": 0.2090605025017728,
+      "nearest_prior_id": "context-budget-not-window",
+      "too_similar": false
+    },
+    {
+      "topic_id": "low-bit-quantization-taxes-reasoning-long-context",
+      "dedup_key": "low bit four bit quantization disproportionately degrades reasoning and long context tasks not a free lunch for local deployment",
+      "max_similarity": 0.2995723447576391,
+      "nearest_prior_id": "context-budget-not-window",
+      "too_similar": false
+    },
+    {
+      "topic_id": "llm-judge-style-bias-dominates",
+      "dedup_key": "llm as a judge dominant bias is style markdown formatting preference not position bias which eval harnesses fail to mitigate",
+      "max_similarity": 0.311187957132071,
+      "nearest_prior_id": "llm-inference-nondeterminism-batch-invariant-kernels",
+      "too_similar": false
+    },
+    {
+      "topic_id": "agentic-rag-capability-gap-not-retrieval-loop",
+      "dedup_key": "agentic rag bottleneck is intermediate reasoning capability not the retrieval loop exposing search tools to the model beats fixed pipelines",
+      "max_similarity": 0.3015113445777637,
+      "nearest_prior_id": "ai-evaluation-compute-cost-bottleneck",
+      "too_similar": false
+    }
+  ],
+  "selection": {
+    "chosen_topic_id": "rlvr-gaming-verifiers-reward-hacking",
+    "fallback_topic_ids": [
+      "mcp-tool-poisoning-client-trust-boundary",
+      "low-bit-quantization-taxes-reasoning-long-context",
+      "llm-judge-style-bias-dominates",
+      "agentic-rag-capability-gap-not-retrieval-loop"
+    ],
+    "all_too_similar": false
+  }
+}
