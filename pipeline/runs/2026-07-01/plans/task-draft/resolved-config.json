@@ -1,0 +1,157 @@
+{
+  "model": {
+    "value": "opus",
+    "from": "project_defaults"
+  },
+  "effort": {
+    "value": "medium",
+    "from": "project_defaults"
+  },
+  "test_command": {
+    "value": "pytest",
+    "from": "hardcoded"
+  },
+  "lint_command": {
+    "value": null,
+    "from": "unset"
+  },
+  "plans_dir": {
+    "value": "plans",
+    "from": "project_defaults"
+  },
+  "max_review_rounds": {
+    "value": 2,
+    "from": "project_defaults"
+  },
+  "plan_timeout_minutes": {
+    "value": 30,
+    "from": "project_defaults"
+  },
+  "review_timeout_minutes": {
+    "value": 30,
+    "from": "project_defaults"
+  },
+  "implement_timeout_minutes": {
+    "value": 30,
+    "from": "project_defaults"
+  },
+  "implement_max_turns": {
+    "value": 200,
+    "from": "hardcoded"
+  },
+  "reviewer_max_turns": {
+    "value": 150,
+    "from": "hardcoded"
+  },
+  "max_attempts": {
+    "value": null,
+    "from": "unset"
+  },
+  "on_max_review_rounds": {
+    "value": "fail",
+    "from": "project_defaults"
+  },
+  "persona_file": {
+    "value": "/Users/rachid/dev-env/0-git/my-blog/pipeline/house_style.md",
+    "from": "project_defaults"
+  },
+  "decisions_dir": {
+    "value": "docs/decisions",
+    "from": "hardcoded"
+  },
+  "invariants_file": {
+    "value": "/Users/rachid/dev-env/0-git/my-blog/pipeline/invariants.yaml",
+    "from": "project_defaults"
+  },
+  "untranslated_strings_command": {
+    "value": null,
+    "from": "unset"
+  },
+  "dev_server_url": {
+    "value": "http://localhost:5173",
+    "from": "hardcoded"
+  },
+  "max_rate_limit_retries": {
+    "value": 3,
+    "from": "hardcoded"
+  },
+  "rate_limit_base_backoff_seconds": {
+    "value": 60,
+    "from": "hardcoded"
+  },
+  "max_gate_repair_rounds": {
+    "value": 1,
+    "from": "project_defaults"
+  },
+  "branch_per_task": {
+    "value": false,
+    "from": "project_defaults"
+  },
+  "base_branch": {
+    "value": "main",
+    "from": "project_defaults"
+  },
+  "task_branch_template": {
+    "value": "task/{id}-{slug}",
+    "from": "hardcoded"
+  },
+  "auto_pr": {
+    "value": false,
+    "from": "hardcoded"
+  },
+  "auto_merge": {
+    "value": false,
+    "from": "hardcoded"
+  },
+  "pr_body_template": {
+    "value": null,
+    "from": "unset"
+  },
+  "memory_curation_threshold": {
+    "value": 30,
+    "from": "hardcoded"
+  },
+  "auto_split_on_max_rounds": {
+    "value": false,
+    "from": "hardcoded"
+  },
+  "auto_split_failure_classes": {
+    "value": [
+      "review_rejected_after_max_rounds",
+      "implementer_max_turns"
+    ],
+    "from": "hardcoded"
+  },
+  "max_split_depth": {
+    "value": 1,
+    "from": "hardcoded"
+  },
+  "claude_backend": {
+    "value": "tmux",
+    "from": "cli"
+  },
+  "max_input_tokens_per_call": {
+    "value": null,
+    "from": "unset"
+  },
+  "max_output_tokens_per_call": {
+    "value": null,
+    "from": "unset"
+  },
+  "max_total_tokens_per_call": {
+    "value": null,
+    "from": "unset"
+  },
+  "watchdog_grace_turns": {
+    "value": 1,
+    "from": "project_defaults"
+  },
+  "services_required": {
+    "value": [],
+    "from_layers": {
+      "defaults": [],
+      "phase": [],
+      "task": []
+    }
+  }
+}
