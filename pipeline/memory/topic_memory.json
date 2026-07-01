@@ -484,5 +484,35 @@
     ],
     "published_at": "2026-06-30",
     "embedding": null
+  },
+  {
+    "translation_key": "mcp-tool-poisoning-client-trust",
+    "topic_id": "mcp-tool-poisoning-client-trust-boundary",
+    "dedup_key": "model context protocol tool poisoning moves the security burden client side where most clients do not statically validate tool metadata",
+    "title": "MCP Won on Simplicity and Moved the Trust Boundary to the Client",
+    "slugs": {
+      "fr": "mcp-a-deplace-la-frontiere-de-confiance-vers-le-client",
+      "en": "mcp-moved-the-trust-boundary-to-the-client"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Model Context Protocol Threat Modeling and Analyzing Vulnerabilities to Prompt Injection with Tool Poisoning (arXiv 2603.22489)",
+        "url": "https://arxiv.org/abs/2603.22489",
+        "retrieved_at": "2026-07-01",
+        "excerpt": "This comprehensive analysis reveals tool poisoning-where malicious instructions are embedded in tool metadata-as the most prevalent and impactful client-side vulnerability. We therefore focus our empirical evaluation on this critical attack vector, providing a systematic comparison of how seven major MCP clients validate and defend against tool poisoning attacks. Our analysis reveals significant security issues with most tested clients due to insufficient static validation and parameter visibility.",
+        "source_date": "2026-03-23"
+      },
+      {
+        "source_id": "s2",
+        "label": "Cloud Security Alliance, Research Note: MCP Security Crisis, Systemic Design Flaws in AI Agent Infrastructure",
+        "url": "https://labs.cloudsecurityalliance.org/research/csa-research-note-mcp-security-crisis-20260504-csa-styled/",
+        "retrieved_at": "2026-07-01",
+        "excerpt": "The reference implementation ships without guard rails and the majority of developers have no security baseline to reason from.",
+        "source_date": "2026-05-04"
+      }
+    ],
+    "published_at": "2026-07-01",
+    "embedding": null
   }
 ]
