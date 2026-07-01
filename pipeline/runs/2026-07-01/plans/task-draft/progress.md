@@ -2,7 +2,7 @@
 
 - [x] 1. Author `draft-en.md`, `draft-fr.md`, `claim_source_map.json` (§2.1/§2.2, content §1)
 - [x] 2. Self-gates: `draft validate` OK + `review check` APPROVED (§3)
-- [ ] 3. Humanize: style-auditor ×2 → style-{fr,en}.json; scan ×2 OK; verdict ×2 clean (§4)
+- [x] 3. Humanize: style-auditor ×2 → style-{fr,en}.json; scan ×2 OK; verdict ×2 clean (§4)
 - [ ] 4. Fact-check sub-agent ×2 → factcheck-{fr,en}.json; gate.factcheck ×2 OK (§5)
 - [ ] 5. Grounding gate ×2 OK (§5b)
 - [ ] 6. Editorial sub-agent → editorial.json; gate.editorial OK (§6)
