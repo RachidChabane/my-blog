@@ -1,0 +1,52 @@
+{
+  "claims": [
+    {
+      "lang": "en",
+      "claim": "A STRIDE/DREAD threat model comparing seven major MCP clients rated tool poisoning, coercive instructions embedded in tool metadata, the most prevalent and impactful client-side vulnerability.",
+      "source_id": "s1"
+    },
+    {
+      "lang": "en",
+      "claim": "The seven-client comparison traced the tool-poisoning weakness to insufficient static validation and insufficient parameter visibility in most tested clients.",
+      "source_id": "s1"
+    },
+    {
+      "lang": "en",
+      "claim": "The weakness is a protocol-level default rather than one product's bug: the reference implementation ships without guard rails, so every conforming client inherits the exposure.",
+      "source_id": "s2"
+    },
+    {
+      "lang": "fr",
+      "claim": "Une modélisation de menaces STRIDE/DREAD comparant sept grands clients MCP a classé l'empoisonnement d'outils, ces instructions coercitives cachées dans les métadonnées d'outil, comme la vulnérabilité côté client la plus répandue et la plus lourde de conséquences.",
+      "source_id": "s1"
+    },
+    {
+      "lang": "fr",
+      "claim": "La comparaison des sept clients a rattaché la faiblesse de l'empoisonnement d'outils à une validation statique insuffisante et à une visibilité des paramètres insuffisante dans la plupart des clients testés.",
+      "source_id": "s1"
+    },
+    {
+      "lang": "fr",
+      "claim": "La faiblesse est un choix par défaut au niveau du protocole et non le bogue d'un seul produit : l'implémentation de référence est livrée sans garde-fous, si bien que chaque client conforme hérite de l'exposition.",
+      "source_id": "s2"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "s1",
+      "label": "Model Context Protocol Threat Modeling and Analyzing Vulnerabilities to Prompt Injection with Tool Poisoning (arXiv 2603.22489)",
+      "url": "https://arxiv.org/abs/2603.22489",
+      "retrieved_at": "2026-07-01",
+      "source_date": "2026-03-23",
+      "excerpt": "This comprehensive analysis reveals tool poisoning-where malicious instructions are embedded in tool metadata-as the most prevalent and impactful client-side vulnerability. We therefore focus our empirical evaluation on this critical attack vector, providing a systematic comparison of how seven major MCP clients validate and defend against tool poisoning attacks. Our analysis reveals significant security issues with most tested clients due to insufficient static validation and parameter visibility."
+    },
+    {
+      "source_id": "s2",
+      "label": "Cloud Security Alliance, Research Note: MCP Security Crisis, Systemic Design Flaws in AI Agent Infrastructure",
+      "url": "https://labs.cloudsecurityalliance.org/research/csa-research-note-mcp-security-crisis-20260504-csa-styled/",
+      "retrieved_at": "2026-07-01",
+      "source_date": "2026-05-04",
+      "excerpt": "The reference implementation ships without guard rails and the majority of developers have no security baseline to reason from."
+    }
+  ]
+}
