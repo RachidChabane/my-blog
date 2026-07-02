@@ -1,0 +1,20 @@
+{
+  "verdict": "sound",
+  "claims": [
+    {
+      "source_id": "s1",
+      "primary": true,
+      "authoritative": true,
+      "corroborated": true,
+      "note": "Original large-scale observational study (20,574 sessions / 1,639 repos) posted to arXiv; primary origin of its own taxonomy and rate figures. Authoritative as a purpose-built empirical study of coding-agent failure. Independently corroborated at the phenomenon level by s2, which reaches the same core conclusion (agents fail systematically and require user correction) from a wholly separate dataset and method; the specific percentages are unique to s1 but the load-bearing thesis is cross-supported."
+    },
+    {
+      "source_id": "s2",
+      "primary": true,
+      "authoritative": true,
+      "corroborated": true,
+      "note": "Original engineering analysis (1,281 runs / 40+ repos) by Sourcegraph; primary origin of its own LOC-threshold and tool-call metrics. Authoritative on large-codebase tooling/search infrastructure, though a vendor with an interest in the 'infrastructure not intelligence' framing. Corroborated at the phenomenon level by s1 (independent study, same directional finding of systematic agent failure); the ~400k LOC threshold and the single refactor benchmark are s2-unique and not separately verified, but the load-bearing claim does not rest on a non-authoritative source."
+    }
+  ],
+  "reason": "Both cited sources are original, authoritative studies of coding-agent failure drawn from independent datasets and methods, and they mutually corroborate the load-bearing thesis that agents fail systematically and require user correction. No load-bearing claim rests on a non-authoritative or wholly uncorroborated single source. The main soundness caveat is that s2 is a vendor source whose specific quantitative thresholds are unique to it, but this affects precision of details, not the authoritative/corroborated standing of the claims the article rests on."
+}
