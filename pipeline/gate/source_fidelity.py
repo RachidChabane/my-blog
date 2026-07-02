@@ -84,12 +84,23 @@ def distinctive_figures(excerpt: str) -> list[str]:
 
 
 def _present(figure: str, haystack: str) -> bool:
-    """A figure counts as present only as a STANDALONE number -- delimited by a non-digit,
-    non-dot on both sides. Raw substring matching is too lenient against a full-text page: it
-    lets ``2.3`` match inside ``12.34`` and ``473`` inside ``473829`` or a year, so a fabricated
-    figure scores a coincidental hit and the fabrication slips through. The boundary check makes
-    ``14.8`` match ``14.8%`` / ``(14.8)`` but not ``314.8`` / ``14.85``."""
-    return re.search(rf"(?<![\d.]){re.escape(figure)}(?![\d.])", haystack) is not None
+    """A figure counts as present only as a STANDALONE number -- not part of a longer numeric
+    literal. Raw substring matching is too lenient against a full-text page: it lets ``2.3`` match
+    inside ``12.34`` and ``473`` inside ``473829`` or a year, so a fabricated figure scores a
+    coincidental hit and the fabrication slips through. The boundary check makes ``14.8`` match
+    ``14.8%`` / ``(14.8)`` but not ``314.8`` / ``14.85``.
+
+    A neighbouring dot only extends the literal when it in turn carries a digit: ``473.8`` and
+    ``.473`` are longer numbers, so a bare ``473`` beside them is NOT a match. A dot that is plain
+    sentence punctuation (``scored 0.32.  Now``) does NOT block the match -- a decimal ending a
+    sentence is the common case and must still be found, or every terminal statistic reads as a
+    false fabrication."""
+    return (
+        re.search(
+            rf"(?<!\d)(?<!\d\.){re.escape(figure)}(?!\d)(?!\.\d)", haystack
+        )
+        is not None
+    )
 
 
 class SourceFetcher(Protocol):
