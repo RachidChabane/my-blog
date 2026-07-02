@@ -5,7 +5,7 @@
 - [x] §2.3 Write claim_source_map.json + validate contract
 - [x] §3.1 draft validate → OK
 - [x] §3.2 review check → APPROVED
-- [ ] §4 style-auditor (fr + en) → clean; humanize scan + verdict gates
+- [x] §4 style-auditor (fr + en) → clean; humanize scan + verdict gates
 - [ ] §5 fact-check sub-agent → factcheck-{fr,en}.json; gates OK
 - [ ] §6 grounding gates (fr + en) → OK
 - [ ] §7 editorial judge (EN) → editorial.json; gate OK
