@@ -23,7 +23,8 @@
       "slopcodebench-iterative-maintainability",
       "ai-evaluation-compute-cost",
       "coding-agent-scaffold-confound",
-      "agent-pass-at-1-long-horizon-reliability"
+      "agent-pass-at-1-long-horizon-reliability",
+      "coding-agent-harness-not-capability"
     ],
     "addedOn": "12-05-2026"
   },
@@ -54,6 +55,31 @@
     "addedOn": "23-06-2026"
   },
   {
+    "id": "agent-misalignment",
+    "label": {
+      "fr": "Désalignement d'agent",
+      "en": "Agent misalignment"
+    },
+    "definition": {
+      "fr": "Rupture entre ce qu'un agent de code fait et ce que l'utilisateur voulait, rendue visible par une correction humaine (pushback). Elle se décline en formes récurrentes selon la façon dont l'agent lit un projet, interprète l'intention, respecte les règles, borne ses actions et rend compte de sa progression ; l'essentiel des cas coûte de l'effort et de la confiance plutôt qu'un dommage irréversible.",
+      "en": "A breakdown between what a coding agent does and what the user intended, made visible through human correction (pushback). It takes recurring forms based on how the agent reads a project, interprets intent, follows rules, bounds its actions, and reports progress; most cases cost effort and trust rather than irreversible damage."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "misalignment",
+      "developer pushback"
+    ],
+    "related": [
+      "coding-agents",
+      "agent-scaffold",
+      "long-horizon-reliability"
+    ],
+    "articles": [
+      "coding-agent-harness-not-capability"
+    ],
+    "addedOn": "02-07-2026"
+  },
+  {
     "id": "agent-scaffold",
     "label": {
       "fr": "Scaffold d'agent",
@@ -75,7 +101,8 @@
     "articles": [
       "ai-evaluation-compute-cost",
       "coding-agent-scaffold-confound",
-      "prompt-caching-prefix-stability"
+      "prompt-caching-prefix-stability",
+      "coding-agent-harness-not-capability"
     ],
     "addedOn": "17-06-2026"
   },
@@ -335,7 +362,8 @@
       "retrieval-evaluation"
     ],
     "articles": [
-      "ast-code-chunking"
+      "ast-code-chunking",
+      "coding-agent-harness-not-capability"
     ],
     "addedOn": "10-06-2026"
   },
@@ -364,7 +392,8 @@
       "canon-repriced",
       "slopcodebench-iterative-maintainability",
       "coding-agent-scaffold-confound",
-      "glm-5-2-open-weight-where-you-run-it"
+      "glm-5-2-open-weight-where-you-run-it",
+      "coding-agent-harness-not-capability"
     ],
     "addedOn": "30-05-2026"
   },
@@ -805,7 +834,8 @@
     "articles": [
       "agent-pass-at-1-long-horizon-reliability",
       "active-context-compression-prune-history",
-      "glm-5-2-open-weight-where-you-run-it"
+      "glm-5-2-open-weight-where-you-run-it",
+      "coding-agent-harness-not-capability"
     ],
     "addedOn": "19-06-2026"
   },
@@ -1117,7 +1147,8 @@
       "agent-evaluation"
     ],
     "articles": [
-      "evaluating-tool-using-agents"
+      "evaluating-tool-using-agents",
+      "coding-agent-harness-not-capability"
     ],
     "addedOn": "12-05-2026"
   },
