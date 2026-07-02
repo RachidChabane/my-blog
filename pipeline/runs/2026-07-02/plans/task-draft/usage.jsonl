@@ -12,3 +12,6 @@
 {"timestamp": "2026-07-02T07:46:18.077694+00:00", "phase": "gate:difficulty-rating", "model": null, "input": 0, "output": 0, "cache_read": 0, "cache_create": 0, "duration_seconds": 0.047019004821777344}
 {"timestamp": "2026-07-02T07:46:18.077855+00:00", "phase": "gate:source-fidelity-en", "model": null, "input": 0, "output": 0, "cache_read": 0, "cache_create": 0, "duration_seconds": 0.976639986038208}
 {"timestamp": "2026-07-02T07:46:18.078015+00:00", "phase": "gate:source-fidelity-fr", "model": null, "input": 0, "output": 0, "cache_read": 0, "cache_create": 0, "duration_seconds": 1.007154941558838}
+{"timestamp": "2026-07-02T07:50:03.722365+00:00", "phase": "gate_repair_1", "model": "opus", "input": 16673, "output": 31273, "cache_read": 2008697, "cache_create": 149709, "duration_seconds": 225.0005009174347}
+{"timestamp": "2026-07-02T07:50:04.478876+00:00", "phase": "gate:source-fidelity-fr", "model": null, "input": 0, "output": 0, "cache_read": 0, "cache_create": 0, "duration_seconds": 0.7197589874267578}
+{"timestamp": "2026-07-02T07:50:04.479266+00:00", "phase": "gate:source-fidelity-en", "model": null, "input": 0, "output": 0, "cache_read": 0, "cache_create": 0, "duration_seconds": 0.7247190475463867}
