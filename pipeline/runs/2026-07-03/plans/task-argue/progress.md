@@ -58,3 +58,32 @@ Terminal state: **BLOCKED, by design.** The `argument` gate passes (thesis `defe
 `independence` blocks on the deterministic single-domain backstop. The judges' verdicts
 are honest and unaltered. This ships no article today (bilingual-or-nothing); the fix is
 the research/select front-loading change noted above, tracked for a later slate.
+
+## Gate-repair round (fallback re-drive to `multi-agent-context-pollution-ceiling`)
+
+The harness fell back per writing-flow section 7: `brief.md` `chosen_topic_id` is now the
+first fallback `multi-agent-context-pollution-ceiling`, and the fallback reset cleared
+argue's prior outputs (`argument.json`, `independence.json`), so both gates re-failed on
+`missing ... the pass did not run`. I re-ran the two fresh judges on the FALLBACK topic's
+thesis and its two cited sources and rewrote both artifacts:
+
+- `argument.json` -> verdict **defensible**. The judge steelmanned the "flat multi-agent
+  swarm has the sign backwards past three or four agents" thesis, mounted the strongest
+  attack (s1's 60%->21% is a steering metric on a FLAT orchestrator not a count-causal
+  claim; s2 varies architecture TYPE not N; s2's hierarchical-at-60.7% result arguably
+  supports structured multi-agent), and reconciled: the thesis survives because it is
+  hedged to flat/unscoped scaling and already prefers scoped/hierarchical designs, so the
+  hierarchical result reinforces it. Strengthened to drop any raw agent-count causality.
+  Sources: s1 arXiv 2604.07911, s2 arXiv 2603.22651.
+- `independence.json` -> verdict **independent** (two distinct arXiv papers, different
+  ids/authors/datasets/measured-quantities/dates; neither re-reports the other).
+
+Re-ran both gates: `argument` -> **OK** (exit 0). `independence` -> layer (b) judge now
+passes, but layer (a) deterministic distinct-domain backstop still BLOCKs
+(`only 1 distinct registrable domain(s) (need >= 2): ['arxiv.org']`) because the fallback
+topic's two sources are both arXiv. This is the SAME terminal single-domain block: every
+candidate in this run is all-arXiv, so no fallback clears it. No honest, in-scope repair
+exists (adding a mirror source fabricates provenance; relaxing the frozen gate is a
+separate reviewed pipeline slate). Terminal state unchanged: **BLOCKED, by design**;
+ships no article today. Remediation remains the research/select cross-domain front-loading
+change tracked above.
