@@ -37,3 +37,24 @@ Remediation (a SEPARATE pipeline change, not this task): either front-load a har
 cross-registrable-domain sourcing bar in research/select so an all-arXiv slate never
 reaches argue, or teach the domain backstop to treat distinct arXiv paper IDs / DOIs as
 distinct origins while preserving the same-host-echo catch for non-arXiv hosts.
+
+## Gate-repair round 1 of 1 (2026-07-03)
+
+Re-ran `source-independence`; it still BLOCKs on the same finding
+(`only 1 distinct registrable domain(s) (need >= 2): ['arxiv.org']`). No honest,
+in-scope repair exists:
+
+- Every candidate in this run (chosen + all three fallbacks:
+  `multi-agent-context-pollution-ceiling`, `overthinking-test-time-compute-hurts`,
+  `agent-meltdowns-benign-errors`) cites only `arxiv.org` sources, so switching topic
+  cannot clear the backstop.
+- Adding a second-domain / mirror source to `candidates.json` would fabricate provenance
+  to satisfy a crude proxy (gaming the gate) and is explicitly out of scope.
+- Editing `pipeline/gate/independence.py` to treat distinct arXiv IDs as distinct origins
+  is the genuine systemic fix, but it is a semantic change to a frozen, tested invariant
+  gate that belongs in its own reviewed pipeline slate, not a content gate-repair round.
+
+Terminal state: **BLOCKED, by design.** The `argument` gate passes (thesis `defensible`);
+`independence` blocks on the deterministic single-domain backstop. The judges' verdicts
+are honest and unaltered. This ships no article today (bilingual-or-nothing); the fix is
+the research/select front-loading change noted above, tracked for a later slate.
