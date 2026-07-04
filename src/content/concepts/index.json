@@ -1,5 +1,29 @@
 [
   {
+    "id": "agent-debt",
+    "label": {
+      "fr": "Dette d'agent",
+      "en": "Agent debt"
+    },
+    "definition": {
+      "fr": "Accumulation de logique architecturale et d'intégration non vérifiée, introduite par des agents de code IA dont les diffs passent la revue sans avoir jamais été confrontés au comportement en production. Nommée par New Relic, elle grossit parce que la revue évalue la plausibilité d'un changement alors que les propriétés qui échouent vivent à l'exécution : la vélocité gagnée au moment de la revue creuse en silence un déficit de vérification.",
+      "en": "The accumulation of unvetted architectural and integration logic introduced by AI coding agents whose diffs pass review yet were never checked against runtime behavior. Named by New Relic, it grows because review scores a change's plausibility while the properties that fail live in production, so velocity gained at review time quietly builds a verification deficit."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "unvetted architectural logic"
+    ],
+    "related": [
+      "coding-agents",
+      "trust-boundary",
+      "code-erosion"
+    ],
+    "articles": [
+      "agent-debt-verification-placement"
+    ],
+    "addedOn": "04-07-2026"
+  },
+  {
     "id": "agent-evaluation",
     "label": {
       "fr": "Évaluation d'agents",
@@ -24,7 +48,8 @@
       "ai-evaluation-compute-cost",
       "coding-agent-scaffold-confound",
       "agent-pass-at-1-long-horizon-reliability",
-      "coding-agent-harness-not-capability"
+      "coding-agent-harness-not-capability",
+      "agent-debt-verification-placement"
     ],
     "addedOn": "12-05-2026"
   },
@@ -250,6 +275,30 @@
     "addedOn": "30-06-2026"
   },
   {
+    "id": "canary-deployment",
+    "label": {
+      "fr": "Déploiement canari",
+      "en": "Canary deployment"
+    },
+    "definition": {
+      "fr": "Pratique de mise en production qui dirige une petite fraction du trafic réel vers un changement avant qu'il n'en devienne responsable, afin que les défaillances n'apparaissant que sous l'état, la charge et l'intégration réels se révèlent sur un périmètre d'impact borné. Elle place la vérification à l'exécution, là où un comportement qu'un diff statique ne peut exposer devient observable.",
+      "en": "A release practice that routes a small fraction of real production traffic to a change before it owns all of it, so failures that appear only under real state, load, and integration surface on a bounded blast radius. It places verification at runtime, where behavior a static diff cannot expose becomes observable."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "canary release",
+      "progressive delivery"
+    ],
+    "related": [
+      "trust-boundary",
+      "state-safety"
+    ],
+    "articles": [
+      "agent-debt-verification-placement"
+    ],
+    "addedOn": "04-07-2026"
+  },
+  {
     "id": "change-cost",
     "label": {
       "fr": "Coût du changement vs lisibilité",
@@ -393,7 +442,8 @@
       "slopcodebench-iterative-maintainability",
       "coding-agent-scaffold-confound",
       "glm-5-2-open-weight-where-you-run-it",
-      "coding-agent-harness-not-capability"
+      "coding-agent-harness-not-capability",
+      "agent-debt-verification-placement"
     ],
     "addedOn": "30-05-2026"
   },
@@ -1148,7 +1198,8 @@
     ],
     "articles": [
       "evaluating-tool-using-agents",
-      "coding-agent-harness-not-capability"
+      "coding-agent-harness-not-capability",
+      "agent-debt-verification-placement"
     ],
     "addedOn": "12-05-2026"
   },
@@ -1267,7 +1318,8 @@
       "model-context-protocol"
     ],
     "articles": [
-      "mcp-tool-poisoning-client-trust"
+      "mcp-tool-poisoning-client-trust",
+      "agent-debt-verification-placement"
     ],
     "addedOn": "01-07-2026"
   },
