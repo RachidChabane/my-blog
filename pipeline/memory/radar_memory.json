@@ -366,5 +366,29 @@
     ],
     "published_at": "2026-07-03",
     "embedding": null
+  },
+  {
+    "translation_key": "gemini-interactions-api-ga",
+    "topic_id": "gemini-interactions-api-ga",
+    "dedup_key": "gemini interactions api ga",
+    "title": "Gemini's Interactions API hits GA and becomes the default way to build",
+    "slugs": {
+      "fr": "api-interactions-gemini-disponibilite-generale",
+      "en": "gemini-interactions-api-general-availability"
+    },
+    "sources": [
+      {
+        "label": "Google blog - Interactions API general availability",
+        "url": "https://blog.google/innovation-and-ai/technology/developers-tools/interactions-api-general-availability/",
+        "date": "22-06-2026"
+      },
+      {
+        "label": "DEV Community - Google makes the Interactions API the default way to build with Gemini agents",
+        "url": "https://dev.to/damogallagher/google-makes-interactions-api-the-default-way-to-build-with-gemini-agents-4dnm",
+        "date": "22-06-2026"
+      }
+    ],
+    "published_at": "2026-07-04",
+    "embedding": null
   }
 ]
