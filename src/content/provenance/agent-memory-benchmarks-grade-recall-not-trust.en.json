@@ -1,0 +1,25 @@
+{
+  "slug": "agent-memory-benchmarks-grade-recall-not-trust",
+  "lang": "en",
+  "translationKey": "agent-memory-benchmark-recall-not-trust",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "esteyang, What Memory Benchmarks Don't Test (DEV Community)",
+      "url": "https://dev.to/esteyang/what-memory-benchmarks-dont-test-h9c",
+      "excerpt": "Retrieval accuracy is a necessary condition for useful memory, not a sufficient one. The failure mode: staleness without decay. No benchmark measures whether confidence scores track the age and corroboration of evidence. The failure mode: unresolved contradictions surfaced as equivalent facts. LoCoMo doesn't test for this because its evaluation set doesn't systematically introduce contradicting information. Current benchmarks optimize for recall at retrieval time, while production systems require trust at inference time."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Reddy & Challaram, Don't Ask the LLM to Track Freshness (arXiv:2606.01435)",
+      "url": "https://arxiv.org/abs/2606.01435",
+      "excerpt": "Don't Ask the LLM to Track Freshness: A Deterministic Recipe for Memory Conflict Resolution. Rather than relying on the LLM's judgment, the authors propose a systematic recipe using explicit timestamps and metadata to resolve conflicts between old and new information in agent memory systems, evaluated on the MemoryAgentBench and LongMemEval benchmarks on stale-fact resolution tasks."
+    },
+    {
+      "sourceId": "s3",
+      "label": "mem0, State of AI Agent Memory 2026 (benchmark report)",
+      "url": "https://mem0.ai/blog/state-of-ai-agent-memory-2026",
+      "excerpt": "A highly-retrieved memory about a user's employer is accurate until they change jobs, at which point it becomes confidently wrong. LoCoMo benchmark: 92.5 accuracy at approximately 6,956 tokens per query; LongMemEval: 94.4 accuracy at roughly 6,787 tokens per query; BEAM (1M tokens): 64.1 accuracy; BEAM (10M tokens): 48.6 accuracy. The new algorithm requires about 6,900 tokens per query versus approximately 26,000 tokens for full-context approaches."
+    }
+  ]
+}
