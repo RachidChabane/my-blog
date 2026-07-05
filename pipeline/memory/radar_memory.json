@@ -390,5 +390,34 @@
     ],
     "published_at": "2026-07-04",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-science",
+    "topic_id": "claude-science",
+    "dedup_key": "claude science",
+    "title": "Claude Science ships the coordinator-plus-reviewer agent pattern as a product",
+    "slugs": {
+      "fr": "claude-science-agent-reviseur-provenance",
+      "en": "claude-science-reviewer-agent-provenance"
+    },
+    "sources": [
+      {
+        "label": "Anthropic - Claude Science, an AI workbench for scientists",
+        "url": "https://www.anthropic.com/news/claude-science-ai-workbench",
+        "date": "30-06-2026"
+      },
+      {
+        "label": "TechCrunch - Anthropic's Claude Science bets on workflow, not a new model, to win over scientists",
+        "url": "https://techcrunch.com/2026/06/30/anthropics-claude-science-bets-on-workflow-not-a-new-model-to-win-over-scientists/",
+        "date": "30-06-2026"
+      },
+      {
+        "label": "MarkTechPost - Anthropic Launches Claude Science Beta: A Multi-Agent AI Workbench",
+        "url": "https://www.marktechpost.com/2026/07/04/anthropic-launches-claude-science-beta/",
+        "date": "04-07-2026"
+      }
+    ],
+    "published_at": "2026-07-05",
+    "embedding": null
   }
 ]
