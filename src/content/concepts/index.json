@@ -49,7 +49,8 @@
       "coding-agent-scaffold-confound",
       "agent-pass-at-1-long-horizon-reliability",
       "coding-agent-harness-not-capability",
-      "agent-debt-verification-placement"
+      "agent-debt-verification-placement",
+      "agent-memory-benchmark-recall-not-trust"
     ],
     "addedOn": "12-05-2026"
   },
@@ -75,7 +76,8 @@
       "long-context-degradation"
     ],
     "articles": [
-      "active-context-compression-prune-history"
+      "active-context-compression-prune-history",
+      "agent-memory-benchmark-recall-not-trust"
     ],
     "addedOn": "23-06-2026"
   },
@@ -201,7 +203,8 @@
     ],
     "articles": [
       "coding-agent-scaffold-confound",
-      "glm-5-2-open-weight-where-you-run-it"
+      "glm-5-2-open-weight-where-you-run-it",
+      "agent-memory-benchmark-recall-not-trust"
     ],
     "addedOn": "18-06-2026"
   },
@@ -858,7 +861,8 @@
     ],
     "articles": [
       "context-budget",
-      "active-context-compression-prune-history"
+      "active-context-compression-prune-history",
+      "agent-memory-benchmark-recall-not-trust"
     ],
     "addedOn": "10-06-2026"
   },
@@ -888,6 +892,56 @@
       "coding-agent-harness-not-capability"
     ],
     "addedOn": "19-06-2026"
+  },
+  {
+    "id": "memory-conflict-resolution",
+    "label": {
+      "fr": "Résolution de conflits mémoire",
+      "en": "Memory conflict resolution"
+    },
+    "definition": {
+      "fr": "Trancher de façon déterministe, à partir d'horodatages et de provenance explicites, lequel de deux faits contradictoires en mémoire fait foi, plutôt que de laisser le jugement flou du modèle décider. Vise la panne de mémoire confiante et fausse que le decay par âge ne résout pas.",
+      "en": "Deciding which of two conflicting memories is current by comparing explicit timestamps and provenance, rather than leaving the freshness call to the model's soft judgment. Targets the confidently-wrong failure that age-based decay never adjudicates."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "deterministic freshness resolution",
+      "stale-fact resolution"
+    ],
+    "related": [
+      "agent-memory",
+      "citation-grounding"
+    ],
+    "articles": [
+      "agent-memory-benchmark-recall-not-trust"
+    ],
+    "addedOn": "05-07-2026"
+  },
+  {
+    "id": "memory-decay",
+    "label": {
+      "fr": "Decay de mémoire",
+      "en": "Memory decay"
+    },
+    "definition": {
+      "fr": "Oublier des entrées de mémoire selon un calendrier (fonctions de decay, durée de vie, oubli dynamique), en jugeant chaque enregistrement isolément sur son âge. Agit sur la récence, pas sur la contradiction entre deux faits retenus.",
+      "en": "Forgetting memory entries on a schedule (decay functions, time-to-live, dynamic forgetting), judging each record in isolation by its age. It operates on recency, not on the contradiction between two retained facts."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "decay function",
+      "time-to-live",
+      "dynamic forgetting",
+      "TTL"
+    ],
+    "related": [
+      "agent-memory",
+      "memory-conflict-resolution"
+    ],
+    "articles": [
+      "agent-memory-benchmark-recall-not-trust"
+    ],
+    "addedOn": "05-07-2026"
   },
   {
     "id": "model-context-protocol",
