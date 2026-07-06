@@ -419,5 +419,34 @@
     ],
     "published_at": "2026-07-05",
     "embedding": null
+  },
+  {
+    "translation_key": "gpt-5-6-sol-terra-luna",
+    "topic_id": "gpt-5-6-sol-terra-luna",
+    "dedup_key": "gpt 5 6 sol terra luna",
+    "title": "GPT-5.6 previews as three tiers, and quietly rewrites the prompt-caching bill",
+    "slugs": {
+      "fr": "gpt-5-6-sol-terra-luna-preversion",
+      "en": "gpt-5-6-sol-terra-luna-preview"
+    },
+    "sources": [
+      {
+        "label": "OpenAI release notes - Previewing GPT-5.6 Sol",
+        "url": "https://releasebot.io/updates/openai",
+        "date": "26-06-2026"
+      },
+      {
+        "label": "DataCamp - GPT-5.6 Sol, Terra, and Luna: OpenAI's Next-Gen Model Family",
+        "url": "https://www.datacamp.com/blog/gpt-5-6-sol-luna-terra",
+        "date": "26-06-2026"
+      },
+      {
+        "label": "edenai - GPT-5.6 Sol: Benchmarks, Pricing and API Access Guide 2026",
+        "url": "https://www.edenai.co/post/gpt-5-6-sol-benchmarks-pricing-api-access-guide",
+        "date": "29-06-2026"
+      }
+    ],
+    "published_at": "2026-07-06",
+    "embedding": null
   }
 ]
