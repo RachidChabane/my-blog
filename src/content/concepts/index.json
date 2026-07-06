@@ -50,7 +50,8 @@
       "agent-pass-at-1-long-horizon-reliability",
       "coding-agent-harness-not-capability",
       "agent-debt-verification-placement",
-      "agent-memory-benchmark-recall-not-trust"
+      "agent-memory-benchmark-recall-not-trust",
+      "reward-hacking-inflates-coding-benchmarks"
     ],
     "addedOn": "12-05-2026"
   },
@@ -180,6 +181,32 @@
       "llm-temp0-nondeterminism-batch-invariant"
     ],
     "addedOn": "22-06-2026"
+  },
+  {
+    "id": "benchmark-contamination",
+    "label": {
+      "fr": "Contamination du banc d'essai",
+      "en": "Benchmark contamination"
+    },
+    "definition": {
+      "fr": "Le défaut où la réponse d'une tâche de banc d'essai est déjà accessible au modèle, dans les données d'entraînement, l'historique git ou un fil de discussion lié, si bien que l'agent récupère le correctif accepté au lieu de le dériver. Sceller l'accès internet et l'historique du dépôt isole l'effet et révèle le score qui subsiste sans lui.",
+      "en": "The failure where a benchmark task's answer already sits within the model's reach, in training data, git history, or a linked thread, so the agent retrieves the accepted fix instead of deriving it. Sealing internet and repository history isolates the effect and reveals the score that survives without it."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "data contamination",
+      "fix retrieval",
+      "fix-retrieval contamination",
+      "test set contamination"
+    ],
+    "related": [
+      "swe-bench",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "reward-hacking-inflates-coding-benchmarks"
+    ],
+    "addedOn": "06-07-2026"
   },
   {
     "id": "benchmark-self-reporting",
@@ -446,7 +473,8 @@
       "coding-agent-scaffold-confound",
       "glm-5-2-open-weight-where-you-run-it",
       "coding-agent-harness-not-capability",
-      "agent-debt-verification-placement"
+      "agent-debt-verification-placement",
+      "reward-hacking-inflates-coding-benchmarks"
     ],
     "addedOn": "30-05-2026"
   },
@@ -1209,6 +1237,35 @@
     "addedOn": "10-06-2026"
   },
   {
+    "id": "reward-hacking",
+    "label": {
+      "fr": "Détournement de la récompense",
+      "en": "Reward hacking"
+    },
+    "definition": {
+      "fr": "Un agent qui obtient un score élevé sur une métrique de substitution en exploitant la façon dont elle est mesurée plutôt qu'en accomplissant la tâche sous-jacente: récupérer un correctif connu ou satisfaire une suite de tests minime au lieu de dériver une solution correcte. Sur un banc d'essai, cela ressemble à de la capacité; sur du code de production inédit, le score ne se transfère pas.",
+      "en": "An agent scoring high on a proxy metric by exploiting how the metric is measured rather than by doing the underlying task: retrieving a known fix or satisfying a thin test suite instead of deriving a correct solution. On a benchmark it reads as capability; on unseen production code the score does not transfer."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "harness gaming",
+      "gaming the benchmark",
+      "reward gaming",
+      "specification gaming"
+    ],
+    "related": [
+      "swe-bench",
+      "agent-evaluation",
+      "coding-agents",
+      "benchmark-contamination",
+      "weak-oracle-tests"
+    ],
+    "articles": [
+      "reward-hacking-inflates-coding-benchmarks"
+    ],
+    "addedOn": "06-07-2026"
+  },
+  {
     "id": "software-design-canon",
     "label": {
       "fr": "Canon de conception logicielle",
@@ -1278,7 +1335,8 @@
       "agent-scaffold"
     ],
     "articles": [
-      "coding-agent-scaffold-confound"
+      "coding-agent-scaffold-confound",
+      "reward-hacking-inflates-coding-benchmarks"
     ],
     "addedOn": "18-06-2026"
   },
@@ -1446,5 +1504,30 @@
       "serving-oss-llm-production-cost"
     ],
     "addedOn": "04-05-2026"
+  },
+  {
+    "id": "weak-oracle-tests",
+    "label": {
+      "fr": "Tests oracle faibles",
+      "en": "Weak oracle tests"
+    },
+    "definition": {
+      "fr": "Une suite de tests servant d'oracle de notation, trop maigre pour rejeter les mauvaises réponses, si bien qu'un correctif sémantiquement incorrect qui satisfait les assertions visibles passe quand même. Renforcer la suite avec les assertions omises et des entrées adverses met au jour les faux positifs qu'elle laissait passer.",
+      "en": "A test suite used as the grading oracle that is too thin to reject wrong answers, so a semantically incorrect patch that satisfies the visible assertions still passes. Strengthening the suite with the omitted assertions and adversarial inputs exposes the false passes it was letting through."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "weak oracle",
+      "test oracle",
+      "weak-oracle false pass"
+    ],
+    "related": [
+      "swe-bench",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "reward-hacking-inflates-coding-benchmarks"
+    ],
+    "addedOn": "06-07-2026"
   }
 ]
