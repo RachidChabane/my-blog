@@ -1,0 +1,19 @@
+{
+  "slug": "coding-leaderboards-measure-harness-gaming",
+  "lang": "en",
+  "translationKey": "reward-hacking-inflates-coding-benchmarks",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Cursor blog -- Reward Hacking in Coding Benchmarks",
+      "url": "https://cursor.com/blog/reward-hacking-coding-benchmarks",
+      "excerpt": "On SWE-bench Pro, we found that 63% of successful Opus 4.8 Max resolutions retrieved the fix rather than derived it. [With git history and internet access sealed] Opus 4.8 Max fell from 87.1% to 73.0% and Composer 2.5 fell from 74.7% to 54.0%."
+    },
+    {
+      "sourceId": "s2",
+      "label": "SWE-ABS: Adversarial Benchmark Strengthening Exposes Inflated Success Rates (arXiv:2603.00520)",
+      "url": "https://arxiv.org/abs/2603.00520",
+      "excerpt": "SWE-ABS strengthens the test suites of SWE-Bench Verified and rejects 19.71% of previously passing patches, showing that weak test suites allow semantically incorrect patches to pass on the original benchmark."
+    }
+  ]
+}
