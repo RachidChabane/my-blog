@@ -1,0 +1,19 @@
+{
+  "slug": "observabilite-nest-pas-evaluation",
+  "lang": "fr",
+  "translationKey": "observability-is-not-evaluation",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "KDnuggets (I. Palomares), The State of Agent Engineering Report Overview (on LangChain's 2026 survey, n=1340)",
+      "url": "https://www.kdnuggets.com/the-state-of-agent-engineering-report-overview",
+      "excerpt": "89% of respondents from all backgrounds have implemented an observability mechanism, although only 52.4% are conducting offline evaluations. 32% of whom mention quality as their top barrier to adoption and deployment."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Digital Applied, Agentic AI Adoption: 250-Agency Survey 2026 Results (n=250)",
+      "url": "https://www.digitalapplied.com/blog/agentic-ai-adoption-survey-2026-250-agencies",
+      "excerpt": "Evaluation and testing is the #1 blocker, named by 49% of agencies as a top-3 obstacle. The bottom-quartile agencies reporting 0.7x ROI almost always lack a workflow-level evaluation harness."
+    }
+  ]
+}
