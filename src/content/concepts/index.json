@@ -51,7 +51,8 @@
       "coding-agent-harness-not-capability",
       "agent-debt-verification-placement",
       "agent-memory-benchmark-recall-not-trust",
-      "reward-hacking-inflates-coding-benchmarks"
+      "reward-hacking-inflates-coding-benchmarks",
+      "observability-is-not-evaluation"
     ],
     "addedOn": "12-05-2026"
   },
@@ -106,6 +107,32 @@
       "coding-agent-harness-not-capability"
     ],
     "addedOn": "02-07-2026"
+  },
+  {
+    "id": "agent-observability",
+    "label": {
+      "fr": "Observabilité des agents",
+      "en": "Agent observability"
+    },
+    "definition": {
+      "en": "The practice of instrumenting an agent so each run emits a trace: which tools fired, what the model saw, and where latency went. It records what happened during execution but does not judge whether the output was correct.",
+      "fr": "Pratique consistant à instrumenter un agent pour que chaque exécution émette une trace: quels outils se sont déclenchés, ce que le modèle a vu, où est passée la latence. Elle enregistre ce qui s'est passé sans juger si la sortie était juste."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "observability",
+      "tracing",
+      "distributed tracing",
+      "instrumentation",
+      "agent tracing"
+    ],
+    "related": [
+      "agent-evaluation"
+    ],
+    "articles": [
+      "observability-is-not-evaluation"
+    ],
+    "addedOn": "07-07-2026"
   },
   {
     "id": "agent-scaffold",
@@ -696,6 +723,30 @@
     "addedOn": "19-06-2026"
   },
   {
+    "id": "evaluation-harness",
+    "label": {
+      "fr": "Harnais d'évaluation",
+      "en": "Evaluation harness"
+    },
+    "definition": {
+      "en": "A test rig that scores an agent's traces against expected outcomes, turning a record of behavior into a pass or fail signal. Run at the workflow level, it is what converts observability into a quality verdict.",
+      "fr": "Banc de test qui note les traces d'un agent face aux résultats attendus, transformant un relevé de comportement en signal de succès ou d'échec. Opéré au niveau du workflow, c'est lui qui convertit l'observabilité en verdict de qualité."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "eval harness",
+      "workflow-level evaluation harness"
+    ],
+    "related": [
+      "agent-evaluation",
+      "agent-observability"
+    ],
+    "articles": [
+      "observability-is-not-evaluation"
+    ],
+    "addedOn": "07-07-2026"
+  },
+  {
     "id": "fact-checking",
     "label": {
       "fr": "Vérification automatique des faits",
@@ -992,6 +1043,30 @@
       "mcp-tool-poisoning-client-trust"
     ],
     "addedOn": "01-07-2026"
+  },
+  {
+    "id": "offline-evaluation",
+    "label": {
+      "fr": "Évaluation hors ligne",
+      "en": "Offline evaluation"
+    },
+    "definition": {
+      "en": "Evaluating an agent against a fixed dataset outside production, before or between deployments, rather than from live traffic. It is the offline counterpart to online monitoring and the step most teams skip after wiring up observability.",
+      "fr": "Évaluer un agent sur un jeu de données figé en dehors de la production, avant ou entre les déploiements, plutôt qu'à partir du trafic réel. C'est le pendant hors ligne de la surveillance en ligne, et l'étape que la plupart des équipes sautent après avoir câblé l'observabilité."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "offline evals",
+      "offline evaluations"
+    ],
+    "related": [
+      "agent-evaluation",
+      "evaluation-harness"
+    ],
+    "articles": [
+      "observability-is-not-evaluation"
+    ],
+    "addedOn": "07-07-2026"
   },
   {
     "id": "open-weight-models",
