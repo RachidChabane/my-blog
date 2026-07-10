@@ -448,5 +448,34 @@
     ],
     "published_at": "2026-07-06",
     "embedding": null
+  },
+  {
+    "translation_key": "grok-4-5",
+    "topic_id": "grok-4-5",
+    "dedup_key": "grok 4 5",
+    "title": "Grok 4.5 is a price-performance play for agentic coding, not a new frontier crown",
+    "slugs": {
+      "fr": "grok-4-5-cursor-coding-agentique",
+      "en": "grok-4-5-cursor-coding-agentic"
+    },
+    "sources": [
+      {
+        "label": "Origin-adjacent - Tech.Yahoo / SiliconANGLE wire, 'xAI launches Grok 4.5, its most intelligent model built for coding and agentic tasks'",
+        "url": "https://tech.yahoo.com/ai/articles/xai-launches-grok-4-5-coding-agentic",
+        "date": "08-07-2026"
+      },
+      {
+        "label": "Corroboration - roo.beehiiv, independent benchmark analysis of the Grok 4.5 launch",
+        "url": "https://roo.beehiiv.com/p/grok-4-5-coding-benchmarks",
+        "date": "08-07-2026"
+      },
+      {
+        "label": "Corroboration - apidog, 'Grok 4.5 API: pricing, benchmarks and the OpenAI-compatible surface'",
+        "url": "https://apidog.com/blog/grok-4-5-api/",
+        "date": "09-07-2026"
+      }
+    ],
+    "published_at": "2026-07-11",
+    "embedding": null
   }
 ]
