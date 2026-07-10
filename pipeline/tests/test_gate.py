@@ -312,6 +312,27 @@ def test_check_grounding_dangling_citation():
     assert any("dangling citation [s9]" in p for p in problems)
 
 
+def test_check_grounding_rejects_named_source_ids():
+    # A named source_id (e.g. [newrelic-stats]) is internally consistent, so the
+    # uncited/dangling checks pass vacuously -- but the projected provenance sidecar
+    # then fails schemas.ts (sourceId ^s\d+$) and wedges the deploy (2026-07 agent-debt
+    # incident). The gate must catch the SHAPE so the draft blocks and falls back.
+    data = {
+        "claims": [
+            {"lang": "en", "claim": "94% rate AI code higher quality",
+             "source_id": "newrelic-stats"}
+        ],
+        "sources": [
+            {"source_id": "newrelic-stats", "label": "New Relic", "url": "https://e.example/1",
+             "retrieved_at": "2026-01-01", "excerpt": "94% of leaders rate AI code higher"}
+        ],
+    }
+    csm = ClaimSourceMap.from_dict(data)
+    body = "The report is blunt. 94% rate AI code higher quality [newrelic-stats].\n"
+    problems = check_grounding(csm, body, "en", FakeLinkChecker())
+    assert any("invalid source_id" in p and "newrelic-stats" in p for p in problems)
+
+
 def test_check_grounding_ignores_dossier_markers():
     # DOSSIER constructs must not perturb the gate: the citation regex keys on `[sN]`
     # (s + digits), so the callout/verdict markers [!NOTE]/[!CONFIRMED]/[!INFERRED]

@@ -29,6 +29,13 @@ from ..contracts.claim_source_map import ClaimSourceMap, ContractError
 # The pinned inline-citation shape: source_ids are 's' + digits (e.g. s1), cited [s1].
 # Matches what prompts/draft.py mandates the producer emit (R8 in the plan).
 _CITATION_RE = re.compile(r"\[(s\d+)\]")
+# The same shape as a whole-string anchor, for validating each map source_id. The
+# renderer's provenance sidecar (src/content/schemas.ts provenanceSchema) requires
+# sourceId to match ^s\d+$; enforcing it HERE (a blocking draft gate) makes a
+# named-id draft fall back to another topic instead of silently committing a
+# schema-violating sidecar that only fails at `astro build` and then wedges every
+# subsequent deploy (the 2026-07 agent-debt incident).
+_SOURCE_ID_RE = re.compile(r"^s\d+$")
 
 # --- real HTTP reachability (the LinkChecker seam's live backend; --link-check real) ----------
 _LINK_TIMEOUT = 5.0                              # short per-request timeout (HEAD/GET)
@@ -178,6 +185,18 @@ def check_grounding(
     claims = csm.claims_for(lang)
     cited_source_ids = sorted({claim.source_id for claim in claims})
     problems: list[str] = []
+
+    # Source-id SHAPE: every map source_id must be 's' + digits (schemas.ts requires it
+    # of every provenance sourceId). Named ids (e.g. [newrelic-stats]) are internally
+    # consistent, so the checks below pass vacuously, but the projected sidecar then
+    # fails `astro build` and wedges the deploy. Catch the shape here so the draft
+    # blocks and falls back instead.
+    for sid in sorted(by_id):
+        if not _SOURCE_ID_RE.match(sid):
+            problems.append(
+                f"{lang}: invalid source_id {sid!r}: must match ^s\\d+$ (e.g. s1); "
+                "cite sources as [sN], never named ids"
+            )
 
     # No uncited load-bearing claim: every source backing a claim is cited in the body.
     for sid in cited_source_ids:
