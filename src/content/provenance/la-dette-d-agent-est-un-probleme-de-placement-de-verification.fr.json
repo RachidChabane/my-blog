@@ -4,19 +4,13 @@
   "translationKey": "agent-debt-verification-placement",
   "citations": [
     {
-      "sourceId": "newrelic-stats",
+      "sourceId": "s1",
       "label": "New Relic, 2026 State of AI Coding report (press release)",
       "url": "https://newrelic.com/press-release/20260610",
-      "excerpt": "94% of leaders rate AI-generated code as higher quality than human-authored code. 78% of respondents report more incidents. Eighty-two percent experienced at least one production failure tied to AI-generated code. 62% report that their engineering teams often trust AI-generated code enough to ship it without line-by-line manual verification. 74% report at least 25% of AI code needs significant rework when considering the past 12 months."
+      "excerpt": "94% of leaders rate AI-generated code as higher quality than human-authored code. 78% of respondents report more incidents. Eighty-two percent experienced at least one production failure tied to AI-generated code. 62% report that their engineering teams often trust AI-generated code enough to ship it without line-by-line manual verification. 74% report at least 25% of AI code needs significant rework when considering the past 12 months. the rapid accumulation of what we're calling 'agent debt.' While leaders praise the velocity of agent-generated code during initial reviews, organizations are quietly inheriting a massive deficit of unvetted architectural logic. Nic Benders (CTO): Finding ways to mitigate agent debt is now a defining challenge for engineering organizations."
     },
     {
-      "sourceId": "newrelic-agent-debt",
-      "label": "New Relic, 2026 State of AI Coding report (agent debt definition and CTO quote)",
-      "url": "https://newrelic.com/press-release/20260610",
-      "excerpt": "the rapid accumulation of what we're calling 'agent debt.' While leaders praise the velocity of agent-generated code during initial reviews, organizations are quietly inheriting a massive deficit of unvetted architectural logic. Nic Benders (CTO): Finding ways to mitigate agent debt is now a defining challenge for engineering organizations."
-    },
-    {
-      "sourceId": "lightrun-production",
+      "sourceId": "s2",
       "label": "Lightrun, 2026 State of AI-Powered Engineering report (GlobeNewswire)",
       "url": "https://www.globenewswire.com/news-release/2026/04/14/3273542/0/en/Lightrun-s-2026-State-of-AI-Powered-Engineering-Report-Almost-Half-of-AI-Generated-Code-Fails-in-Production.html",
       "excerpt": "43% of AI-generated code requires manual debugging in production, even after passing QA or staging tests. An average of three manual redeploy cycles are required to verify a single AI-suggested code fix in production. 88% of companies require 2-3 manual redeploy cycles just to confirm an AI-generated fix actually works in production. The report was based on an independent poll of 200 SREs and DevOps leaders (Directors, VPs, and C-levels at Enterprises in the US, UK, and EU)."
