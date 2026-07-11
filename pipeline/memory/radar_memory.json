@@ -477,5 +477,39 @@
     ],
     "published_at": "2026-07-11",
     "embedding": null
+  },
+  {
+    "translation_key": "deepseek-v4-peak-hour-surge-pricing",
+    "topic_id": "deepseek-v4-peak-hour-surge-pricing",
+    "dedup_key": "deepseek v4 peak hour surge pricing",
+    "title": "DeepSeek adds peak-hour surge pricing to its V4 API, and time-of-day becomes a routing dimension",
+    "slugs": {
+      "fr": "deepseek-v4-tarification-heures-pointe",
+      "en": "deepseek-v4-peak-hour-surge-pricing"
+    },
+    "sources": [
+      {
+        "label": "Origin-adjacent - TechNode, 'DeepSeek to launch V4 in mid-July with new peak-time API pricing'",
+        "url": "https://technode.com/2026/06/30/deepseek-to-launch-v4-in-mid-july-with-new-peak-time-api-pricing/",
+        "date": "30-06-2026"
+      },
+      {
+        "label": "Corroboration - South China Morning Post, 'After triggering price war, DeepSeek reverses course with surcharge on peak-hour API use'",
+        "url": "https://www.scmp.com/tech/big-tech/article/3358868/after-triggering-price-war-deepseek-reverses-course-surcharge-peak-hour-api-use",
+        "date": "30-06-2026"
+      },
+      {
+        "label": "Corroboration - TheRouter.ai, 'DeepSeek V4 Peak-Hour Pricing Makes Time-of-Day a Routing Dimension Every AI Gateway Must Support'",
+        "url": "https://therouter.ai/news/deepseek-v4-peak-hour-pricing-routing/",
+        "date": "06-07-2026"
+      },
+      {
+        "label": "Primary - DeepSeek API Docs, 'DeepSeek V4 Preview Release'",
+        "url": "https://api-docs.deepseek.com/news/news260424/",
+        "date": "24-04-2026"
+      }
+    ],
+    "published_at": "2026-07-11",
+    "embedding": null
   }
 ]
