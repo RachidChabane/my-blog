@@ -1,0 +1,19 @@
+{
+  "slug": "la-faille-de-claude-code-action-etait-un-bug-d-autorisation",
+  "lang": "fr",
+  "translationKey": "claude-code-action-supply-chain-auth",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "GMO Flatt Security (RyotaK), Poisoning Claude Code: One GitHub Issue to Break the Supply Chain",
+      "url": "https://flatt.tech/research/posts/poisoning-claude-code-one-github-issue-to-break-the-supply-chain/",
+      "excerpt": "unconditionally allows any GitHub App to pass, regardless of its actual permissions ... read and write access to repository contents, issues, pull requests, discussions, and workflow files ... compromise the action's source code, which would then propagate to every downstream repository, including Anthropic's own."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Microsoft Security Blog, Securing CI/CD in an agentic world: Claude Code GitHub action case",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/06/05/securing-ci-cd-in-agentic-world-claude-code-github-action-case/",
+      "excerpt": "when those boundaries fail, the workflow is no longer just automation. It becomes an AI agent embedded inside the repository, and its prompt construction, tool permissions, and runtime isolation become part of the security perimeter."
+    }
+  ]
+}

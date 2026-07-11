@@ -677,5 +677,35 @@
     ],
     "published_at": "2026-07-07",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-code-action-supply-chain-auth",
+    "topic_id": "claude-code-github-action-supply-chain",
+    "dedup_key": "claude code github action permission bug enables ci cd supply chain attack",
+    "title": "Where to Spend Your Agent Security Budget",
+    "slugs": {
+      "fr": "la-faille-de-claude-code-action-etait-un-bug-d-autorisation",
+      "en": "claude-code-action-breach-was-an-auth-bug"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "GMO Flatt Security (RyotaK), Poisoning Claude Code: One GitHub Issue to Break the Supply Chain",
+        "url": "https://flatt.tech/research/posts/poisoning-claude-code-one-github-issue-to-break-the-supply-chain/",
+        "retrieved_at": "2026-07-11",
+        "excerpt": "unconditionally allows any GitHub App to pass, regardless of its actual permissions ... read and write access to repository contents, issues, pull requests, discussions, and workflow files ... compromise the action's source code, which would then propagate to every downstream repository, including Anthropic's own.",
+        "source_date": "2026-06-01"
+      },
+      {
+        "source_id": "s2",
+        "label": "Microsoft Security Blog, Securing CI/CD in an agentic world: Claude Code GitHub action case",
+        "url": "https://www.microsoft.com/en-us/security/blog/2026/06/05/securing-ci-cd-in-agentic-world-claude-code-github-action-case/",
+        "retrieved_at": "2026-07-11",
+        "excerpt": "when those boundaries fail, the workflow is no longer just automation. It becomes an AI agent embedded inside the repository, and its prompt construction, tool permissions, and runtime isolation become part of the security perimeter.",
+        "source_date": "2026-06-05"
+      }
+    ],
+    "published_at": "2026-07-11",
+    "embedding": null
   }
 ]
