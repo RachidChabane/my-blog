@@ -511,5 +511,39 @@
     ],
     "published_at": "2026-07-11",
     "embedding": null
+  },
+  {
+    "translation_key": "muse-spark-1-1-meta-paid-api",
+    "topic_id": "muse-spark-1-1-meta-paid-api",
+    "dedup_key": "muse spark 1 1 meta paid api",
+    "title": "Meta ships Muse Spark 1.1 behind its first paid API, and drops the open-weight lever",
+    "slugs": {
+      "fr": "meta-muse-spark-1-1-premiere-api-payante",
+      "en": "meta-muse-spark-1-1-first-paid-api"
+    },
+    "sources": [
+      {
+        "label": "Primary - Meta AI blog, 'Introducing Muse Spark 1.1'",
+        "url": "https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/",
+        "date": "09-07-2026"
+      },
+      {
+        "label": "Corroboration - TechCrunch, 'Meta enters the crowded AI coding battle with Muse Spark 1.1'",
+        "url": "https://techcrunch.com/2026/07/09/meta-enters-the-crowded-ai-coding-battle-with-muse-spark-1-1/",
+        "date": "09-07-2026"
+      },
+      {
+        "label": "Corroboration - DataCamp, 'Muse Spark 1.1: Meta's Agentic Model and API'",
+        "url": "https://www.datacamp.com/blog/muse-spark-1-1",
+        "date": "09-07-2026"
+      },
+      {
+        "label": "Corroboration - Fortune, 'Meta releases latest update of AI model Muse Spark'",
+        "url": "https://fortune.com/2026/07/09/meta-muse-spark-1-1-release-alexandr-wang-superintelligence-labs-mark-zuckerberg/",
+        "date": "09-07-2026"
+      }
+    ],
+    "published_at": "2026-07-12",
+    "embedding": null
   }
 ]
