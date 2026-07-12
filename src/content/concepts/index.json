@@ -1,5 +1,31 @@
 [
   {
+    "id": "abstain-by-default",
+    "label": {
+      "fr": "Abstention par défaut",
+      "en": "Abstain-by-default review"
+    },
+    "definition": {
+      "fr": "Politique de conception où un détecteur reste silencieux tant qu'il ne franchit pas un seuil de confiance, afin de protéger le ratio de signal et de garder le canal de revue ouvert. Le chemin d'abstention, et non la couverture, fixe la valeur délivrée de l'outil.",
+      "en": "A design policy where a detector stays silent unless it clears a confidence threshold, protecting the signal ratio and keeping the review channel open. The abstain path, not coverage, sets the tool's delivered value."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "abstain path",
+      "confidence gating",
+      "confidence threshold",
+      "abstain unless confident"
+    ],
+    "related": [
+      "signal-ratio",
+      "code-review-agent"
+    ],
+    "articles": [
+      "code-review-agents-signal-to-noise"
+    ],
+    "addedOn": "12-07-2026"
+  },
+  {
     "id": "agent-debt",
     "label": {
       "fr": "Dette d'agent",
@@ -52,7 +78,8 @@
       "agent-debt-verification-placement",
       "agent-memory-benchmark-recall-not-trust",
       "reward-hacking-inflates-coding-benchmarks",
-      "observability-is-not-evaluation"
+      "observability-is-not-evaluation",
+      "code-review-agents-signal-to-noise"
     ],
     "addedOn": "12-05-2026"
   },
@@ -498,6 +525,32 @@
       "coding-agent-harness-not-capability"
     ],
     "addedOn": "10-06-2026"
+  },
+  {
+    "id": "code-review-agent",
+    "label": {
+      "fr": "Agent de revue de code",
+      "en": "Code review agent"
+    },
+    "definition": {
+      "fr": "Agent qui lit un diff ou une pull request et publie des commentaires de revue de façon autonome. Sa valeur dépend moins de sa couverture que de sa capacité à ne parler que lorsqu'un signal actionnable le justifie.",
+      "en": "An agent that reads a diff or pull request and posts review comments autonomously. Its value depends less on how much it covers than on whether it speaks only when an actionable signal warrants it."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "CRA",
+      "code review agents",
+      "review agent",
+      "PR review agent"
+    ],
+    "related": [
+      "coding-agents",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "code-review-agents-signal-to-noise"
+    ],
+    "addedOn": "12-07-2026"
   },
   {
     "id": "coding-agents",
@@ -1392,6 +1445,57 @@
       "reward-hacking-inflates-coding-benchmarks"
     ],
     "addedOn": "06-07-2026"
+  },
+  {
+    "id": "severity-tiering",
+    "label": {
+      "fr": "Étagement par gravité",
+      "en": "Severity tiering"
+    },
+    "definition": {
+      "fr": "Raffinement de l'abstention par défaut qui exempte les détecteurs de gravité critique de la règle de silence : ils parlent toujours, tandis que la longue traîne de faible valeur est filtrée durement. Le rappel sacrifié est celui des cas abondants et peu graves, pas des défauts critiques.",
+      "en": "A refinement of abstain-by-default that exempts critical-severity detectors from the silence rule so they always speak, while the low-value long tail is gated hard. The recall given up is over the plentiful, low-severity cases, not the critical defects."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "severity tiers",
+      "severity-tiered detection",
+      "severity gate"
+    ],
+    "related": [
+      "abstain-by-default",
+      "signal-ratio",
+      "code-review-agent"
+    ],
+    "articles": [
+      "code-review-agents-signal-to-noise"
+    ],
+    "addedOn": "12-07-2026"
+  },
+  {
+    "id": "signal-ratio",
+    "label": {
+      "fr": "Ratio de signal",
+      "en": "Signal ratio"
+    },
+    "definition": {
+      "fr": "Part des commentaires d'un agent de revue qui sont réellement actionnables plutôt que du bruit. Un ratio de signal bas fait franchir au relecteur un seuil de confiance au-delà duquel il coupe l'outil, réduisant à zéro le rappel effectivement délivré.",
+      "en": "The share of a review agent's comments that are genuinely actionable rather than noise. A low signal ratio pushes a reviewer past a trust threshold at which they mute the tool, dropping the recall actually delivered to zero."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "signal-to-noise ratio",
+      "signal band",
+      "signal-to-noise"
+    ],
+    "related": [
+      "code-review-agent",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "code-review-agents-signal-to-noise"
+    ],
+    "addedOn": "12-07-2026"
   },
   {
     "id": "software-design-canon",
