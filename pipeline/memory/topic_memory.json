@@ -707,5 +707,43 @@
     ],
     "published_at": "2026-07-11",
     "embedding": null
+  },
+  {
+    "translation_key": "code-review-agents-signal-to-noise",
+    "topic_id": "code-review-agents-signal-to-noise",
+    "dedup_key": "code review agents add noise not signal and lower pr merge rates in practice",
+    "title": "Code Review Agents Are Optimizing the Wrong Metric",
+    "slugs": {
+      "fr": "agents-de-revue-de-code-optimisent-la-mauvaise-metrique",
+      "en": "code-review-agents-are-shipping-noise"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "From Industry Claims to Empirical Reality: Code Review Agents in Pull Requests (arXiv 2604.03196v1)",
+        "url": "https://arxiv.org/html/2604.03196v1",
+        "retrieved_at": "2026-07-12",
+        "excerpt": "60.2% of closed CRA-only PRs fall into the 0–30% signal range, and 12 of 13 CRAs exhibit average signal ratios below 60%",
+        "source_date": "2026-04-03"
+      },
+      {
+        "source_id": "s2",
+        "label": "Empirical study of code review agents, merge-rate finding (arXiv 2604.03196v1)",
+        "url": "https://arxiv.org/html/2604.03196v1",
+        "retrieved_at": "2026-07-12",
+        "excerpt": "CRA-only PRs achieve a 45.20% merge rate, 23.17 percentage points lower than human-only PRs (68.37%), with significantly higher abandonment",
+        "source_date": "2026-04-03"
+      },
+      {
+        "source_id": "s3",
+        "label": "Agent pull requests are everywhere. Here's how to review them. (GitHub Blog)",
+        "url": "https://github.blog/ai-and-ml/generative-ai/agent-pull-requests-are-everywhere-heres-how-to-review-them/",
+        "retrieved_at": "2026-07-12",
+        "excerpt": "More than one in five code reviews on GitHub now involve an agent.",
+        "source_date": "2026-05-07"
+      }
+    ],
+    "published_at": "2026-07-12",
+    "embedding": null
   }
 ]
