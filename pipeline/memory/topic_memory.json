@@ -745,5 +745,34 @@
     ],
     "published_at": "2026-07-12",
     "embedding": null
+  },
+  {
+    "translation_key": "multi-agent-gains-compute-artifact",
+    "topic_id": "multi-agent-gains-are-a-compute-artifact",
+    "dedup_key": "multi-agent llm gains are a compute artifact single agent matches under equal token budget",
+    "title": "Most Multi-Agent Reasoning Wins Are a Compute Artifact",
+    "slugs": {
+      "fr": "les-gains-du-multi-agent-sont-un-artefact-de-calcul",
+      "en": "multi-agent-wins-are-a-compute-artifact"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Single-Agent LLMs Outperform Multi-Agent Systems ... Under Equal Thinking Token Budgets (arXiv 2604.02460)",
+        "url": "https://arxiv.org/abs/2604.02460",
+        "retrieved_at": "2026-07-13",
+        "excerpt": "Overall, our results suggest that, for multi-hop reasoning tasks, many reported advantages of multi-agent systems are better explained by unaccounted computation and context effects rather than inherent architectural benefits.",
+        "source_date": "2026-04-02"
+      },
+      {
+        "source_id": "s2",
+        "label": "Augment Code, Why Multi-Agent LLM Systems Fail",
+        "url": "https://www.augmentcode.com/guides/why-multi-agent-llm-systems-fail-and-how-to-fix-them",
+        "retrieved_at": "2026-07-13",
+        "excerpt": "The MAST failure taxonomy, validated across 1,600+ execution traces at NeurIPS 2025, maps 14 failure modes to three root categories: specification ambiguity, coordination breakdowns, and verification gaps."
+      }
+    ],
+    "published_at": "2026-07-13",
+    "embedding": null
   }
 ]

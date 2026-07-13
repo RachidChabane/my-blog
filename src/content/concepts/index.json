@@ -185,7 +185,8 @@
       "coding-agent-scaffold-confound",
       "prompt-caching-prefix-stability",
       "coding-agent-harness-not-capability",
-      "claude-code-action-supply-chain-auth"
+      "claude-code-action-supply-chain-auth",
+      "multi-agent-gains-compute-artifact"
     ],
     "addedOn": "17-06-2026"
   },
@@ -637,6 +638,30 @@
     "addedOn": "18-06-2026"
   },
   {
+    "id": "context-isolation",
+    "label": {
+      "fr": "Isolation de contexte",
+      "en": "Context isolation"
+    },
+    "definition": {
+      "fr": "Garder l'état intermédiaire d'un sous-problème hors de la fenêtre de contexte d'un autre agent. C'est une raison structurelle de répartir le travail, distincte d'un gain de qualité de raisonnement, qui survit au contrôle du budget de jetons.",
+      "en": "Keeping one sub-problem's intermediate state out of another agent's context window. It is a structural reason to fan work out, distinct from any reasoning-quality gain, and one that survives a token-budget control."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "context partitioning",
+      "sub-agent context isolation"
+    ],
+    "related": [
+      "context-budget",
+      "multi-agent-orchestration"
+    ],
+    "articles": [
+      "multi-agent-gains-compute-artifact"
+    ],
+    "addedOn": "13-07-2026"
+  },
+  {
     "id": "context-window",
     "label": {
       "fr": "Fenêtre de contexte",
@@ -702,7 +727,8 @@
     ],
     "articles": [
       "ai-evaluation-compute-cost",
-      "glm-5-2-open-weight-where-you-run-it"
+      "glm-5-2-open-weight-where-you-run-it",
+      "multi-agent-gains-compute-artifact"
     ],
     "addedOn": "17-06-2026"
   },
@@ -1079,6 +1105,31 @@
     "addedOn": "19-06-2026"
   },
   {
+    "id": "mast-failure-taxonomy",
+    "label": {
+      "fr": "Taxonomie des échecs MAST",
+      "en": "MAST failure taxonomy"
+    },
+    "definition": {
+      "fr": "Grille MAST qui recense quatorze modes d'échec documentés des systèmes multi-agents, regroupés en trois racines : ambiguïté de spécification, ruptures de coordination et failles de vérification. Elle sert à diagnostiquer où une architecture multi-agent se casse plutôt qu'à supposer qu'elle tient.",
+      "en": "The MAST grid catalogs fourteen documented failure modes of multi-agent systems across three root categories: specification ambiguity, coordination breakdowns, and verification gaps. It is a diagnostic map for where a multi-agent design breaks rather than an assumption that it holds."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "MAST",
+      "multi-agent failure taxonomy"
+    ],
+    "related": [
+      "multi-agent-orchestration",
+      "error-compounding",
+      "long-horizon-reliability"
+    ],
+    "articles": [
+      "multi-agent-gains-compute-artifact"
+    ],
+    "addedOn": "13-07-2026"
+  },
+  {
     "id": "memory-conflict-resolution",
     "label": {
       "fr": "Résolution de conflits mémoire",
@@ -1149,6 +1200,31 @@
       "mcp-tool-poisoning-client-trust"
     ],
     "addedOn": "01-07-2026"
+  },
+  {
+    "id": "multi-agent-orchestration",
+    "label": {
+      "fr": "Orchestration multi-agent",
+      "en": "Multi-agent orchestration"
+    },
+    "definition": {
+      "fr": "Coordination de plusieurs agents LLM sur une même tâche par débat, fan-out ou passages de relais, chacun avec son propre contexte. L'architecture ne paie que si la coordination apporte plus qu'elle ne coûte en jetons et en erreurs propagées.",
+      "en": "Coordinating several LLM agents on one task through debate, fan-out, or handoffs, each with its own context. The architecture only pays when coordination buys more than it costs in tokens and propagated errors."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "multi-agent systems",
+      "agent swarm",
+      "fan-out orchestration"
+    ],
+    "related": [
+      "agent-scaffold",
+      "error-compounding"
+    ],
+    "articles": [
+      "multi-agent-gains-compute-artifact"
+    ],
+    "addedOn": "13-07-2026"
   },
   {
     "id": "offline-evaluation",
@@ -1596,6 +1672,31 @@
       "reward-hacking-inflates-coding-benchmarks"
     ],
     "addedOn": "18-06-2026"
+  },
+  {
+    "id": "thinking-token-budget",
+    "label": {
+      "fr": "Budget de jetons de raisonnement",
+      "en": "Thinking-token budget"
+    },
+    "definition": {
+      "fr": "Normaliser le total de jetons de raisonnement entre les systèmes comparés pour qu'un gain attribué à l'architecture ne soit pas confondu avec un simple surplus de calcul. À budget égal, l'avantage supposé du multi-agent s'effondre souvent.",
+      "en": "Normalizing the total reasoning tokens across compared systems so a gain credited to the architecture is not confounded with raw extra compute. Held at an equal budget, the supposed multi-agent edge often collapses."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "equal token budget",
+      "reasoning token budget",
+      "compute-normalized comparison"
+    ],
+    "related": [
+      "cost-aware-evaluation",
+      "multi-agent-orchestration"
+    ],
+    "articles": [
+      "multi-agent-gains-compute-artifact"
+    ],
+    "addedOn": "13-07-2026"
   },
   {
     "id": "time-to-first-token",
