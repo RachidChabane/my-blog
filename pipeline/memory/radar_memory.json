@@ -545,5 +545,34 @@
     ],
     "published_at": "2026-07-12",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-code-desktop-in-app-browser",
+    "topic_id": "claude-code-desktop-in-app-browser",
+    "dedup_key": "claude code desktop in app browser",
+    "title": "Claude Code Desktop adds an in-app browser, and splits agent browsing by who owns the cookies",
+    "slugs": {
+      "fr": "claude-code-desktop-navigateur-integre",
+      "en": "claude-code-desktop-in-app-browser"
+    },
+    "sources": [
+      {
+        "label": "Primary - Claude Code 'What's new' docs, Week 28 digest",
+        "url": "https://code.claude.com/docs/en/whats-new",
+        "date": "10-07-2026"
+      },
+      {
+        "label": "Corroboration - 9to5Mac, 'Anthropic highlights Claude Code's in-app browser on the desktop'",
+        "url": "https://9to5mac.com/2026/07/10/anthropic-highlights-claude-codes-in-app-browser-on-the-desktop/",
+        "date": "10-07-2026"
+      },
+      {
+        "label": "Corroboration - Digital Trends, 'Claude Code can now browse the web without opening Chrome'",
+        "url": "https://www.digitaltrends.com/cool-tech/claude-code-can-now-browse-the-web-without-opening-chrome/",
+        "date": "10-07-2026"
+      }
+    ],
+    "published_at": "2026-07-13",
+    "embedding": null
   }
 ]
