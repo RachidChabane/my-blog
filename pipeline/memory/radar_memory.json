@@ -574,5 +574,34 @@
     ],
     "published_at": "2026-07-13",
     "embedding": null
+  },
+  {
+    "translation_key": "cognition-swe-1-7-rl-harness",
+    "topic_id": "cognition-swe-1-7-rl-harness",
+    "dedup_key": "cognition swe 1 7 rl harness",
+    "title": "Cognition's SWE-1.7: the moat moved from the base weights to the RL harness, and it ships only inside Devin",
+    "slugs": {
+      "fr": "cognition-swe-1-7-harnais-rl-devin",
+      "en": "cognition-swe-1-7-rl-harness-devin-only"
+    },
+    "sources": [
+      {
+        "label": "Cognition blog - SWE-1.7: Frontier Intelligence at a Fraction of the Cost",
+        "url": "https://cognition.com/blog/swe-1-7",
+        "date": "08-07-2026"
+      },
+      {
+        "label": "VKTR - Cognition Ships SWE-1.7 Coding Model Into Devin Via Cerebras",
+        "url": "https://www.vktr.com/ai-news/cognition-debuts-swe17-coding-model-in-devin/",
+        "date": "09-07-2026"
+      },
+      {
+        "label": "WinBuzzer - Cognition Launches SWE-1.7 in Devin, Near-Frontier Coding at a Discount",
+        "url": "https://winbuzzer.com/2026/07/09/cognition-swe-17-adds-near-frontier-coding-scores-to-devin-xcxwbn/",
+        "date": "09-07-2026"
+      }
+    ],
+    "published_at": "2026-07-14",
+    "embedding": null
   }
 ]
