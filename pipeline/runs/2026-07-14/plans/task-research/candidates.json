@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "candidates": [
+    {
+      "topic_id": "llm-as-judge-run-to-run-variance",
+      "dedup_key": "llm as a judge evaluation is unreliable with run to run disagreement near random chance and systematic prompt position length and brand bias",
+      "title": "Your LLM Judge Is Closer to a Coin Flip Than You Think",
+      "summary": "Multiple independent 2026 studies find LLM-as-a-judge scores swing run to run toward random chance and bend to response length, answer position, and brand cues, even when the code or answer under review is unchanged.",
+      "why_relevant": "The take: an eval gate built on a single-judge score is measuring the judge's mood, not your model. The non-obvious angle is that the bias is worst exactly where teams trust it most (code review, repair, test generation), and the reassuring aggregate figure everyone cites (a frontier judge agreeing with humans about 80 percent of the time) hides the run-to-run variance because it averages over the failure cases. That reframes the engineering job away from picking a smarter judge toward structural controls: fixed rubrics, position and length counterbalancing, a variance budget across repeated samples, and human anchors on the decisions that ship. Two genuinely independent groups (a general reliability study and a software-engineering-specific bias audit) reach the same conclusion from different evidence, so the claim is not one lab's artifact.",
+      "tags": [
+        "evaluation",
+        "llm-as-judge",
+        "agents"
+      ],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "\"The Coin Flip Judge? Reliability and Bias in LLM-as-a-Judge Evaluation\" (arXiv 2606.13685)",
+          "url": "https://arxiv.org/abs/2606.13685",
+          "retrieved_at": "2026-07-14",
+          "excerpt": "We find that LLM judges exhibit substantial inconsistency in their assessments, with disagreement rates approaching random chance in certain scenarios. Our analysis reveals significant biases related to response length, position effects, and model-specific preferences.",
+          "source_date": "2026-06-15"
+        },
+        {
+          "source_id": "s2",
+          "label": "\"Bias in the Loop: Auditing LLM-as-a-Judge for Software Engineering\" (arXiv 2604.16790)",
+          "url": "https://arxiv.org/html/2604.16790v1",
+          "retrieved_at": "2026-07-14",
+          "excerpt": "judge decisions are highly sensitive to prompt biases even when the underlying code snippet is unchanged",
+          "source_date": "2026-04-18"
+        }
+      ]
+    },
+    {
+      "topic_id": "verification-horizon-coding-agent-reward-bottleneck",
+      "dedup_key": "verification not generation is the bottleneck for coding agent reinforcement learning rewards and no fixed verifier survives a stronger policy",
+      "title": "The Hard Part of Training a Coding Agent Is No Longer Writing Code",
+      "summary": "A 2026 study argues that as models get better at generating solutions, the binding constraint on reinforcement learning for coding agents shifts to verification: every reward is a proxy for intent, and no fixed verifier stays honest as the policy it trains gets stronger.",
+      "why_relevant": "The contestable claim: the recipe that carried reinforcement learning with verifiable rewards through math and code (just wire unit tests as the reward) is a dead end for real agentic work, because optimization pressure teaches the policy to hack whatever fixed proxy you pin down. The second-order consequence practitioners miss is that verification has to co-evolve with the generator, which turns reward design from a one-time engineering task into a moving adversarial one, closer to running a red team than writing a test suite. An independent analyst reaches the same verdict from the production side, framing verifier infrastructure, not compute or frameworks, as the actual bottleneck, which lets the piece argue the point rather than summarize one paper.",
+      "tags": [
+        "agents",
+        "reinforcement-learning",
+        "evaluation"
+      ],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "\"The Verification Horizon: No Silver Bullet for Coding Agent Rewards\" (arXiv 2606.26300)",
+          "url": "https://arxiv.org/abs/2606.26300",
+          "retrieved_at": "2026-07-14",
+          "excerpt": "Generating complex candidate solutions is no longer difficult -- reliably verifying them has become the harder problem. No fixed reward function can remain effective as policy capability continues to grow; and verification must co-evolve with the generator.",
+          "source_date": "2026-06-24"
+        },
+        {
+          "source_id": "s2",
+          "label": "Subhadip Mitra, \"RLVR Beyond Math and Code: The Verifier Problem Nobody Has Solved\"",
+          "url": "https://subhadipmitra.com/blog/2026/rlvr-beyond-math-code/",
+          "retrieved_at": "2026-07-14",
+          "excerpt": "RLVR only works well in domains where you can automatically verify correctness.",
+          "source_date": "2026-01-18"
+        }
+      ]
+    },
+    {
+      "topic_id": "coding-agent-destructive-action-blast-radius",
+      "dedup_key": "coding agents most damaging production failures are confidently executed high risk destructive actions and the fix is command risk classification and blast radius control not more model capability",
+      "title": "Your Coding Agent's Worst Bug Is the Command It Runs Confidently",
+      "summary": "A controlled 2026 evaluation framework and an independent production field analysis converge on the same coding-agent failure class: not wrong code, but confidently executed high-risk actions (destructive commands, invented tool arguments) that ordinary observability reports back as success.",
+      "why_relevant": "The angle benchmark talk keeps missing: the dangerous failures are operational, not intellectual. An agent that runs a destructive database command or passes a guessed customer_uuid did not fail a reasoning test; it failed a permissions-and-verification-placement test, and an HTTP 200 hid it. The take: the real mitigation is unglamorous infrastructure (command risk classification, blast-radius limits, human gates on irreversible actions), and teams under-invest there precisely because no leaderboard scores it. Two independent origins make it coverable and arguable: an academic mitigation framework tested across Cursor, Claude Code, Codex, and OpenCode, and a separate production field taxonomy of recurring failure modes observed in the wild.",
+      "tags": [
+        "agents",
+        "coding",
+        "security"
+      ],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "\"ClayBuddy: A Framework, Evaluation, Mitigation of Coding Agent Failures\" (arXiv 2606.19380)",
+          "url": "https://arxiv.org/pdf/2606.19380",
+          "retrieved_at": "2026-07-14",
+          "excerpt": "The framework examines how different intervention strategies can reduce agent-induced failures, with particular focus on command risk classification and prompt calibration.",
+          "source_date": "2026-06-25"
+        },
+        {
+          "source_id": "s2",
+          "label": "Arize, \"Why AI Agents Break: A Field Analysis of Production Failures\"",
+          "url": "https://arize.com/blog/common-ai-agent-failures/",
+          "retrieved_at": "2026-07-14",
+          "excerpt": "these failures are not random and tend to recur, following clear (trackable) patterns.",
+          "source_date": "2026-01-29"
+        }
+      ]
+    },
+    {
+      "topic_id": "small-models-for-agentic-workloads-cost-thesis",
+      "dedup_key": "small task specific language models are more suitable and economical than frontier llms for most repetitive narrow agentic subtasks",
+      "title": "Most of What Your Agent Does Does Not Need a Frontier Model",
+      "summary": "NVIDIA researchers argue small language models are the right default for the repetitive, narrow subtasks that make up most agentic work; an independent benchmark reports task-specific small models beating far larger ones on accuracy while running much cheaper and faster.",
+      "why_relevant": "The contrarian move against the reflex of pointing every agent step at the biggest model: agentic work is mostly narrow, repetitive tool-calling where a model sharp inside the task window beats one that is knowledgeable in general. The engineering consequence is that the unit of design becomes a heterogeneous router, a small model for the 70 to 80 percent predictable calls and a frontier model only for the genuinely open remainder, which reshapes cost, latency, and debuggability at once. The caveat worth stating honestly is that the strongest head-to-head numbers come from a vendor benchmarking its own task-specific models, so the defensible claim is default down and escalate up, not small always wins, which is exactly the kind of tension the piece can argue rather than assert.",
+      "tags": [
+        "agents",
+        "cost",
+        "oss"
+      ],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "\"Small Language Models are the Future of Agentic AI\" (NVIDIA, arXiv 2506.02153)",
+          "url": "https://arxiv.org/abs/2506.02153",
+          "retrieved_at": "2026-07-14",
+          "excerpt": "small language models (SLMs) are sufficiently powerful, inherently more suitable, and necessarily more economical for many invocations in agentic systems",
+          "source_date": "2025-06-02"
+        },
+        {
+          "source_id": "s2",
+          "label": "Forbes, \"Small Language Models Outperform Frontier AI On Cost, Speed And Accuracy\"",
+          "url": "https://www.forbes.com/sites/joetoscano1/2026/06/25/small-language-models-outperform-frontier-ai-on-cost-speed-and-accuracy/",
+          "retrieved_at": "2026-07-14",
+          "excerpt": "a half-billion-parameter model reached 91.7% accuracy while a 72-billion-parameter model scored 88.6% accuracy",
+          "source_date": "2026-06-25"
+        }
+      ]
+    },
+    {
+      "topic_id": "diffusion-code-model-speed-claims-eval-fairness",
+      "dedup_key": "diffusion language models for code advertise high throughput but dataset level pass at k metrics attenuate run to run non determinism that surfaces at the sample level",
+      "title": "Diffusion Code Models Are Fast. The Benchmarks Hide What You Trade For It",
+      "summary": "Diffusion LLMs pitch parallel decoding and a better speed-quality frontier for code, but an independent 2026 evaluation shows the dataset-level pass@k scores everyone quotes attenuate the run-to-run non-determinism that only appears at the individual-sample level.",
+      "why_relevant": "The gap between demo and production: a headline tokens-per-second and a corpus-wide pass@k make diffusion code models look like a free lunch, while the metric choice is precisely what hides the instability a real codegen pipeline would feel. The take is that judging these models on aggregate scores measures the wrong thing; you need sample-level variance under fixed guidance scale, diffusion steps, and batch size before betting a code path on parallel decoding. Two opposing origins make the trade-off, not the press release, the story: a large-scale system pushing the speed frontier and independent academics showing that the standard metrics systematically mask its non-determinism.",
+      "tags": [
+        "llm",
+        "evaluation",
+        "coding"
+      ],
+      "sources": [
+        {
+          "source_id": "s1",
+          "label": "\"Seed Diffusion: A Large-Scale Diffusion Language Model with High-Speed Inference\" (arXiv 2508.02193)",
+          "url": "https://arxiv.org/pdf/2508.02193",
+          "retrieved_at": "2026-07-14",
+          "excerpt": "a novel approach to achieving superior performance on the speed-quality tradeoff for code generation tasks"
+        },
+        {
+          "source_id": "s2",
+          "label": "\"Dataset-Level Metrics Attenuate Non-Determinism: A Fine-Grained Non-Determinism Evaluation in Diffusion Language Models\" (arXiv 2604.13413)",
+          "url": "https://arxiv.org/abs/2604.13413",
+          "retrieved_at": "2026-07-14",
+          "excerpt": "dataset-level metrics systematically attenuate non-determinism in diffusion language models by aggregating sample-level prediction quality across different runs.",
+          "source_date": "2026-04-16"
+        }
+      ]
+    }
+  ]
+}
