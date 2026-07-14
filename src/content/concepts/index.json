@@ -26,6 +26,33 @@
     "addedOn": "12-07-2026"
   },
   {
+    "id": "adversarial-verification",
+    "label": {
+      "fr": "Vérification adversariale",
+      "en": "Adversarial verification"
+    },
+    "definition": {
+      "fr": "Pratique consistant à durcir en continu le vérificateur (la récompense) contre les exploits précis que la politique du moment a appris, à la manière d'une équipe rouge permanente dirigée contre son propre modèle. L'avantage recherché est asymétrique : des cas difficiles inédits et des recoupements indépendants que le générateur n'a pas, plutôt qu'un simple surcroît d'échelle.",
+      "en": "The practice of continuously hardening the verifier (the reward) against the specific exploits the current policy has learned, run as a standing red team against your own model. The edge it seeks is asymmetric: fresh hard cases and independent cross-checks the generator lacks, rather than more raw scale."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "verifier co-evolution",
+      "adversarial verifier loop",
+      "standing red team"
+    ],
+    "related": [
+      "reward-hacking",
+      "verification-horizon",
+      "rlvr",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "verification-horizon-coding-agent-rewards"
+    ],
+    "addedOn": "14-07-2026"
+  },
+  {
     "id": "agent-debt",
     "label": {
       "fr": "Dette d'agent",
@@ -1518,9 +1545,35 @@
       "weak-oracle-tests"
     ],
     "articles": [
-      "reward-hacking-inflates-coding-benchmarks"
+      "reward-hacking-inflates-coding-benchmarks",
+      "verification-horizon-coding-agent-rewards"
     ],
     "addedOn": "06-07-2026"
+  },
+  {
+    "id": "rlvr",
+    "label": {
+      "fr": "Apprentissage par renforcement à récompense vérifiable",
+      "en": "Reinforcement learning with verifiable rewards"
+    },
+    "definition": {
+      "fr": "Recette d'apprentissage par renforcement où le signal de récompense provient d'un vérificateur automatique et bon marché (test unitaire, clé de réponse) plutôt que d'un modèle de préférence appris. Elle a fait progresser les agents en mathématiques de concours et en code autonome, domaines où la correction se tranche à bas coût, mais suppose un vérificateur figé et fiable.",
+      "en": "A reinforcement-learning recipe whose reward signal comes from a cheap automatic checker (a unit test, a numeric answer key) instead of a learned preference model. It advanced agents on competition math and self-contained coding, where correctness is cheap to decide, but it assumes a fixed, trustworthy verifier."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "RLVR",
+      "verifiable rewards",
+      "reinforcement learning with verifiable rewards"
+    ],
+    "related": [
+      "reward-hacking",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "verification-horizon-coding-agent-rewards"
+    ],
+    "addedOn": "14-07-2026"
   },
   {
     "id": "severity-tiering",
@@ -1815,6 +1868,30 @@
       "hybrid-rag-rrf"
     ],
     "addedOn": "27-05-2026"
+  },
+  {
+    "id": "verification-horizon",
+    "label": {
+      "fr": "Horizon de vérification",
+      "en": "Verification horizon"
+    },
+    "definition": {
+      "fr": "Constat selon lequel aucune fonction de récompense figée ne reste efficace à mesure que la capacité de la politique croît : au niveau suivant, la recherche d'optimisation trouve la trajectoire qui passe la vérification sans faire le travail. La vérification doit donc co-évoluer avec le générateur au lieu d'être écrite une fois pour toutes.",
+      "en": "The observation that no fixed reward function stays effective as policy capability grows: at the next level, optimization search finds the trajectory that passes the check without doing the work. Verification must therefore co-evolve with the generator instead of being written once."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "verifier horizon"
+    ],
+    "related": [
+      "reward-hacking",
+      "rlvr",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "verification-horizon-coding-agent-rewards"
+    ],
+    "addedOn": "14-07-2026"
   },
   {
     "id": "verified-speculation",
