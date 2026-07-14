@@ -1,0 +1,19 @@
+{
+  "slug": "verification-is-the-new-bottleneck-for-coding-agents",
+  "lang": "en",
+  "translationKey": "verification-horizon-coding-agent-rewards",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "\"The Verification Horizon: No Silver Bullet for Coding Agent Rewards\" (arXiv 2606.26300)",
+      "url": "https://arxiv.org/abs/2606.26300",
+      "excerpt": "Generating complex candidate solutions is no longer difficult -- reliably verifying them has become the harder problem. No fixed reward function can remain effective as policy capability continues to grow; and verification must co-evolve with the generator."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Subhadip Mitra, \"RLVR Beyond Math and Code: The Verifier Problem Nobody Has Solved\"",
+      "url": "https://subhadipmitra.com/blog/2026/rlvr-beyond-math-code/",
+      "excerpt": "RLVR only works well in domains where you can automatically verify correctness."
+    }
+  ]
+}

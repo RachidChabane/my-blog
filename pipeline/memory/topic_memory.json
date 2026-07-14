@@ -774,5 +774,35 @@
     ],
     "published_at": "2026-07-13",
     "embedding": null
+  },
+  {
+    "translation_key": "verification-horizon-coding-agent-rewards",
+    "topic_id": "verification-horizon-coding-agent-reward-bottleneck",
+    "dedup_key": "verification not generation is the bottleneck for coding agent reinforcement learning rewards and no fixed verifier survives a stronger policy",
+    "title": "The Reward Is the Weak Link in Your Coding Agent",
+    "slugs": {
+      "fr": "la-verification-est-le-nouveau-goulot-des-agents",
+      "en": "verification-is-the-new-bottleneck-for-coding-agents"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "\"The Verification Horizon: No Silver Bullet for Coding Agent Rewards\" (arXiv 2606.26300)",
+        "url": "https://arxiv.org/abs/2606.26300",
+        "retrieved_at": "2026-07-14",
+        "excerpt": "Generating complex candidate solutions is no longer difficult -- reliably verifying them has become the harder problem. No fixed reward function can remain effective as policy capability continues to grow; and verification must co-evolve with the generator.",
+        "source_date": "2026-06-24"
+      },
+      {
+        "source_id": "s2",
+        "label": "Subhadip Mitra, \"RLVR Beyond Math and Code: The Verifier Problem Nobody Has Solved\"",
+        "url": "https://subhadipmitra.com/blog/2026/rlvr-beyond-math-code/",
+        "retrieved_at": "2026-07-14",
+        "excerpt": "RLVR only works well in domains where you can automatically verify correctness.",
+        "source_date": "2026-01-18"
+      }
+    ],
+    "published_at": "2026-07-14",
+    "embedding": null
   }
 ]
