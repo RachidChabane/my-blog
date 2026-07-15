@@ -106,7 +106,8 @@
       "agent-memory-benchmark-recall-not-trust",
       "reward-hacking-inflates-coding-benchmarks",
       "observability-is-not-evaluation",
-      "code-review-agents-signal-to-noise"
+      "code-review-agents-signal-to-noise",
+      "harness-over-model-has-no-global-ordering"
     ],
     "addedOn": "12-05-2026"
   },
@@ -213,7 +214,8 @@
       "prompt-caching-prefix-stability",
       "coding-agent-harness-not-capability",
       "claude-code-action-supply-chain-auth",
-      "multi-agent-gains-compute-artifact"
+      "multi-agent-gains-compute-artifact",
+      "harness-over-model-has-no-global-ordering"
     ],
     "addedOn": "17-06-2026"
   },
@@ -609,7 +611,8 @@
       "coding-agent-harness-not-capability",
       "agent-debt-verification-placement",
       "reward-hacking-inflates-coding-benchmarks",
-      "claude-code-action-supply-chain-auth"
+      "claude-code-action-supply-chain-auth",
+      "harness-over-model-has-no-global-ordering"
     ],
     "addedOn": "30-05-2026"
   },
@@ -901,6 +904,32 @@
       "publication-guardrails-factcheck"
     ],
     "addedOn": "23-05-2026"
+  },
+  {
+    "id": "harness-component-signal",
+    "label": {
+      "fr": "Signal au niveau des composants du harnais",
+      "en": "Harness component-level signal"
+    },
+    "definition": {
+      "fr": "Capacité à attribuer un score de bout en bout aux composants individuels d'un agent : modèle, harnais, contexte, environnement, signaux de retour. En son absence, le score global ne se décompose pas, et il devient difficile d'itérer sur une pile puisque rien n'indique quel composant a fait bouger le chiffre.",
+      "en": "The ability to attribute an end-to-end score to an agent's individual components: model, harness, context, environment, feedback signals. Without it the overall score does not decompose, and iterating on a stack becomes difficult because nothing indicates which component moved the number."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "component-level signal",
+      "score decomposability",
+      "harness component attribution"
+    ],
+    "related": [
+      "agent-scaffold",
+      "agent-evaluation",
+      "variance-decomposition"
+    ],
+    "articles": [
+      "harness-over-model-has-no-global-ordering"
+    ],
+    "addedOn": "15-07-2026"
   },
   {
     "id": "hybrid-retrieval",
@@ -1329,6 +1358,31 @@
     "addedOn": "19-06-2026"
   },
   {
+    "id": "perfopt-bench",
+    "label": {
+      "fr": "PERFOPT-Bench",
+      "en": "PERFOPT-Bench"
+    },
+    "definition": {
+      "fr": "Banc d'essai qui évalue 7 piles d'agents, bâties sur des LLM et des frameworks différents, sur 7 tâches d'optimisation de performance logicielle à long horizon. Il conclut qu'aucune pile ne domine et que changer de framework peut modifier sensiblement le profil d'accélération par tâche d'un même LLM.",
+      "en": "A benchmark evaluating 7 agent stacks, built from different LLMs and agent frameworks, on 7 long-horizon software performance optimization tasks. It finds that no single stack dominates and that changing the agent framework can materially change the same LLM's per-task speedup profile."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "PERFOPT",
+      "PerfOpt-Bench"
+    ],
+    "related": [
+      "workload-conditional-selection",
+      "reward-hacking",
+      "coding-agents"
+    ],
+    "articles": [
+      "harness-over-model-has-no-global-ordering"
+    ],
+    "addedOn": "15-07-2026"
+  },
+  {
     "id": "prompt-caching",
     "label": {
       "fr": "Cache de prompt",
@@ -1546,7 +1600,8 @@
     ],
     "articles": [
       "reward-hacking-inflates-coding-benchmarks",
-      "verification-horizon-coding-agent-rewards"
+      "verification-horizon-coding-agent-rewards",
+      "harness-over-model-has-no-global-ordering"
     ],
     "addedOn": "06-07-2026"
   },
@@ -1848,6 +1903,31 @@
     "addedOn": "01-07-2026"
   },
   {
+    "id": "variance-decomposition",
+    "label": {
+      "fr": "Décomposition de la variance",
+      "en": "Variance decomposition"
+    },
+    "definition": {
+      "fr": "Attribution de la part de variation d'un résultat expliquée par chaque facteur pris séparément, par exemple le harnais contre le modèle dans le succès d'un agent. Un rapport entre deux parts ne dit rien de leur taille : deux termes peuvent se classer nettement l'un devant l'autre tout en laissant l'essentiel du résultat inexpliqué.",
+      "en": "Attributing the share of variation in an outcome to each factor separately, for example harness versus model in agent success. A ratio between two shares says nothing about their size: two terms can rank clearly against each other while leaving most of the outcome unexplained."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "variance attribution",
+      "share of variance explained",
+      "variance explained"
+    ],
+    "related": [
+      "agent-evaluation",
+      "agent-scaffold"
+    ],
+    "articles": [
+      "harness-over-model-has-no-global-ordering"
+    ],
+    "addedOn": "15-07-2026"
+  },
+  {
     "id": "vector-search",
     "label": {
       "fr": "Recherche vectorielle",
@@ -1965,5 +2045,31 @@
       "reward-hacking-inflates-coding-benchmarks"
     ],
     "addedOn": "06-07-2026"
+  },
+  {
+    "id": "workload-conditional-selection",
+    "label": {
+      "fr": "Sélection conditionnée à la charge de travail",
+      "en": "Workload-conditional selection"
+    },
+    "definition": {
+      "fr": "Régime où le classement des options se réordonne d'une charge de travail à l'autre, si bien qu'aucun ordre global stable n'existe et qu'aucun gagnant ne peut être publié une fois pour toutes. À distinguer d'un simple constat de variance : ici c'est le classement lui-même qui change, et non l'amplitude du score.",
+      "en": "A regime where the ranking of options reorders from one workload to the next, so no stable global order exists and no winner can be published once and for all. Distinct from a variance claim: here the ranking itself changes, not just the magnitude of the score."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "no dominant stack",
+      "workload-dependent performance",
+      "reordering claim"
+    ],
+    "related": [
+      "agent-evaluation",
+      "agent-scaffold",
+      "variance-decomposition"
+    ],
+    "articles": [
+      "harness-over-model-has-no-global-ordering"
+    ],
+    "addedOn": "15-07-2026"
   }
 ]
