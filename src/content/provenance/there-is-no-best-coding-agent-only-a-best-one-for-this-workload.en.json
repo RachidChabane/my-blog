@@ -1,0 +1,25 @@
+{
+  "slug": "there-is-no-best-coding-agent-only-a-best-one-for-this-workload",
+  "lang": "en",
+  "translationKey": "harness-over-model-has-no-global-ordering",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Cui et al., PERFOPT-Bench: Evaluating Coding Agents on Software Performance Optimization",
+      "url": "https://arxiv.org/abs/2607.07744",
+      "excerpt": "We evaluate 7 agent stacks with different LLMs and agent frameworks on 7 long-horizon optimization tasks. The results show that optimization performance is workload-dependent rather than determined by model identity alone: no single stack dominates, and changing the agent framework can materially change the same LLM's per-task speedup profile. We further find that raw speedup is unsafe as a benchmark score, since some large gains arise from benchmark-specific shortcut exploitation."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Braintrust, Using Braintrust to eval agentic setups from large-scale Hugging Face data",
+      "url": "https://www.braintrust.dev/blog/hf-agent-traces",
+      "excerpt": "Harness explains ~5.3% of the variation in success. Model explains only ~0.7%. ... 49k child spans total across all 1,781 runs, averaging about 27 LLM calls per run."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Gorinova et al., Position: Coding Benchmarks Are Misaligned with Agentic Software Engineering",
+      "url": "https://arxiv.org/abs/2606.17799",
+      "excerpt": "A coding agent in practice is not a model: it is a system harness -- a composite of models, harnesses, contexts, environments, and feedback signals, any one of which can move the benchmark score by margins comparable to those between adjacent model generations. We discuss three symptoms: (i) benchmark scores conflate the model with the rest of the harness; (ii) grading against a single reference solution penalises equally valid alternatives; and (iii) the absence of signal at the level of individual harness components makes the end-to-end system score difficult to iterate on."
+    }
+  ]
+}

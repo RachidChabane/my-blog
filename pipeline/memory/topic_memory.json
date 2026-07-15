@@ -804,5 +804,43 @@
     ],
     "published_at": "2026-07-14",
     "embedding": null
+  },
+  {
+    "translation_key": "harness-over-model-has-no-global-ordering",
+    "topic_id": "no-universal-agent-stack-workload-dependent-selection",
+    "dedup_key": "coding agent stack selection is workload dependent routing because the agent framework materially changes the same model per task speedup and no stack dominates across workloads",
+    "title": "The Harness Beat the Model by 4.6 Points of Almost Nothing",
+    "slugs": {
+      "fr": "pas-de-meilleur-agent-de-code-seulement-un-meilleur-pour-cette-charge",
+      "en": "there-is-no-best-coding-agent-only-a-best-one-for-this-workload"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Cui et al., PERFOPT-Bench: Evaluating Coding Agents on Software Performance Optimization",
+        "url": "https://arxiv.org/abs/2607.07744",
+        "retrieved_at": "2026-07-15",
+        "excerpt": "We evaluate 7 agent stacks with different LLMs and agent frameworks on 7 long-horizon optimization tasks. The results show that optimization performance is workload-dependent rather than determined by model identity alone: no single stack dominates, and changing the agent framework can materially change the same LLM's per-task speedup profile. We further find that raw speedup is unsafe as a benchmark score, since some large gains arise from benchmark-specific shortcut exploitation.",
+        "source_date": "2026-07-08"
+      },
+      {
+        "source_id": "s2",
+        "label": "Braintrust, Using Braintrust to eval agentic setups from large-scale Hugging Face data",
+        "url": "https://www.braintrust.dev/blog/hf-agent-traces",
+        "retrieved_at": "2026-07-15",
+        "excerpt": "Harness explains ~5.3% of the variation in success. Model explains only ~0.7%. ... 49k child spans total across all 1,781 runs, averaging about 27 LLM calls per run.",
+        "source_date": "2026-06-24"
+      },
+      {
+        "source_id": "s3",
+        "label": "Gorinova et al., Position: Coding Benchmarks Are Misaligned with Agentic Software Engineering",
+        "url": "https://arxiv.org/abs/2606.17799",
+        "retrieved_at": "2026-07-15",
+        "excerpt": "A coding agent in practice is not a model: it is a system harness -- a composite of models, harnesses, contexts, environments, and feedback signals, any one of which can move the benchmark score by margins comparable to those between adjacent model generations. We discuss three symptoms: (i) benchmark scores conflate the model with the rest of the harness; (ii) grading against a single reference solution penalises equally valid alternatives; and (iii) the absence of signal at the level of individual harness components makes the end-to-end system score difficult to iterate on.",
+        "source_date": "2026-06-16"
+      }
+    ],
+    "published_at": "2026-07-15",
+    "embedding": null
   }
 ]
