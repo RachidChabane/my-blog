@@ -603,5 +603,49 @@
     ],
     "published_at": "2026-07-14",
     "embedding": null
+  },
+  {
+    "translation_key": "langflow-cve-2026-55255-kev-cvss-divergence",
+    "topic_id": "langflow-cve-2026-55255-kev-cvss-divergence",
+    "dedup_key": "langflow cve 2026 55255 kev cvss divergence",
+    "title": "Langflow's IDOR is on CISA's KEV list, and your CVSS threshold would have skipped it",
+    "slugs": {
+      "fr": "langflow-idor-kev-seuil-cvss",
+      "en": "langflow-idor-kev-cvss-threshold"
+    },
+    "sources": [
+      {
+        "label": "Sysdig Threat Research Team - Understanding Langflow CVE-2026-55255",
+        "url": "https://www.sysdig.com/blog/understanding-langflow-cve-2026-55255-and-why-higher-cvss-vulnerabilities-arent-always-the-most-exploited",
+        "date": "26-06-2026"
+      },
+      {
+        "label": "NVD - CVE-2026-55255 Detail",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-55255",
+        "date": "08-07-2026"
+      },
+      {
+        "label": "The Hacker News - CISA Adds 4 Actively Exploited Adobe, Joomla, and Langflow Flaws to KEV",
+        "url": "https://thehackernews.com/2026/07/cisa-adds-4-actively-exploited-adobe.html",
+        "date": "08-07-2026"
+      },
+      {
+        "label": "Help Net Security - Attackers using Langflow flaw for credential harvesting",
+        "url": "https://www.helpnetsecurity.com/2026/07/08/langflow-vulnerability-cve-2026-55255-exploited/",
+        "date": "08-07-2026"
+      },
+      {
+        "label": "Qualys ThreatPROTECT - CISA Warns About Langflow Authorization Bypass Vulnerability Exploitation",
+        "url": "https://threatprotect.qualys.com/2026/07/10/cisa-warns-about-langflow-authorization-bypass-vulnerability-exploitation-cve-2026-55255/",
+        "date": "10-07-2026"
+      },
+      {
+        "label": "BleepingComputer - CISA orders feds to prioritize patching Langflow auth bypass flaw",
+        "url": "https://www.bleepingcomputer.com/news/security/cisa-orders-feds-to-prioritize-patching-langflow-auth-bypass-flaw/",
+        "date": "08-07-2026"
+      }
+    ],
+    "published_at": "2026-07-15",
+    "embedding": null
   }
 ]
