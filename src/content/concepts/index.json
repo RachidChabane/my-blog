@@ -190,6 +190,32 @@
     "addedOn": "07-07-2026"
   },
   {
+    "id": "agent-sandboxing",
+    "label": {
+      "fr": "Bac à sable pour agents",
+      "en": "Agent sandboxing"
+    },
+    "definition": {
+      "fr": "Confinement de l'exécution d'un agent par l'environnement plutôt que par l'inspection de ses commandes : système de fichiers restreint, absence d'identifiants dans l'environnement, sortie réseau contrôlée. La garantie tient au périmètre accordé au processus, indépendamment de la commande exécutée.",
+      "en": "Containing an agent's execution through the environment rather than by inspecting its commands: a filesystem it cannot escape, no credentials in the environment, controlled egress. The guarantee rests on the perimeter granted to the process, whatever command ends up running."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "sandboxing",
+      "blast radius containment",
+      "execution sandbox"
+    ],
+    "related": [
+      "least-privilege",
+      "command-denylist",
+      "trust-boundary"
+    ],
+    "articles": [
+      "command-denylist-not-a-security-boundary"
+    ],
+    "addedOn": "17-07-2026"
+  },
+  {
     "id": "agent-scaffold",
     "label": {
       "fr": "Scaffold d'agent",
@@ -612,9 +638,38 @@
       "agent-debt-verification-placement",
       "reward-hacking-inflates-coding-benchmarks",
       "claude-code-action-supply-chain-auth",
-      "harness-over-model-has-no-global-ordering"
+      "harness-over-model-has-no-global-ordering",
+      "command-denylist-not-a-security-boundary"
     ],
     "addedOn": "30-05-2026"
+  },
+  {
+    "id": "command-denylist",
+    "label": {
+      "fr": "Denylist de commandes",
+      "en": "Command denylist"
+    },
+    "definition": {
+      "fr": "Garde-fou qui compare la commande proposée par un agent à une liste de motifs interdits avant de l'exécuter. Le contrôle porte sur la chaîne émise par le modèle, avant que le shell ne la réécrive, ce qui laisse passer toute graphie équivalente absente de la liste.",
+      "en": "A guardrail that matches an agent's proposed command against a list of forbidden patterns before execution. The check runs on the string the model emitted, before the shell rewrites it, so any equivalent spelling that is not on the list passes."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "denylist",
+      "command blocklist",
+      "blocklist",
+      "auto-approve config"
+    ],
+    "related": [
+      "coding-agents",
+      "tool-use",
+      "trust-boundary",
+      "shell-injection"
+    ],
+    "articles": [
+      "command-denylist-not-a-security-boundary"
+    ],
+    "addedOn": "17-07-2026"
   },
   {
     "id": "context-budget",
@@ -973,7 +1028,8 @@
     ],
     "articles": [
       "mcp-tool-poisoning-client-trust",
-      "claude-code-action-supply-chain-auth"
+      "claude-code-action-supply-chain-auth",
+      "command-denylist-not-a-security-boundary"
     ],
     "addedOn": "01-07-2026"
   },
@@ -1076,7 +1132,8 @@
       "agent-scaffold"
     ],
     "articles": [
-      "claude-code-action-supply-chain-auth"
+      "claude-code-action-supply-chain-auth",
+      "command-denylist-not-a-security-boundary"
     ],
     "addedOn": "11-07-2026"
   },
@@ -1657,6 +1714,31 @@
     "addedOn": "12-07-2026"
   },
   {
+    "id": "shell-injection",
+    "label": {
+      "fr": "Injection shell",
+      "en": "Shell injection"
+    },
+    "definition": {
+      "fr": "Classe de vulnérabilités où un texte contrôlé par un attaquant est interprété par le shell comme de la syntaxe plutôt que comme une donnée. Les passes de réécriture du shell, expansion des paramètres, substitution de commandes, suppression des guillemets, produisent un programme différent de celui qu'un filtre en amont a inspecté.",
+      "en": "A class of vulnerabilities where attacker-controlled text is interpreted by the shell as syntax rather than data. The shell's rewriting passes, parameter expansion, command substitution and quote removal among them, yield a program different from the one any upstream filter inspected."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "command injection",
+      "shell command injection",
+      "quote removal bypass"
+    ],
+    "related": [
+      "trust-boundary",
+      "indirect-prompt-injection"
+    ],
+    "articles": [
+      "command-denylist-not-a-security-boundary"
+    ],
+    "addedOn": "17-07-2026"
+  },
+  {
     "id": "signal-ratio",
     "label": {
       "fr": "Ratio de signal",
@@ -1876,7 +1958,8 @@
       "deterministic-agent-workflows",
       "coding-agent-scaffold-confound",
       "prompt-caching-prefix-stability",
-      "mcp-tool-poisoning-client-trust"
+      "mcp-tool-poisoning-client-trust",
+      "command-denylist-not-a-security-boundary"
     ],
     "addedOn": "12-05-2026"
   },
@@ -1898,7 +1981,8 @@
     "articles": [
       "mcp-tool-poisoning-client-trust",
       "agent-debt-verification-placement",
-      "claude-code-action-supply-chain-auth"
+      "claude-code-action-supply-chain-auth",
+      "command-denylist-not-a-security-boundary"
     ],
     "addedOn": "01-07-2026"
   },
