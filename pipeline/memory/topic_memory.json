@@ -842,5 +842,59 @@
     ],
     "published_at": "2026-07-15",
     "embedding": null
+  },
+  {
+    "translation_key": "command-denylist-not-a-security-boundary",
+    "topic_id": "command-denylist-is-not-a-security-boundary",
+    "dedup_key": "shell command denylists and approval prompts in terminal ai agents are string matching not a security boundary because the shell rewrites the command after the check",
+    "title": "Your Agent's Command Denylist Checks a String the Shell Then Rewrites",
+    "slugs": {
+      "fr": "la-denylist-de-votre-agent-verifie-une-chaine-que-le-shell-reecrit",
+      "en": "your-agents-denylist-checks-a-string-the-shell-rewrites"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "One Goal, Many Commands: Characterizing Denylist Fragility in AI Agents (arXiv 2606.15549)",
+        "url": "https://arxiv.org/abs/2606.15549",
+        "retrieved_at": "2026-07-17",
+        "excerpt": "This paper presents the first systematic characterization of command denylist fragility in terminal AI agents. The paper formalizes the command denylist fragility problem and proposes an LLM-driven pipeline, ShellSieve, to detect such fragility. It prompts the LLM to propose possible bypasses and iteratively repairs them using feedback from a validator that executes them in a sandbox. In the evaluation, we applied ShellSieve to 1,709 real-world command denylists (containing 13,332 denylist rules) collected from GitHub. The evaluation shows several key findings, including that 69.0--98.6% of the denylists are fragile, that this fragility occurs consistently across projects and agents, and the validity of several possible root causes for this fragility.",
+        "source_date": "2026-06-14"
+      },
+      {
+        "source_id": "s2",
+        "label": "Adversa AI, GuardFall shell injection in open-source AI coding agents",
+        "url": "https://adversa.ai/blog/opensource-ai-coding-agents-shell-injection-vulnerability/",
+        "retrieved_at": "2026-07-17",
+        "excerpt": "Of the eleven agents surveyed, ten leave the agent-to-`bash` boundary exploitable, in one of four ways",
+        "source_date": "2026-06-30"
+      },
+      {
+        "source_id": "s3",
+        "label": "Adversa AI, GuardFall: the one agent that closes the bypass surface",
+        "url": "https://adversa.ai/blog/opensource-ai-coding-agents-shell-injection-vulnerability/",
+        "retrieved_at": "2026-07-17",
+        "excerpt": "Continue is the one agent we examined that empirically closes the F01-class bypass surface",
+        "source_date": "2026-06-30"
+      },
+      {
+        "source_id": "s4",
+        "label": "arXiv 2606.15549, on Claude Code's built-in denylist",
+        "url": "https://arxiv.org/abs/2606.15549",
+        "retrieved_at": "2026-07-17",
+        "excerpt": "Our observation is that even a built-in denylist of Claude Code, well-maintained by its developers, can overlook bypass commands that invalidate its effectiveness. Such negligence leads to fragile command denylists that cannot even block operations that practitioners expect them to block.",
+        "source_date": "2026-06-14"
+      },
+      {
+        "source_id": "s5",
+        "label": "The Hacker News, GuardFall exposes open-source AI coding agents to decades-old shell injection risks",
+        "url": "https://thehackernews.com/2026/06/guardfall-exposes-open-source-ai-coding.html",
+        "retrieved_at": "2026-07-17",
+        "excerpt": "GuardFall Exposes Open-Source AI Coding Agents to Decades-Old Shell Injection Risks",
+        "source_date": "2026-06-30"
+      }
+    ],
+    "published_at": "2026-07-17",
+    "embedding": null
   }
 ]
