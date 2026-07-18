@@ -691,5 +691,39 @@
     ],
     "published_at": "2026-07-17",
     "embedding": null
+  },
+  {
+    "translation_key": "openai-responses-multi-agent",
+    "topic_id": "openai-responses-multi-agent",
+    "dedup_key": "openai responses multi agent",
+    "title": "OpenAI moves multi-agent orchestration server-side, and defaults the fan-out to 3",
+    "slugs": {
+      "fr": "openai-responses-api-orchestration-multi-agents",
+      "en": "openai-responses-api-multi-agent-orchestration"
+    },
+    "sources": [
+      {
+        "label": "OpenAI developer changelog - GPT-5.6 adds Programmatic Tool Calling and Multi-agent orchestration",
+        "url": "https://developers.openai.com/api/docs/changelog",
+        "date": "09-07-2026"
+      },
+      {
+        "label": "OpenAI Responses API multi-agent guide",
+        "url": "https://developers.openai.com/api/docs/guides/responses-multi-agent",
+        "date": "09-07-2026"
+      },
+      {
+        "label": "OpenAI Programmatic Tool Calling guide",
+        "url": "https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling",
+        "date": "09-07-2026"
+      },
+      {
+        "label": "aiagentstore.ai - Agent Collaboration news, week ending 2026-07-14",
+        "url": "https://aiagentstore.ai/ai-agent-news/topic/agent-collaboration/2026-07-14",
+        "date": "14-07-2026"
+      }
+    ],
+    "published_at": "2026-07-18",
+    "embedding": null
   }
 ]
