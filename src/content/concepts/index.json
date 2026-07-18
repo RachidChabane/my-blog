@@ -107,7 +107,8 @@
       "reward-hacking-inflates-coding-benchmarks",
       "observability-is-not-evaluation",
       "code-review-agents-signal-to-noise",
-      "harness-over-model-has-no-global-ordering"
+      "harness-over-model-has-no-global-ordering",
+      "cli-agent-productivity-proxy-choice"
     ],
     "addedOn": "12-05-2026"
   },
@@ -367,7 +368,8 @@
     "articles": [
       "coding-agent-scaffold-confound",
       "glm-5-2-open-weight-where-you-run-it",
-      "agent-memory-benchmark-recall-not-trust"
+      "agent-memory-benchmark-recall-not-trust",
+      "cli-agent-productivity-proxy-choice"
     ],
     "addedOn": "18-06-2026"
   },
@@ -639,7 +641,8 @@
       "reward-hacking-inflates-coding-benchmarks",
       "claude-code-action-supply-chain-auth",
       "harness-over-model-has-no-global-ordering",
-      "command-denylist-not-a-security-boundary"
+      "command-denylist-not-a-security-boundary",
+      "cli-agent-productivity-proxy-choice"
     ],
     "addedOn": "30-05-2026"
   },
@@ -1462,6 +1465,32 @@
     "addedOn": "10-06-2026"
   },
   {
+    "id": "proxy-metric",
+    "label": {
+      "en": "Proxy metric",
+      "fr": "Métrique indirecte"
+    },
+    "definition": {
+      "en": "The quantity you actually score because the outcome you care about is too slow or too diffuse to measure directly, such as merged pull requests standing in for shipped value. A study's headline number belongs to its proxy, not to the outcome, so two studies with different proxies can both be right and still disagree.",
+      "fr": "La grandeur que l'on mesure réellement parce que le résultat qui compte est trop lent ou trop diffus à observer directement, par exemple le nombre de pull requests fusionnées tenant lieu de valeur livrée. Le chiffre annoncé par une étude appartient à sa métrique indirecte et non au résultat visé, si bien que deux études aux métriques différentes peuvent avoir raison toutes les deux tout en se contredisant."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "proxy measure",
+      "scored unit",
+      "outcome proxy"
+    ],
+    "related": [
+      "agent-evaluation",
+      "variance-decomposition",
+      "retrieval-evaluation"
+    ],
+    "articles": [
+      "cli-agent-productivity-proxy-choice"
+    ],
+    "addedOn": "18-07-2026"
+  },
+  {
     "id": "publication-guardrails",
     "label": {
       "fr": "Garde-fous de publication",
@@ -1686,6 +1715,57 @@
       "verification-horizon-coding-agent-rewards"
     ],
     "addedOn": "14-07-2026"
+  },
+  {
+    "id": "selection-bias",
+    "label": {
+      "en": "Selection bias",
+      "fr": "Biais de sélection"
+    },
+    "definition": {
+      "en": "The distortion that appears when the population you measure chose to be there, as with the engineers who adopt a tool early and differ from those who do not. More data tightens the confidence interval around the selected estimate instead of moving it toward the population you meant to describe.",
+      "fr": "La distorsion qui apparaît lorsque la population mesurée s'est elle-même sélectionnée, par exemple les développeurs qui adoptent un outil tôt et diffèrent de ceux qui l'ignorent. Accumuler des données resserre l'intervalle de confiance autour de l'estimation biaisée au lieu de la rapprocher de la population que l'on voulait décrire."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "self-selection",
+      "adoption bias",
+      "selection effect"
+    ],
+    "related": [
+      "agent-evaluation",
+      "proxy-metric"
+    ],
+    "articles": [
+      "cli-agent-productivity-proxy-choice"
+    ],
+    "addedOn": "18-07-2026"
+  },
+  {
+    "id": "self-reported-productivity",
+    "label": {
+      "en": "Self-reported productivity",
+      "fr": "Productivité auto-déclarée"
+    },
+    "definition": {
+      "en": "A developer's own estimate of how much a tool sped them up, collected by survey or retrospective rather than by clock. It is a named failure mode in agent evaluation because perceived speed-up can move in the opposite direction from measured task time, so a survey result never substitutes for an instrumented one.",
+      "fr": "L'estimation que fait un développeur du gain de temps apporté par un outil, recueillie par questionnaire ou rétrospective plutôt qu'au chronomètre. C'est un mode de défaillance identifié dans l'évaluation des agents, car le gain ressenti peut évoluer en sens inverse du temps réellement mesuré : un résultat déclaratif ne remplace jamais une mesure instrumentée."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "perceived speedup",
+      "self-reported time saved",
+      "developer self-report"
+    ],
+    "related": [
+      "agent-evaluation",
+      "proxy-metric",
+      "benchmark-self-reporting"
+    ],
+    "articles": [
+      "cli-agent-productivity-proxy-choice"
+    ],
+    "addedOn": "18-07-2026"
   },
   {
     "id": "severity-tiering",
@@ -2007,7 +2087,8 @@
       "agent-scaffold"
     ],
     "articles": [
-      "harness-over-model-has-no-global-ordering"
+      "harness-over-model-has-no-global-ordering",
+      "cli-agent-productivity-proxy-choice"
     ],
     "addedOn": "15-07-2026"
   },
