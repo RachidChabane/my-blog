@@ -1,0 +1,31 @@
+{
+  "slug": "plus-24-pour-cent-et-moins-19-pour-cent-sont-vrais",
+  "lang": "fr",
+  "translationKey": "cli-agent-productivity-proxy-choice",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "arXiv 2607.01418v1, Microsoft CLI coding agent rollout study",
+      "url": "https://arxiv.org/abs/2607.01418",
+      "excerpt": "Studying tens of thousands of engineers at Microsoft over its early-2026 rollout, we find that first use spread primarily through social networks, retention was associated more with engineers' coding activity than with demographics, and adopters merged roughly 24% more pull requests than they would have otherwise."
+    },
+    {
+      "sourceId": "s2",
+      "label": "METR randomized controlled trial, experienced open-source developers",
+      "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+      "excerpt": "When developers are allowed to use AI tools, they take 19% longer to complete issues"
+    },
+    {
+      "sourceId": "s3",
+      "label": "METR, measured versus perceived speedup",
+      "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+      "excerpt": "developers expected AI to speed them up by 24%, and even after experiencing the slowdown, they still believed AI had sped them up by 20%"
+    },
+    {
+      "sourceId": "s4",
+      "label": "arXiv 2607.01418v1, stated proxy limitation",
+      "url": "https://arxiv.org/abs/2607.01418",
+      "excerpt": "We use merged pull requests as our proxy for output -- acknowledging that a merged PR is not the same as the value it delivers -- and the lift persists across our four-month window."
+    }
+  ]
+}
