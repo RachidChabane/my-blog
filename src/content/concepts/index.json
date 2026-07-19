@@ -26,6 +26,33 @@
     "addedOn": "12-07-2026"
   },
   {
+    "id": "adaptive-attack-evaluation",
+    "label": {
+      "fr": "Évaluation par attaque adaptative",
+      "en": "Adaptive attack evaluation"
+    },
+    "definition": {
+      "fr": "Évaluer une défense face à un attaquant autorisé à observer cette défense et à s'y adapter, plutôt que face à un jeu d'attaques figé. Un score obtenu sur un jeu figé mesure la suite de tests et non le système, et des défenses solides sous ce régime tombent couramment sous l'autre.",
+      "en": "Evaluating a defense against an attacker allowed to see the defense and adapt to it, rather than against a fixed set of attempts. A score from a static attack set measures the test suite, not the system, and defenses that look strong under one routinely fall under the other."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "adaptive attack",
+      "defense-aware attack",
+      "static benchmark",
+      "adaptive evaluation"
+    ],
+    "related": [
+      "indirect-prompt-injection",
+      "offline-evaluation",
+      "evaluation-harness"
+    ],
+    "articles": [
+      "prompt-injection-defense-layer-split"
+    ],
+    "addedOn": "19-07-2026"
+  },
+  {
     "id": "adversarial-verification",
     "label": {
       "fr": "Vérification adversariale",
@@ -821,6 +848,31 @@
     "addedOn": "17-06-2026"
   },
   {
+    "id": "data-instruction-separation",
+    "label": {
+      "fr": "Séparation données/instructions",
+      "en": "Data-instruction separation"
+    },
+    "definition": {
+      "fr": "La famille de défenses contre le prompt injection qui cherche à distinguer les instructions des données à l'intérieur même du contexte du modèle, le plus souvent par un classifieur ou une convention de délimiteurs sur le chemin de la requête. Elle exige un jugement sémantique au moment de l'inférence, au sein de la boucle que l'attaquant contrôle.",
+      "en": "The class of prompt-injection defense that tries to tell instructions apart from data inside the model's own context, typically with a classifier or a delimiter convention on the request path. It requires a semantic judgment at inference time, inside the loop the attacker controls."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "data-instruction separation",
+      "in-band defense",
+      "injection classifier"
+    ],
+    "related": [
+      "indirect-prompt-injection",
+      "trust-boundary"
+    ],
+    "articles": [
+      "prompt-injection-defense-layer-split"
+    ],
+    "addedOn": "19-07-2026"
+  },
+  {
     "id": "data-residency",
     "label": {
       "fr": "Résidence des données",
@@ -1394,6 +1446,34 @@
       "prompt-injection-defense-layer-split"
     ],
     "addedOn": "04-05-2026"
+  },
+  {
+    "id": "out-of-band-enforcement",
+    "label": {
+      "fr": "Application hors bande",
+      "en": "Out-of-band enforcement"
+    },
+    "definition": {
+      "fr": "L'application des règles hors du chemin d'inférence du modèle, par une politique de capacités, des étiquettes de flux d'information ou un moniteur de référence sur les appels d'outils. Le jugement sur ce qui est permis est reporté au moment où la politique s'écrit, au lieu d'être recalculé à chaque entrée.",
+      "en": "Enforcing what an agent may do through a mechanism outside the model's inference path, such as a capability policy, an information-flow label, or a reference monitor over tool calls. The judgment about what is permitted moves to policy-authoring time instead of being recomputed on every input."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "out-of-band defense",
+      "policy enforcement",
+      "capability confinement",
+      "Progent"
+    ],
+    "related": [
+      "data-instruction-separation",
+      "least-privilege",
+      "trust-boundary",
+      "tool-use"
+    ],
+    "articles": [
+      "prompt-injection-defense-layer-split"
+    ],
+    "addedOn": "19-07-2026"
   },
   {
     "id": "pass-at-1",
