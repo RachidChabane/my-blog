@@ -8,12 +8,16 @@ topic would auto-publish ungated. argue is the per-chosen-topic pre-draft stage 
 
 TWO layers, both BLOCK (mirrors gate/factcheck.py's structural-backstop + semantic-verdict):
 
-1. DETERMINISTIC distinct-domain backstop -- resolve the chosen candidate from the AUTHORITATIVE
+1. DETERMINISTIC distinct-ORIGIN backstop -- resolve the chosen candidate from the AUTHORITATIVE
    choice in plans/task-select/brief.md (parse_brief(...).chosen_topic_id) -> plans/task-research/
    candidates.json (NOT dedup.json, which is only the dedup RECOMMENDATION the select agent may
    override, prompts/select.py:56-57; precedent: gate/fallback.py resolves the live chosen topic via
-   parse_brief). Its cited sources must span >= 2 DISTINCT registrable domains (catches the lazy
-   two-URLs-same-host echo).
+   parse_brief). Its cited sources must span >= 2 DISTINCT origins (catches the lazy
+   two-URLs-same-host echo). The origin is the registrable domain EXCEPT on distribution hosts
+   (preprint servers: arxiv.org, openreview.net, biorxiv.org, medrxiv.org, ssrn.com), which host
+   unaffiliated teams' work and so are keyed by PAPER id instead -- three distinct preprints are
+   three origins, two links to the SAME paper still collapse to one. The judge (layer 2) remains
+   the real cross-origin check.
 
 2. JUDGE verdict (on the shared judge != author substrate, pipeline/gate/judge.py) -- a FRESH
    independence judge (dispatched by pipeline/prompts/argue.py via build_judge_dispatch) is handed
@@ -61,15 +65,45 @@ _SECOND_LEVEL_SUFFIXES = frozenset(
     {"co", "com", "org", "net", "edu", "gov", "ac", "gouv", "or", "ne"}
 )
 
+# Distribution hosts, not origins: a preprint server hosts unaffiliated teams' work, so the
+# registrable domain is the wrong identity (three independent preprints would score as maximally
+# dependent). Map each to the PAPER, keyed by its path, so three distinct preprints count as three
+# origins while two links to the SAME paper still collapse to one (the anti-echo intent is
+# preserved). Deliberately SMALL: do not add general news or aggregator hosts.
+_DISTRIBUTION_HOSTS = frozenset(
+    {"arxiv.org", "openreview.net", "biorxiv.org", "medrxiv.org", "ssrn.com"}
+)
+
+
+def _paper_path(path: str) -> str:
+    """Normalize a distribution host's path to a stable paper key: strip surrounding slashes, an
+    'abs/'/'pdf/' prefix, and a trailing version suffix (v1, v2 ...). Never raises."""
+    path = path.strip("/").lower()
+    for prefix in ("abs/", "pdf/"):
+        if path.startswith(prefix):
+            path = path[len(prefix):]
+            break
+    if path.endswith(".pdf"):
+        path = path[:-4]
+    head, sep, tail = path.rpartition("v")
+    if sep and head and tail.isdigit():
+        path = head
+    return path
+
 
 def _registrable_domain(url: str) -> str:
-    """Best-effort registrable domain (eTLD+1) from a URL, lowercased.
+    """Best-effort ORIGIN key (registrable domain, eTLD+1) from a URL, lowercased.
 
     urlsplit drops scheme/port/userinfo; we strip a leading 'www.' and collapse to the last two
     labels -- or the last three when the second-to-last label is a known second-level public suffix
     (so bbc.co.uk -> bbc.co.uk, not co.uk). A hostname that does not parse falls back to the raw
-    lowercased url (never silently collapses two distinct strings)."""
-    host = urlsplit(url).hostname
+    lowercased url (never silently collapses two distinct strings).
+
+    On a _DISTRIBUTION_HOSTS preprint server the host is NOT the origin, so the key becomes
+    '<host>/<paper id>' (arxiv.org/abs/2606.26479 and arxiv.org/pdf/2606.26479v2 both key to
+    'arxiv.org/2606.26479'). An empty path keys to the bare host."""
+    parts = urlsplit(url)
+    host = parts.hostname
     if not host:
         return url.strip().lower()
     host = host.lower()
@@ -77,15 +111,23 @@ def _registrable_domain(url: str) -> str:
         host = host[4:]
     labels = host.split(".")
     if len(labels) <= 2:
-        return host
-    if labels[-2] in _SECOND_LEVEL_SUFFIXES:
-        return ".".join(labels[-3:])
-    return ".".join(labels[-2:])
+        domain = host
+    elif labels[-2] in _SECOND_LEVEL_SUFFIXES:
+        domain = ".".join(labels[-3:])
+    else:
+        domain = ".".join(labels[-2:])
+    if domain in _DISTRIBUTION_HOSTS:
+        paper = _paper_path(parts.path or "")
+        return f"{domain}/{paper}" if paper else domain
+    return domain
 
 
 def check_domain_independence(urls: list[str]) -> list[str]:
-    """Pure backstop: the chosen candidate's cited source URLs must span >= 2 distinct registrable
-    domains (empty == pass). Catches the lazy two-URLs-same-host echo."""
+    """Pure backstop: the chosen candidate's cited source URLs must span >= 2 distinct ORIGINS
+    (empty == pass). Catches the lazy two-URLs-same-host echo. On a preprint distribution host the
+    origin is the paper, not the host (see _registrable_domain), so three unaffiliated teams'
+    preprints pass while two links to one paper still block. The message keeps the 'registrable
+    domain' wording: the >= 2 semantics are unchanged, only the identity key is origin-aware."""
     domains = sorted({_registrable_domain(u) for u in urls})
     if len(domains) < 2:
         return [

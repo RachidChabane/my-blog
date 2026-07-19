@@ -88,7 +88,50 @@ def test_registrable_domain_strips_www_and_collapses_subdomains():
     assert _registrable_domain("https://www.example.com/x") == "example.com"
     assert _registrable_domain("https://blog.example.com/x") == "example.com"
     assert _registrable_domain("https://bbc.co.uk/news") == "bbc.co.uk"   # second-level suffix
-    assert _registrable_domain("https://arxiv.org/abs/1") == "arxiv.org"
+    assert _registrable_domain("https://arxiv.org/abs/1") == "arxiv.org/1"  # distribution host
+
+
+def test_registrable_domain_keys_preprints_by_paper():
+    # /abs/ and /pdf/ + a version suffix are the SAME paper -> one origin
+    assert (
+        _registrable_domain("https://arxiv.org/abs/2606.26479")
+        == _registrable_domain("https://arxiv.org/pdf/2606.26479v2")
+        == "arxiv.org/2606.26479"
+    )
+    assert _registrable_domain("https://arxiv.org") == "arxiv.org"  # empty path -> bare host
+
+
+def test_check_domain_independence_distinct_preprints_pass():
+    # the regression this fixes: three unaffiliated teams' preprints are three origins
+    assert check_domain_independence([
+        "https://arxiv.org/abs/2606.26479",
+        "https://arxiv.org/abs/2603.13026",
+        "https://arxiv.org/abs/2605.17634",
+    ]) == []
+
+
+def test_check_domain_independence_same_preprint_blocks():
+    # anti-echo preserved: two links to the SAME paper collapse to one origin
+    problems = check_domain_independence([
+        "https://arxiv.org/abs/2606.26479",
+        "https://arxiv.org/pdf/2606.26479v2",
+    ])
+    assert any("distinct registrable domain" in p for p in problems)
+
+
+def test_check_domain_independence_preprint_plus_blog_passes():
+    assert check_domain_independence(
+        ["https://arxiv.org/abs/2606.26479", "https://blog.example/post"]
+    ) == []
+
+
+def test_check_domain_independence_same_non_distribution_host_blocks():
+    problems = check_domain_independence(["https://echo.example/a", "https://echo.example/b"])
+    assert any("distinct registrable domain" in p for p in problems)
+
+
+def test_check_domain_independence_second_level_suffixes_unregressed():
+    assert check_domain_independence(["https://bbc.co.uk/n", "https://bbc.com/n"]) == []
 
 
 def test_check_domain_independence_same_host_blocks():
