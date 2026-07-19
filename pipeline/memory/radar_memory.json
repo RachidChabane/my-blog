@@ -725,5 +725,54 @@
     ],
     "published_at": "2026-07-18",
     "embedding": null
+  },
+  {
+    "translation_key": "inkling-thinking-machines-open-weight",
+    "topic_id": "inkling-thinking-machines-open-weight",
+    "dedup_key": "inkling thinking machines open weight",
+    "title": "Thinking Machines opens Inkling's weights under Apache 2.0, and keeps Tinker",
+    "slugs": {
+      "fr": "inkling-thinking-machines-poids-ouverts-tinker",
+      "en": "inkling-thinking-machines-open-weight-tinker"
+    },
+    "sources": [
+      {
+        "label": "Primary - Thinking Machines Lab, Inkling model card",
+        "url": "https://thinkingmachines.ai/model-card/inkling/",
+        "date": "15-07-2026"
+      },
+      {
+        "label": "Primary - Thinking Machines Lab, 'Inkling: Our open-weights model'",
+        "url": "https://thinkingmachines.ai/news/introducing-inkling/",
+        "date": "15-07-2026"
+      },
+      {
+        "label": "Primary - Hugging Face repo, thinkingmachines/Inkling",
+        "url": "https://huggingface.co/thinkingmachines/Inkling",
+        "date": "15-07-2026"
+      },
+      {
+        "label": "Corroboration - TechCrunch, on Thinking Machines' first open model",
+        "url": "https://techcrunch.com/2026/07/15/thinking-machines-amps-up-its-bet-against-one-size-fits-all-ai-with-its-first-open-model-inkling/",
+        "date": "15-07-2026"
+      },
+      {
+        "label": "Corroboration - Simon Willison, 'Inkling'",
+        "url": "https://simonwillison.net/2026/Jul/16/inkling/",
+        "date": "16-07-2026"
+      },
+      {
+        "label": "Independent eval - Artificial Analysis, Inkling model page",
+        "url": "https://artificialanalysis.ai/models/inkling",
+        "date": "16-07-2026"
+      },
+      {
+        "label": "Availability check - Databricks blog",
+        "url": "https://www.databricks.com/blog/inkling-thinking-machines-lab-now-databricks",
+        "date": "15-07-2026"
+      }
+    ],
+    "published_at": "2026-07-19",
+    "embedding": null
   }
 ]
