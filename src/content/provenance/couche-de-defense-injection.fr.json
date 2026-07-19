@@ -1,0 +1,25 @@
+{
+  "slug": "couche-de-defense-injection",
+  "lang": "fr",
+  "translationKey": "prompt-injection-defense-layer-split",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Adaptive Evaluation of Out-of-Band Defenses Against Prompt Injection in LLM Agents (arXiv 2606.26479)",
+      "url": "https://arxiv.org/abs/2606.26479",
+      "excerpt": "Second, we warn that every one of them is validated only on static benchmarks (a fixed set of injection attempts), the same methodology that made in-band defenses look strong until adaptive, defense-aware attacks broke twelve of them at over 90% success; we specify the threat model and protocol an adaptive evaluation requires. We then run that protocol as an independent reproduction and extension of Progent's own adaptive-attack analysis, on AgentDojo, with an open-weight agent (Qwen2.5-7B) self-hosted on a single H200, a setting its authors did not test. Averaged over three runs, the defense held: Progent cut mean attack success roughly sixfold (25.8% to 4.2%), and a hand-crafted adaptive attack did not raise it (2.6%). This is one small-scale data point on a weak model with a single black-box attack template; a stronger optimized (white-box GCG) attack remains open."
+    },
+    {
+      "sourceId": "s2",
+      "label": "PISmith: Reinforcement Learning-based Red Teaming for Prompt Injection Defenses (arXiv 2603.13026)",
+      "url": "https://arxiv.org/abs/2603.13026",
+      "excerpt": "Although many defenses have been proposed, their robustness against adaptive attacks remains insufficiently evaluated, potentially creating a false sense of security. In this work, we propose PISmith, a reinforcement learning (RL)-based red-teaming framework that systematically assesses existing prompt-injection defenses by training an attack LLM to optimize injected prompts in a practical black-box setting, where the attacker can only query the defended LLM and observe its outputs. [...] Extensive evaluation on 13 benchmarks demonstrates that state-of-the-art prompt injection defenses remain vulnerable to adaptive attacks."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Abdelnabi and Bagdasarian, AI Agents May Always Fall for Prompt Injections (arXiv 2605.17634)",
+      "url": "https://arxiv.org/abs/2605.17634",
+      "excerpt": "Existing defenses based on data-instruction separation both fails to detect attacks that operate through contextual manipulation and degrades contextually appropriate behavior. [...] Adversaries can construct contexts making blocked flows appear legitimate, or defenders tightening norms will block genuinely legitimate flows."
+    }
+  ]
+}
