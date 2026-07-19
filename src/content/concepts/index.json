@@ -1032,7 +1032,8 @@
     "articles": [
       "mcp-tool-poisoning-client-trust",
       "claude-code-action-supply-chain-auth",
-      "command-denylist-not-a-security-boundary"
+      "command-denylist-not-a-security-boundary",
+      "prompt-injection-defense-layer-split"
     ],
     "addedOn": "01-07-2026"
   },
@@ -1136,7 +1137,8 @@
     ],
     "articles": [
       "claude-code-action-supply-chain-auth",
-      "command-denylist-not-a-security-boundary"
+      "command-denylist-not-a-security-boundary",
+      "prompt-injection-defense-layer-split"
     ],
     "addedOn": "11-07-2026"
   },
@@ -1388,7 +1390,8 @@
     "articles": [
       "quantizing-open-models",
       "serving-oss-llm-production-cost",
-      "glm-5-2-open-weight-where-you-run-it"
+      "glm-5-2-open-weight-where-you-run-it",
+      "prompt-injection-defense-layer-split"
     ],
     "addedOn": "04-05-2026"
   },
@@ -2039,7 +2042,8 @@
       "coding-agent-scaffold-confound",
       "prompt-caching-prefix-stability",
       "mcp-tool-poisoning-client-trust",
-      "command-denylist-not-a-security-boundary"
+      "command-denylist-not-a-security-boundary",
+      "prompt-injection-defense-layer-split"
     ],
     "addedOn": "12-05-2026"
   },
@@ -2062,7 +2066,8 @@
       "mcp-tool-poisoning-client-trust",
       "agent-debt-verification-placement",
       "claude-code-action-supply-chain-auth",
-      "command-denylist-not-a-security-boundary"
+      "command-denylist-not-a-security-boundary",
+      "prompt-injection-defense-layer-split"
     ],
     "addedOn": "01-07-2026"
   },
