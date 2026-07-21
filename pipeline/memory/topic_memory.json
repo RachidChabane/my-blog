@@ -980,5 +980,42 @@
     ],
     "published_at": "2026-07-19",
     "embedding": null
+  },
+  {
+    "translation_key": "instruction-file-structure-compliance",
+    "topic_id": "instruction-file-structure-does-not-predict-compliance",
+    "dedup_key": "coding agent instruction file structure does not predict compliance while position in the session does",
+    "title": "Your CLAUDE.md structure is not why the agent stopped listening",
+    "slugs": {
+      "fr": "arretez-de-retoucher-claude-md",
+      "en": "stop-editing-claude-md"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Instruction Adherence in Coding Agent Configuration Files (arXiv 2605.10039)",
+        "url": "https://arxiv.org/abs/2605.10039",
+        "retrieved_at": "2026-07-21",
+        "excerpt": "A systematic factorial study of these choices using four manipulated variables, measuring compliance with a trivial target annotation across 1,650 Claude Code CLI sessions. [...] None of the four structural variables or three two-way interactions produces a detectable contrast after multiple-testing correction. [...] Size and conflict nulls are supported by affirmative-null Bayes factors (BF10 between 0.05 and 0.10) [...] position and architecture nulls are failures to reject without Bayes-factor support. [...] Each additional function the agent generates is associated with approximately 5.6% lower odds of compliance per step (OR = 0.944) within the session-length range we tested.",
+        "source_date": "2026-05-11"
+      },
+      {
+        "source_id": "s2",
+        "label": "Claude Code memory documentation",
+        "url": "https://code.claude.com/docs/en/memory",
+        "retrieved_at": "2026-07-21",
+        "excerpt": "CLAUDE.md files are loaded in full regardless of length, though shorter files produce better adherence."
+      },
+      {
+        "source_id": "s3",
+        "label": "Tian Pan, writing effective agent instruction files",
+        "url": "https://tianpan.co/blog/2026-02-14-writing-effective-agent-instruction-files",
+        "retrieved_at": "2026-07-21",
+        "excerpt": "Research on frontier models suggests they reliably follow somewhere between 150 and 200 instructions before compliance starts degrading.",
+        "source_date": "2026-02-14"
+      }
+    ],
+    "published_at": "2026-07-21",
+    "embedding": null
   }
 ]

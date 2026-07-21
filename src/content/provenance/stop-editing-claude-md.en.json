@@ -1,0 +1,25 @@
+{
+  "slug": "stop-editing-claude-md",
+  "lang": "en",
+  "translationKey": "instruction-file-structure-compliance",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Instruction Adherence in Coding Agent Configuration Files (arXiv 2605.10039)",
+      "url": "https://arxiv.org/abs/2605.10039",
+      "excerpt": "A systematic factorial study of these choices using four manipulated variables, measuring compliance with a trivial target annotation across 1,650 Claude Code CLI sessions. [...] None of the four structural variables or three two-way interactions produces a detectable contrast after multiple-testing correction. [...] Size and conflict nulls are supported by affirmative-null Bayes factors (BF10 between 0.05 and 0.10) [...] position and architecture nulls are failures to reject without Bayes-factor support. [...] Each additional function the agent generates is associated with approximately 5.6% lower odds of compliance per step (OR = 0.944) within the session-length range we tested."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Claude Code memory documentation",
+      "url": "https://code.claude.com/docs/en/memory",
+      "excerpt": "CLAUDE.md files are loaded in full regardless of length, though shorter files produce better adherence."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Tian Pan, writing effective agent instruction files",
+      "url": "https://tianpan.co/blog/2026-02-14-writing-effective-agent-instruction-files",
+      "excerpt": "Research on frontier models suggests they reliably follow somewhere between 150 and 200 instructions before compliance starts degrading."
+    }
+  ]
+}
