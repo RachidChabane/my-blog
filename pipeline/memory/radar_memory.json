@@ -774,5 +774,39 @@
     ],
     "published_at": "2026-07-19",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-mid-conversation-system-messages",
+    "topic_id": "claude-mid-conversation-system-messages",
+    "dedup_key": "claude mid conversation system messages",
+    "title": "Claude's system role lands on three models, and two vendor docs disagree on which",
+    "slugs": {
+      "fr": "claude-messages-systeme-en-cours-de-conversation",
+      "en": "claude-mid-conversation-system-messages"
+    },
+    "sources": [
+      {
+        "label": "Anthropic - Claude Platform release notes, July 15 2026 entry",
+        "url": "https://platform.claude.com/docs/en/release-notes/api",
+        "date": "15-07-2026"
+      },
+      {
+        "label": "Anthropic - Mid-conversation system messages docs page",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages",
+        "date": "21-07-2026"
+      },
+      {
+        "label": "AWS - Amazon Bedrock user guide, Mid-conversation system messages",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/claude-messages-mid-conversation-system.html",
+        "date": "21-07-2026"
+      },
+      {
+        "label": "simonw/llm-anthropic issue #73",
+        "url": "https://github.com/simonw/llm-anthropic/issues/73",
+        "date": "28-05-2026"
+      }
+    ],
+    "published_at": "2026-07-21",
+    "embedding": null
   }
 ]
