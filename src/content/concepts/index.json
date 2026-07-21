@@ -80,6 +80,32 @@
     "addedOn": "14-07-2026"
   },
   {
+    "id": "affirmative-null",
+    "label": {
+      "fr": "Nul affirmatif",
+      "en": "Affirmative null"
+    },
+    "definition": {
+      "fr": "Résultat nul étayé par une mesure de preuve, typiquement un facteur de Bayes qui favorise l'absence d'effet, et non par le seul échec à rejeter l'hypothèse nulle. La distinction sépare une preuve d'absence d'une absence de preuve, souvent imputable à une puissance insuffisante.",
+      "en": "A null result backed by a positive measure of evidence, typically a Bayes factor favouring no effect, rather than by a mere failure to reject the null. The distinction separates evidence of absence from absence of evidence, which is often just low power."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "evidence of absence",
+      "Bayes factor",
+      "null result",
+      "failure to reject"
+    ],
+    "related": [
+      "agent-evaluation",
+      "instruction-adherence"
+    ],
+    "articles": [
+      "instruction-file-structure-compliance"
+    ],
+    "addedOn": "21-07-2026"
+  },
+  {
     "id": "agent-debt",
     "label": {
       "fr": "Dette d'agent",
@@ -138,6 +164,33 @@
       "cli-agent-productivity-proxy-choice"
     ],
     "addedOn": "12-05-2026"
+  },
+  {
+    "id": "agent-instruction-file",
+    "label": {
+      "fr": "Fichier d'instructions d'agent",
+      "en": "Agent instruction file"
+    },
+    "definition": {
+      "fr": "Fichier de consignes déposé dans un dépôt, du type CLAUDE.md ou AGENTS.md, que l'agent de codage charge en début de session pour connaître les conventions et les interdits du projet. Il fixe le contenu des règles, pas le moment où l'agent les applique.",
+      "en": "A repository file such as CLAUDE.md or AGENTS.md that a coding agent loads at the start of a session to learn a project's conventions and prohibitions. It sets what the rules say, not when in the session the agent still applies them."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "CLAUDE.md",
+      "AGENTS.md",
+      "instruction file",
+      "agent memory file"
+    ],
+    "related": [
+      "coding-agents",
+      "agent-scaffold",
+      "context-budget"
+    ],
+    "articles": [
+      "instruction-file-structure-compliance"
+    ],
+    "addedOn": "21-07-2026"
   },
   {
     "id": "agent-memory",
@@ -269,7 +322,8 @@
       "coding-agent-harness-not-capability",
       "claude-code-action-supply-chain-auth",
       "multi-agent-gains-compute-artifact",
-      "harness-over-model-has-no-global-ordering"
+      "harness-over-model-has-no-global-ordering",
+      "instruction-file-structure-compliance"
     ],
     "addedOn": "17-06-2026"
   },
@@ -669,7 +723,8 @@
       "claude-code-action-supply-chain-auth",
       "harness-over-model-has-no-global-ordering",
       "command-denylist-not-a-security-boundary",
-      "cli-agent-productivity-proxy-choice"
+      "cli-agent-productivity-proxy-choice",
+      "instruction-file-structure-compliance"
     ],
     "addedOn": "30-05-2026"
   },
@@ -722,7 +777,8 @@
     ],
     "articles": [
       "context-budget",
-      "prompt-caching-prefix-stability"
+      "prompt-caching-prefix-stability",
+      "instruction-file-structure-compliance"
     ],
     "addedOn": "10-06-2026"
   },
@@ -1116,6 +1172,33 @@
     "addedOn": "22-06-2026"
   },
   {
+    "id": "instruction-adherence",
+    "label": {
+      "fr": "Observance des instructions",
+      "en": "Instruction adherence"
+    },
+    "definition": {
+      "fr": "Proportion des occasions où un agent applique effectivement une consigne qui lui a été donnée, mesurée sur une cible vérifiable plutôt que sur une impression de qualité. Elle se dégrade avec la profondeur de la session, ce qui en fait une mesure à horizon et non un simple taux global.",
+      "en": "The share of opportunities on which an agent actually applies a rule it was given, measured against a checkable target rather than a general sense of quality. It decays with session depth, which makes it a horizon-dependent measure rather than a single global rate."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "instruction compliance",
+      "compliance rate",
+      "rule adherence",
+      "observance des instructions"
+    ],
+    "related": [
+      "agent-instruction-file",
+      "long-horizon-reliability",
+      "out-of-band-enforcement"
+    ],
+    "articles": [
+      "instruction-file-structure-compliance"
+    ],
+    "addedOn": "21-07-2026"
+  },
+  {
     "id": "iterative-coding-benchmark",
     "label": {
       "fr": "Banc d'essai de code itératif",
@@ -1270,7 +1353,8 @@
       "agent-pass-at-1-long-horizon-reliability",
       "active-context-compression-prune-history",
       "glm-5-2-open-weight-where-you-run-it",
-      "coding-agent-harness-not-capability"
+      "coding-agent-harness-not-capability",
+      "instruction-file-structure-compliance"
     ],
     "addedOn": "19-06-2026"
   },
@@ -1471,7 +1555,8 @@
       "tool-use"
     ],
     "articles": [
-      "prompt-injection-defense-layer-split"
+      "prompt-injection-defense-layer-split",
+      "instruction-file-structure-compliance"
     ],
     "addedOn": "19-07-2026"
   },
