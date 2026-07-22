@@ -352,6 +352,31 @@
     "addedOn": "10-06-2026"
   },
   {
+    "id": "attention-readout-gap",
+    "label": {
+      "fr": "Écart de restitution attentionnelle",
+      "en": "Attention readout gap"
+    },
+    "definition": {
+      "fr": "Mode de défaillance où le modèle porte bien son attention sur le bon segment du contexte, mais produit malgré tout une sortie erronée à partir de celui-ci, par exemple le mauvais nom de fonction alors que le bon outil a été repéré. La perte se situe à la restitution, pas à la récupération, si bien que réécrire le contexte ne corrige rien.",
+      "en": "A failure mode where the model does attend to the correct segment of the context yet still produces a wrong output from it, for instance the wrong function name after the right tool was located. The loss sits at readout rather than retrieval, so rewriting the context fixes nothing."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "readout gap",
+      "tool readout",
+      "readout-side intervention"
+    ],
+    "related": [
+      "tool-use",
+      "natural-language-tool-selection"
+    ],
+    "articles": [
+      "tool-calling-readout-not-descriptions"
+    ],
+    "addedOn": "22-07-2026"
+  },
+  {
     "id": "authorization-bypass",
     "label": {
       "fr": "Contournement d'autorisation",
@@ -1451,7 +1476,8 @@
       "tool-use"
     ],
     "articles": [
-      "mcp-tool-poisoning-client-trust"
+      "mcp-tool-poisoning-client-trust",
+      "tool-calling-readout-not-descriptions"
     ],
     "addedOn": "01-07-2026"
   },
@@ -1479,6 +1505,31 @@
       "multi-agent-gains-compute-artifact"
     ],
     "addedOn": "13-07-2026"
+  },
+  {
+    "id": "natural-language-tool-selection",
+    "label": {
+      "fr": "Sélection d'outil en langage naturel",
+      "en": "Natural-language tool selection"
+    },
+    "definition": {
+      "fr": "Technique où le modèle désigne l'outil et ses paramètres en prose libre, un analyseur en aval convertissant ensuite cette réponse en appel exécutable. On déplace ainsi la contrainte de format hors du canal de génération, ce qui profite surtout aux modèles peu ou pas entraînés à l'appel de fonction natif.",
+      "en": "A technique where the model names the tool and its parameters in free prose, and a downstream parser converts that answer into an executable call. It moves the format constraint out of the generation channel, which mainly helps models with little or no native function-calling training."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "natural language tool calling",
+      "NL tool selection",
+      "prose tool calling"
+    ],
+    "related": [
+      "tool-use",
+      "schema-constrained-tool-calling"
+    ],
+    "articles": [
+      "tool-calling-readout-not-descriptions"
+    ],
+    "addedOn": "22-07-2026"
   },
   {
     "id": "offline-evaluation",
@@ -1527,7 +1578,8 @@
       "quantizing-open-models",
       "serving-oss-llm-production-cost",
       "glm-5-2-open-weight-where-you-run-it",
-      "prompt-injection-defense-layer-split"
+      "prompt-injection-defense-layer-split",
+      "tool-calling-readout-not-descriptions"
     ],
     "addedOn": "04-05-2026"
   },
@@ -1885,6 +1937,32 @@
     "addedOn": "14-07-2026"
   },
   {
+    "id": "schema-constrained-tool-calling",
+    "label": {
+      "fr": "Appel d'outil contraint par schéma",
+      "en": "Schema-constrained tool calling"
+    },
+    "definition": {
+      "fr": "Mode d'invocation où le modèle doit émettre l'appel d'outil sous forme d'un objet JSON conforme à un schéma déclaré, souvent imposé par un décodage contraint qui interdit tout jeton violant la grammaire. Le format garantit qu'un analyseur syntaxique acceptera la sortie, mais il ajoute une charge de production au moment où le modèle doit nommer la fonction et remplir ses arguments.",
+      "en": "An invocation mode in which the model must emit the tool call as a JSON object conforming to a declared schema, often enforced by constrained decoding that forbids any token violating the grammar. The format guarantees a parser will accept the output, but it adds an emission burden at the moment the model has to name the function and fill its arguments."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "structured tool calling",
+      "JSON Schema tool calling",
+      "constrained decoding",
+      "programmatic tool calling"
+    ],
+    "related": [
+      "tool-use",
+      "model-context-protocol"
+    ],
+    "articles": [
+      "tool-calling-readout-not-descriptions"
+    ],
+    "addedOn": "22-07-2026"
+  },
+  {
     "id": "selection-bias",
     "label": {
       "en": "Selection bias",
@@ -2208,7 +2286,8 @@
       "prompt-caching-prefix-stability",
       "mcp-tool-poisoning-client-trust",
       "command-denylist-not-a-security-boundary",
-      "prompt-injection-defense-layer-split"
+      "prompt-injection-defense-layer-split",
+      "tool-calling-readout-not-descriptions"
     ],
     "addedOn": "12-05-2026"
   },
