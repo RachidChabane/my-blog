@@ -1,0 +1,29 @@
+{
+  "slug": "votre-agent-regarde-le-bon-outil-et-se-trompe-quand-meme",
+  "lang": "fr",
+  "translationKey": "tool-calling-readout-not-descriptions",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Johnson et al., Natural Language Tools (original)",
+      "url": "https://arxiv.org/abs/2510.14453",
+      "excerpt": "We present Natural Language Tools (NLT), a framework that replaces programmatic JSON tool calling in large language models (LLMs) with natural language outputs. By decoupling tool selection from response generation, NLT eliminates task interference and format constraints that degrade tool call performance. When evaluated across 10 models and 6,400 trials spanning customer service and mental health domains, NLT improves tool calling accuracy by 18.4 percentage points while reducing output variance by 70%. Open-weight models see the largest gains, surpassing flagship closed-weight alternatives, with implications for model training in both reinforcement learning and supervised fine-tuning stages.",
+      "span": {
+        "start": 308,
+        "end": 598
+      }
+    },
+    {
+      "sourceId": "s2",
+      "label": "Somma, Plante and Premji, NLT replication study",
+      "url": "https://arxiv.org/abs/2607.03953",
+      "excerpt": "NLT improves tool-calling accuracy by 14.9 percentage points overall (62.3% versus 47.4% structured) and reduces critical errors by 93% (51 versus 755 errors). The gains depend on model capability: models without native tool calling, reasoning models, and smaller models gain substantially (+24.0pp to +43.1pp), while heavily optimized frontier models (GPT-5, Gemini 2.5 Pro) show smaller or reversed advantages. This matches recent analyses of reinforcement-learning-optimized tool use (Martinez, 2025). NLT also cuts token usage by 25.2%."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Chen, Looking Is Not Picking (attention-segment account)",
+      "url": "https://arxiv.org/abs/2606.16364",
+      "excerpt": "the model attends most to the correct tool 80% of the time (vs. 21% chance), and the gold is the under-attended segment on only 10%. Prompt-repair recovers at most 23% of failures, while readout-side intervention recovers 59-91% of failures. Function-name selection improves by +11.9 points against a +17.9-point oracle ceiling, and Seal-Tools improves by +14.9 points."
+    }
+  ]
+}
