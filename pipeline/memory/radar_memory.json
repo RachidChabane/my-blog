@@ -808,5 +808,34 @@
     ],
     "published_at": "2026-07-21",
     "embedding": null
+  },
+  {
+    "translation_key": "gemini-3-5-flash-cyber-restricted-access",
+    "topic_id": "gemini-3-5-flash-cyber-restricted-access",
+    "dedup_key": "gemini 3 5 flash cyber restricted access",
+    "title": "Google's best V8 bug finder is a model you cannot call: 55 issues, governments only",
+    "slugs": {
+      "fr": "gemini-3-5-flash-cyber-reserve-aux-gouvernements",
+      "en": "gemini-3-5-flash-cyber-governments-only"
+    },
+    "sources": [
+      {
+        "label": "Google DeepMind - Introducing Gemini 3.5 Flash Cyber",
+        "url": "https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/",
+        "date": "21-07-2026"
+      },
+      {
+        "label": "The Hacker News - Google Launches Gemini 3.5 Flash Cyber AI to Find and Fix Software Vulnerabilities",
+        "url": "https://thehackernews.com/2026/07/google-launches-gemini-35-flash-cyber.html",
+        "date": "21-07-2026"
+      },
+      {
+        "label": "Gemini API pricing documentation",
+        "url": "https://ai.google.dev/gemini-api/docs/pricing",
+        "date": "22-07-2026"
+      }
+    ],
+    "published_at": "2026-07-22",
+    "embedding": null
   }
 ]
