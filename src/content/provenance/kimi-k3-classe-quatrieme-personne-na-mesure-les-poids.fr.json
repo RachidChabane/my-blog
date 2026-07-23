@@ -1,0 +1,37 @@
+{
+  "slug": "kimi-k3-classe-quatrieme-personne-na-mesure-les-poids",
+  "lang": "fr",
+  "translationKey": "kimi-k3-ranked-endpoint-not-weights",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Artificial Analysis, Kimi K3 model page",
+      "url": "https://artificialanalysis.ai/models/kimi-k3",
+      "excerpt": "Kimi K3 scores 57 on the Artificial Analysis Intelligence Index, ranking #4 / 186. Output speed: 35.2 Output tokens per second. Price: $3.00 per 1M tokens input, $15.00 per 1M tokens output. Open weights: No, Kimi K3 is proprietary. The model weights are not publicly available.",
+      "span": {
+        "start": 0,
+        "end": 278
+      }
+    },
+    {
+      "sourceId": "s2",
+      "label": "Simon Willison, hands-on with Kimi K3",
+      "url": "https://simonwillison.net/2026/Jul/16/kimi-k3/",
+      "excerpt": "The new model is notable for the pricing: $3/million input tokens and $15/million output tokens. An open weight release is promised 'by July 27, 2026'.",
+      "span": {
+        "start": 0,
+        "end": 151
+      }
+    },
+    {
+      "sourceId": "s3",
+      "label": "Nathan Lambert, Interconnects",
+      "url": "https://www.interconnects.ai/p/kimi-k3-the-open-weights-escalation",
+      "excerpt": "K3 is a 2.8T parameter MoE model which will have its weights released on July 27th. It will be the closest open models have been to the frontier since DeepSeek R1.",
+      "span": {
+        "start": 0,
+        "end": 163
+      }
+    }
+  ]
+}

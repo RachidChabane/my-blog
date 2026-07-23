@@ -1055,5 +1055,42 @@
     ],
     "published_at": "2026-07-22",
     "embedding": null
+  },
+  {
+    "translation_key": "kimi-k3-ranked-endpoint-not-weights",
+    "topic_id": "kimi-k3-open-weights-as-a-release-date",
+    "dedup_key": "an open weight model ranks near the frontier on independent indexes eleven days before its weights are published so the published rankings measure a rented hosted endpoint rather than an artifact anyone can serve",
+    "title": "Kimi K3 ranks fourth, and nobody has measured the model you would run",
+    "slugs": {
+      "fr": "kimi-k3-classe-quatrieme-personne-na-mesure-les-poids",
+      "en": "kimi-k3-ranks-fourth-nobody-measured-the-weights"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Artificial Analysis, Kimi K3 model page",
+        "url": "https://artificialanalysis.ai/models/kimi-k3",
+        "retrieved_at": "2026-07-23",
+        "excerpt": "Kimi K3 scores 57 on the Artificial Analysis Intelligence Index, ranking #4 / 186. Output speed: 35.2 Output tokens per second. Price: $3.00 per 1M tokens input, $15.00 per 1M tokens output. Open weights: No, Kimi K3 is proprietary. The model weights are not publicly available."
+      },
+      {
+        "source_id": "s2",
+        "label": "Simon Willison, hands-on with Kimi K3",
+        "url": "https://simonwillison.net/2026/Jul/16/kimi-k3/",
+        "retrieved_at": "2026-07-23",
+        "excerpt": "The new model is notable for the pricing: $3/million input tokens and $15/million output tokens. An open weight release is promised 'by July 27, 2026'.",
+        "source_date": "2026-07-16"
+      },
+      {
+        "source_id": "s3",
+        "label": "Nathan Lambert, Interconnects",
+        "url": "https://www.interconnects.ai/p/kimi-k3-the-open-weights-escalation",
+        "retrieved_at": "2026-07-23",
+        "excerpt": "K3 is a 2.8T parameter MoE model which will have its weights released on July 27th. It will be the closest open models have been to the frontier since DeepSeek R1.",
+        "source_date": "2026-07-20"
+      }
+    ],
+    "published_at": "2026-07-23",
+    "embedding": null
   }
 ]
