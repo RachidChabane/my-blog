@@ -837,5 +837,34 @@
     ],
     "published_at": "2026-07-22",
     "embedding": null
+  },
+  {
+    "translation_key": "hugging-face-agent-breach-guardrail-asymmetry",
+    "topic_id": "hugging-face-agent-breach-guardrail-asymmetry",
+    "dedup_key": "hugging face agent breach guardrail asymmetry",
+    "title": "Hugging Face ran its breach forensics on an open-weight model, because the hosted ones refused",
+    "slugs": {
+      "fr": "faille-hugging-face-asymetrie-des-garde-fous",
+      "en": "hugging-face-breach-guardrail-asymmetry"
+    },
+    "sources": [
+      {
+        "label": "Hugging Face - Security incident disclosure, July 2026",
+        "url": "https://huggingface.co/blog/security-incident-july-2026",
+        "date": "16-07-2026"
+      },
+      {
+        "label": "The Hacker News - World's largest AI model repository breached by autonomous AI agent",
+        "url": "https://thehackernews.com/2026/07/worlds-largest-ai-model-repository.html",
+        "date": "20-07-2026"
+      },
+      {
+        "label": "The Stack - Hugging Face hacked: turned to Chinese LLM after US models blocked blue team",
+        "url": "https://www.thestack.technology/hugging-face-hacked-turned-to-chinese-llm-for-help-after-us-models-blocked-blue-team/",
+        "date": "19-07-2026"
+      }
+    ],
+    "published_at": "2026-07-23",
+    "embedding": null
   }
 ]
