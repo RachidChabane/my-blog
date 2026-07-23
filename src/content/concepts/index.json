@@ -924,7 +924,8 @@
     "articles": [
       "ai-evaluation-compute-cost",
       "glm-5-2-open-weight-where-you-run-it",
-      "multi-agent-gains-compute-artifact"
+      "multi-agent-gains-compute-artifact",
+      "kimi-k3-ranked-endpoint-not-weights"
     ],
     "addedOn": "17-06-2026"
   },
@@ -1325,7 +1326,8 @@
     "articles": [
       "serving-oss-llm-production-cost",
       "llm-temp0-nondeterminism-batch-invariant",
-      "glm-5-2-open-weight-where-you-run-it"
+      "glm-5-2-open-weight-where-you-run-it",
+      "kimi-k3-ranked-endpoint-not-weights"
     ],
     "addedOn": "04-05-2026"
   },
@@ -1459,6 +1461,33 @@
     "addedOn": "05-07-2026"
   },
   {
+    "id": "mixture-of-experts",
+    "label": {
+      "fr": "Mixture-of-experts",
+      "en": "Mixture of experts"
+    },
+    "definition": {
+      "fr": "Architecture de modèle où chaque token n'active qu'une petite fraction des paramètres : un routeur sélectionne quelques experts parmi des centaines. Le nombre total de paramètres reste énorme alors que le calcul par token reste modeste, ce qui déplace le coût du service vers la capacité mémoire et la bande passante.",
+      "en": "A model architecture where a router activates only a few of many expert sub-networks per token. Total parameter count stays very large while per-token compute stays modest, which shifts the serving cost from arithmetic to memory capacity and bandwidth."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "MoE",
+      "mixture of experts",
+      "sparse mixture-of-experts",
+      "expert routing"
+    ],
+    "related": [
+      "quantization",
+      "llm-serving",
+      "open-weight-models"
+    ],
+    "articles": [
+      "kimi-k3-ranked-endpoint-not-weights"
+    ],
+    "addedOn": "23-07-2026"
+  },
+  {
     "id": "model-context-protocol",
     "label": {
       "fr": "Model Context Protocol (MCP)",
@@ -1579,7 +1608,8 @@
       "serving-oss-llm-production-cost",
       "glm-5-2-open-weight-where-you-run-it",
       "prompt-injection-defense-layer-split",
-      "tool-calling-readout-not-descriptions"
+      "tool-calling-readout-not-descriptions",
+      "kimi-k3-ranked-endpoint-not-weights"
     ],
     "addedOn": "04-05-2026"
   },
@@ -1751,7 +1781,8 @@
       "open-weight-models"
     ],
     "articles": [
-      "quantizing-open-models"
+      "quantizing-open-models",
+      "kimi-k3-ranked-endpoint-not-weights"
     ],
     "addedOn": "19-05-2026"
   },
@@ -2012,6 +2043,33 @@
       "cli-agent-productivity-proxy-choice"
     ],
     "addedOn": "18-07-2026"
+  },
+  {
+    "id": "served-endpoint-benchmarking",
+    "label": {
+      "fr": "Mesure sur API servie",
+      "en": "Served-endpoint benchmarking"
+    },
+    "definition": {
+      "fr": "Mesurer un modèle à travers une API hébergée par le fournisseur : le score, la vitesse et le prix obtenus décrivent une configuration servie (matériel, précision, mise en lots, routage) et non le fichier de poids. Ces chiffres ne se transportent dans aucun sens vers un déploiement auto-hébergé.",
+      "en": "Measuring a model through a vendor-hosted API, so the resulting score, speed and price describe a served configuration (hardware, precision, batching, routing) rather than the weight file. The numbers do not transfer to a self-hosted deployment in either direction."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "endpoint benchmarking",
+      "hosted endpoint measurement",
+      "API-measured benchmark"
+    ],
+    "related": [
+      "cost-aware-evaluation",
+      "open-weight-models",
+      "llm-serving",
+      "mixture-of-experts"
+    ],
+    "articles": [
+      "kimi-k3-ranked-endpoint-not-weights"
+    ],
+    "addedOn": "23-07-2026"
   },
   {
     "id": "severity-tiering",
