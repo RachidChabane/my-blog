@@ -1092,5 +1092,34 @@
     ],
     "published_at": "2026-07-23",
     "embedding": null
+  },
+  {
+    "translation_key": "swe-bench-private-holdout-trust",
+    "topic_id": "swe-bench-contamination-private-holdout",
+    "dedup_key": "swe-bench verified is contaminated so it was retired for a private codebase holdout that trades training leakage for an unauditable benchmark",
+    "title": "A private SWE-bench holdout moves the trust problem to its author",
+    "slugs": {
+      "fr": "un-holdout-prive-swe-bench-ne-restaure-pas-la-confiance",
+      "en": "swe-bench-private-holdout-moves-the-trust-problem"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "CodeAnt: SWE-bench leaderboard 2026, what the scores mean",
+        "url": "https://www.codeant.ai/blogs/swe-bench-scores",
+        "retrieved_at": "2026-07-24",
+        "excerpt": "Claude Opus 4.5 scores 80.9% on SWE-bench Verified. The same model, on SWE-bench Pro, using standardised scaffolding on tasks it could not have seen during training, scores 45.9%.",
+        "source_date": "2026-04-13"
+      },
+      {
+        "source_id": "s2",
+        "label": "Scale: SWE-bench Pro public leaderboard",
+        "url": "https://labs.scale.com/leaderboard/swe_bench_pro_public",
+        "retrieved_at": "2026-07-24",
+        "excerpt": "The benchmark is constructed from GPL-style copyleft repositories and private proprietary codebases, creating legal and access barriers that reduce the likelihood of contamination."
+      }
+    ],
+    "published_at": "2026-07-24",
+    "embedding": null
   }
 ]

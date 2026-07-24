@@ -1,0 +1,19 @@
+{
+  "slug": "un-holdout-prive-swe-bench-ne-restaure-pas-la-confiance",
+  "lang": "fr",
+  "translationKey": "swe-bench-private-holdout-trust",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "CodeAnt: SWE-bench leaderboard 2026, what the scores mean",
+      "url": "https://www.codeant.ai/blogs/swe-bench-scores",
+      "excerpt": "Claude Opus 4.5 scores 80.9% on SWE-bench Verified. The same model, on SWE-bench Pro, using standardised scaffolding on tasks it could not have seen during training, scores 45.9%."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Scale: SWE-bench Pro public leaderboard",
+      "url": "https://labs.scale.com/leaderboard/swe_bench_pro_public",
+      "excerpt": "The benchmark is constructed from GPL-style copyleft repositories and private proprietary codebases, creating legal and access barriers that reduce the likelihood of contamination."
+    }
+  ]
+}
