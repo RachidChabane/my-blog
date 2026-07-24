@@ -161,7 +161,8 @@
       "observability-is-not-evaluation",
       "code-review-agents-signal-to-noise",
       "harness-over-model-has-no-global-ordering",
-      "cli-agent-productivity-proxy-choice"
+      "cli-agent-productivity-proxy-choice",
+      "swe-bench-private-holdout-trust"
     ],
     "addedOn": "12-05-2026"
   },
@@ -323,7 +324,8 @@
       "claude-code-action-supply-chain-auth",
       "multi-agent-gains-compute-artifact",
       "harness-over-model-has-no-global-ordering",
-      "instruction-file-structure-compliance"
+      "instruction-file-structure-compliance",
+      "swe-bench-private-holdout-trust"
     ],
     "addedOn": "17-06-2026"
   },
@@ -426,6 +428,32 @@
     "addedOn": "22-06-2026"
   },
   {
+    "id": "benchmark-auditability",
+    "label": {
+      "fr": "Auditabilité d'un benchmark",
+      "en": "Benchmark auditability"
+    },
+    "definition": {
+      "fr": "La propriété d'un benchmark dont les tâches et la notation peuvent être inspectées par une partie externe, qui peut alors juger elle-même de ce qu'un score signifie. Elle est distincte de la résistance à la contamination : un jeu de tâches privé gagne l'une en perdant l'autre.",
+      "en": "The property of a benchmark whose tasks and grading can be inspected by an outside party, who can then judge for itself what a score means. It is distinct from contamination-resistance: a private task set gains one by giving up the other."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "benchmark auditability",
+      "auditable benchmark",
+      "inspectable tasks"
+    ],
+    "related": [
+      "swe-bench",
+      "benchmark-self-reporting",
+      "private-holdout"
+    ],
+    "articles": [
+      "swe-bench-private-holdout-trust"
+    ],
+    "addedOn": "24-07-2026"
+  },
+  {
     "id": "benchmark-contamination",
     "label": {
       "fr": "Contamination du banc d'essai",
@@ -447,7 +475,8 @@
       "agent-evaluation"
     ],
     "articles": [
-      "reward-hacking-inflates-coding-benchmarks"
+      "reward-hacking-inflates-coding-benchmarks",
+      "swe-bench-private-holdout-trust"
     ],
     "addedOn": "06-07-2026"
   },
@@ -475,7 +504,8 @@
       "coding-agent-scaffold-confound",
       "glm-5-2-open-weight-where-you-run-it",
       "agent-memory-benchmark-recall-not-trust",
-      "cli-agent-productivity-proxy-choice"
+      "cli-agent-productivity-proxy-choice",
+      "swe-bench-private-holdout-trust"
     ],
     "addedOn": "18-06-2026"
   },
@@ -1119,7 +1149,8 @@
       "variance-decomposition"
     ],
     "articles": [
-      "harness-over-model-has-no-global-ordering"
+      "harness-over-model-has-no-global-ordering",
+      "swe-bench-private-holdout-trust"
     ],
     "addedOn": "15-07-2026"
   },
@@ -1693,6 +1724,32 @@
     "addedOn": "15-07-2026"
   },
   {
+    "id": "private-holdout",
+    "label": {
+      "fr": "Holdout privé",
+      "en": "Private holdout"
+    },
+    "definition": {
+      "fr": "Un jeu de tâches d'évaluation gardé privé ou propriétaire pour qu'il ne puisse pas entrer dans les données d'entraînement, ce qui réduit la contamination. Le prix de cette confidentialité est qu'aucun tiers ne peut inspecter les tâches ni leur notation.",
+      "en": "An evaluation task set kept private or proprietary so it cannot enter training data, which lowers contamination. The cost of that privacy is that no third party can inspect the tasks or how they are graded."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "private holdout",
+      "contamination-resistant holdout",
+      "held-out task set"
+    ],
+    "related": [
+      "swe-bench",
+      "benchmark-contamination",
+      "benchmark-self-reporting"
+    ],
+    "articles": [
+      "swe-bench-private-holdout-trust"
+    ],
+    "addedOn": "24-07-2026"
+  },
+  {
     "id": "prompt-caching",
     "label": {
       "fr": "Cache de prompt",
@@ -2243,7 +2300,8 @@
     ],
     "articles": [
       "coding-agent-scaffold-confound",
-      "reward-hacking-inflates-coding-benchmarks"
+      "reward-hacking-inflates-coding-benchmarks",
+      "swe-bench-private-holdout-trust"
     ],
     "addedOn": "18-06-2026"
   },
