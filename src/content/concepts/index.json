@@ -21,7 +21,8 @@
       "code-review-agent"
     ],
     "articles": [
-      "code-review-agents-signal-to-noise"
+      "code-review-agents-signal-to-noise",
+      "irreversible-actions-before-abstention"
     ],
     "addedOn": "12-07-2026"
   },
@@ -106,6 +107,33 @@
     "addedOn": "21-07-2026"
   },
   {
+    "id": "agent-abstention",
+    "label": {
+      "fr": "Abstention d'agent",
+      "en": "Agent abstention"
+    },
+    "definition": {
+      "fr": "Capacité d'un agent à refuser une tâche plutôt qu'à agir lorsque la demande est sous-spécifiée, hors périmètre ou risquée à exécuter. Les benchmarks la notent sur des tâches appariées exigeant à la fois une action correcte et un refus correct, et les travaux récents mesurent aussi le moment où ce refus survient dans la trajectoire.",
+      "en": "An agent's capacity to decline a task instead of acting when the request is underspecified, out of scope, or unsafe to execute. Benchmarks score it with paired tasks that require both a correct action and a correct refusal, and recent work also measures when in the trajectory that refusal arrives."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "abstention",
+      "agentic abstention",
+      "paired accuracy",
+      "late abstention"
+    ],
+    "related": [
+      "agent-evaluation",
+      "abstain-by-default",
+      "agent-scaffold"
+    ],
+    "articles": [
+      "irreversible-actions-before-abstention"
+    ],
+    "addedOn": "25-07-2026"
+  },
+  {
     "id": "agent-debt",
     "label": {
       "fr": "Dette d'agent",
@@ -162,7 +190,8 @@
       "code-review-agents-signal-to-noise",
       "harness-over-model-has-no-global-ordering",
       "cli-agent-productivity-proxy-choice",
-      "swe-bench-private-holdout-trust"
+      "swe-bench-private-holdout-trust",
+      "irreversible-actions-before-abstention"
     ],
     "addedOn": "12-05-2026"
   },
@@ -325,7 +354,8 @@
       "multi-agent-gains-compute-artifact",
       "harness-over-model-has-no-global-ordering",
       "instruction-file-structure-compliance",
-      "swe-bench-private-holdout-trust"
+      "swe-bench-private-holdout-trust",
+      "irreversible-actions-before-abstention"
     ],
     "addedOn": "17-06-2026"
   },
@@ -1669,7 +1699,8 @@
     ],
     "articles": [
       "prompt-injection-defense-layer-split",
-      "instruction-file-structure-compliance"
+      "instruction-file-structure-compliance",
+      "irreversible-actions-before-abstention"
     ],
     "addedOn": "19-07-2026"
   },
@@ -2249,7 +2280,8 @@
     "articles": [
       "evaluating-tool-using-agents",
       "coding-agent-harness-not-capability",
-      "agent-debt-verification-placement"
+      "agent-debt-verification-placement",
+      "irreversible-actions-before-abstention"
     ],
     "addedOn": "12-05-2026"
   },
@@ -2377,6 +2409,33 @@
     "addedOn": "01-07-2026"
   },
   {
+    "id": "tool-reversibility",
+    "label": {
+      "fr": "Classification de réversibilité des outils",
+      "en": "Tool reversibility classification"
+    },
+    "definition": {
+      "fr": "Classer chaque outil du registre d'un agent selon que son effet peut être annulé ou non, puis rendre les outils irréversibles inatteignables tant qu'une autorisation explicite n'accompagne pas l'appel. Cette classification est une propriété statique tranchée à l'écriture du manifeste, sans jugement de confiance à l'exécution.",
+      "en": "Classifying each tool in an agent's registry by whether its effect can be undone, then making the irreversible ones unreachable unless an explicit authorization travels with the call. The classification is a static property settled when the manifest is written, so no runtime confidence judgment is involved."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "reversibility gate",
+      "irreversible action gating",
+      "static reversibility classification"
+    ],
+    "related": [
+      "tool-use",
+      "out-of-band-enforcement",
+      "state-safety",
+      "agent-abstention"
+    ],
+    "articles": [
+      "irreversible-actions-before-abstention"
+    ],
+    "addedOn": "25-07-2026"
+  },
+  {
     "id": "tool-use",
     "label": {
       "fr": "Usage d'outils",
@@ -2403,7 +2462,8 @@
       "mcp-tool-poisoning-client-trust",
       "command-denylist-not-a-security-boundary",
       "prompt-injection-defense-layer-split",
-      "tool-calling-readout-not-descriptions"
+      "tool-calling-readout-not-descriptions",
+      "irreversible-actions-before-abstention"
     ],
     "addedOn": "12-05-2026"
   },
