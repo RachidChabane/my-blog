@@ -1121,5 +1121,43 @@
     ],
     "published_at": "2026-07-24",
     "embedding": null
+  },
+  {
+    "translation_key": "irreversible-actions-before-abstention",
+    "topic_id": "agentic-abstention-gap",
+    "dedup_key": "llm agents fail to stop acting under ambiguity and abstention ability is decoupled from task solving capability",
+    "title": "Count the irreversible actions an agent takes before it stops",
+    "slugs": {
+      "fr": "compter-les-actions-irreversibles-avant-l-arret-de-l-agent",
+      "en": "count-the-irreversible-actions-before-an-agent-stops"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "AgentAbstain: Do LLM Agents Know When Not to Act? (arXiv 2607.10059)",
+        "url": "https://arxiv.org/abs/2607.10059",
+        "retrieved_at": "2026-07-25",
+        "excerpt": "Across 17 frontier LLMs in 4 agent harnesses, the best agent (Gemini 3.1 Pro) achieves only 59.5% paired accuracy (correct on both the act and abstain sides of each paired task). More importantly, abstention capability is largely independent of general task-solving capability, indicating that scaling task-solving alone will not close this gap.",
+        "source_date": "2026-07-11"
+      },
+      {
+        "source_id": "s2",
+        "label": "Agentic Abstention: Do Agents Know When to Stop Instead of Act? (arXiv 2606.28733)",
+        "url": "https://arxiv.org/abs/2606.28733",
+        "retrieved_at": "2026-07-25",
+        "excerpt": "We study this problem across web shopping, terminal environments, and question answering, evaluating 13 LLM-as-agent systems and 2 agent scaffolds on more than 28,000 tasks. Our results show that the main challenge is not only whether agents can abstain, but also when they abstain. Some agents never abstain when they should, while others do so only after many unnecessary interactions.",
+        "source_date": "2026-06-27"
+      },
+      {
+        "source_id": "s3",
+        "label": "Cyera, Agent-Inflicted Damage: Inside the Real-World Failures of Enterprise AI Systems",
+        "url": "https://www.cyera.com/research/agent-inflicted-damage-inside-the-real-world-failures-of-enterprise-ai-systems",
+        "retrieved_at": "2026-07-25",
+        "excerpt": "In 188 of them, an autonomous AI system caused harm directly in the company's production systems with no attacker anywhere in the chain.",
+        "source_date": "2026-05-28"
+      }
+    ],
+    "published_at": "2026-07-25",
+    "embedding": null
   }
 ]

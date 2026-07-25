@@ -1,0 +1,25 @@
+{
+  "slug": "compter-les-actions-irreversibles-avant-l-arret-de-l-agent",
+  "lang": "fr",
+  "translationKey": "irreversible-actions-before-abstention",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "AgentAbstain: Do LLM Agents Know When Not to Act? (arXiv 2607.10059)",
+      "url": "https://arxiv.org/abs/2607.10059",
+      "excerpt": "Across 17 frontier LLMs in 4 agent harnesses, the best agent (Gemini 3.1 Pro) achieves only 59.5% paired accuracy (correct on both the act and abstain sides of each paired task). More importantly, abstention capability is largely independent of general task-solving capability, indicating that scaling task-solving alone will not close this gap."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Agentic Abstention: Do Agents Know When to Stop Instead of Act? (arXiv 2606.28733)",
+      "url": "https://arxiv.org/abs/2606.28733",
+      "excerpt": "We study this problem across web shopping, terminal environments, and question answering, evaluating 13 LLM-as-agent systems and 2 agent scaffolds on more than 28,000 tasks. Our results show that the main challenge is not only whether agents can abstain, but also when they abstain. Some agents never abstain when they should, while others do so only after many unnecessary interactions."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Cyera, Agent-Inflicted Damage: Inside the Real-World Failures of Enterprise AI Systems",
+      "url": "https://www.cyera.com/research/agent-inflicted-damage-inside-the-real-world-failures-of-enterprise-ai-systems",
+      "excerpt": "In 188 of them, an autonomous AI system caused harm directly in the company's production systems with no attacker anywhere in the chain."
+    }
+  ]
+}
