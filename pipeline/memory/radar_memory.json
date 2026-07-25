@@ -890,5 +890,39 @@
     ],
     "published_at": "2026-07-24",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-opus-5-effort-cost-lever",
+    "topic_id": "claude-opus-5-effort-cost-lever",
+    "dedup_key": "claude opus 5 effort cost lever",
+    "title": "Claude Opus 5 ships at unchanged Opus pricing with the effort setting as the cost lever",
+    "slugs": {
+      "fr": "claude-opus-5-effort-levier-de-cout",
+      "en": "claude-opus-5-effort-cost-lever"
+    },
+    "sources": [
+      {
+        "label": "Anthropic news, Claude Opus 5",
+        "url": "https://www.anthropic.com/news/claude-opus-5",
+        "date": "24-07-2026"
+      },
+      {
+        "label": "Fortune, Anthropic debuts Claude Opus 5 with a feature that lets users toggle between cost and capability",
+        "url": "https://fortune.com/2026/07/24/anthropic-debuts-claude-opus-5-with-feature-that-lets-users-toggle-between-cost-and-capability/",
+        "date": "24-07-2026"
+      },
+      {
+        "label": "CodeRabbit, Claude Opus 5 benchmarks for AI code review",
+        "url": "https://www.coderabbit.ai/blog/opus-5-model-review",
+        "date": "24-07-2026"
+      },
+      {
+        "label": "MarkTechPost, Meet the new Claude Opus 5: frontier-class agentic coding and computer use at unchanged Opus pricing",
+        "url": "https://www.marktechpost.com/2026/07/24/meet-the-new-claude-opus-5-frontier-class-agentic-coding-and-computer-use-at-unchanged-opus-pricing/",
+        "date": "24-07-2026"
+      }
+    ],
+    "published_at": "2026-07-25",
+    "embedding": null
   }
 ]
