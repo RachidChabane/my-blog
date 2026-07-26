@@ -1064,6 +1064,32 @@
     "addedOn": "30-05-2026"
   },
   {
+    "id": "dual-use-artifact-ambiguity",
+    "label": {
+      "fr": "Ambiguïté des artefacts à double usage",
+      "en": "Dual-use artifact ambiguity"
+    },
+    "definition": {
+      "fr": "Propriété des artefacts offensifs, commandes d'attaque, charges utiles d'exploitation et traces de commande et contrôle, qui sont identiques au bit près qu'ils soient soumis par un attaquant ou par un intervenant en réponse à incident. Un classifieur qui observe la seule requête ne peut donc pas séparer les deux rôles, et toute exemption accordée à un défenseur vérifié devient elle-même un canal d'abus.",
+      "en": "Offensive artifacts such as attack commands, exploit payloads and command-and-control traces are byte-identical whether an attacker or an incident responder submits them. A classifier that sees only the request cannot separate the two roles, and any exemption granted to a verified defender becomes an abuse channel in its own right."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "dual use artifacts",
+      "defender attacker indistinguishability",
+      "intent unverifiability",
+      "verified defender exemption"
+    ],
+    "related": [
+      "provider-refusal-behavior",
+      "trust-boundary"
+    ],
+    "articles": [
+      "refusal-behavior-is-not-a-security-control"
+    ],
+    "addedOn": "26-07-2026"
+  },
+  {
     "id": "embeddings",
     "label": {
       "fr": "Embeddings",
@@ -1156,6 +1182,33 @@
       "publication-guardrails-factcheck"
     ],
     "addedOn": "23-05-2026"
+  },
+  {
+    "id": "forensic-path-drill",
+    "label": {
+      "fr": "Exercice du chemin forensique",
+      "en": "Forensic path drill"
+    },
+    "definition": {
+      "fr": "Exercice périodique qui rejoue de vrais artefacts d'attaque, issus d'incidents passés et de corpus publics, à travers le chemin d'analyse dont on dispose, puis vérifie que l'analyse aboutit. Il transpose la discipline de l'exercice de restauration : le plan de réponse à incident consigne le modèle utilisé, l'emplacement de ses poids et la date du dernier exercice réussi.",
+      "en": "A scheduled exercise that replays real attack artifacts, drawn from past incidents and public corpora, through the analysis path you intend to use, then confirms the analysis comes back. It carries over the discipline of the restore drill: the incident-response plan records the model used, where its weights live, and the date the path was last exercised."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "forensics drill",
+      "forensic readiness drill",
+      "exercice forensique",
+      "restore drill for forensics"
+    ],
+    "related": [
+      "provider-refusal-behavior",
+      "open-weight-models",
+      "dual-use-artifact-ambiguity"
+    ],
+    "articles": [
+      "refusal-behavior-is-not-a-security-control"
+    ],
+    "addedOn": "26-07-2026"
   },
   {
     "id": "harness-component-signal",
@@ -1670,7 +1723,8 @@
       "glm-5-2-open-weight-where-you-run-it",
       "prompt-injection-defense-layer-split",
       "tool-calling-readout-not-descriptions",
-      "kimi-k3-ranked-endpoint-not-weights"
+      "kimi-k3-ranked-endpoint-not-weights",
+      "refusal-behavior-is-not-a-security-control"
     ],
     "addedOn": "04-05-2026"
   },
@@ -1801,6 +1855,34 @@
       "prompt-caching-prefix-stability"
     ],
     "addedOn": "10-06-2026"
+  },
+  {
+    "id": "provider-refusal-behavior",
+    "label": {
+      "fr": "Comportement de refus d'un fournisseur",
+      "en": "Provider refusal behavior"
+    },
+    "definition": {
+      "fr": "Politique appliquée par un fournisseur de modèles hébergés qui rejette une requête jugée dangereuse, sur la seule base du contenu soumis. Le déclenchement dépend des artefacts envoyés et non du rôle de l'appelant, et le fournisseur peut modifier ou retirer cette politique à tout moment sans préavis pour l'appelant.",
+      "en": "A hosted-model provider's policy that rejects a request judged dangerous, based only on the submitted content. It fires on the artifacts sent rather than on the caller's role, and the provider can change or withdraw it at any time without notice to the caller."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "refusal behavior",
+      "safety guardrails",
+      "cyber refusals",
+      "content policy refusal",
+      "comportement de refus"
+    ],
+    "related": [
+      "trust-boundary",
+      "open-weight-models",
+      "publication-guardrails"
+    ],
+    "articles": [
+      "refusal-behavior-is-not-a-security-control"
+    ],
+    "addedOn": "26-07-2026"
   },
   {
     "id": "proxy-metric",
@@ -2487,7 +2569,8 @@
       "agent-debt-verification-placement",
       "claude-code-action-supply-chain-auth",
       "command-denylist-not-a-security-boundary",
-      "prompt-injection-defense-layer-split"
+      "prompt-injection-defense-layer-split",
+      "refusal-behavior-is-not-a-security-control"
     ],
     "addedOn": "01-07-2026"
   },
