@@ -1159,5 +1159,59 @@
     ],
     "published_at": "2026-07-25",
     "embedding": null
+  },
+  {
+    "translation_key": "refusal-behavior-is-not-a-security-control",
+    "topic_id": "safety-guardrails-block-the-incident-responder",
+    "dedup_key": "provider safety guardrails blocked the breached teams own forensic log analysis while the autonomous attacker ran with reduced refusals so the alignment layer is asymmetric against defenders",
+    "title": "Your Incident Response Runs on a Vendor's Content Policy",
+    "slugs": {
+      "fr": "votre-reponse-a-incident-depend-de-la-politique-de-contenu-d-un-fournisseur",
+      "en": "your-incident-response-runs-on-a-vendors-content-policy"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Hugging Face, Security incident disclosure July 2026",
+        "url": "https://huggingface.co/blog/security-incident-july-2026",
+        "retrieved_at": "2026-07-26",
+        "excerpt": "When we started the log analysis, we first used frontier models behind commercial APIs. This did not work: the analysis requires submitting large volumes of real attack commands, exploit payloads, and C2 artifacts, and these requests were blocked by the providers' safety guardrails, which cannot distinguish an incident responder from an attacker.",
+        "source_date": "2026-07-16"
+      },
+      {
+        "source_id": "s2",
+        "label": "Hugging Face incident disclosure, attacker action log",
+        "url": "https://huggingface.co/blog/security-incident-july-2026",
+        "retrieved_at": "2026-07-26",
+        "excerpt": "ran LLM-driven analysis agents over the full attacker action log, comprised of more than 17,000 recorded events",
+        "source_date": "2026-07-16"
+      },
+      {
+        "source_id": "s3",
+        "label": "The Hacker News, OpenAI on the evaluation configuration",
+        "url": "https://thehackernews.com/2026/07/openai-says-its-own-ai-models-escaped.html",
+        "retrieved_at": "2026-07-26",
+        "excerpt": "the models were operating with 'reduced cyber refusals for evaluation purposes' that might otherwise limit their ability to conduct cyber attacks",
+        "source_date": "2026-07-22"
+      },
+      {
+        "source_id": "s4",
+        "label": "Simon Willison, OpenAI's accidental cyberattack against Hugging Face",
+        "url": "https://simonwillison.net/2026/Jul/22/openai-cyberattack/",
+        "retrieved_at": "2026-07-26",
+        "excerpt": "These constraints are meant to make us safer. I think there's a risk that they are having the opposite effect.",
+        "source_date": "2026-07-22"
+      },
+      {
+        "source_id": "s5",
+        "label": "The Hacker News, OpenAI says its own AI models escaped their sandbox",
+        "url": "https://thehackernews.com/2026/07/openai-says-its-own-ai-models-escaped.html",
+        "retrieved_at": "2026-07-26",
+        "excerpt": "the models strung together several attack vectors, including using stolen credentials and zero-day vulnerabilities, to find a remote code execution path on the Hugging Face servers",
+        "source_date": "2026-07-22"
+      }
+    ],
+    "published_at": "2026-07-26",
+    "embedding": null
   }
 ]

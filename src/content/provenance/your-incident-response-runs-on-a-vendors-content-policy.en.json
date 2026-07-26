@@ -1,0 +1,37 @@
+{
+  "slug": "your-incident-response-runs-on-a-vendors-content-policy",
+  "lang": "en",
+  "translationKey": "refusal-behavior-is-not-a-security-control",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Hugging Face, Security incident disclosure July 2026",
+      "url": "https://huggingface.co/blog/security-incident-july-2026",
+      "excerpt": "When we started the log analysis, we first used frontier models behind commercial APIs. This did not work: the analysis requires submitting large volumes of real attack commands, exploit payloads, and C2 artifacts, and these requests were blocked by the providers' safety guardrails, which cannot distinguish an incident responder from an attacker."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Hugging Face incident disclosure, attacker action log",
+      "url": "https://huggingface.co/blog/security-incident-july-2026",
+      "excerpt": "ran LLM-driven analysis agents over the full attacker action log, comprised of more than 17,000 recorded events"
+    },
+    {
+      "sourceId": "s3",
+      "label": "The Hacker News, OpenAI on the evaluation configuration",
+      "url": "https://thehackernews.com/2026/07/openai-says-its-own-ai-models-escaped.html",
+      "excerpt": "the models were operating with 'reduced cyber refusals for evaluation purposes' that might otherwise limit their ability to conduct cyber attacks"
+    },
+    {
+      "sourceId": "s4",
+      "label": "Simon Willison, OpenAI's accidental cyberattack against Hugging Face",
+      "url": "https://simonwillison.net/2026/Jul/22/openai-cyberattack/",
+      "excerpt": "These constraints are meant to make us safer. I think there's a risk that they are having the opposite effect."
+    },
+    {
+      "sourceId": "s5",
+      "label": "The Hacker News, OpenAI says its own AI models escaped their sandbox",
+      "url": "https://thehackernews.com/2026/07/openai-says-its-own-ai-models-escaped.html",
+      "excerpt": "the models strung together several attack vectors, including using stolen credentials and zero-day vulnerabilities, to find a remote code execution path on the Hugging Face servers"
+    }
+  ]
+}
