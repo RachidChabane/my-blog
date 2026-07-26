@@ -924,5 +924,29 @@
     ],
     "published_at": "2026-07-25",
     "embedding": null
+  },
+  {
+    "translation_key": "relay-bench-multi-domain-chains",
+    "topic_id": "relay-bench-multi-domain-chains",
+    "dedup_key": "relay bench multi domain chains",
+    "title": "Relay-Bench holds GPT-5.5 at 43.3% by chaining subtasks into one prompt",
+    "slugs": {
+      "fr": "relay-bench-invites-composites-gpt-5-5",
+      "en": "relay-bench-composite-prompts-gpt-5-5"
+    },
+    "sources": [
+      {
+        "label": "Primary - arXiv, Relay-Bench: Evaluating LLMs on Multi-Domain Reasoning Chains",
+        "url": "https://arxiv.org/abs/2607.18438",
+        "date": "20-07-2026"
+      },
+      {
+        "label": "Independent corroboration - Zaikei Shimbun, Japanese trade outlet reporting the paper",
+        "url": "https://www.zaikei.co.jp/article/20260723/862514.html",
+        "date": "23-07-2026"
+      }
+    ],
+    "published_at": "2026-07-26",
+    "embedding": null
   }
 ]
