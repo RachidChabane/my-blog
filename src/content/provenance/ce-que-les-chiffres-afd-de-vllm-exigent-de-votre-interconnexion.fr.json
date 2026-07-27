@@ -1,0 +1,37 @@
+{
+  "slug": "ce-que-les-chiffres-afd-de-vllm-exigent-de-votre-interconnexion",
+  "lang": "fr",
+  "translationKey": "afd-throughput-does-not-transfer-without-the-fabric",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "vLLM blog, AFD plugin announcement",
+      "url": "https://vllm.ai/blog/2026-07-23-vllm-afd-plugin",
+      "excerpt": "Relative to EP64, the AFD results are –5.3% for 48A16F and +11.3% for 64A16F."
+    },
+    {
+      "sourceId": "s2",
+      "label": "vLLM blog, AFD plugin announcement, second workload",
+      "url": "https://vllm.ai/blog/2026-07-23-vllm-afd-plugin",
+      "excerpt": "Relative to EP64, the AFD results are –10.0% for 48A16F and +9.0% for 64A16F."
+    },
+    {
+      "sourceId": "s3",
+      "label": "vLLM blog, AFD plugin announcement, per-die throughput",
+      "url": "https://vllm.ai/blog/2026-07-23-vllm-afd-plugin",
+      "excerpt": "EP64 achieves 168.2 tokens/s/die, 48A16F achieves 151.4 tokens/s/die, and 64A16F achieves 183.3 tokens/s/die."
+    },
+    {
+      "sourceId": "s4",
+      "label": "arXiv 2602.09721, roofline analysis of AFD",
+      "url": "https://arxiv.org/abs/2602.09721",
+      "excerpt": "Our analysis reveals a dead zone on standard clusters: increasing FFN instance count fails to improve HFU as computational workload is capped by scale-out bandwidth, causing operator active time to shrink relative to the fixed latency budget. We further show that AFD's discrete node-level scaling incurs higher imbalance penalties than EP's continuous batch adjustment. Nevertheless, these limitations diminish under specific conditions: Superpod-class hardware with abundant interconnect bandwidth and models with coarse-grained experts and lower sparsity are more likely to benefit from AFD."
+    },
+    {
+      "sourceId": "s5",
+      "label": "arXiv 2605.28302, AFD design-space exploration",
+      "url": "https://arxiv.org/abs/2605.28302",
+      "excerpt": "Under strict TTFT/TPOT SLOs, AFD sustains around 4k tokens/s of system throughput on DeepSeek-V3.2 across chat, coding, and agentic-coding workloads, where non-AFD deployments are infeasible."
+    }
+  ]
+}

@@ -1213,5 +1213,59 @@
     ],
     "published_at": "2026-07-26",
     "embedding": null
+  },
+  {
+    "translation_key": "afd-throughput-does-not-transfer-without-the-fabric",
+    "topic_id": "afd-disaggregation-vllm-interconnect",
+    "dedup_key": "attention ffn disaggregation for mixture of experts serving pays off only on superpod class interconnect and regresses on standard clusters",
+    "title": "What the vLLM AFD numbers ask of your interconnect",
+    "slugs": {
+      "fr": "ce-que-les-chiffres-afd-de-vllm-exigent-de-votre-interconnexion",
+      "en": "what-vllm-afd-numbers-ask-of-your-interconnect"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "vLLM blog, AFD plugin announcement",
+        "url": "https://vllm.ai/blog/2026-07-23-vllm-afd-plugin",
+        "retrieved_at": "2026-07-27",
+        "excerpt": "Relative to EP64, the AFD results are –5.3% for 48A16F and +11.3% for 64A16F.",
+        "source_date": "2026-07-23"
+      },
+      {
+        "source_id": "s2",
+        "label": "vLLM blog, AFD plugin announcement, second workload",
+        "url": "https://vllm.ai/blog/2026-07-23-vllm-afd-plugin",
+        "retrieved_at": "2026-07-27",
+        "excerpt": "Relative to EP64, the AFD results are –10.0% for 48A16F and +9.0% for 64A16F.",
+        "source_date": "2026-07-23"
+      },
+      {
+        "source_id": "s3",
+        "label": "vLLM blog, AFD plugin announcement, per-die throughput",
+        "url": "https://vllm.ai/blog/2026-07-23-vllm-afd-plugin",
+        "retrieved_at": "2026-07-27",
+        "excerpt": "EP64 achieves 168.2 tokens/s/die, 48A16F achieves 151.4 tokens/s/die, and 64A16F achieves 183.3 tokens/s/die.",
+        "source_date": "2026-07-23"
+      },
+      {
+        "source_id": "s4",
+        "label": "arXiv 2602.09721, roofline analysis of AFD",
+        "url": "https://arxiv.org/abs/2602.09721",
+        "retrieved_at": "2026-07-27",
+        "excerpt": "Our analysis reveals a dead zone on standard clusters: increasing FFN instance count fails to improve HFU as computational workload is capped by scale-out bandwidth, causing operator active time to shrink relative to the fixed latency budget. We further show that AFD's discrete node-level scaling incurs higher imbalance penalties than EP's continuous batch adjustment. Nevertheless, these limitations diminish under specific conditions: Superpod-class hardware with abundant interconnect bandwidth and models with coarse-grained experts and lower sparsity are more likely to benefit from AFD.",
+        "source_date": "2026-02-10"
+      },
+      {
+        "source_id": "s5",
+        "label": "arXiv 2605.28302, AFD design-space exploration",
+        "url": "https://arxiv.org/abs/2605.28302",
+        "retrieved_at": "2026-07-27",
+        "excerpt": "Under strict TTFT/TPOT SLOs, AFD sustains around 4k tokens/s of system throughput on DeepSeek-V3.2 across chat, coding, and agentic-coding workloads, where non-AFD deployments are infeasible.",
+        "source_date": "2026-05-27"
+      }
+    ],
+    "published_at": "2026-07-27",
+    "embedding": null
   }
 ]
