@@ -948,5 +948,29 @@
     ],
     "published_at": "2026-07-26",
     "embedding": null
+  },
+  {
+    "translation_key": "kiro-mcp-config-write-rce-approval-bypass",
+    "topic_id": "kiro-mcp-config-write-rce-approval-bypass",
+    "dedup_key": "kiro mcp config write rce approval bypass",
+    "title": "A poisoned web page rewrote Kiro's MCP config and ran code past the approval prompt",
+    "slugs": {
+      "fr": "kiro-ecriture-mcp-json-execution-de-code",
+      "en": "kiro-mcp-config-write-code-execution"
+    },
+    "sources": [
+      {
+        "label": "Primary - Kodem Security with Intezer, disclosure writeup on the Kiro MCP configuration chain",
+        "url": "https://www.kodemsecurity.com/resources/aws-kiro-agentic-ide-rce-prompt-injection-mcp-config-vulnerability",
+        "date": "19-07-2026"
+      },
+      {
+        "label": "Independent corroboration - The Hacker News, reported coverage of the Kiro disclosure",
+        "url": "https://thehackernews.com/2026/07/aws-kiro-flaw-let-poisoned-web-page.html",
+        "date": "21-07-2026"
+      }
+    ],
+    "published_at": "2026-07-27",
+    "embedding": null
   }
 ]
