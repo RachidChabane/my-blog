@@ -384,6 +384,33 @@
     "addedOn": "10-06-2026"
   },
   {
+    "id": "attention-ffn-disaggregation",
+    "label": {
+      "fr": "Désagrégation attention/FFN",
+      "en": "Attention-FFN disaggregation"
+    },
+    "definition": {
+      "fr": "Topologie de service qui exécute les couches d'attention et les couches feed-forward sur des groupes de nœuds distincts, afin de dimensionner chaque famille indépendamment. Le ratio de provisionnement entre les deux devient un paramètre de déploiement, et l'ajustement se fait à la granularité du nœud.",
+      "en": "A serving topology that runs attention layers and feed-forward layers on separate node groups so each family scales independently. The provisioning ratio between the two becomes a deployment parameter, and capacity is adjusted one whole node at a time."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "AFD",
+      "attention FFN disaggregation",
+      "disaggregated attention and FFN"
+    ],
+    "related": [
+      "expert-parallelism",
+      "llm-serving",
+      "vllm",
+      "mixture-of-experts"
+    ],
+    "articles": [
+      "afd-throughput-does-not-transfer-without-the-fabric"
+    ],
+    "addedOn": "27-07-2026"
+  },
+  {
     "id": "attention-readout-gap",
     "label": {
       "fr": "Écart de restitution attentionnelle",
@@ -535,7 +562,8 @@
       "glm-5-2-open-weight-where-you-run-it",
       "agent-memory-benchmark-recall-not-trust",
       "cli-agent-productivity-proxy-choice",
-      "swe-bench-private-holdout-trust"
+      "swe-bench-private-holdout-trust",
+      "afd-throughput-does-not-transfer-without-the-fabric"
     ],
     "addedOn": "18-06-2026"
   },
@@ -959,7 +987,8 @@
     ],
     "articles": [
       "serving-oss-llm-production-cost",
-      "llm-temp0-nondeterminism-batch-invariant"
+      "llm-temp0-nondeterminism-batch-invariant",
+      "afd-throughput-does-not-transfer-without-the-fabric"
     ],
     "addedOn": "04-05-2026"
   },
@@ -1161,6 +1190,32 @@
     "addedOn": "07-07-2026"
   },
   {
+    "id": "expert-parallelism",
+    "label": {
+      "fr": "Parallélisme d'experts",
+      "en": "Expert parallelism"
+    },
+    "definition": {
+      "fr": "Stratégie de service d'un modèle à mélange d'experts qui répartit les experts sur plusieurs accélérateurs, chaque requête étant routée vers les experts qui la concernent. La montée en charge se fait en élargissant les batchs de façon continue, sans ajouter d'unité matérielle dédiée.",
+      "en": "A serving strategy for mixture-of-experts models that spreads the experts across accelerators and routes each request to the experts it activates. It absorbs extra load by widening batches continuously, without adding a dedicated hardware unit."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "EP",
+      "expert parallel",
+      "EP64"
+    ],
+    "related": [
+      "mixture-of-experts",
+      "llm-serving",
+      "continuous-batching"
+    ],
+    "articles": [
+      "afd-throughput-does-not-transfer-without-the-fabric"
+    ],
+    "addedOn": "27-07-2026"
+  },
+  {
     "id": "fact-checking",
     "label": {
       "fr": "Vérification automatique des faits",
@@ -1209,6 +1264,32 @@
       "refusal-behavior-is-not-a-security-control"
     ],
     "addedOn": "26-07-2026"
+  },
+  {
+    "id": "hardware-flops-utilization",
+    "label": {
+      "fr": "Taux d'utilisation des FLOPS matériels",
+      "en": "Hardware FLOPs utilization"
+    },
+    "definition": {
+      "fr": "Part de la capacité de calcul crête d'un accélérateur réellement employée pendant le service d'un modèle. Sur un cluster dont la bande passante scale-out plafonne l'alimentation en données, ajouter des unités de calcul cesse d'améliorer ce taux.",
+      "en": "The share of an accelerator's peak compute that a serving deployment actually uses. On a cluster where scale-out bandwidth caps how fast data reaches the compute, adding more compute units stops improving this ratio."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "HFU",
+      "hardware FLOPs utilisation",
+      "scale-out bandwidth ceiling"
+    ],
+    "related": [
+      "llm-serving",
+      "expert-parallelism",
+      "attention-ffn-disaggregation"
+    ],
+    "articles": [
+      "afd-throughput-does-not-transfer-without-the-fabric"
+    ],
+    "addedOn": "27-07-2026"
   },
   {
     "id": "harness-component-signal",
@@ -1441,7 +1522,8 @@
       "serving-oss-llm-production-cost",
       "llm-temp0-nondeterminism-batch-invariant",
       "glm-5-2-open-weight-where-you-run-it",
-      "kimi-k3-ranked-endpoint-not-weights"
+      "kimi-k3-ranked-endpoint-not-weights",
+      "afd-throughput-does-not-transfer-without-the-fabric"
     ],
     "addedOn": "04-05-2026"
   },
@@ -1597,7 +1679,8 @@
       "open-weight-models"
     ],
     "articles": [
-      "kimi-k3-ranked-endpoint-not-weights"
+      "kimi-k3-ranked-endpoint-not-weights",
+      "afd-throughput-does-not-transfer-without-the-fabric"
     ],
     "addedOn": "23-07-2026"
   },
@@ -2464,7 +2547,8 @@
       "kv-cache"
     ],
     "articles": [
-      "prompt-caching-prefix-stability"
+      "prompt-caching-prefix-stability",
+      "afd-throughput-does-not-transfer-without-the-fabric"
     ],
     "addedOn": "30-06-2026"
   },
@@ -2690,7 +2774,8 @@
       "kv-cache"
     ],
     "articles": [
-      "serving-oss-llm-production-cost"
+      "serving-oss-llm-production-cost",
+      "afd-throughput-does-not-transfer-without-the-fabric"
     ],
     "addedOn": "04-05-2026"
   },
