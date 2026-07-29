@@ -14,18 +14,15 @@
 // "I don't know" on an article whose own content would have answered it.
 //
 // It replays the REAL seeded question the button sends — ARTICLE_DETAIL[lang].askSeed with
-// {topic} filled from the article's first tag — scoped to that article, and reads the live
-// `done` / `idk` SSE frame. It reads the seed from source, so whatever askSeed becomes is
-// what gets measured; no edit here is needed when the seed changes.
+// {title} filled from the article's own title — scoped to that article, and reads the live
+// `done` / `idk` SSE frame. It must mirror BOTH halves of what the page does (see
+// seedQuestion): reading the template from source is not enough on its own.
 //
-// LOCAL DIAGNOSTIC — deliberately NOT wired into CI. As of 2026-07-29 it exits 1 on a
-// system that is working: the seed is built from the article's FIRST TAG, and tags are
-// broad buckets ("quality", "agents") that can be only loosely related to the article's
-// thesis, so a few articles legitimately score under the gate on a question that is barely
-// about them (same articles, a title-derived question: 0.4159 -> 0.6061). A red check that
-// is not a real defect, sitting in front of `deploy`, is exactly what froze this site for
-// six days in July. Promote it to a gate only once the seed is a genuinely on-article
-// question — then a refusal really does mean something is broken.
+// LOCAL DIAGNOSTIC — deliberately NOT wired into CI. It talks to the live deployment and
+// spends a real LLM completion per grounded probe, so it belongs in a human's hands, run
+// after a threshold, retrieval, or seed change. Think hard before making it a gate: a red
+// check that is not a real defect, sitting in front of `deploy`, is exactly what froze this
+// site for six days in July.
 //
 // Reading the output: `refused` is the count that matters. The BAND (lowest grounded score
 // vs highest refused score) tells you WHICH layer is at fault — a refusal at
@@ -44,6 +41,7 @@ const __filename = fileURLToPath(import.meta.url);
 const DEFAULT_BASE = 'https://rachid-chabane.com';
 const DEFAULT_SAMPLE = 8;
 const ENDPOINT_PATH = '/api/avatar/query';
+const SEED_PLACEHOLDER = '{title}';
 const LOCALES: readonly Locale[] = ['fr', 'en'];
 
 interface CliArgs {
@@ -85,7 +83,14 @@ function parseArgs(argv: string[]): CliArgs {
 interface Article {
   slug: string;
   lang: Locale;
-  firstTag: string;
+  title: string;
+}
+
+/** Strip YAML's surrounding quotes and unescape a doubled inner quote. */
+function unquote(value: string): string {
+  const q = value[0];
+  if ((q !== "'" && q !== '"') || value.at(-1) !== q) return value;
+  return value.slice(1, -1).replaceAll(q + q, q);
 }
 
 /** Minimal frontmatter read — no gray-matter, so the probe stays dependency-light. */
@@ -94,8 +99,8 @@ function parseArticle(raw: string): Omit<Article, 'lang'> | null {
   if (!fm) return null;
   if (!/^publishState:\s*published\s*$/m.test(fm)) return null;
   const slug = /^slug:\s*(.+)$/m.exec(fm)?.[1].trim();
-  const firstTag = /^tags:\n- (.+)$/m.exec(fm)?.[1].trim();
-  return slug && firstTag ? { slug, firstTag } : null;
+  const title = /^title:\s*(.+)$/m.exec(fm)?.[1].trim();
+  return slug && title ? { slug, title: unquote(title) } : null;
 }
 
 function loadArticles(repoRoot: string, lang: Locale): Article[] {
@@ -108,28 +113,24 @@ function loadArticles(repoRoot: string, lang: Locale): Article[] {
     .map((a) => ({ ...a, lang }));
 }
 
-interface TagEntry {
-  slug: string;
-  label: Record<Locale, string>;
-}
-
-function loadTagLabels(repoRoot: string): TagEntry[] {
-  return JSON.parse(
-    readFileSync(join(repoRoot, 'src/content/tags/index.json'), 'utf8')
-  ) as TagEntry[];
-}
-
-/** Mirrors src/lib/content.ts#tagLabel — unknown tag falls back to its slug. */
-function tagLabel(slug: string, lang: Locale, tags: TagEntry[]): string {
-  return tags.find((t) => t.slug === slug)?.label[lang] ?? slug;
-}
-
-/** The exact string [lang]/blog/[slug].astro puts in data-avatar-seed. */
-function seedQuestion(article: Article, tags: TagEntry[]): string {
-  return ARTICLE_DETAIL[article.lang].askSeed.replace(
-    '{topic}',
-    tagLabel(article.firstTag, article.lang, tags)
-  );
+/**
+ * The exact string [lang]/blog/[slug].astro puts in data-avatar-seed.
+ *
+ * Both halves must track that page: the TEMPLATE comes from ARTICLE_DETAIL, and the
+ * SUBSTITUTION must use the same field the page uses. Reading only the template is not
+ * enough — when the seed moved from {topic} to {title}, a probe that still substituted
+ * {topic} sent the literal placeholder and reported a 100% refusal rate against a
+ * perfectly healthy site. If this assertion trips, the page changed and this did not.
+ */
+function seedQuestion(article: Article): string {
+  const template = ARTICLE_DETAIL[article.lang].askSeed;
+  if (!template.includes(SEED_PLACEHOLDER)) {
+    throw new Error(
+      `askSeed no longer contains ${SEED_PLACEHOLDER} (got: ${template}). ` +
+        'Update seedQuestion() to match [lang]/blog/[slug].astro.'
+    );
+  }
+  return template.replace(SEED_PLACEHOLDER, article.title);
 }
 
 /**
@@ -247,10 +248,13 @@ function report(results: ProbeResult[], json: boolean): void {
 
   if (refused.length > 0) {
     console.error(
-      `\nFAIL: ${refused.length} article(s) refused a question about their own headline tag.\n` +
-        "A scoped refusal at topSimilarity 0 means retrieval never saw the article's chunks\n" +
-        '(a scoping/pre-filter bug). A refusal just under the threshold means the gate is the\n' +
-        'constraint — re-calibrate against the SCOPED floor, never the corpus-wide one.'
+      `\nFAIL: ${refused.length} article(s) refused a question built from their own title.\n` +
+        "  topSimilarity 0      -> retrieval never saw the article's chunks (a scoping bug).\n" +
+        '  just under threshold -> re-ask that article something drawn from its body. If THAT\n' +
+        '                          grounds, the article is thin (a bootstrap stub with little\n' +
+        '                          prose has nothing to match); if it also refuses, the gate is\n' +
+        '                          too high — re-calibrate against the SCOPED floor, never the\n' +
+        '                          corpus-wide one.'
     );
   }
 }
@@ -258,12 +262,10 @@ function report(results: ProbeResult[], json: boolean): void {
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const repoRoot = join(fileURLToPath(new URL('.', import.meta.url)), '..');
-  const tags = loadTagLabels(repoRoot);
-
   const targets = args.langs.flatMap((lang) => {
     const articles = loadArticles(repoRoot, lang);
     return (args.all ? articles : spread(articles, args.sample)).map(
-      (article) => ({ article, query: seedQuestion(article, tags) })
+      (article) => ({ article, query: seedQuestion(article) })
     );
   });
 

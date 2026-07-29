@@ -50,14 +50,19 @@ launcher + the scoped per-article button). Done autonomously this bring-up:
     `getByIds`; a SQL predicate on the lexical leg), so the gate always sees the article's true max
     cosine. `AVATAR_SIMILARITY_THRESHOLD` was deliberately NOT touched — it was calibrated against
     untruncated scoped retrieval, and truncation, not calibration, had moved the scores.
-  - **Known remaining gap — the SEED, not the gate.** After the fix, `pnpm probe:avatar --sample=10`
-    still refuses ~4/20, all in the 0.41–0.47 band with no `topSimilarity 0` left. Cause: the button
-    pre-fills `ARTICLE_DETAIL[lang].askSeed` with the article's FIRST TAG, and tags are broad
-    taxonomy buckets ("quality", "agents", "open-source LLM") that can be only loosely related to the
-    article's thesis. Same articles, a title-derived question: `0.4159 -> 0.6061` and `0.4736 ->
-0.5764`, both comfortably grounded. **Do NOT lower the threshold to absorb this** — 0.4159 sits
-    BELOW the measured off-topic ceiling (0.4635), so it would admit genuinely off-topic queries,
-    which is the worse failure on a fact-check-branded site. Fix the seed, not the gate.
+  - **Seed re-keyed to the TITLE 2026-07-29 (a second, independent cause).** With truncation fixed,
+    ~4/20 still refused — all in the 0.41–0.47 band, none at `topSimilarity` 0. Retrieval was healthy;
+    the QUERY was the problem. The button pre-filled `askSeed` from the article's FIRST TAG, and tags
+    are broad buckets ("quality", "agents") often only loosely related to the thesis. `askSeed` now
+    takes `{title}`. Measured live on the four that were refusing: `0.4159 -> 0.6676`,
+    `0.4105 -> 0.6232`, `0.4736 -> 0.5885`, `0.4521 -> 0.6401`.
+    **The threshold was deliberately NOT lowered to absorb the weak queries** — 0.4159 sits BELOW the
+    measured off-topic ceiling (0.4635), so lowering it would admit genuinely off-topic questions,
+    the worse failure on a fact-check-branded site. Fix the query, not the gate.
+  - **After both fixes: `pnpm probe:avatar --sample=10` -> 19/20 grounded**, scoped floor 0.5192. The
+    lone refusal (`serving-oss-llm-production`, 0.4367) is a task-7 BOOTSTRAP SEED stub whose own
+    frontmatter reads "Safe to delete" — ~15 lines of prose, nothing for its title to match. Not a
+    retrieval or gate defect; deleting the remaining seed stubs would take it to 20/20.
 - **Scoped per-article gate verified live** (Option 4): scoped to an article + an on-article
   question grounds; scoped to an article + a different corpus topic gives an honest idk (0.30). The
   in-scope-`topSimilarity` fix prevents the "pass the gate, nothing in scope" landmine. The single
