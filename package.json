@@ -11,6 +11,7 @@
     "build": "astro build && pagefind --site dist",
     "build:index": "tsx scripts/build-avatar-index.ts",
     "reindex": "tsx scripts/reindex.ts",
+    "probe:avatar": "tsx scripts/probe-avatar-scope.ts",
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run",

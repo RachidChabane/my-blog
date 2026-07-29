@@ -1,0 +1,45 @@
+# mise front door — a SHORTCUT over the npm scripts, never the only way in.
+#
+# `npm`/`pnpm` is this repo's native runner and stays authoritative: CI calls the pnpm
+# verbs directly, and every task below is a thin wrapper around one. Anyone without mise
+# installed runs `pnpm <verb>` and gets the identical behaviour — nothing here is
+# reachable ONLY through mise.
+#
+#   mise tasks              # list
+#   mise run probe-avatar   # == pnpm probe:avatar
+
+[tasks.dev]
+description = "Astro dev server"
+run = "pnpm dev"
+
+[tasks.build]
+description = "Build the static site + Pagefind search index"
+run = "pnpm build"
+
+[tasks.check]
+description = "Astro typecheck"
+run = "pnpm check"
+
+[tasks.lint]
+description = "astro check + eslint + prettier"
+run = "pnpm lint"
+
+[tasks.test]
+description = "Unit tests (vitest)"
+run = "pnpm test"
+
+[tasks.test-e2e]
+description = "End-to-end tests (Playwright)"
+run = "pnpm test:e2e"
+
+[tasks.build-index]
+description = "Build the avatar RAG index (add -- --push to upsert Vectorize + D1)"
+run = "pnpm build:index"
+
+[tasks.probe-avatar]
+description = "Probe the SCOPED per-article avatar gate against the live site (exit 1 on any refusal)"
+run = "pnpm probe:avatar"
+
+[tasks.launch-check]
+description = "Pre-launch gate checks"
+run = "pnpm launch-check"
