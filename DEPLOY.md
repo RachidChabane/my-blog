@@ -38,8 +38,26 @@ launcher + the scoped per-article button). Done autonomously this bring-up:
     `scopeSlug`, so its recommendation is an UPPER BOUND. Cap the threshold BELOW the scoped
     on-article floor (~0.50), and verify BOTH the corner launcher AND the scoped `scopeSlug` path
     against the live `done` frame before finalizing.** Update all three records (this file, RUN-LOG,
-    the `avatar-gate-calibration-fake-tuned` memory) together. Follow-up (non-trivial, not yet done):
-    teach the script to probe the scoped path so its number stops over-shooting.
+    the `avatar-gate-calibration-fake-tuned` memory) together.
+  - **Scoped probe is now a verb (2026-07-29): `pnpm probe:avatar`** (`--all`, `--lang=`, `--sample=`,
+    `--base=`; `mise run probe-avatar`). Replays the REAL per-article seeded question scoped to each
+    article and exits 1 on any refusal. This closes the "teach the script to probe the scoped path"
+    follow-up — run it after ANY threshold or retrieval change, not just at bring-up.
+  - **Scoped-retrieval truncation fixed 2026-07-29 (was the real cause of "the avatar refuses on
+    most articles").** The scoped path post-filtered a corpus-wide top-k by slug. At 979 chunks an
+    article's chunks stopped making the global cut, so `topSimilarity` collapsed to a weak leftover
+    chunk or to 0 and the gate refused. Scoping is now a store-level pre-filter (D1 ids + Vectorize
+    `getByIds`; a SQL predicate on the lexical leg), so the gate always sees the article's true max
+    cosine. `AVATAR_SIMILARITY_THRESHOLD` was deliberately NOT touched — it was calibrated against
+    untruncated scoped retrieval, and truncation, not calibration, had moved the scores.
+  - **Known remaining gap — the SEED, not the gate.** After the fix, `pnpm probe:avatar --sample=10`
+    still refuses ~4/20, all in the 0.41–0.47 band with no `topSimilarity 0` left. Cause: the button
+    pre-fills `ARTICLE_DETAIL[lang].askSeed` with the article's FIRST TAG, and tags are broad
+    taxonomy buckets ("quality", "agents", "open-source LLM") that can be only loosely related to the
+    article's thesis. Same articles, a title-derived question: `0.4159 -> 0.6061` and `0.4736 ->
+0.5764`, both comfortably grounded. **Do NOT lower the threshold to absorb this** — 0.4159 sits
+    BELOW the measured off-topic ceiling (0.4635), so it would admit genuinely off-topic queries,
+    which is the worse failure on a fact-check-branded site. Fix the seed, not the gate.
 - **Scoped per-article gate verified live** (Option 4): scoped to an article + an on-article
   question grounds; scoped to an article + a different corpus topic gives an honest idk (0.30). The
   in-scope-`topSimilarity` fix prevents the "pass the gate, nothing in scope" landmine. The single
