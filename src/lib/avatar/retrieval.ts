@@ -11,6 +11,7 @@ import type {
   Reranker,
   RetrievalResult,
   ScoredChunk,
+  SearchScope,
   VectorStore,
 } from './contracts';
 import { Bm25Index } from './lexical';
@@ -23,7 +24,11 @@ import { InMemoryVectorStore } from './vector-store';
  * production swap (in-memory -> D1) needs no change to the fusion logic.
  */
 export interface LexicalSearcher {
-  search(query: string, topK: number): ScoredChunk[] | Promise<ScoredChunk[]>;
+  search(
+    query: string,
+    topK: number,
+    scope?: SearchScope
+  ): ScoredChunk[] | Promise<ScoredChunk[]>;
 }
 
 export interface RetrieveDeps {
@@ -43,23 +48,17 @@ export interface RetrieveOptions {
   rrfK?: number;
   /**
    * Restrict retrieval to a single article (its slug) — the per-article "ask about
-   * this piece" mode. Both legs are filtered to this slug BEFORE the gate signal is
-   * captured, so an out-of-scope query honestly refuses (topSimilarity over the
-   * scoped subset) instead of passing on an out-of-scope chunk.
+   * this piece" mode. The restriction is pushed INTO both stores, so each leg ranks
+   * within the article and `legTopK` counts the article's own chunks. The gate signal
+   * is therefore the article's true max cosine at any corpus size: an out-of-scope
+   * query honestly refuses instead of passing on an out-of-scope chunk, and an
+   * on-article query cannot be starved by unrelated chunks out-ranking it.
    */
   scopeSlug?: string;
 }
 
 const DEFAULT_LEG_TOP_K = 30;
 const DEFAULT_TOP_K = 5;
-// When scoped, pull a WIDE leg so the in-scope chunks are present before the slug filter:
-// the stores have no slug pre-filter (slug is known only post-hydration), so a default-30
-// pull could miss an article's chunks for an off-topic query. Capped at Cloudflare
-// Vectorize's max query topK (VECTORIZE_MAX_TOPK = 100) so the production dense leg never
-// throws; the corpus is far under 100 chunks, so this returns the whole corpus and never
-// truncates today. Beyond 100 chunks, scoped retrieval needs a Vectorize reindex with slug
-// metadata (a true pre-filter) -- see avatar-index-builder-seams.
-const SCOPED_LEG_TOP_K = 100;
 
 /**
  * Run hybrid lexical+vector retrieval, fuse with RRF, optionally rerank.
@@ -79,26 +78,26 @@ export async function retrieve(
   opts?: RetrieveOptions
 ): Promise<RetrievalResult> {
   const topK = opts?.topK ?? DEFAULT_TOP_K;
-  const scopeSlug = opts?.scopeSlug;
-  // legTopK >= topK always: the per-leg pull must be at least the final count. When scoped,
-  // widen the default pull so the in-scope chunks survive the slug filter below.
-  const baseLegTopK =
-    opts?.legTopK ?? (scopeSlug ? SCOPED_LEG_TOP_K : DEFAULT_LEG_TOP_K);
-  const legTopK = Math.max(baseLegTopK, topK);
+  // legTopK >= topK always: the per-leg pull must be at least the final count. Scoping no
+  // longer needs a wider pull — the stores restrict by slug themselves, so a scoped leg of
+  // N returns the ARTICLE's top-N rather than a corpus top-N that must survive a filter.
+  const legTopK = Math.max(opts?.legTopK ?? DEFAULT_LEG_TOP_K, topK);
   const rrfK = opts?.rrfK ?? DEFAULT_RRF_K;
+  // Pushed INTO both stores (SQL WHERE / id lookup / in-memory filter), never applied to
+  // their results. Post-filtering a corpus top-k silently starved the scoped path as the
+  // corpus grew past the pull width: the article's best chunk stopped making the global
+  // cut, so `topSimilarity` collapsed and on-article questions refused.
+  const scope: SearchScope | undefined =
+    opts?.scopeSlug === undefined ? undefined : { slug: opts.scopeSlug };
 
   const queryEmbedding = await deps.embedder.embedQuery(query);
-  // Restrict both legs to the scoped article (if any) BEFORE the gate signal is captured.
-  // The store results are still cosine/BM25-sorted, so filtering preserves order.
-  const inScope = (r: ScoredChunk): boolean =>
-    scopeSlug === undefined || r.chunk.slug === scopeSlug;
-  const vectorResults = (
-    await deps.vectorStore.search(queryEmbedding, legTopK)
-  ).filter(inScope);
-  // `await` covers both legs: in-memory Bm25Index (sync) and the D1 FTS5 store (async).
-  const lexicalResults = (await deps.lexical.search(query, legTopK)).filter(
-    inScope
+  const vectorResults = await deps.vectorStore.search(
+    queryEmbedding,
+    legTopK,
+    scope
   );
+  // `await` covers both legs: in-memory Bm25Index (sync) and the D1 FTS5 store (async).
+  const lexicalResults = await deps.lexical.search(query, legTopK, scope);
 
   // Gate signal: the vector leg is sorted by cosine, so [0].score is the max cosine of the
   // (possibly scoped) candidate set. Captured BEFORE fusion/rerank/truncation. When scoped,

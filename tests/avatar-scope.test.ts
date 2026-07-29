@@ -110,6 +110,97 @@ describe('retrieval — gate-correctness fix (topSimilarity over the SCOPED subs
   });
 });
 
+// REGRESSION (the "avatar stopped answering on most articles" bug). The scoped path
+// used to pull a corpus-wide top-k and filter it by slug afterwards. That is exact only
+// while the corpus fits inside the pull; past it, a scoped article's chunks stop making
+// the global cut, `topSimilarity` collapses to a weak leftover chunk (or to 0), and the
+// gate refuses on-article questions. These lock the pre-filter: the scoped result must
+// be the ARTICLE's top-k, and must not vary with how big the rest of the corpus is.
+describe('retrieval — scoping is a pre-filter, not a post-filter', () => {
+  const TARGET = 'target-article';
+  const QUERY = 'alpha beta gamma';
+
+  /** Target chunks share ONE query token; every filler matches all three, so the
+   *  fillers own the corpus-wide ranking and crowd the target out of any global top-k. */
+  async function buildCrowdedArtifact(
+    fillerCount: number
+  ): Promise<IndexArtifact> {
+    const emb = new FakeEmbedder();
+    const seeds = [
+      ...Array.from({ length: 3 }, (_, i) => ({
+        id: `${TARGET}#s${i}#${i}`,
+        slug: TARGET,
+        lang: 'en' as const,
+        sourceUrl: `https://x/en/blog/${TARGET}/`,
+        headingAnchor: `s${i}`,
+        title: 'Target article',
+        text: `alpha delta${i} epsilon${i}`,
+      })),
+      ...Array.from({ length: fillerCount }, (_, i) => ({
+        id: `filler-${i}#s#0`,
+        slug: `filler-${i}`,
+        lang: 'en' as const,
+        sourceUrl: `https://x/en/blog/filler-${i}/`,
+        headingAnchor: 's',
+        title: `Filler ${i}`,
+        text: 'alpha beta gamma',
+      })),
+    ];
+    const embeddings = await emb.embed(seeds.map((s) => s.text));
+    return {
+      version: 1,
+      chunks: seeds.map((s, i) => ({ ...s, embedding: embeddings[i] })),
+      dimensions: emb.dimensions,
+      embeddingModel: emb.model,
+      generatedAt: '2026-01-01T00:00:00.000Z',
+      sourceHashes: Object.fromEntries(
+        seeds.map((s) => [s.slug, `sha256:${s.slug}`])
+      ),
+    };
+  }
+
+  it('a corpus far wider than the leg pull still grounds an on-article query', async () => {
+    const emb = new FakeEmbedder();
+    // 400 fillers >> the default leg pull (30) and >> the old scoped pull (100).
+    const artifact = await buildCrowdedArtifact(400);
+    const r = await createRetriever(artifact, { embedder: emb }).retrieve(
+      QUERY,
+      { scopeSlug: TARGET }
+    );
+
+    const qVec = await emb.embedQuery(QUERY);
+    const trueMax = Math.max(
+      ...artifact.chunks
+        .filter((c) => c.slug === TARGET)
+        .map((c) => cosineSimilarity(qVec, c.embedding))
+    );
+
+    expect(r.candidates.length).toBeGreaterThan(0);
+    expect(r.candidates.every((c) => c.chunk.slug === TARGET)).toBe(true);
+    // The article's OWN best chunk reaches the gate — not a leftover that survived a
+    // global cut, and not nothing. Under the old post-filter this was 0.
+    expect(r.topSimilarity).toBeCloseTo(trueMax, 5);
+    expect(applyThreshold(r).kind).toBe('grounded');
+  });
+
+  it('the scoped gate signal is independent of corpus size', async () => {
+    const emb = new FakeEmbedder();
+    const [small, large] = await Promise.all([
+      buildCrowdedArtifact(5),
+      buildCrowdedArtifact(500),
+    ]);
+    const scoped = (a: IndexArtifact): Promise<RetrievalResult> =>
+      createRetriever(a, { embedder: emb }).retrieve(QUERY, {
+        scopeSlug: TARGET,
+      });
+    const [rSmall, rLarge] = await Promise.all([scoped(small), scoped(large)]);
+    expect(rLarge.topSimilarity).toBeCloseTo(rSmall.topSimilarity, 10);
+    expect(rLarge.candidates.map((c) => c.chunk.id)).toEqual(
+      rSmall.candidates.map((c) => c.chunk.id)
+    );
+  });
+});
+
 describe('handler — threads scopeSlug into retrieve, gated by the guard', () => {
   class Recorder implements AvatarRetriever {
     lastOpts: RetrieveOptions | undefined = undefined;

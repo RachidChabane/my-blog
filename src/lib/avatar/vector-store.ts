@@ -4,7 +4,12 @@
 // plus the shared `cosineSimilarity`. A managed vector DB swaps in behind the
 // same `VectorStore` interface without touching callers.
 
-import type { IndexChunk, ScoredChunk, VectorStore } from './contracts';
+import type {
+  IndexChunk,
+  ScoredChunk,
+  SearchScope,
+  VectorStore,
+} from './contracts';
 
 /**
  * Cosine similarity in [-1, 1]. Returns 0 for a zero-magnitude vector (no NaN).
@@ -58,14 +63,26 @@ export class InMemoryVectorStore implements VectorStore {
    * Top-k chunks by cosine, sorted descending (then by `chunk.id` ascending for
    * determinism). Validates the query vector's length up front (surfaces an
    * embedder/artifact mismatch early).
+   *
+   * `scope.slug` narrows the candidate set BEFORE scoring and truncation, so the
+   * result is that article's own top-k — the same guarantee the Vectorize store
+   * gives via `getByIds`.
    */
-  search(queryEmbedding: number[], topK: number): Promise<ScoredChunk[]> {
+  search(
+    queryEmbedding: number[],
+    topK: number,
+    scope?: SearchScope
+  ): Promise<ScoredChunk[]> {
     if (queryEmbedding.length !== this.dimensions) {
       throw new Error(
         `InMemoryVectorStore.search: query length ${queryEmbedding.length} != dimensions ${this.dimensions}`
       );
     }
-    const scored: ScoredChunk[] = this.chunks.map((chunk) => ({
+    const inScope =
+      scope?.slug === undefined
+        ? this.chunks
+        : this.chunks.filter((c) => c.slug === scope.slug);
+    const scored: ScoredChunk[] = inScope.map((chunk) => ({
       chunk,
       score: cosineSimilarity(queryEmbedding, chunk.embedding),
     }));

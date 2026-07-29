@@ -36,6 +36,22 @@ export function rowToChunk(row: ChunkRow): IndexChunk {
   };
 }
 
+/**
+ * The chunk ids belonging to one article, in stable `ordinal` order. D1 is the
+ * authority on slug -> ids (Vectorize stores no slug metadata), so this is the
+ * pre-filter the scoped dense leg builds on. Empty array for an unknown slug.
+ */
+export async function loadChunkIdsBySlug(
+  db: D1Database,
+  slug: string
+): Promise<string[]> {
+  const { results } = await db
+    .prepare('SELECT id FROM chunks WHERE slug = ? ORDER BY ordinal')
+    .bind(slug)
+    .all<{ id: string }>();
+  return results.map((row) => row.id);
+}
+
 /** Bulk-hydrate chunks by id (`IN (...)`). Returns a Map id -> IndexChunk. */
 export async function loadChunksByIds(
   db: D1Database,

@@ -12,6 +12,7 @@ import type {
   D1PreparedStatement,
   VectorizeIndex,
   VectorizeMatch,
+  VectorizeVector,
 } from '@/lib/avatar/cf';
 
 function row(id: string, over: Partial<ChunkRow> = {}): ChunkRow {
@@ -28,7 +29,12 @@ function row(id: string, over: Partial<ChunkRow> = {}): ChunkRow {
   };
 }
 
-/** Fake D1: the FTS JOIN returns `ftsRows`; the `IN (...)` hydration maps bound ids. */
+/**
+ * Fake D1. Three query shapes, matching the three the avatar issues:
+ *   - the FTS JOIN                  -> `ftsRows` (honouring an `AND c.slug = ?` bind)
+ *   - `SELECT id ... WHERE slug = ?`-> the ids of that slug's rows (scoped pre-filter)
+ *   - the `IN (...)` hydration      -> the bound ids, mapped
+ */
 function fakeD1(
   rowsById: Record<string, ChunkRow>,
   ftsRows: (ChunkRow & { score: number })[] = []
@@ -36,6 +42,8 @@ function fakeD1(
   return {
     prepare(sql: string): D1PreparedStatement {
       const isFts = sql.includes('chunks_fts');
+      const isIdsBySlug = sql.includes('SELECT id FROM chunks WHERE slug');
+      const ftsScoped = isFts && sql.includes('c.slug = ?');
       let bound: unknown[] = [];
       const stmt: D1PreparedStatement = {
         bind(...vals: unknown[]) {
@@ -43,12 +51,25 @@ function fakeD1(
           return stmt;
         },
         all<T = Record<string, unknown>>() {
-          const results = isFts
-            ? (ftsRows as unknown as T[])
-            : (bound
-                .map((id) => rowsById[id as string])
-                .filter(Boolean) as unknown as T[]);
-          return Promise.resolve({ results, success: true, meta: {} });
+          let results: unknown[];
+          if (isFts) {
+            // bind order is (match, slug?, topK) — the slug pre-filter is real SQL,
+            // so the fake applies it rather than returning unfiltered rows.
+            results = ftsScoped
+              ? ftsRows.filter((r) => r.slug === bound[1])
+              : ftsRows;
+          } else if (isIdsBySlug) {
+            results = Object.values(rowsById)
+              .filter((r) => r.slug === bound[0])
+              .map((r) => ({ id: r.id }));
+          } else {
+            results = bound.map((id) => rowsById[id as string]).filter(Boolean);
+          }
+          return Promise.resolve({
+            results: results as T[],
+            success: true,
+            meta: {},
+          });
         },
         run<T = Record<string, unknown>>() {
           return Promise.resolve({
@@ -72,9 +93,19 @@ function fakeD1(
   };
 }
 
-function fakeVectorize(matches: VectorizeMatch[]): VectorizeIndex {
+/**
+ * Fake Vectorize. `matches` answers the corpus-wide `query()`; `vectors` answers the
+ * scoped `getByIds()`. They are separate on purpose: the scoped leg must NOT reach
+ * `query()` at all, so a test can leave `matches` empty and still expect scoped hits.
+ */
+function fakeVectorize(
+  matches: VectorizeMatch[],
+  vectors: VectorizeVector[] = []
+): VectorizeIndex {
   return {
     query: () => Promise.resolve({ matches, count: matches.length }),
+    getByIds: (ids) =>
+      Promise.resolve(vectors.filter((v) => ids.includes(v.id))),
     upsert: () => Promise.resolve({ ids: [], count: 0 }),
     insert: () => Promise.resolve({ ids: [], count: 0 }),
     deleteByIds: () => Promise.resolve({ ids: [], count: 0 }),
@@ -141,22 +172,88 @@ describe('VectorizeVectorStore', () => {
     expect(out.map((s) => s.score)).toEqual([0.91, 0.42]);
   });
 
-  it('clamps query topK to the Vectorize ceiling (wide scoped pull never throws)', async () => {
+  it('clamps corpus-wide query topK to the Vectorize ceiling', async () => {
     const sink = { topK: -1 };
     const recording: VectorizeIndex = {
       query: (_v, opts) => {
         sink.topK = opts?.topK ?? -1;
         return Promise.resolve({ matches: [], count: 0 });
       },
+      getByIds: () => Promise.resolve([]),
       upsert: () => Promise.resolve({ ids: [], count: 0 }),
       insert: () => Promise.resolve({ ids: [], count: 0 }),
       deleteByIds: () => Promise.resolve({ ids: [], count: 0 }),
     };
     const store = new VectorizeVectorStore(recording, fakeD1({}));
-    await store.search([0], 500); // a wide scoped pull above the cap
+    await store.search([0], 500); // above the cap
     expect(sink.topK).toBe(VECTORIZE_MAX_TOPK);
     await store.search([0], 10); // under the cap -> passed through unchanged
     expect(sink.topK).toBe(10);
+  });
+
+  it('scoped search never calls query() — it goes through D1 ids + getByIds', async () => {
+    let queried = false;
+    const index: VectorizeIndex = {
+      query: () => {
+        queried = true;
+        return Promise.resolve({ matches: [], count: 0 });
+      },
+      getByIds: (ids) =>
+        Promise.resolve(ids.map((id) => ({ id, values: [1, 0] }))),
+      upsert: () => Promise.resolve({ ids: [], count: 0 }),
+      insert: () => Promise.resolve({ ids: [], count: 0 }),
+      deleteByIds: () => Promise.resolve({ ids: [], count: 0 }),
+    };
+    const store = new VectorizeVectorStore(
+      index,
+      fakeD1({ 'a#h#0': row('a#h#0'), 'b#h#0': row('b#h#0') })
+    );
+    const out = await store.search([1, 0], 10, { slug: 'a' });
+    expect(queried).toBe(false);
+    expect(out.map((s) => s.chunk.id)).toEqual(['a#h#0']);
+    expect(out[0].score).toBeCloseTo(1, 6);
+  });
+
+  it('scoped search returns the ARTICLE top-k even when the corpus top-k excludes it', async () => {
+    // The regression. `query()` is stubbed to the corpus winners — a different
+    // article entirely — which is exactly what the old post-filter design consumed
+    // before filtering by slug, leaving nothing and refusing an on-article question.
+    const store = new VectorizeVectorStore(
+      fakeVectorize(
+        [{ id: 'popular#h#0', score: 0.99 }],
+        [
+          { id: 'target#h#0', values: [1, 0] },
+          { id: 'target#h#1', values: [0.6, 0.8] },
+        ]
+      ),
+      fakeD1({
+        'popular#h#0': row('popular#h#0'),
+        'target#h#0': row('target#h#0'),
+        'target#h#1': row('target#h#1'),
+      })
+    );
+    const out = await store.search([1, 0], 10, { slug: 'target' });
+    expect(out.map((s) => s.chunk.id)).toEqual(['target#h#0', 'target#h#1']);
+    expect(out[0].score).toBeCloseTo(1, 6); // the article's own best chunk reaches the gate
+  });
+
+  it('scoped search on an unknown slug is an honest empty (no getByIds call)', async () => {
+    let fetched = false;
+    const index: VectorizeIndex = {
+      query: () => Promise.resolve({ matches: [], count: 0 }),
+      getByIds: () => {
+        fetched = true;
+        return Promise.resolve([]);
+      },
+      upsert: () => Promise.resolve({ ids: [], count: 0 }),
+      insert: () => Promise.resolve({ ids: [], count: 0 }),
+      deleteByIds: () => Promise.resolve({ ids: [], count: 0 }),
+    };
+    const store = new VectorizeVectorStore(index, fakeD1({}));
+    expect(await store.search([1, 0], 10, { slug: 'no-such-article' })).toEqual(
+      []
+    );
+    expect(fetched).toBe(false);
   });
 
   it('skips an orphaned vector id (no matching D1 row)', async () => {
@@ -188,6 +285,34 @@ describe('D1LexicalStore', () => {
   it('returns [] for a query with no word tokens (no MATCH issued)', async () => {
     const store = new D1LexicalStore(fakeD1({}, [{ ...row('a'), score: -1 }]));
     expect(await store.search('***', 10)).toEqual([]);
+  });
+
+  it('pushes the slug into SQL so LIMIT applies to the scoped rows', async () => {
+    const store = new D1LexicalStore(
+      fakeD1({}, [
+        { ...row('popular#h#0'), score: -9 }, // would win corpus-wide
+        { ...row('target#h#0'), score: -1 },
+      ])
+    );
+    const out = await store.search('hybrid', 10, { slug: 'target' });
+    expect(out.map((s) => s.chunk.id)).toEqual(['target#h#0']);
+  });
+
+  it('emits the slug predicate only when scoped', async () => {
+    const seen: string[] = [];
+    const spyDb: D1Database = {
+      prepare(sql: string) {
+        seen.push(sql);
+        return fakeD1({}, []).prepare(sql);
+      },
+      batch: () => Promise.resolve([]),
+      exec: () => Promise.resolve({ count: 0, duration: 0 }),
+    };
+    const store = new D1LexicalStore(spyDb);
+    await store.search('hybrid', 10);
+    await store.search('hybrid', 10, { slug: 'target' });
+    expect(seen[0]).not.toContain('c.slug = ?');
+    expect(seen[1]).toContain('c.slug = ?');
   });
 });
 

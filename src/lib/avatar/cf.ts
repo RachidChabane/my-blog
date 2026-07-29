@@ -57,6 +57,12 @@ export interface VectorizeIndex {
   upsert(vectors: VectorizeVector[]): Promise<VectorizeVectorMutation>;
   insert(vectors: VectorizeVector[]): Promise<VectorizeVectorMutation>;
   deleteByIds(ids: string[]): Promise<VectorizeVectorMutation>;
+  /**
+   * Fetch specific vectors (WITH their `values`) by id. This is how the scoped
+   * dense leg avoids `query()`'s global top-k: D1 names the article's chunk ids,
+   * these are their vectors, and cosine is computed against them directly.
+   */
+  getByIds(ids: string[]): Promise<VectorizeVector[]>;
 }
 
 // --- D1 (lexical leg + chunk hydration) ---

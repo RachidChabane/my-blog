@@ -78,14 +78,24 @@ export class Bm25Index {
    * determinism). `score` is the BM25 sum (>= 0). Repeated query terms are
    * deduped (standard BM25-over-bag behaviour). Returns only chunks scoring > 0.
    * Empty corpus / empty query / `avgdl === 0` → [].
+   *
+   * `scope.slug` restricts which docs may be RETURNED, before truncation. The
+   * corpus-level term statistics (idf, avgdl) are deliberately left global — they
+   * describe the corpus, not the scoped subset, and recomputing them per article
+   * would make a term's weight depend on which article you happen to be reading.
    */
-  search(query: string, topK: number): ScoredChunk[] {
+  search(
+    query: string,
+    topK: number,
+    scope?: { slug?: string }
+  ): ScoredChunk[] {
     if (this.n === 0 || this.avgdl === 0) return [];
     const terms = [...new Set(tokenize(query))];
     if (terms.length === 0) return [];
 
     const scored: ScoredChunk[] = [];
     for (const doc of this.docs) {
+      if (scope?.slug !== undefined && doc.chunk.slug !== scope.slug) continue;
       let score = 0;
       for (const term of terms) {
         const df = this.df.get(term);

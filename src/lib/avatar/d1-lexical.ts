@@ -5,7 +5,7 @@
 // quoted FTS5 MATCH string so operators (`"` `*` `-` `OR` `NEAR` `:`) in input can't
 // throw a syntax error (the lexical leg would 500) or silently alter the query.
 
-import type { ScoredChunk } from './contracts';
+import type { ScoredChunk, SearchScope } from './contracts';
 import type { D1Database } from './cf';
 import type { LexicalSearcher } from './retrieval';
 import { rowToChunk, type ChunkRow } from './d1';
@@ -25,17 +25,25 @@ export function toFtsMatch(query: string): string {
 export class D1LexicalStore implements LexicalSearcher {
   constructor(private readonly db: D1Database) {}
 
-  async search(query: string, topK: number): Promise<ScoredChunk[]> {
+  async search(
+    query: string,
+    topK: number,
+    scope?: SearchScope
+  ): Promise<ScoredChunk[]> {
     const match = toFtsMatch(query);
     if (!match) return [];
+    // The slug restriction is a SQL pre-filter, so LIMIT applies to the scoped rows —
+    // the article's own BM25 top-k, never a global top-k it then has to survive.
+    const scoped = scope?.slug !== undefined;
     const { results } = await this.db
       .prepare(
         `SELECT c.id, c.slug, c.lang, c.source_url, c.heading_anchor, c.title,
                 c.text, c.ordinal, bm25(chunks_fts) AS score
          FROM chunks_fts JOIN chunks c ON c.id = chunks_fts.chunk_id
-         WHERE chunks_fts MATCH ? ORDER BY score LIMIT ?`
+         WHERE chunks_fts MATCH ?${scoped ? ' AND c.slug = ?' : ''}
+         ORDER BY score LIMIT ?`
       )
-      .bind(match, topK)
+      .bind(...(scoped ? [match, scope.slug, topK] : [match, topK]))
       .all<ChunkRow & { score: number }>();
     // bm25() is negative (more negative = better); flip to a positive score so it
     // honors the ScoredChunk "BM25 (>= 0)" contract. RRF only uses rank order, so

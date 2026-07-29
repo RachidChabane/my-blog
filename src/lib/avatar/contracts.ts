@@ -116,12 +116,35 @@ export interface Embedder {
 }
 
 /**
+ * Restriction applied to a search BEFORE ranking and truncation — a specification
+ * the store satisfies natively (SQL `WHERE`, an id lookup, an in-memory filter),
+ * never a filter the caller applies to the results.
+ *
+ * That distinction is the whole point. Post-filtering a global top-k silently
+ * degrades as the corpus grows: the scoped article's chunks stop making the cut,
+ * so its best chunk never reaches the gate and an on-article question refuses.
+ * Every impl MUST honour `slug` exactly (Liskov): the returned top-k is the top-k
+ * OF THE SCOPED SUBSET, whatever the corpus size.
+ */
+export interface SearchScope {
+  /** Restrict to one article's chunks. Omit for corpus-wide search. */
+  slug?: string;
+}
+
+/**
  * Dense nearest-neighbour search over the indexed chunks. Real swap-in: a
  * managed vector DB. MVP impl: InMemoryVectorStore (vector-store.ts).
  */
 export interface VectorStore {
-  /** Top-k by cosine, sorted descending. `score` is cosine in [-1, 1]. */
-  search(queryEmbedding: number[], topK: number): Promise<ScoredChunk[]>;
+  /**
+   * Top-k by cosine, sorted descending. `score` is cosine in [-1, 1].
+   * When `scope.slug` is set, the top-k is over that article's chunks only.
+   */
+  search(
+    queryEmbedding: number[],
+    topK: number,
+    scope?: SearchScope
+  ): Promise<ScoredChunk[]>;
 }
 
 /**
