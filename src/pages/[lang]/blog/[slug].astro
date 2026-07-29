@@ -195,7 +195,11 @@ const onThisPage = lang === 'fr' ? 'Sur cette page' : 'On this page';
 // Eyebrow leads with the localized CATEGORY (the 3-way taxonomy), then the first
 // tag, then the agent-maintained tail. `·` is typographic punctuation (INV-9 safe).
 const eyebrow = `${categoryName} · ${metaTags[0]} · ${s.maintained}`;
-const askSeed = s.askSeed.replace('{topic}', metaTags[0]);
+// Seeded from the TITLE, not the first tag: the title carries the thesis, so the
+// pre-filled question lands in this article's own chunks and clears the avatar's
+// similarity gate. A tag-seeded question ("...about quality?") is often only loosely
+// about the piece and drew an honest "I don't know". See the askSeed note in i18n/ui.ts.
+const askSeed = s.askSeed.replace('{title}', entry.data.title);
 const hasBoth = Boolean(slugMap.fr && slugMap.en);
 // Stars render right AFTER the reading time (spec: difficulty next to read
 // time, on card and page alike) as a dedicated role="img" span — they need an

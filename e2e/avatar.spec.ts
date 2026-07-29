@@ -1,4 +1,5 @@
 import { test, expect, type Route } from '@playwright/test';
+import { ARTICLE_DETAIL } from '../src/i18n/ui';
 
 // S10 avatar overlay (task 20). The endpoint is a Cloudflare Pages Function —
 // absent from the static `pnpm preview` server — so every streaming test
@@ -284,7 +285,12 @@ test.describe('S10 avatar overlay', () => {
 test.describe('S10 avatar — per-article ask button', () => {
   const EN_ARTICLE = '/en/blog/hybrid-rag-reciprocal-rank-fusion/';
   const EN_SLUG = 'hybrid-rag-reciprocal-rank-fusion';
-  const EN_SEED = 'What does this article say about RAG?';
+  const EN_TITLE = 'Hybrid RAG: reciprocal rank fusion in practice';
+  // Built from the template rather than pasted, so rewording askSeed cannot silently
+  // break these tests — only a change to the fixture's TITLE should. The seed is
+  // title-derived on purpose: a tag-derived one scored under the avatar's gate and
+  // drew an "I don't know" on the article it was asked about (see i18n/ui.ts).
+  const EN_SEED = ARTICLE_DETAIL.en.askSeed.replace('{title}', EN_TITLE);
 
   test('the article button opens the panel pre-filled and focuses the input', async ({
     page,

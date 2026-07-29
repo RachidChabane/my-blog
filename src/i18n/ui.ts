@@ -159,7 +159,15 @@ export interface ArticleDetailStrings {
   bilingualNote: string; // meta tail "FR / EN"
   askPrompt: string; // quiet lead-in above the "ask the agent" entry button
   askLabel: string; // entry-button text + aria-label (opens the avatar panel)
-  askSeed: string; // seed question template; "{topic}" is filled in the page
+  // Seed question template; "{title}" is filled with the ARTICLE TITLE in the page.
+  // Keyed on the title, NOT on a tag: tags are broad taxonomy buckets ("quality",
+  // "agents") that are often only loosely related to an article's thesis, so a
+  // tag-seeded question could score below the avatar's similarity gate and get an
+  // honest "I don't know" on the very article it was asked about. The title carries
+  // the thesis, so it lands squarely in the article's own chunks. Keep the title
+  // verbatim and the wrapper short — the wrapper only dilutes the match. See
+  // DEPLOY.md (scoped gate) and `pnpm probe:avatar`, which measures exactly this.
+  askSeed: string;
   askFeatureLabel: string; // prominent TOP entry-button text + aria-label ("Ask the agent")
   askFeaturePrompt: string; // inviting one-liner under the featured top entry
   copyLink: string; // aria-label for the per-heading copy-permalink button
@@ -178,7 +186,7 @@ export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
     bilingualNote: 'FR / EN',
     askPrompt: 'Envie d’aller plus loin ?',
     askLabel: 'Interroger l’agent sur cet article',
-    askSeed: 'Que dit cet article sur {topic} ?',
+    askSeed: '« {title} » : que montre cet article ?',
     askFeatureLabel: 'Demander à l’agent',
     askFeaturePrompt:
       'Une question sur cet article ? Obtenez une réponse sourcée, tout de suite.',
@@ -196,7 +204,7 @@ export const ARTICLE_DETAIL: Record<Locale, ArticleDetailStrings> = {
     bilingualNote: 'FR / EN',
     askPrompt: 'Want to go deeper?',
     askLabel: 'Ask the agent about this article',
-    askSeed: 'What does this article say about {topic}?',
+    askSeed: '“{title}”: what does this article show?',
     askFeatureLabel: 'Ask the agent',
     askFeaturePrompt:
       'A question about this article? Get a sourced answer, instantly.',
