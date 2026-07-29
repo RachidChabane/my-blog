@@ -7,12 +7,15 @@ conftest's PATH-symlink discovery like the rest of the suite.
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
+import yaml
 
 from ..config import PipelineConfig
 from ..radar.config import (
+    RADAR_MAX_REVIEW_ROUNDS,
     RADAR_RUNS_REL,
     RADAR_STATE_REL,
     RADAR_TEMPLATE_REL,
@@ -26,6 +29,7 @@ from ..radar.stages import (
     validate_radar_published,
     write_entries,
 )
+from ..runner import assemble_slate
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -70,6 +74,29 @@ def test_radar_config_namespacing():
     assert cfg.template_path != essay.template_path
     assert cfg.schedule_state_dir != essay.schedule_state_dir
     assert radar_memory_path(REPO_ROOT) != REPO_ROOT / "pipeline" / "memory" / "topic_memory.json"
+
+
+def test_radar_gets_an_extra_review_round():
+    """Radar drafts converge on round 3, not round 2 (the 07-28/07-29 block).
+
+    Round 2 reads a draft the round-1 revise already changed, so it can legitimately
+    raise something new; with a cap of 2 that verdict has nowhere to land and the task
+    blocks. The cap is radar-private -- the essay slate keeps its own default.
+    """
+    cfg = radar_config_from_env(REPO_ROOT)
+    assert cfg.max_review_rounds == RADAR_MAX_REVIEW_ROUNDS == 3
+    assert cfg.max_review_rounds > PipelineConfig(repo_root=REPO_ROOT).max_review_rounds
+    # The blocking behaviour itself is unchanged: a draft that cannot pass still fails.
+    assert cfg.max_gate_repair_rounds == 1
+
+
+def test_assembled_radar_slate_stamps_the_review_cap(tmp_path):
+    """The cap must reach the generated tasks.yaml -- config alone changes nothing."""
+    cfg = replace(radar_config_from_env(REPO_ROOT), runs_root=tmp_path)
+    slate = assemble_slate("2026-07-30", cfg, stage_descriptions=None)
+    written = yaml.safe_load(slate.tasks_path.read_text(encoding="utf-8"))
+    assert written["defaults"]["caps"]["max_review_rounds"] == RADAR_MAX_REVIEW_ROUNDS
+    assert written["defaults"]["on_max_review_rounds"] == "fail"
 
 
 def test_run_id_collision_regression(tmp_path):

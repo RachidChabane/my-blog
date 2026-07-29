@@ -28,6 +28,14 @@ RADAR_TEMPLATE_REL = "pipeline/radar/tasks-template.yaml"
 RADAR_STATE_REL = "pipeline/schedule/state-radar"
 RADAR_MEMORY_REL = "pipeline/memory/radar_memory.json"
 
+# Radar drafts need one more review round than the essay default (2). Observed on the
+# 2026-07-28 and 2026-07-29 runs: round 1 raises structural issues, the revise fixes them,
+# and round 2 -- now reading a changed draft -- raises a NEW small issue with no round left
+# to apply it. Both runs blocked at `draft` on `on_max_review_rounds: fail` over a one-word
+# fix. A third round lets the loop converge without weakening the gate: `fail` still stands,
+# so a draft that genuinely cannot pass review blocks and alerts rather than auto-approving.
+RADAR_MAX_REVIEW_ROUNDS = 3
+
 
 def radar_memory_path(repo_root: Path | str) -> Path:
     """The radar-private topic-memory store (separate from the essay store)."""
@@ -49,6 +57,7 @@ def radar_config_from_env(repo_root: Path | str | None = None) -> PipelineConfig
         runs_root=root / RADAR_RUNS_REL,
         template_path=root / RADAR_TEMPLATE_REL,
         schedule_state_dir=root / RADAR_STATE_REL,
+        max_review_rounds=RADAR_MAX_REVIEW_ROUNDS,
         loop_bin=discover_loop_bin(),
         cpe_home=discover_cpe_home(),
         claude_backend=backend,
@@ -62,6 +71,7 @@ def radar_config_from_env(repo_root: Path | str | None = None) -> PipelineConfig
 
 
 __all__ = [
+    "RADAR_MAX_REVIEW_ROUNDS",
     "RADAR_RUNS_REL",
     "RADAR_TEMPLATE_REL",
     "RADAR_STATE_REL",
