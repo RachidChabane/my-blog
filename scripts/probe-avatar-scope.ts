@@ -15,13 +15,23 @@
 //
 // It replays the REAL seeded question the button sends — ARTICLE_DETAIL[lang].askSeed with
 // {topic} filled from the article's first tag — scoped to that article, and reads the live
-// `done` / `idk` SSE frame. Any refusal is a FAILURE (exit 1): an article cannot fail to
-// answer a question about its own headline tag.
+// `done` / `idk` SSE frame. It reads the seed from source, so whatever askSeed becomes is
+// what gets measured; no edit here is needed when the seed changes.
+//
+// LOCAL DIAGNOSTIC — deliberately NOT wired into CI. As of 2026-07-29 it exits 1 on a
+// system that is working: the seed is built from the article's FIRST TAG, and tags are
+// broad buckets ("quality", "agents") that can be only loosely related to the article's
+// thesis, so a few articles legitimately score under the gate on a question that is barely
+// about them (same articles, a title-derived question: 0.4159 -> 0.6061). A red check that
+// is not a real defect, sitting in front of `deploy`, is exactly what froze this site for
+// six days in July. Promote it to a gate only once the seed is a genuinely on-article
+// question — then a refusal really does mean something is broken.
 //
 // Reading the output: `refused` is the count that matters. The BAND (lowest grounded score
-// vs highest refused score) is the threshold evidence — if refusals cluster just under the
-// live threshold, the gate is the constraint; if they sit at 0, retrieval never saw the
-// article's chunks at all and the threshold is a red herring.
+// vs highest refused score) tells you WHICH layer is at fault — a refusal at
+// `topSimilarity` 0 means retrieval never saw the article's chunks (a scoping/pre-filter
+// bug); a refusal just under the threshold means the query is weak or the gate is, and the
+// two are told apart by re-asking the same article a question drawn from its own title.
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
