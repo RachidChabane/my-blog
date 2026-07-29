@@ -45,7 +45,11 @@ test.describe('S9 search — page + island', () => {
     const hrefs = await links.evaluateAll((els) =>
       els.map((e) => e.getAttribute('href'))
     );
-    for (const href of hrefs) expect(href).toMatch(/^\/fr\/blog\/.+/);
+    // Language scoping is the invariant under test: every result must live under
+    // /fr/. The section is NOT constrained — the search corpus spans blog articles
+    // AND radar briefs (/fr/radar/…), so pinning this to /fr/blog/ made the test
+    // fail as soon as a radar brief out-ranked the articles for the query.
+    for (const href of hrefs) expect(href).toMatch(/^\/fr\/.+/);
   });
 
   test('empty query → idle; no-match → "No results"', async ({ page }) => {

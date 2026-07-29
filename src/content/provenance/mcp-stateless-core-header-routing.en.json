@@ -1,0 +1,31 @@
+{
+  "slug": "mcp-stateless-core-header-routing",
+  "lang": "en",
+  "translationKey": "mcp-stateless-header-routing-2026-07",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Model Context Protocol blog, the stateless protocol core",
+      "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+      "excerpt": "The highlight of this release is a stateless protocol core - MCP is transforming from a bidirectional stateful protocol into a request/response stateless protocol."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Model Context Protocol blog, header based routing",
+      "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+      "excerpt": "Method and tool names travel in the `Mcp-Method` and `Mcp-Name` HTTP headers, so gateways can route and authorize on headers directly."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Model Context Protocol blog, deprecation window",
+      "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+      "excerpt": "They still work, and they'll keep working for at least twelve months."
+    },
+    {
+      "sourceId": "s4",
+      "label": "The Register, Craig McLuckie of Stacklok on why MCP was stateful",
+      "url": "https://www.theregister.com/devops/2026/07/23/model-context-protocol-prepares-to-break-with-its-stateful-past/5276722",
+      "excerpt": "The stateful nature of MCP was really a by-product of its origin as a way to support developers using coding tools (that tend to run locally) to access things."
+    }
+  ]
+}

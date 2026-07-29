@@ -1267,5 +1267,51 @@
     ],
     "published_at": "2026-07-27",
     "embedding": null
+  },
+  {
+    "translation_key": "mcp-stateless-header-routing-2026-07",
+    "topic_id": "mcp-drops-sessions-for-stateless-request-response",
+    "dedup_key": "model context protocol drops its stateful session core for header routed stateless request response which moves agent tool infrastructure off sticky sessions and shared session stores",
+    "title": "MCP went stateless for a problem most of us never had",
+    "slugs": {
+      "fr": "mcp-noyau-sans-etat-routage-par-en-tetes",
+      "en": "mcp-stateless-core-header-routing"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Model Context Protocol blog, the stateless protocol core",
+        "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+        "retrieved_at": "2026-07-29",
+        "excerpt": "The highlight of this release is a stateless protocol core - MCP is transforming from a bidirectional stateful protocol into a request/response stateless protocol.",
+        "source_date": "2026-07-28"
+      },
+      {
+        "source_id": "s2",
+        "label": "Model Context Protocol blog, header based routing",
+        "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+        "retrieved_at": "2026-07-29",
+        "excerpt": "Method and tool names travel in the `Mcp-Method` and `Mcp-Name` HTTP headers, so gateways can route and authorize on headers directly.",
+        "source_date": "2026-07-28"
+      },
+      {
+        "source_id": "s3",
+        "label": "Model Context Protocol blog, deprecation window",
+        "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+        "retrieved_at": "2026-07-29",
+        "excerpt": "They still work, and they'll keep working for at least twelve months.",
+        "source_date": "2026-07-28"
+      },
+      {
+        "source_id": "s4",
+        "label": "The Register, Craig McLuckie of Stacklok on why MCP was stateful",
+        "url": "https://www.theregister.com/devops/2026/07/23/model-context-protocol-prepares-to-break-with-its-stateful-past/5276722",
+        "retrieved_at": "2026-07-29",
+        "excerpt": "The stateful nature of MCP was really a by-product of its origin as a way to support developers using coding tools (that tend to run locally) to access things.",
+        "source_date": "2026-07-23"
+      }
+    ],
+    "published_at": "2026-07-29",
+    "embedding": null
   }
 ]

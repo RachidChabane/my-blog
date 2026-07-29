@@ -456,7 +456,8 @@
       "indirect-prompt-injection"
     ],
     "articles": [
-      "claude-code-action-supply-chain-auth"
+      "claude-code-action-supply-chain-auth",
+      "mcp-stateless-header-routing-2026-07"
     ],
     "addedOn": "11-07-2026"
   },
@@ -1319,6 +1320,34 @@
     "addedOn": "15-07-2026"
   },
   {
+    "id": "header-based-routing",
+    "label": {
+      "fr": "Routage par en-têtes",
+      "en": "Header-based routing"
+    },
+    "definition": {
+      "fr": "Pratique consistant à publier l'identité d'un appel (méthode, nom d'outil) dans des en-têtes de transport, afin qu'une passerelle puisse router et filtrer sans analyser le corps de la requête. Le gain de coût est réel, mais l'identité est alors dupliquée entre l'en-tête et le corps, et seul un recoupement côté serveur empêche les deux de diverger.",
+      "en": "Publishing a call's identity (method, tool name) in transport headers so a gateway can route and filter without parsing the request body. The cost saving is real, but identity now lives in two places, the header and the body, and only a server-side cross-check stops the two from disagreeing."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "header routing",
+      "gateway routing",
+      "header based authorization",
+      "routage par en-têtes"
+    ],
+    "related": [
+      "stateless-protocol-core",
+      "authorization-bypass",
+      "trust-boundary",
+      "out-of-band-enforcement"
+    ],
+    "articles": [
+      "mcp-stateless-header-routing-2026-07"
+    ],
+    "addedOn": "29-07-2026"
+  },
+  {
     "id": "hybrid-retrieval",
     "label": {
       "fr": "Récupération hybride",
@@ -1703,7 +1732,8 @@
     ],
     "articles": [
       "mcp-tool-poisoning-client-trust",
-      "tool-calling-readout-not-descriptions"
+      "tool-calling-readout-not-descriptions",
+      "mcp-stateless-header-routing-2026-07"
     ],
     "addedOn": "01-07-2026"
   },
@@ -1837,7 +1867,8 @@
     "articles": [
       "prompt-injection-defense-layer-split",
       "instruction-file-structure-compliance",
-      "irreversible-actions-before-abstention"
+      "irreversible-actions-before-abstention",
+      "mcp-stateless-header-routing-2026-07"
     ],
     "addedOn": "19-07-2026"
   },
@@ -2451,6 +2482,32 @@
     "addedOn": "12-05-2026"
   },
   {
+    "id": "stateless-protocol-core",
+    "label": {
+      "fr": "Noyau de protocole sans état",
+      "en": "Stateless protocol core"
+    },
+    "definition": {
+      "fr": "Conception dans laquelle chaque requête porte tout le contexte nécessaire à son traitement, si bien qu'aucune réplique du serveur ne détient de session partagée entre deux appels. Elle libère les déploiements distants de l'affinité de session et de l'épinglage de connexion, au prix d'une charge utile plus lourde et d'une migration pour les serveurs bâtis sur un état conversationnel.",
+      "en": "A design where every request carries the full context needed to serve it, so no server replica holds session state between two calls. It frees remote deployments from session affinity and connection pinning, at the cost of a heavier payload and a migration for servers built around conversational state."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "statelessness",
+      "stateless core",
+      "stateless request response",
+      "noyau sans état"
+    ],
+    "related": [
+      "model-context-protocol",
+      "llm-serving"
+    ],
+    "articles": [
+      "mcp-stateless-header-routing-2026-07"
+    ],
+    "addedOn": "29-07-2026"
+  },
+  {
     "id": "supply-chain-attack",
     "label": {
       "fr": "Attaque de chaîne d'approvisionnement",
@@ -2654,7 +2711,8 @@
       "claude-code-action-supply-chain-auth",
       "command-denylist-not-a-security-boundary",
       "prompt-injection-defense-layer-split",
-      "refusal-behavior-is-not-a-security-control"
+      "refusal-behavior-is-not-a-security-control",
+      "mcp-stateless-header-routing-2026-07"
     ],
     "addedOn": "01-07-2026"
   },
