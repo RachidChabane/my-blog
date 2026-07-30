@@ -972,5 +972,44 @@
     ],
     "published_at": "2026-07-27",
     "embedding": null
+  },
+  {
+    "translation_key": "nvidia-open-secure-ai-alliance-nooa",
+    "topic_id": "nvidia-open-secure-ai-alliance-nooa",
+    "dedup_key": "nvidia open secure ai alliance nooa",
+    "title": "NVIDIA takes its agent framework into a new security alliance, where docstrings are the prompts",
+    "slugs": {
+      "fr": "nvidia-alliance-open-secure-ai-nooa-docstrings-comme-prompts",
+      "en": "nvidia-open-secure-ai-alliance-nooa-docstrings-as-prompts"
+    },
+    "sources": [
+      {
+        "label": "Primary - NVIDIA blog, Open Secure AI Alliance announcement",
+        "url": "https://blogs.nvidia.com/blog/open-secure-ai-alliance/",
+        "date": "27-07-2026"
+      },
+      {
+        "label": "Independent corroboration - The Hacker News on the alliance, NOOA's Apache 2.0 licence, and the absent labs",
+        "url": "https://thehackernews.com/2026/07/nvidia-forms-37-member-open-secure-ai.html",
+        "date": "27-07-2026"
+      },
+      {
+        "label": "Independent corroboration - implicator.ai on the absent labs and the older Coalition for Secure AI",
+        "url": "https://www.implicator.ai/nvidia-second-ai-security-alliance-openai-absent/",
+        "date": "27-07-2026"
+      },
+      {
+        "label": "NOOA paper abstract, arXiv 2607.20709",
+        "url": "https://arxiv.org/abs/2607.20709",
+        "date": "22-07-2026"
+      },
+      {
+        "label": "NOOA paper full text, Figure 1 and the linked implementation repository",
+        "url": "https://arxiv.org/html/2607.20709v1",
+        "date": "22-07-2026"
+      }
+    ],
+    "published_at": "2026-07-30",
+    "embedding": null
   }
 ]
