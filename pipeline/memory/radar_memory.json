@@ -1011,5 +1011,34 @@
     ],
     "published_at": "2026-07-30",
     "embedding": null
+  },
+  {
+    "translation_key": "cursor-router-request-classifier",
+    "topic_id": "cursor-router-request-classifier",
+    "dedup_key": "cursor router request classifier",
+    "title": "Cursor Router picks the model per request and optimizes for user satisfaction",
+    "slugs": {
+      "fr": "cursor-router-classifieur-de-modele-par-requete",
+      "en": "cursor-router-per-request-model-classifier"
+    },
+    "sources": [
+      {
+        "label": "Primary - Cursor blog, how Cursor Router was trained",
+        "url": "https://cursor.com/blog/router",
+        "date": "22-07-2026"
+      },
+      {
+        "label": "Independent corroboration - MarkTechPost on the request-level classifier",
+        "url": "https://www.marktechpost.com/2026/07/22/cursor-releases-cursor-router-a-request-level-classifier/",
+        "date": "22-07-2026"
+      },
+      {
+        "label": "Independent corroboration - TestingCatalog on the early-access accounts",
+        "url": "https://www.testingcatalog.com/icymi-cursor-launches-router-to-cut-costs-for-coding-models/",
+        "date": "25-07-2026"
+      }
+    ],
+    "published_at": "2026-07-31",
+    "embedding": null
   }
 ]
