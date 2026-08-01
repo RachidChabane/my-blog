@@ -704,6 +704,7 @@ export interface AvatarStrings {
   hint: string; // first-visit nudge bubble copy (invites a question)
   hintDismiss: string; // hint-bubble dismiss button aria-label
   error: string; // network-failure line (generic, localized, no internals)
+  unavailable: string; // temporary-outage line with a {date} comeback placeholder (reason never disclosed)
 }
 
 export const AVATAR: Record<Locale, AvatarStrings> = {
@@ -726,6 +727,8 @@ export const AVATAR: Record<Locale, AvatarStrings> = {
     hint: 'Une question sur Rachid ou sur ce site ? Demandez-moi.',
     hintDismiss: 'Masquer cette suggestion',
     error: 'Une erreur est survenue. Réessayez.',
+    unavailable:
+      'L’assistant est temporairement indisponible. Retour prévu le {date}.',
   },
   en: {
     title: 'Ask the agent',
@@ -746,6 +749,8 @@ export const AVATAR: Record<Locale, AvatarStrings> = {
     hint: 'Curious about Rachid or this site? Ask me.',
     hintDismiss: 'Dismiss this hint',
     error: 'Something went wrong. Try again.',
+    unavailable:
+      'The assistant is temporarily unavailable. It will be back on {date}.',
   },
 };
 

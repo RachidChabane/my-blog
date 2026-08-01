@@ -174,6 +174,12 @@ export interface LlmRequest {
   temperature?: number;
 }
 
+/** Usage reported by the LLM backend for one completed stream. */
+export interface LlmUsage {
+  /** Cost of the request in USD, when the backend reports it (OpenRouter does). */
+  costUsd?: number;
+}
+
 /**
  * Streamed synthesis (consumed by task 19). Real impl targets OpenRouter
  * (https://openrouter.ai/api/v1, OPENROUTER_API_KEY) — NOT the Anthropic API.
@@ -182,4 +188,6 @@ export interface LLMProvider {
   readonly model: string;
   /** Yields answer deltas (tokens/segments) for SSE streaming (NFR-2). */
   stream(request: LlmRequest): AsyncIterable<string>;
+  /** Usage of the last completed stream, when the backend reports it. */
+  lastUsage?(): LlmUsage | undefined;
 }

@@ -40,3 +40,12 @@ CREATE TABLE IF NOT EXISTS index_meta (
   key   TEXT PRIMARY KEY,
   value TEXT NOT NULL
 );
+
+-- Monthly OpenRouter spend ledger (the avatar's budget guardrail; see
+-- src/lib/avatar/spend.ts). One row per UTC month; the endpoint refuses new
+-- LLM calls once spent_usd reaches the monthly budget and comes back on the 1st.
+CREATE TABLE IF NOT EXISTS avatar_spend (
+  month      TEXT PRIMARY KEY,   -- 'YYYY-MM' (UTC)
+  spent_usd  REAL NOT NULL DEFAULT 0,
+  updated_at TEXT NOT NULL
+);

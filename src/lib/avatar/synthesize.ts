@@ -3,7 +3,7 @@
 // by the endpoint's stream order, not here) + the real OpenRouter LLMProvider.
 // Real impl targets OpenRouter (https://openrouter.ai/api/v1) — NOT Anthropic.
 
-import type { Candidate, LLMProvider, LlmRequest } from './contracts';
+import type { Candidate, LLMProvider, LlmRequest, LlmUsage } from './contracts';
 import type { Citation, Locale } from './protocol';
 import {
   GROUNDING_CLAUSES,
@@ -142,6 +142,7 @@ export class OpenRouterLLMProvider implements LLMProvider {
   private readonly apiKey: string;
   private readonly baseUrl: string;
   private readonly fetchImpl: typeof fetch;
+  private usage: LlmUsage | undefined;
 
   constructor(opts: OpenRouterOptions) {
     this.apiKey = opts.apiKey;
@@ -153,7 +154,13 @@ export class OpenRouterLLMProvider implements LLMProvider {
     this.fetchImpl = opts.fetchImpl ?? globalThis.fetch.bind(globalThis);
   }
 
+  /** Usage of the last completed stream (undefined until OpenRouter reports it). */
+  lastUsage(): LlmUsage | undefined {
+    return this.usage;
+  }
+
   async *stream(request: LlmRequest): AsyncIterable<string> {
+    this.usage = undefined;
     const res = await this.fetchImpl(`${this.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
@@ -168,6 +175,10 @@ export class OpenRouterLLMProvider implements LLMProvider {
         ],
         stream: true,
         temperature: request.temperature ?? DEFAULT_TEMPERATURE,
+        // OpenRouter accounting: the final SSE chunk then carries a `usage`
+        // object whose `cost` is the request's price in USD credits. Feeds the
+        // monthly spend guardrail (see ./spend.ts).
+        usage: { include: true },
       }),
     });
     if (!res.ok || !res.body) {
@@ -187,7 +198,10 @@ export class OpenRouterLLMProvider implements LLMProvider {
         if (!line.startsWith('data:')) continue;
         const payload = line.slice(5).trim();
         if (payload === '[DONE]') return;
-        const delta = JSON.parse(payload)?.choices?.[0]?.delta?.content;
+        const parsed = JSON.parse(payload);
+        const cost = parsed?.usage?.cost;
+        if (typeof cost === 'number') this.usage = { costUsd: cost };
+        const delta = parsed?.choices?.[0]?.delta?.content;
         if (typeof delta === 'string' && delta.length > 0) yield delta;
       }
     }

@@ -108,6 +108,9 @@ const s = avatarStrings(lang);
   );
   const headMark = root?.querySelector<HTMLElement>('[data-avatar-headmark]');
   const errorLine = root?.querySelector<HTMLElement>('[data-avatar-error]');
+  const unavailableLine = root?.querySelector<HTMLElement>(
+    '[data-avatar-unavailable]'
+  );
   const tplUser = root?.querySelector<HTMLTemplateElement>('[data-tpl-user]');
   const tplThink = root?.querySelector<HTMLTemplateElement>(
     '[data-tpl-thinking]'
@@ -138,6 +141,7 @@ const s = avatarStrings(lang);
     launchMark &&
     headMark &&
     errorLine &&
+    unavailableLine &&
     tplUser &&
     tplThink &&
     tplGround &&
@@ -410,6 +414,33 @@ const s = avatarStrings(lang);
       finish();
     };
 
+    // Temporary-outage line: the server sent 503 + availableAt (ISO date). The
+    // copy comes from the localized hidden template; only the {date} placeholder
+    // is filled here, formatted in the page's language.
+    const showUnavailable = (availableAt: string) => {
+      const template = unavailableLine.textContent ?? '';
+      let date = availableAt;
+      try {
+        date = new Intl.DateTimeFormat(document.documentElement.lang, {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          timeZone: 'UTC',
+        }).format(new Date(`${availableAt}T00:00:00Z`));
+      } catch {
+        // fall back to the raw ISO date
+      }
+      const row = document.createElement('div');
+      row.className = 'rc-ans';
+      const prose = document.createElement('div');
+      prose.className = 'rc-ans__prose';
+      prose.textContent = template.replace('{date}', date);
+      row.append(prose);
+      body.append(row);
+      scrollToEnd();
+      finish();
+    };
+
     const appendUser = (text: string) => {
       const node = cloneTpl(tplUser);
       // The user-bubble template's ROOT element carries data-slot="text" (it has no
@@ -600,6 +631,24 @@ const s = avatarStrings(lang);
             ...(askScope ? { scopeSlug: askScope } : {}),
           }),
         });
+        if (res.status === 503) {
+          // Planned outage (e.g. monthly quota rollover): the body carries the
+          // comeback date. A 503 without it (missing bindings) stays generic.
+          let availableAt = '';
+          try {
+            const data = (await res.json()) as { availableAt?: string };
+            if (typeof data.availableAt === 'string')
+              availableAt = data.availableAt;
+          } catch {
+            // not JSON — treat as a generic error below
+          }
+          if (availableAt) {
+            showUnavailable(availableAt);
+          } else {
+            showError();
+          }
+          return;
+        }
         if (!res.ok || !res.body) {
           showError();
           return;

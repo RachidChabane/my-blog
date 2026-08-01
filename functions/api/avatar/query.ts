@@ -27,6 +27,13 @@ import {
   SSE_EVENT,
 } from '../../../src/lib/avatar/protocol';
 import { parseArtifactStream } from '../../../src/lib/avatar/artifacts';
+import {
+  D1SpendLedger,
+  FALLBACK_REQUEST_COST_USD,
+  monthKey,
+  nextMonthStart,
+  parseMonthlyBudgetUsd,
+} from '../../../src/lib/avatar/spend';
 
 // --- type-only imports (verbatimModuleSyntax) ---
 import type {
@@ -36,6 +43,7 @@ import type {
   ThresholdOutcome,
 } from '../../../src/lib/avatar/contracts';
 import type { RetrieveOptions } from '../../../src/lib/avatar/retrieval';
+import type { SpendGuardOptions } from '../../../src/lib/avatar/spend';
 import type { Citation, Locale } from '../../../src/lib/avatar/protocol';
 import type {
   AiBinding,
@@ -47,6 +55,7 @@ import type {
 interface Env {
   OPENROUTER_API_KEY?: string; // avatar LLM (synthesis)
   AVATAR_SIMILARITY_THRESHOLD?: string; // optional runtime override, non-secret
+  AVATAR_MONTHLY_BUDGET_USD?: string; // optional spend-cap override, non-secret
   AI?: AiBinding; // Workers AI: query-time bge-m3 embeddings (no key/HTTP)
   VECTORIZE?: VectorizeIndex; // dense leg
   DB?: D1Database; // lexical (FTS5 BM25) + chunk hydration
@@ -93,13 +102,34 @@ function idkResponse(
   return new Response(body, { status: 200, headers: sseHeaders });
 }
 
+/**
+ * UNAVAILABLE: the monthly spend budget is exhausted. Deliberately generic (the
+ * budget is never disclosed as the reason); `availableAt` is the 1st of the next
+ * month (UTC), when the ledger rolls over. The client renders a localized
+ * "temporarily unavailable, back on {date}" line from it.
+ */
+function unavailableResponse(now: Date): Response {
+  const availableAt = nextMonthStart(now);
+  return new Response(
+    JSON.stringify({ error: 'Avatar temporarily unavailable.', availableAt }),
+    {
+      status: 503,
+      headers: {
+        'Content-Type': 'application/json',
+        'Retry-After': new Date(`${availableAt}T00:00:00Z`).toUTCString(),
+      },
+    }
+  );
+}
+
 /** GROUNDED: sources (citations) FIRST, then token deltas, then done. */
 function groundedResponse(
   citations: Citation[],
   llm: LLMProvider,
   llmRequest: LlmRequest,
   topSimilarity: number,
-  threshold: number
+  threshold: number,
+  spend?: SpendGuardOptions
 ): Response {
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -134,6 +164,21 @@ function groundedResponse(
           )
         );
       } finally {
+        // Record the request's cost while the response stream is still open (so
+        // the runtime keeps the invocation alive). Runs on the error path too:
+        // a mid-stream failure still consumed tokens. When OpenRouter reported
+        // no usage, a conservative flat estimate keeps the ledger honest. A
+        // ledger write failure must never break an already-streamed answer.
+        if (spend) {
+          const costUsd =
+            llm.lastUsage?.()?.costUsd ?? FALLBACK_REQUEST_COST_USD;
+          const now = spend.now?.() ?? new Date();
+          try {
+            await spend.ledger.addSpentUsd(monthKey(now), costUsd);
+          } catch {
+            // fail-open: the guardrail degrades to "uncounted", never to "broken"
+          }
+        }
         controller.close();
       }
     },
@@ -151,6 +196,8 @@ export interface AvatarEndpointDeps {
   threshold?: number; // default DEFAULT_SIMILARITY_THRESHOLD (0.25)
   maxNearMisses?: number; // default DEFAULT_MAX_NEAR_MISSES (3)
   retrieveOptions?: RetrieveOptions;
+  /** Monthly spend guardrail; absent → no cap (e.g. local dev without D1). */
+  spend?: SpendGuardOptions;
 }
 
 export async function handleAvatarQuery(
@@ -170,6 +217,20 @@ export async function handleAvatarQuery(
   // 2. Sanitize + validate (guard).
   const v = validateQueryRequest(parsed);
   if (!v.ok) return jsonError(v.status, v.message);
+
+  // 2b. Monthly spend guardrail — checked BEFORE retrieval so an exhausted month
+  // costs nothing at all (no embeddings, no Vectorize, no LLM). A ledger READ
+  // failure fails open (the avatar stays up, the month merely risks running
+  // uncounted); only a positive "budget spent" verdict blocks the agent.
+  if (deps.spend) {
+    const now = deps.spend.now?.() ?? new Date();
+    try {
+      const spent = await deps.spend.ledger.getSpentUsd(monthKey(now));
+      if (spent >= deps.spend.budgetUsd) return unavailableResponse(now);
+    } catch {
+      // fail-open (see above)
+    }
+  }
 
   // 3. Retrieve + gate. Retrieval/gate failures → generic 500 (no leak).
   let outcome: ThresholdOutcome;
@@ -207,7 +268,8 @@ export async function handleAvatarQuery(
     deps.llm,
     llmRequest,
     outcome.topSimilarity,
-    outcome.threshold
+    outcome.threshold,
+    deps.spend
   );
 }
 
@@ -218,7 +280,13 @@ export async function onRequestPost(context: PagesContext): Promise<Response> {
     const retriever = createBindingRetriever(env); // throws if a binding is absent
     const llm = createLLMProvider(env);
     const threshold = parseThreshold(env.AVATAR_SIMILARITY_THRESHOLD);
-    return await handleAvatarQuery(request, { retriever, llm, threshold });
+    const spend = createSpendGuard(env);
+    return await handleAvatarQuery(request, {
+      retriever,
+      llm,
+      threshold,
+      spend,
+    });
   } catch {
     return jsonError(503, 'Avatar service unavailable.');
   }
@@ -241,6 +309,19 @@ function createBindingRetriever(env: Env): AvatarRetriever {
   return {
     retrieve: (query: string, opts?: RetrieveOptions) =>
       retrieve(query, { embedder, vectorStore, lexical }, opts),
+  };
+}
+
+/**
+ * Wire the monthly spend guardrail over the existing D1 binding. `undefined`
+ * (no DB) simply disables the cap rather than breaking the endpoint — in
+ * production createBindingRetriever has already thrown 503 by then anyway.
+ */
+function createSpendGuard(env: Env): SpendGuardOptions | undefined {
+  if (!env.DB) return undefined;
+  return {
+    ledger: new D1SpendLedger(env.DB),
+    budgetUsd: parseMonthlyBudgetUsd(env.AVATAR_MONTHLY_BUDGET_USD),
   };
 }
 

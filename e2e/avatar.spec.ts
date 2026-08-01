@@ -202,6 +202,35 @@ test.describe('S10 avatar overlay', () => {
     await expect(panel.locator('.rc-cite')).toHaveCount(0);
   });
 
+  test('503 with availableAt shows the localized unavailable line, not the generic error', async ({
+    page,
+  }) => {
+    // The spend-guardrail outage response (functions/api/avatar/query.ts). The
+    // copy must state a comeback date and never disclose the budget as a reason.
+    await page.route('**/api/avatar/query', (route) =>
+      route.fulfill({
+        status: 503,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          error: 'Avatar temporarily unavailable.',
+          availableAt: '2026-08-01',
+        }),
+      })
+    );
+    await page.goto('/en/');
+    await page.locator('[data-avatar-slot]').click();
+    const input = page.locator('[data-avatar-input]');
+    await input.fill('Has Rachid built a RAG system?');
+    await input.press('Enter');
+
+    const prose = page.locator('[data-avatar-panel] .rc-ans .rc-ans__prose');
+    await expect(prose).toContainText('temporarily unavailable');
+    // {date} is filled with the locale-formatted comeback date.
+    await expect(prose).toContainText('August 1, 2026');
+    // The panel recovers: the input is usable again for a later visit.
+    await expect(input).toBeEnabled();
+  });
+
   test('thinking state shows synchronously, then resolves to the answer', async ({
     page,
   }) => {
