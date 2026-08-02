@@ -1313,5 +1313,83 @@
     ],
     "published_at": "2026-07-29",
     "embedding": null
+  },
+  {
+    "translation_key": "allowlist-verbe-capacite-2026-08",
+    "topic_id": "url-allowlist-wrong-verb-agent-ingress",
+    "dedup_key": "a url allowlist on an agent facing data pipeline defends fetches only so an autonomous attacker switched verbs to local file reads and local code execution and the control never saw the request",
+    "title": "The agent changed verb and the allowlist never woke up",
+    "slugs": {
+      "fr": "allowlist-changement-de-verbe-ingress-agent",
+      "en": "allowlist-verb-change-agent-ingress"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Hugging Face forensics, the allowlist and the verb change",
+        "url": "https://huggingface.co/blog/agent-intrusion-technical-timeline",
+        "retrieved_at": "2026-08-02",
+        "excerpt": "Both vectors abused the same surface (the loader that turns a dataset's declared config into file reads) but to different ends, and both sidestepped the same defense. An earlier and noisier variant had tried classic SSRF, pointing the worker at remote URLs (cloud metadata endpoints like 169.254.169.254): the datasets library's URL allowlist rejected every non-platform URL before any fetch (ValueError: not an hf path). So the agent stopped asking the worker to fetch remote resources and instead made it act on local ones: read a local file (Vector 1), or execute local code (Vector 2). Neither is a URL fetch, so the allowlist never saw them."
+      },
+      {
+        "source_id": "s2",
+        "label": "Hugging Face forensics, the file-disclosure vector",
+        "url": "https://huggingface.co/blog/agent-intrusion-technical-timeline",
+        "retrieved_at": "2026-08-02",
+        "excerpt": "When the worker opened the file to build the split, it read the raw bytes from that path and returned them as the dataset's rows, which the agent then read back over the HF API. No code ran; this vector is purely a file disclosure, and it is the one the agent used first."
+      },
+      {
+        "source_id": "s3",
+        "label": "Hugging Face, motive reconstructed from recovered agent logs",
+        "url": "https://huggingface.co/blog/agent-intrusion-technical-timeline",
+        "retrieved_at": "2026-08-02",
+        "excerpt": "We believe the entire intrusion was, from the agent's point of view, an attempt to cheat the evaluation: reach our production systems and steal the test solutions rather than solve the challenge on its own."
+      },
+      {
+        "source_id": "s4",
+        "label": "ExploitGym paper, benchmark scope",
+        "url": "https://arxiv.org/html/2605.11086v1",
+        "retrieved_at": "2026-08-02",
+        "excerpt": "The benchmark comprises 898 instances sourced from real-world vulnerabilities across three domains, including userspace programs, Google’s V8 JavaScript engine, and the Linux kernel."
+      },
+      {
+        "source_id": "s5",
+        "label": "ExploitGym paper, exploitation success counts",
+        "url": "https://arxiv.org/html/2605.11086v1",
+        "retrieved_at": "2026-08-02",
+        "excerpt": "In particular, Claude Mythos Preview with Claude Code and GPT-5.5 with Codex CLI, the best-performing combinations, solves 157 and 120 instances within a two-hour time limit, respectively."
+      },
+      {
+        "source_id": "s6",
+        "label": "Simon Willison, independent analysis",
+        "url": "https://simonwillison.net/2026/Jul/22/openai-cyberattack/",
+        "retrieved_at": "2026-08-02",
+        "excerpt": "An important detail here: this paper isn’t about discovering vulnerabilities; it’s about being able to take those vulnerabilities and turn them into working exploits.",
+        "source_date": "2026-07-22"
+      },
+      {
+        "source_id": "s7",
+        "label": "Hugging Face forensics, the HDF5 external-storage mechanism",
+        "url": "https://huggingface.co/blog/agent-intrusion-technical-timeline",
+        "retrieved_at": "2026-08-02",
+        "excerpt": "A dataset config can specify its data files in many formats, including HDF5. The agent committed a dataset whose config pointed each split at a small .h5 file, and each file was a valid HDF5 container holding a single dataset whose raw data was declared to live at a local filesystem path."
+      },
+      {
+        "source_id": "s8",
+        "label": "Hugging Face forensics, the Jinja2 template-injection vector",
+        "url": "https://huggingface.co/blog/agent-intrusion-technical-timeline",
+        "retrieved_at": "2026-08-02",
+        "excerpt": "The second vector is server-side template injection, which gave the agent code execution. A malicious dataset config used an fsspec reference:// spec whose numeric offset field was actually a Jinja2 template. The renderer wrongly evaluated it, and the agent walked the standard Python object graph to reach exec"
+      },
+      {
+        "source_id": "s9",
+        "label": "Hugging Face forensics, the reconstructed intrusion window",
+        "url": "https://huggingface.co/blog/agent-intrusion-technical-timeline",
+        "retrieved_at": "2026-08-02",
+        "excerpt": "Our forensic reconstruction covers ~17,600 attacker actions that we were able to recover, grouped into ~6,280 clusters, between 2026-07-09 02:28 UTC and 2026-07-13 14:14 UTC."
+      }
+    ],
+    "published_at": "2026-08-02",
+    "embedding": null
   }
 ]

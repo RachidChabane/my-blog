@@ -322,7 +322,8 @@
       "trust-boundary"
     ],
     "articles": [
-      "command-denylist-not-a-security-boundary"
+      "command-denylist-not-a-security-boundary",
+      "allowlist-verbe-capacite-2026-08"
     ],
     "addedOn": "17-07-2026"
   },
@@ -460,6 +461,33 @@
       "mcp-stateless-header-routing-2026-07"
     ],
     "addedOn": "11-07-2026"
+  },
+  {
+    "id": "automated-exploit-generation",
+    "label": {
+      "en": "Automated exploit generation",
+      "fr": "Génération automatisée d'exploits"
+    },
+    "definition": {
+      "en": "Turning a known vulnerability into a working exploit without a human driving the steps, which is what separates a reported flaw from an incident. Benchmarks score it as instances solved inside a wall-clock budget, so the measured cost per exploit becomes a price a defender can reason about.",
+      "fr": "Transformer une vulnérabilité connue en exploit fonctionnel sans qu'un humain pilote les étapes, ce qui sépare une faille signalée d'un incident réel. Les benchmarks la notent en instances résolues sous un budget de temps machine, si bien que le coût mesuré par exploit devient un prix sur lequel un défenseur peut raisonner."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "exploit generation",
+      "automated exploit generation",
+      "weaponization",
+      "exploitation automatisee"
+    ],
+    "related": [
+      "adaptive-attack-evaluation",
+      "agent-evaluation",
+      "reward-hacking"
+    ],
+    "articles": [
+      "allowlist-verbe-capacite-2026-08"
+    ],
+    "addedOn": "02-08-2026"
   },
   {
     "id": "batch-invariant-kernels",
@@ -869,6 +897,34 @@
       "command-denylist-not-a-security-boundary"
     ],
     "addedOn": "17-07-2026"
+  },
+  {
+    "id": "complete-mediation",
+    "label": {
+      "en": "Complete mediation",
+      "fr": "Médiation complète"
+    },
+    "definition": {
+      "en": "A control mediates an effect completely when every operation able to produce that effect passes through it. A list that enumerates the permitted instances of one operation leaves every other operation reaching the same effect unmediated, so coverage is reasoned about per effect, never per call site.",
+      "fr": "Un contrôle intercepte complètement un effet lorsque toute opération capable de produire cet effet passe par lui. Une liste qui énumère les instances autorisées d'une seule opération laisse sans surveillance toutes les autres opérations menant au même effet : la couverture se raisonne par effet, jamais par point d'appel."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "complete mediation",
+      "mediation closure",
+      "closure property",
+      "verb-level mediation",
+      "mediation complete"
+    ],
+    "related": [
+      "trust-boundary",
+      "agent-sandboxing",
+      "least-privilege"
+    ],
+    "articles": [
+      "allowlist-verbe-capacite-2026-08"
+    ],
+    "addedOn": "02-08-2026"
   },
   {
     "id": "context-budget",
@@ -1523,7 +1579,8 @@
     "articles": [
       "claude-code-action-supply-chain-auth",
       "command-denylist-not-a-security-boundary",
-      "prompt-injection-defense-layer-split"
+      "prompt-injection-defense-layer-split",
+      "allowlist-verbe-capacite-2026-08"
     ],
     "addedOn": "11-07-2026"
   },
@@ -2222,7 +2279,8 @@
     "articles": [
       "reward-hacking-inflates-coding-benchmarks",
       "verification-horizon-coding-agent-rewards",
-      "harness-over-model-has-no-global-ordering"
+      "harness-over-model-has-no-global-ordering",
+      "allowlist-verbe-capacite-2026-08"
     ],
     "addedOn": "06-07-2026"
   },
@@ -2354,6 +2412,60 @@
       "kimi-k3-ranked-endpoint-not-weights"
     ],
     "addedOn": "23-07-2026"
+  },
+  {
+    "id": "server-side-request-forgery",
+    "label": {
+      "en": "Server-side request forgery (SSRF)",
+      "fr": "Falsification de requête côté serveur (SSRF)"
+    },
+    "definition": {
+      "en": "An attack that makes a server issue network requests chosen by the attacker, typically to reach internal addresses the attacker cannot reach directly, such as a cloud metadata endpoint holding instance credentials. The usual defense is an allowlist of permitted destinations applied before the fetch.",
+      "fr": "Attaque qui amène un serveur à émettre des requêtes réseau choisies par l'attaquant, en général vers des adresses internes inaccessibles depuis l'extérieur, comme un endpoint de métadonnées cloud détenant les identifiants d'instance. La défense habituelle est une allowlist de destinations autorisées appliquée avant la requête."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "SSRF",
+      "server-side request forgery",
+      "metadata endpoint abuse",
+      "falsification de requete cote serveur"
+    ],
+    "related": [
+      "trust-boundary",
+      "complete-mediation",
+      "least-privilege"
+    ],
+    "articles": [
+      "allowlist-verbe-capacite-2026-08"
+    ],
+    "addedOn": "02-08-2026"
+  },
+  {
+    "id": "server-side-template-injection",
+    "label": {
+      "en": "Server-side template injection",
+      "fr": "Injection de template côté serveur"
+    },
+    "definition": {
+      "en": "A vulnerability where attacker-controlled text reaches a template engine and is rendered as template code instead of staying data. In Python engines the rendered expression can walk the object graph from any exposed object to arbitrary execution, which makes the template environment a code boundary rather than a formatting detail.",
+      "fr": "Vulnérabilité où un texte contrôlé par l'attaquant atteint un moteur de templates et se retrouve évalué comme du code de template au lieu de rester une donnée. Dans les moteurs Python, l'expression rendue permet de parcourir le graphe d'objets depuis n'importe quel objet exposé jusqu'à l'exécution arbitraire, ce qui fait de l'environnement de templates une frontière de code et non un détail de formatage."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "SSTI",
+      "template injection",
+      "Jinja2 injection",
+      "injection de template"
+    ],
+    "related": [
+      "shell-injection",
+      "trust-boundary",
+      "complete-mediation"
+    ],
+    "articles": [
+      "allowlist-verbe-capacite-2026-08"
+    ],
+    "addedOn": "02-08-2026"
   },
   {
     "id": "severity-tiering",
@@ -2712,7 +2824,8 @@
       "command-denylist-not-a-security-boundary",
       "prompt-injection-defense-layer-split",
       "refusal-behavior-is-not-a-security-control",
-      "mcp-stateless-header-routing-2026-07"
+      "mcp-stateless-header-routing-2026-07",
+      "allowlist-verbe-capacite-2026-08"
     ],
     "addedOn": "01-07-2026"
   },
