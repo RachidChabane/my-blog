@@ -1040,5 +1040,44 @@
     ],
     "published_at": "2026-07-31",
     "embedding": null
+  },
+  {
+    "translation_key": "gpt-5-6-price-cut-fast-mode",
+    "topic_id": "gpt-5-6-price-cut-fast-mode",
+    "dedup_key": "gpt 5 6 price cut fast mode",
+    "title": "OpenAI cuts GPT-5.6 Luna by 80% and renames Priority Processing to Fast mode",
+    "slugs": {
+      "fr": "openai-gpt-5-6-luna-baisse-prix-mode-fast",
+      "en": "openai-gpt-5-6-luna-price-cut-fast-mode"
+    },
+    "sources": [
+      {
+        "label": "Primary - OpenAI developer changelog, Jul 30 pricing and Fast mode",
+        "url": "https://developers.openai.com/api/docs/changelog",
+        "date": "30-07-2026"
+      },
+      {
+        "label": "Primary - OpenAI API pricing, standard and Fast tables",
+        "url": "https://developers.openai.com/api/docs/pricing",
+        "date": "30-07-2026"
+      },
+      {
+        "label": "Primary - OpenAI Fast mode guide",
+        "url": "https://developers.openai.com/api/docs/guides/fast-mode",
+        "date": "30-07-2026"
+      },
+      {
+        "label": "Corroboration - InfoWorld, OpenAI drops GPT-5.6 Luna and Terra API prices by up to 80%",
+        "url": "https://www.infoworld.com/article/4203865/openai-drops-gpt-5-6-luna-and-terra-api-prices-by-up-to-80.html",
+        "date": "31-07-2026"
+      },
+      {
+        "label": "Corroboration - CNBC, OpenAI price cut",
+        "url": "https://www.cnbc.com/2026/07/30/open-ai-price-cut-gpt.html",
+        "date": "30-07-2026"
+      }
+    ],
+    "published_at": "2026-08-02",
+    "embedding": null
   }
 ]
