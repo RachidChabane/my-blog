@@ -1079,5 +1079,59 @@
     ],
     "published_at": "2026-08-02",
     "embedding": null
+  },
+  {
+    "translation_key": "gpt-transcribe-live-transcribe-split",
+    "topic_id": "gpt-transcribe-live-transcribe-split",
+    "dedup_key": "gpt transcribe live transcribe split",
+    "title": "OpenAI ships gpt-transcribe and gpt-live-transcribe, and the migration costs more than a model id",
+    "slugs": {
+      "fr": "openai-gpt-transcribe-et-live-transcribe-migration",
+      "en": "openai-gpt-transcribe-and-live-transcribe-migration"
+    },
+    "sources": [
+      {
+        "label": "Primary - OpenAI developer changelog, Jul 28 GPT Transcribe release",
+        "url": "https://developers.openai.com/api/docs/changelog",
+        "date": "28-07-2026"
+      },
+      {
+        "label": "Primary - OpenAI API pricing, transcription and realtime audio rows",
+        "url": "https://developers.openai.com/api/docs/pricing",
+        "date": "28-07-2026"
+      },
+      {
+        "label": "Primary - OpenAI model page, gpt-transcribe endpoints and price",
+        "url": "https://developers.openai.com/api/docs/models/gpt-transcribe",
+        "date": "28-07-2026"
+      },
+      {
+        "label": "Primary - OpenAI model page, gpt-live-transcribe endpoints and price",
+        "url": "https://developers.openai.com/api/docs/models/gpt-live-transcribe",
+        "date": "28-07-2026"
+      },
+      {
+        "label": "Primary - OpenAI realtime transcription guide, session config and delay levels",
+        "url": "https://developers.openai.com/api/docs/guides/realtime-transcription",
+        "date": "28-07-2026"
+      },
+      {
+        "label": "Primary - OpenAI transcription guide, workflow and capability matrix",
+        "url": "https://developers.openai.com/api/docs/guides/transcription",
+        "date": "28-07-2026"
+      },
+      {
+        "label": "Corroboration - Microsoft Foundry blog, GPT Transcribe availability",
+        "url": "https://techcommunity.microsoft.com/blog/azure-ai-foundry-blog/introducing-gpt-transcribe-and-gpt-live-transcribe-in-microsoft-foundry/4541740",
+        "date": "29-07-2026"
+      },
+      {
+        "label": "Corroboration - yellow.com, launch pricing and third-party accuracy index",
+        "url": "https://yellow.com/news/openai-cuts-transcription-prices-25-percent",
+        "date": "30-07-2026"
+      }
+    ],
+    "published_at": "2026-08-03",
+    "embedding": null
   }
 ]
