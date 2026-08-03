@@ -27,6 +27,35 @@
     "addedOn": "12-07-2026"
   },
   {
+    "id": "action-boundary-precondition",
+    "label": {
+      "fr": "Précondition à la frontière d'action",
+      "en": "Action-boundary precondition"
+    },
+    "definition": {
+      "fr": "Un contrôle évalué contre l'état de l'environnement juste avant un appel d'outil qui écrit, et qui refuse l'appel quand l'état lu contredit ce que l'appel suppose. Il se distingue d'un contrôle rétrospectif en ceci qu'il décide avant l'écriture, sans jamais consulter ce que l'agent dit de lui-même.",
+      "en": "A check evaluated against environment state immediately before a writing tool call, refusing the call when the state read contradicts what the call assumes. It differs from a retrospective check by deciding before the write, and by never consulting the agent's account of itself."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "precondition gate",
+      "pre-execution gate",
+      "deterministic gate",
+      "action boundary check",
+      "garde-fou de precondition"
+    ],
+    "related": [
+      "out-of-band-enforcement",
+      "false-success",
+      "state-safety",
+      "tool-reversibility"
+    ],
+    "articles": [
+      "verification-frontiere-action-2026-08"
+    ],
+    "addedOn": "03-08-2026"
+  },
+  {
     "id": "adaptive-attack-evaluation",
     "label": {
       "fr": "Évaluation par attaque adaptative",
@@ -191,7 +220,8 @@
       "harness-over-model-has-no-global-ordering",
       "cli-agent-productivity-proxy-choice",
       "swe-bench-private-holdout-trust",
-      "irreversible-actions-before-abstention"
+      "irreversible-actions-before-abstention",
+      "verification-frontiere-action-2026-08"
     ],
     "addedOn": "12-05-2026"
   },
@@ -1296,6 +1326,35 @@
     "addedOn": "23-05-2026"
   },
   {
+    "id": "false-success",
+    "label": {
+      "fr": "Faux succès",
+      "en": "False success"
+    },
+    "definition": {
+      "fr": "Une trajectoire d'agent qui se déclare terminée et se lit comme un succès alors que l'état de l'environnement contredit ce compte rendu. Sa détection exige une vérité terrain indépendante du texte produit, puisque le récit de l'agent est précisément la partie corrompue.",
+      "en": "An agent trajectory that reports completion and reads as a success while the environment state contradicts that account. Detecting it requires ground truth independent of the produced text, since the agent's own narration is the corrupted part."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "silent failure",
+      "corrupt success",
+      "fail-plausible",
+      "faux succes",
+      "silent wrong-state failure"
+    ],
+    "related": [
+      "llm-as-a-judge",
+      "agent-evaluation",
+      "state-safety",
+      "weak-oracle-tests"
+    ],
+    "articles": [
+      "verification-frontiere-action-2026-08"
+    ],
+    "addedOn": "03-08-2026"
+  },
+  {
     "id": "forensic-path-drill",
     "label": {
       "fr": "Exercice du chemin forensique",
@@ -1583,6 +1642,33 @@
       "allowlist-verbe-capacite-2026-08"
     ],
     "addedOn": "11-07-2026"
+  },
+  {
+    "id": "llm-as-a-judge",
+    "label": {
+      "fr": "Modèle juge",
+      "en": "LLM as a judge"
+    },
+    "definition": {
+      "fr": "Utiliser un modèle de langage pour noter la sortie ou la trajectoire d'un autre système, en lieu et place d'un contrôle programmatique. L'instrument ne lit que l'artefact produit, donc il hérite de tout ce que cet artefact décrit de travers.",
+      "en": "Using a language model to grade another system's output or trajectory in place of a programmatic check. The instrument reads only the produced artifact, so it inherits whatever that artifact misreports."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "judge model",
+      "LLM judge",
+      "model-based evaluation",
+      "juge LLM"
+    ],
+    "related": [
+      "agent-evaluation",
+      "proxy-metric",
+      "evaluation-harness"
+    ],
+    "articles": [
+      "verification-frontiere-action-2026-08"
+    ],
+    "addedOn": "03-08-2026"
   },
   {
     "id": "llm-serving",
@@ -1925,7 +2011,8 @@
       "prompt-injection-defense-layer-split",
       "instruction-file-structure-compliance",
       "irreversible-actions-before-abstention",
-      "mcp-stateless-header-routing-2026-07"
+      "mcp-stateless-header-routing-2026-07",
+      "verification-frontiere-action-2026-08"
     ],
     "addedOn": "19-07-2026"
   },
@@ -2589,7 +2676,8 @@
       "evaluating-tool-using-agents",
       "coding-agent-harness-not-capability",
       "agent-debt-verification-placement",
-      "irreversible-actions-before-abstention"
+      "irreversible-actions-before-abstention",
+      "verification-frontiere-action-2026-08"
     ],
     "addedOn": "12-05-2026"
   },
@@ -2971,7 +3059,8 @@
       "agent-evaluation"
     ],
     "articles": [
-      "reward-hacking-inflates-coding-benchmarks"
+      "reward-hacking-inflates-coding-benchmarks",
+      "verification-frontiere-action-2026-08"
     ],
     "addedOn": "06-07-2026"
   },

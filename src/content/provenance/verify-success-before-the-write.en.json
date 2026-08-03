@@ -1,0 +1,67 @@
+{
+  "slug": "verify-success-before-the-write",
+  "lang": "en",
+  "translationKey": "verification-frontiere-action-2026-08",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "False success prevalence across two agent benchmarks",
+      "url": "https://arxiv.org/abs/2606.09863",
+      "excerpt": "LLM agents can fail silently by asserting task completion when the environment state shows otherwise. We study this failure mode, false success, across two agent benchmarks: 9,876 tau2-bench trajectories from 8 model families and 1,879 AppWorld trajectories from 4 model families with text-independent ground truth. False success is common but varies by setting: 45--48% of failures in single-control tau2-bench domains, 3% in dual-control telecom, and 75.8% among AppWorld self-assessing coding-agent trajectories with explicit status claims."
+    },
+    {
+      "sourceId": "s2",
+      "label": "LLM judges cannot detect false success",
+      "url": "https://arxiv.org/abs/2606.09863",
+      "excerpt": "LLM judges fail reliably: no configuration across 5 judges, 5 prompt strategies, and full task specifications exceeds AUROC 0.65 on tau2-bench, and the same judges reach only 0.54 AUROC on AppWorld API-call traces. Judges rely on surface completion proxies -- confident closing language in tau2-bench and coarse action-sequence volume in AppWorld -- rather than verified state changes."
+    },
+    {
+      "sourceId": "s3",
+      "label": "TF-IDF detectors beat judges on false-success triage",
+      "url": "https://arxiv.org/abs/2606.09863",
+      "excerpt": "Lightweight TF-IDF detectors achieve task-disjoint AUROC 0.83 on tau2-bench and 0.95 on AppWorld, recovering 4--8x more false successes than the best judge at the same flag rate with 3,300x lower latency."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Deterministic pre-execution gates, silent wrong-state failures",
+      "url": "https://arxiv.org/abs/2607.07405",
+      "excerpt": "On a budget agent, 78% of observed failures are silent wrong-state failures with no tool error, and the aggregate failure rate is reproducible across disjoint seeds, not sampling noise."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Deterministic pre-execution gates, measured lift",
+      "url": "https://arxiv.org/abs/2607.07405",
+      "excerpt": "A four-gate suite raises full-benchmark success from 29.6% to 42.0% on gpt-4o-mini (+12.4pp; paired task-level bootstrap P=0.0012), and the lift reproduces on a disjoint 15-seed set (+12.3pp; P=0.0008)."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Deterministic gates, negative controls bound the mechanism",
+      "url": "https://arxiv.org/abs/2607.07405",
+      "excerpt": "Two negative controls (a self-enforcing retail domain and BFCL) bound the mechanism: gates help when tools are policy-permissive and add little where tools already self-enforce."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Procedure-aware evaluation, corrupt successes",
+      "url": "https://arxiv.org/abs/2603.03116",
+      "excerpt": "At the procedural compliance level, 27-78% of benchmark reported successes are corrupt successes concealing violations across interaction and integrity."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Production agent runtime, silent failures reach humans last",
+      "url": "https://arxiv.org/abs/2606.14589",
+      "excerpt": "Three findings: about 70% of silent failures were caught by human user-view observation, not tests or audits; a retrospective audit of 15 incidents found 0% ex-ante prevention but 87% regression blocking -- audits are regression engines, not prediction engines"
+    },
+    {
+      "sourceId": "s10",
+      "label": "Production agent runtime, study scope",
+      "url": "https://arxiv.org/abs/2606.14589",
+      "excerpt": "Over eight weeks we documented 22 incidents with full root-cause postmortems, in which one meta-pattern -- a failure whose error signal never reaches a human in actionable form -- manifested at least 28 times."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Production agent runtime, the fail-plausible class",
+      "url": "https://arxiv.org/abs/2606.14589",
+      "excerpt": "Class D is unique to LLM systems and the most dangerous: the system does not merely fail to report an error -- the LLM transforms it into fluent, plausible narrative delivered to the user."
+    }
+  ]
+}
