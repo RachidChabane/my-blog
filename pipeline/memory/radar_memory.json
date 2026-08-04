@@ -1133,5 +1133,29 @@
     ],
     "published_at": "2026-08-03",
     "embedding": null
+  },
+  {
+    "translation_key": "deepseek-v4-flash-0731-official-api",
+    "topic_id": "deepseek-v4-flash-0731-official-api",
+    "dedup_key": "deepseek v4 flash 0731 official api",
+    "title": "DeepSeek ships V4-Flash 0731 as its official API release, and the benchmark harness is not out yet",
+    "slugs": {
+      "fr": "deepseek-v4-flash-0731-sortie-officielle-api",
+      "en": "deepseek-v4-flash-0731-official-api-release"
+    },
+    "sources": [
+      {
+        "label": "DeepSeek API change log",
+        "url": "https://api-docs.deepseek.com/updates/",
+        "date": "31-07-2026"
+      },
+      {
+        "label": "Developers Digest hands-on writeup",
+        "url": "https://www.developersdigest.tech/blog/deepseek-v4-flash-0731-opencode-guide",
+        "date": "31-07-2026"
+      }
+    ],
+    "published_at": "2026-08-04",
+    "embedding": null
   }
 ]
