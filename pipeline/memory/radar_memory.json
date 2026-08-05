@@ -1157,5 +1157,29 @@
     ],
     "published_at": "2026-08-04",
     "embedding": null
+  },
+  {
+    "translation_key": "mcp-2026-07-28-version-header-tasks-extension",
+    "topic_id": "mcp-2026-07-28-version-header-tasks-extension",
+    "dedup_key": "mcp 2026 07 28 version header tasks extension",
+    "title": "MCP 2026-07-28 negotiates the protocol in a request header, and AWS's gateway answers a header-less request as 2025-03-26",
+    "slugs": {
+      "fr": "mcp-2026-07-28-en-tete-de-version-extension-tasks",
+      "en": "mcp-2026-07-28-version-header-tasks-extension"
+    },
+    "sources": [
+      {
+        "label": "Model Context Protocol maintainers, specification release post",
+        "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+        "date": "28-07-2026"
+      },
+      {
+        "label": "AWS Machine Learning Blog, AgentCore Gateway implementation",
+        "url": "https://aws.amazon.com/blogs/machine-learning/how-agentcore-gateway-supports-the-mcp-2026-07-28-spec/",
+        "date": "28-07-2026"
+      }
+    ],
+    "published_at": "2026-08-05",
+    "embedding": null
   }
 ]
