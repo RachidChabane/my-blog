@@ -1181,5 +1181,34 @@
     ],
     "published_at": "2026-08-05",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-enterprise-inference-hooks-dlp",
+    "topic_id": "claude-enterprise-inference-hooks-dlp",
+    "dedup_key": "claude enterprise inference hooks dlp",
+    "title": "Claude Enterprise sends every governed prompt to your own security server, and checks the MCP tool response on the way back",
+    "slugs": {
+      "fr": "claude-enterprise-hooks-inference-dlp",
+      "en": "claude-enterprise-inference-hooks-dlp"
+    },
+    "sources": [
+      {
+        "label": "Anthropic announcement blog",
+        "url": "https://claude.com/blog/claude-enterprise-inference-hooks",
+        "date": "05-08-2026"
+      },
+      {
+        "label": "Unite.AI cybersecurity desk",
+        "url": "https://www.unite.ai/anthropic-puts-inline-data-loss-prevention-inside-claude-enterprise/",
+        "date": "05-08-2026"
+      },
+      {
+        "label": "The Next Web",
+        "url": "https://thenextweb.com/news/anthropic-inference-hooks-dlp-claude-enterprise",
+        "date": "05-08-2026"
+      }
+    ],
+    "published_at": "2026-08-06",
+    "embedding": null
   }
 ]
