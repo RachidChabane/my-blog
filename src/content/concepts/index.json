@@ -221,7 +221,8 @@
       "cli-agent-productivity-proxy-choice",
       "swe-bench-private-holdout-trust",
       "irreversible-actions-before-abstention",
-      "verification-frontiere-action-2026-08"
+      "verification-frontiere-action-2026-08",
+      "arret-anticipe-sondes-2026-08"
     ],
     "addedOn": "12-05-2026"
   },
@@ -326,7 +327,8 @@
       "agent-evaluation"
     ],
     "articles": [
-      "observability-is-not-evaluation"
+      "observability-is-not-evaluation",
+      "arret-anticipe-sondes-2026-08"
     ],
     "addedOn": "07-07-2026"
   },
@@ -896,7 +898,8 @@
       "harness-over-model-has-no-global-ordering",
       "command-denylist-not-a-security-boundary",
       "cli-agent-productivity-proxy-choice",
-      "instruction-file-structure-compliance"
+      "instruction-file-structure-compliance",
+      "arret-anticipe-sondes-2026-08"
     ],
     "addedOn": "30-05-2026"
   },
@@ -1463,6 +1466,35 @@
     "addedOn": "29-07-2026"
   },
   {
+    "id": "hidden-state-probing",
+    "label": {
+      "fr": "Sondage des états cachés",
+      "en": "Hidden-state probing"
+    },
+    "definition": {
+      "fr": "Entraîner un classifieur léger, souvent une régression logistique, sur les activations internes d'un modèle pour décoder une propriété que sa sortie n'exprime pas encore. La technique exige un accès en lecture aux représentations pendant l'inférence, ce qui la réserve aux piles de service que l'on contrôle.",
+      "en": "Training a lightweight classifier, often a logistic regression, on a model's internal activations to decode a property its output does not yet express. The technique needs read access to representations during inference, which confines it to serving stacks you control."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "linear probe",
+      "linear probes",
+      "hidden state probe",
+      "residual stream probe",
+      "activation probing",
+      "sonde lineaire"
+    ],
+    "related": [
+      "agent-observability",
+      "llm-serving",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "arret-anticipe-sondes-2026-08"
+    ],
+    "addedOn": "06-08-2026"
+  },
+  {
     "id": "hybrid-retrieval",
     "label": {
       "fr": "Récupération hybride",
@@ -1616,6 +1648,33 @@
     "addedOn": "04-05-2026"
   },
   {
+    "id": "latent-programming-horizon",
+    "label": {
+      "fr": "Horizon de programmation latent",
+      "en": "Latent programming horizon"
+    },
+    "definition": {
+      "fr": "L'avance, mesurée en pas d'exécution, avec laquelle une sonde posée sur les états internes d'un agent prédit mieux que le hasard le résultat d'éditions qu'il n'a pas encore produites. C'est une mesure de précocité du signal, distincte de la qualité de la prédiction elle-même.",
+      "en": "The lead time, measured in execution steps, at which a probe on an agent's internal states predicts the outcome of edits it has not produced yet, still above chance. It measures how early the signal is available, not how good the prediction is."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "latent horizon",
+      "programming horizon",
+      "probe lead time",
+      "horizon latent"
+    ],
+    "related": [
+      "hidden-state-probing",
+      "coding-agents",
+      "agent-observability"
+    ],
+    "articles": [
+      "arret-anticipe-sondes-2026-08"
+    ],
+    "addedOn": "06-08-2026"
+  },
+  {
     "id": "least-privilege",
     "label": {
       "fr": "Moindre privilège",
@@ -1695,7 +1754,8 @@
       "llm-temp0-nondeterminism-batch-invariant",
       "glm-5-2-open-weight-where-you-run-it",
       "kimi-k3-ranked-endpoint-not-weights",
-      "afd-throughput-does-not-transfer-without-the-fabric"
+      "afd-throughput-does-not-transfer-without-the-fabric",
+      "arret-anticipe-sondes-2026-08"
     ],
     "addedOn": "04-05-2026"
   },
@@ -2265,6 +2325,35 @@
       "ast-code-chunking"
     ],
     "addedOn": "27-05-2026"
+  },
+  {
+    "id": "recall-controlled-cascade",
+    "label": {
+      "fr": "Cascade pilotée par le rappel",
+      "en": "Recall-controlled cascade"
+    },
+    "definition": {
+      "fr": "Une suite de portes d'arrêt anticipé posées le long d'un run d'agent, gelée puis certifiée sur des données indépendantes de sorte que les épisodes finalement réussis les franchissent toutes à un taux de rappel choisi. Le coût d'exploitation se lit dans le complément de ce taux : la part d'épisodes réussis que la cascade supprime en production.",
+      "en": "A series of early-stopping gates placed along an agent run, frozen and then certified on independent data so that eventually successful episodes clear all of them at a chosen recall rate. The operating cost is the complement of that rate: the share of successful episodes the cascade kills in production."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "early stopping cascade",
+      "early abort gate",
+      "post-selection recall guarantee",
+      "recall target",
+      "cascade de portes"
+    ],
+    "related": [
+      "hidden-state-probing",
+      "latent-programming-horizon",
+      "agent-evaluation",
+      "cost-aware-evaluation"
+    ],
+    "articles": [
+      "arret-anticipe-sondes-2026-08"
+    ],
+    "addedOn": "06-08-2026"
   },
   {
     "id": "reciprocal-rank-fusion",
@@ -3063,6 +3152,35 @@
       "verification-frontiere-action-2026-08"
     ],
     "addedOn": "06-07-2026"
+  },
+  {
+    "id": "white-box-model-access",
+    "label": {
+      "fr": "Accès boîte blanche au modèle",
+      "en": "White-box model access"
+    },
+    "definition": {
+      "fr": "La possibilité de lire les représentations internes d'un modèle pendant qu'il sert, et pas seulement les tokens et les log-probabilités qu'il renvoie. C'est une propriété du déploiement, décidée au moment où l'on choisit sa pile d'inférence, et non une option que l'on active plus tard côté application.",
+      "en": "The ability to read a model's internal representations while it serves, not only the tokens and log-probabilities it returns. It is a property of the deployment, settled when the inference stack is chosen, and not a switch an application can flip later."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "white box access",
+      "black-box endpoint",
+      "hosted endpoint access",
+      "model internals access",
+      "acces boite blanche"
+    ],
+    "related": [
+      "hidden-state-probing",
+      "recall-controlled-cascade",
+      "llm-serving",
+      "open-weight-models"
+    ],
+    "articles": [
+      "arret-anticipe-sondes-2026-08"
+    ],
+    "addedOn": "06-08-2026"
   },
   {
     "id": "workload-conditional-selection",
