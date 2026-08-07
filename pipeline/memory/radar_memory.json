@@ -1210,5 +1210,29 @@
     ],
     "published_at": "2026-08-06",
     "embedding": null
+  },
+  {
+    "translation_key": "human-in-the-loop-approval-miss-rate-study",
+    "topic_id": "human-in-the-loop-approval-miss-rate-study",
+    "dedup_key": "human in the loop approval miss rate study",
+    "title": "Players approving agent commands missed 1 in 3 threats, and that 66.3% is the optimistic number",
+    "slugs": {
+      "fr": "invites-de-permission-taux-de-menaces-manquees",
+      "en": "permission-prompts-approval-miss-rate-study"
+    },
+    "sources": [
+      {
+        "label": "Scale X study",
+        "url": "https://scalex.dev/blog/ai-agent-permissions-stats/",
+        "date": "05-08-2026"
+      },
+      {
+        "label": "The Register",
+        "url": "https://www.theregister.com/ai-and-ml/2026/08/06/humans-in-the-loop-miss-a-third-of-dangerous-ai-coding-agent-requests/5284236",
+        "date": "06-08-2026"
+      }
+    ],
+    "published_at": "2026-08-07",
+    "embedding": null
   }
 ]
