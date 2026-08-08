@@ -899,7 +899,8 @@
       "command-denylist-not-a-security-boundary",
       "cli-agent-productivity-proxy-choice",
       "instruction-file-structure-compliance",
-      "arret-anticipe-sondes-2026-08"
+      "arret-anticipe-sondes-2026-08",
+      "llm-contribution-policy-premise-decides-the-leak"
     ],
     "addedOn": "30-05-2026"
   },
@@ -1703,6 +1704,32 @@
     "addedOn": "11-07-2026"
   },
   {
+    "id": "legally-significant-threshold",
+    "label": {
+      "fr": "Seuil de significativité juridique",
+      "en": "Legally significant threshold"
+    },
+    "definition": {
+      "fr": "Ligne de taille au-delà de laquelle une contribution est tenue pour protégeable par le droit d'auteur et relève donc des règles de licence du projet ; les lignes directrices des mainteneurs du projet GNU la situent autour de 15 lignes de code ou de texte. En faire le bord d'une politique rend la règle mesurable, et offre du même coup un moyen conforme de rester juste en dessous.",
+      "en": "A size line above which a contribution counts as copyrightable and therefore falls under a project's licensing rules; the GNU Project maintainer guidelines put it at around 15 lines of code or text. Using it as the edge of a policy makes the rule measurable, and in the same move hands contributors a compliant way to stay just below it."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "legally significant",
+      "copyright significance threshold",
+      "15-line threshold",
+      "seuil de significativite juridique"
+    ],
+    "related": [
+      "llm-contribution-policy",
+      "origin-attestation"
+    ],
+    "articles": [
+      "llm-contribution-policy-premise-decides-the-leak"
+    ],
+    "addedOn": "08-08-2026"
+  },
+  {
     "id": "llm-as-a-judge",
     "label": {
       "fr": "Modèle juge",
@@ -1728,6 +1755,32 @@
       "verification-frontiere-action-2026-08"
     ],
     "addedOn": "03-08-2026"
+  },
+  {
+    "id": "llm-contribution-policy",
+    "label": {
+      "fr": "Politique de contribution LLM",
+      "en": "LLM contribution policy"
+    },
+    "definition": {
+      "fr": "Règle de dépôt qui énonce si, et à quelles conditions, du contenu produit avec un grand modèle de langage peut entrer dans les contributions d'un projet. Sa portée découle de la prémisse retenue, exposition juridique, capacité de relecture ou seuil de droit d'auteur, si bien que deux projets dotés du même instrument peuvent interdire des choses très différentes.",
+      "en": "A repository rule stating whether, and under what conditions, content produced with a large language model may enter a project's contributions. Its scope follows the premise it is derived from, whether legal exposure, review capacity or a copyright threshold, so two projects reaching for the same instrument can forbid very different things."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "LLM policy",
+      "AI contribution policy",
+      "AI policy",
+      "politique de contribution LLM",
+      "politique LLM"
+    ],
+    "related": [
+      "coding-agents"
+    ],
+    "articles": [
+      "llm-contribution-policy-premise-decides-the-leak"
+    ],
+    "addedOn": "08-08-2026"
   },
   {
     "id": "llm-serving",
@@ -2043,6 +2096,32 @@
       "refusal-behavior-is-not-a-security-control"
     ],
     "addedOn": "04-05-2026"
+  },
+  {
+    "id": "origin-attestation",
+    "label": {
+      "fr": "Attestation d'origine",
+      "en": "Origin attestation"
+    },
+    "definition": {
+      "fr": "Déclaration du contributeur sur la provenance de son changement, consignée dans une signature, un champ de pull request ou un pied de message de commit. L'origine ne laissant aucune trace fiable dans un diff, cette attestation reste invérifiable au moment de la relecture et ne se sanctionne qu'après coup, à la manière du Developer Certificate of Origin.",
+      "en": "A statement by the submitter about where a contribution came from, recorded in a sign-off, a pull-request field or a commit trailer. Origin leaves no reliable trace in a diff, so the attestation is unverifiable at review time and is enforced only after the fact, the way the Developer Certificate of Origin is."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "contributor declaration",
+      "disclosure requirement",
+      "declaration d origine"
+    ],
+    "related": [
+      "llm-contribution-policy",
+      "citation-grounding",
+      "coding-agents"
+    ],
+    "articles": [
+      "llm-contribution-policy-premise-decides-the-leak"
+    ],
+    "addedOn": "08-08-2026"
   },
   {
     "id": "out-of-band-enforcement",
@@ -2427,6 +2506,32 @@
       "ast-code-chunking"
     ],
     "addedOn": "10-06-2026"
+  },
+  {
+    "id": "review-bandwidth",
+    "label": {
+      "fr": "Capacité de relecture",
+      "en": "Review bandwidth"
+    },
+    "definition": {
+      "fr": "L'attention de relecture qu'un projet peut réellement fournir, ressource rare dans la plupart des dépôts open source, où l'on compte plus de personnes désireuses d'écrire du code que de le relire. Toute règle qui ajoute une étape à la relecture dépense la ressource même qu'elle est le plus souvent censée protéger.",
+      "en": "The reviewer attention a project can actually supply, the scarce resource in most open-source repositories, where more people want to write code than to review it. Any rule that adds a step to review spends the same resource it is usually written to protect."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "review capacity",
+      "reviewer attention",
+      "review queue",
+      "capacite de relecture"
+    ],
+    "related": [
+      "llm-contribution-policy",
+      "coding-agents"
+    ],
+    "articles": [
+      "llm-contribution-policy-premise-decides-the-leak"
+    ],
+    "addedOn": "08-08-2026"
   },
   {
     "id": "reward-hacking",
@@ -3005,6 +3110,32 @@
       "allowlist-verbe-capacite-2026-08"
     ],
     "addedOn": "01-07-2026"
+  },
+  {
+    "id": "unenforceable-by-design",
+    "label": {
+      "fr": "Règle déclarée inapplicable",
+      "en": "Rule declared unenforceable"
+    },
+    "definition": {
+      "fr": "Règle de politique qui nomme sa propre inapplicabilité comme un choix assumé plutôt que comme un défaut : elle vise une limite claire et publiquement énoncée, et non la détection de chaque manquement. Les manquements se constatent alors sur des actes observables, l'intention n'entrant en jeu qu'au moment de décider de la réponse.",
+      "en": "A policy rule that names its own unenforceability as a deliberate choice rather than a defect: it aims at one clear, publicly stated line instead of at catching every violation. Violations are then identified from observable actions, with intent weighed only when deciding how to respond."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "unenforceable rule",
+      "declared unenforceability",
+      "action-based enforcement",
+      "regle declaree inapplicable"
+    ],
+    "related": [
+      "llm-contribution-policy",
+      "origin-attestation"
+    ],
+    "articles": [
+      "llm-contribution-policy-premise-decides-the-leak"
+    ],
+    "addedOn": "08-08-2026"
   },
   {
     "id": "variance-decomposition",
