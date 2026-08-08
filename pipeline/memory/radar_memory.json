@@ -1234,5 +1234,29 @@
     ],
     "published_at": "2026-08-07",
     "embedding": null
+  },
+  {
+    "translation_key": "cloudflare-kitesurf-agent-browser-workers",
+    "topic_id": "cloudflare-kitesurf-agent-browser-workers",
+    "dedup_key": "cloudflare kitesurf agent browser workers",
+    "title": "Cloudflare's Kitesurf swaps Chromium behind one CDP parameter, at the cost of slower tasks",
+    "slugs": {
+      "fr": "cloudflare-kitesurf-navigateur-agents-parametre-cdp",
+      "en": "cloudflare-kitesurf-agent-browser-cdp-parameter"
+    },
+    "sources": [
+      {
+        "label": "Cloudflare blog, Kitesurf launch post",
+        "url": "https://blog.cloudflare.com/kitesurf/",
+        "date": "06-08-2026"
+      },
+      {
+        "label": "TechRepublic report",
+        "url": "https://www.techrepublic.com/article/news-cloudflare-kitesurf-browser-ai-agents/",
+        "date": "07-08-2026"
+      }
+    ],
+    "published_at": "2026-08-08",
+    "embedding": null
   }
 ]
