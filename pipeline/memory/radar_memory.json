@@ -1287,5 +1287,29 @@
     ],
     "published_at": "2026-08-09",
     "embedding": null
+  },
+  {
+    "translation_key": "npm-supply-chain-payload-in-coding-agent-hooks",
+    "topic_id": "npm-supply-chain-payload-in-coding-agent-hooks",
+    "dedup_key": "npm supply chain payload in coding agent hooks",
+    "title": "An npm credential stealer targets Claude Code hooks and VS Code tasks.json for persistence",
+    "slugs": {
+      "fr": "voleur-identifiants-npm-cible-hooks-claude-code",
+      "en": "npm-credential-stealer-targets-claude-code-hooks"
+    },
+    "sources": [
+      {
+        "label": "Wiz Research incident analysis",
+        "url": "https://www.wiz.io/blog/keyv-and-cacheable-npm-supply-chain-attack",
+        "date": "04-08-2026"
+      },
+      {
+        "label": "Endor Labs independent tracking advisory",
+        "url": "https://www.endorlabs.com/learn/npm-malware-compromises-keyv-and-cacheable-with-500m-weekly-downloads-and-spreads-to-hundreds-of-packages",
+        "date": "04-08-2026"
+      }
+    ],
+    "published_at": "2026-08-10",
+    "embedding": null
   }
 ]
