@@ -1,0 +1,49 @@
+{
+  "slug": "votre-agent-encaisse-le-gain-la-trace-publique-paie",
+  "lang": "fr",
+  "translationKey": "agentic-coding-thins-the-public-record",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Social to agentic coding, what the study branches",
+      "url": "https://arxiv.org/abs/2608.03585",
+      "excerpt": "Generative coding agents (CAs) are an advanced tool to improve development efficiency while shifting part of activities from public human interaction to private human-agent loops. We study this shift using an LLM-based multi-agent simulation initialized with real GitHub data from 1,084 active developers and their repository relationships. After a warm-up with historical commits, we branch the same community state into parallel No-CA and CA conditions for 4-week simulations."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Social to agentic coding, where the interaction went",
+      "url": "https://arxiv.org/abs/2608.03585",
+      "excerpt": "CAs also restructure task execution pathways. Direct human-human interaction declines from 32.4% to 11.6%, while CA-involved modes increase to 57.3%, including 40.3% completed through CA-assisted self-loops."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Social to agentic coding, what the corpus can answer",
+      "url": "https://arxiv.org/abs/2608.03585",
+      "excerpt": "Public knowledge generated under CA condition also provides less support for later tasks. On a standardized retrieval benchmark, the CA corpus achieves 22.3% knowledge coverage, far below the 81.1% achieved by the real-human corpus, and requires more retrieval steps with a lower success rate."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Social to agentic coding, the productivity side",
+      "url": "https://arxiv.org/abs/2608.03585",
+      "excerpt": "CA introduction increases planned and completed tasks by 34.0% and 39.0%, respectively, and reduces median completion time from 45 to 20 minutes. However, adoption reaches only 26.0%, and the gains concentrate among developers who are already more active and well connected."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Practitioner survey, what 119 engineers report",
+      "url": "https://arxiv.org/abs/2608.05561",
+      "excerpt": "An exploratory survey was conducted with 119 software practitioners. The data were analyzed using descriptive statistics and qualitative thematic analysis of participants' open-ended responses. Participants primarily described functional dependence, with LLMs becoming integrated into routine software engineering activities because of the productivity and efficiency they provide. Responses also suggested patterns consistent with overreliance, particularly through prioritizing LLMs over documentation or peer consultation while continuing to verify generated outputs."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Agent plan files, the repository screen",
+      "url": "https://arxiv.org/abs/2608.04661",
+      "excerpt": "We present an exploratory study of Agent Plans in open-source software repositories, examining how plan files are preserved, which development activities they support, and what information they provide to guide agent execution. We screened 36,710 GitHub repositories belonging to engineered software projects and identified 85 Markdown plan files from 10 repositories."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Agent plan files, how the authors scope it",
+      "url": "https://arxiv.org/abs/2608.04661",
+      "excerpt": "Overall, repository-preserved Agent Plans under these tool-specific directories appear to be a narrow but informative artifact for studying task intent and execution guidance in human-agent workflows."
+    }
+  ]
+}
