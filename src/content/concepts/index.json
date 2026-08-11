@@ -163,6 +163,33 @@
     "addedOn": "25-07-2026"
   },
   {
+    "id": "agent-assisted-self-loop",
+    "label": {
+      "fr": "Boucle fermée assistée par agent",
+      "en": "Agent-assisted self-loop"
+    },
+    "definition": {
+      "fr": "Tâche qu'un seul développeur ouvre et termine au sein d'une même session avec un agent de code, sans l'échange qui serait auparavant passé par un collègue. Elle laisse un commit dans le dépôt et aucun fil de discussion, si bien que le travail est consigné alors que le raisonnement qui l'a produit reste dans un journal de session privé.",
+      "en": "A task one developer starts and finishes inside a single session with a coding agent, without the exchange that would previously have gone to a colleague. It leaves a commit in the repository and no discussion thread, so the work is recorded while the reasoning behind it stays in a private session log."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "self-loop",
+      "private human-agent loop",
+      "human-agent loop",
+      "boucle fermee assistee par agent"
+    ],
+    "related": [
+      "coding-agents",
+      "agent-scaffold",
+      "agent-observability"
+    ],
+    "articles": [
+      "agentic-coding-thins-the-public-record"
+    ],
+    "addedOn": "11-08-2026"
+  },
+  {
     "id": "agent-debt",
     "label": {
       "fr": "Dette d'agent",
@@ -331,6 +358,32 @@
       "arret-anticipe-sondes-2026-08"
     ],
     "addedOn": "07-07-2026"
+  },
+  {
+    "id": "agent-plan-file",
+    "label": {
+      "fr": "Fichier de plan d'agent",
+      "en": "Agent plan file"
+    },
+    "definition": {
+      "fr": "Plan par tâche qu'un agent de code rédige avant d'exécuter, parfois conservé dans le dépôt sous un répertoire propre à l'outil plutôt que jeté avec la session. Il consigne les étapes prévues et les consignes d'exécution, c'est-à-dire l'intention reformulée par l'agent lui-même, et non un choix qu'une deuxième personne aurait contesté.",
+      "en": "A per-task plan a coding agent writes before it executes, occasionally preserved in the repository under a tool-specific directory instead of discarded with the session. It records intended steps and execution guidance, which is the agent's own restatement of intent rather than a choice a second person argued over."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "plan file",
+      "agent plan",
+      "Agent Plans"
+    ],
+    "related": [
+      "coding-agents",
+      "agent-instruction-file",
+      "agent-scaffold"
+    ],
+    "articles": [
+      "agentic-coding-thins-the-public-record"
+    ],
+    "addedOn": "11-08-2026"
   },
   {
     "id": "agent-sandboxing",
@@ -900,7 +953,8 @@
       "cli-agent-productivity-proxy-choice",
       "instruction-file-structure-compliance",
       "arret-anticipe-sondes-2026-08",
-      "llm-contribution-policy-premise-decides-the-leak"
+      "llm-contribution-policy-premise-decides-the-leak",
+      "agentic-coding-thins-the-public-record"
     ],
     "addedOn": "30-05-2026"
   },
@@ -1158,6 +1212,31 @@
       "glm-5-2-open-weight-where-you-run-it"
     ],
     "addedOn": "26-06-2026"
+  },
+  {
+    "id": "decision-record",
+    "label": {
+      "fr": "Note de décision",
+      "en": "Decision record"
+    },
+    "definition": {
+      "fr": "Note courte rédigée par un humain et consignée avec un changement, indiquant l'option retenue et l'option écartée. Posée en barrière aux seules frontières irréversibles, comme un changement d'interface, de dépendance ou de contrat de données, son volume suit la fréquence de ces changements et non le nombre de tâches terminées.",
+      "en": "A short human-authored note recorded with a change, stating the option taken and the option rejected. Gated only at irreversible boundaries such as an interface, dependency or data-contract change, its volume tracks how often those changes happen rather than how many tasks were completed."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "decision note",
+      "note de decision"
+    ],
+    "related": [
+      "agent-plan-file",
+      "coding-agents",
+      "origin-attestation"
+    ],
+    "articles": [
+      "agentic-coding-thins-the-public-record"
+    ],
+    "addedOn": "11-08-2026"
   },
   {
     "id": "deterministic-workflows",
@@ -1621,6 +1700,31 @@
       "slopcodebench-iterative-maintainability"
     ],
     "addedOn": "16-06-2026"
+  },
+  {
+    "id": "knowledge-coverage",
+    "label": {
+      "fr": "Couverture de connaissance",
+      "en": "Knowledge coverage"
+    },
+    "definition": {
+      "fr": "Part des questions ultérieures auxquelles un corpus permet de répondre lorsqu'on l'interroge via un banc d'essai de récupération standardisé, mesurée avec le nombre d'étapes de récupération et le taux de réussite. Elle dit si une trace écrite soutient encore la tâche suivante, ce que le volume de texte produit ne prédit pas.",
+      "en": "The share of later questions a corpus can answer when it is queried through a standardized retrieval benchmark, scored alongside the number of retrieval steps and the success rate. It says whether a written record still supports the next task, which the volume of text produced does not predict."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "corpus knowledge coverage",
+      "coverage of the record"
+    ],
+    "related": [
+      "retrieval-evaluation",
+      "rag",
+      "code-rag"
+    ],
+    "articles": [
+      "agentic-coding-thins-the-public-record"
+    ],
+    "addedOn": "11-08-2026"
   },
   {
     "id": "kv-cache",
@@ -2401,7 +2505,8 @@
     ],
     "articles": [
       "hybrid-rag-rrf",
-      "ast-code-chunking"
+      "ast-code-chunking",
+      "agentic-coding-thins-the-public-record"
     ],
     "addedOn": "27-05-2026"
   },
@@ -2503,7 +2608,8 @@
       "agent-evaluation"
     ],
     "articles": [
-      "ast-code-chunking"
+      "ast-code-chunking",
+      "agentic-coding-thins-the-public-record"
     ],
     "addedOn": "10-06-2026"
   },
@@ -2637,7 +2743,8 @@
       "proxy-metric"
     ],
     "articles": [
-      "cli-agent-productivity-proxy-choice"
+      "cli-agent-productivity-proxy-choice",
+      "agentic-coding-thins-the-public-record"
     ],
     "addedOn": "18-07-2026"
   },
