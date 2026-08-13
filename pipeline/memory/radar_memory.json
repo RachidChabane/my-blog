@@ -1364,5 +1364,29 @@
     ],
     "published_at": "2026-08-12",
     "embedding": null
+  },
+  {
+    "translation_key": "grok-4-6-long-horizon-agent-turn-efficiency",
+    "topic_id": "grok-4-6-long-horizon-agent-turn-efficiency",
+    "dedup_key": "grok 4 6 long horizon agent turn efficiency",
+    "title": "Grok 4.6 is built for long-running agents, and an independent evaluator measures it resolving tasks in half the turns of Claude Opus 5",
+    "slugs": {
+      "fr": "grok-4-6-agents-longue-haleine-nombre-de-tours",
+      "en": "grok-4-6-long-horizon-agents-turn-count"
+    },
+    "sources": [
+      {
+        "label": "SpaceXAI release announcement, Introducing Grok 4.6",
+        "url": "https://x.ai/news/grok-4-6",
+        "date": "12-08-2026"
+      },
+      {
+        "label": "Artificial Analysis, independent benchmark article on Grok 4.6",
+        "url": "https://artificialanalysis.ai/articles/grok-4-6-benchmarks-and-analysis",
+        "date": "12-08-2026"
+      }
+    ],
+    "published_at": "2026-08-13",
+    "embedding": null
   }
 ]
