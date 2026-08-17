@@ -1388,5 +1388,29 @@
     ],
     "published_at": "2026-08-13",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-text-watermark-synthid-mechanism",
+    "topic_id": "claude-text-watermark-synthid-mechanism",
+    "dedup_key": "claude text watermark synthid mechanism",
+    "title": "Claude's text watermark only changes the source of the randomness used to pick among words",
+    "slugs": {
+      "fr": "tatouage-texte-claude-alea-echantillonnage-divulgation",
+      "en": "claude-text-watermark-sampling-randomness-disclosure"
+    },
+    "sources": [
+      {
+        "label": "Anthropic news post",
+        "url": "https://www.anthropic.com/news/claude-text-watermark",
+        "date": "14-08-2026"
+      },
+      {
+        "label": "Search Engine Journal",
+        "url": "https://www.searchenginejournal.com/anthropic-claude-watermarks-eu-ai-act-code/585355/",
+        "date": "11-08-2026"
+      }
+    ],
+    "published_at": "2026-08-17",
+    "embedding": null
   }
 ]
