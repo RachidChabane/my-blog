@@ -1412,5 +1412,34 @@
     ],
     "published_at": "2026-08-17",
     "embedding": null
+  },
+  {
+    "translation_key": "copilot-autofix-co-authored-commit-review-did-not-flag",
+    "topic_id": "copilot-autofix-co-authored-commit-review-did-not-flag",
+    "dedup_key": "copilot autofix co authored commit review did not flag",
+    "title": "Wiz updated its disclosure: Copilot Autofix was a co-author that checked the merged PR and identified it as all-clear",
+    "slugs": {
+      "fr": "copilot-autofix-co-auteur-pr-fusionnee-sans-probleme",
+      "en": "copilot-autofix-co-author-merged-pr-all-clear"
+    },
+    "sources": [
+      {
+        "label": "Wiz Research disclosure",
+        "url": "https://www.wiz.io/blog/red-agent-snowflake-copilot-cicd-bug",
+        "date": "17-08-2026"
+      },
+      {
+        "label": "The Register",
+        "url": "https://www.theregister.com/security/2026/08/17/an-ai-broke-snowflakes-code-then-another-ai-agent-exploited-it/5288666",
+        "date": "17-08-2026"
+      },
+      {
+        "label": "The Hacker News",
+        "url": "https://thehackernews.com/2026/08/snowflake-github-actions-flaw-lets_0330881554.html",
+        "date": "17-08-2026"
+      }
+    ],
+    "published_at": "2026-08-18",
+    "embedding": null
   }
 ]
