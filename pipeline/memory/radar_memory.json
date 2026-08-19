@@ -1441,5 +1441,29 @@
     ],
     "published_at": "2026-08-18",
     "embedding": null
+  },
+  {
+    "translation_key": "multiagent-swarm-tokens-per-vulnerability",
+    "topic_id": "multiagent-swarm-tokens-per-vulnerability",
+    "dedup_key": "multiagent swarm tokens per vulnerability",
+    "title": "266 vulnerabilities against 21, and only 12 in common: what a coordinating agent swarm actually buys",
+    "slugs": {
+      "fr": "essaim-coordonne-jetons-par-vulnerabilite-trouvee",
+      "en": "coordinating-swarm-tokens-per-vulnerability-found"
+    },
+    "sources": [
+      {
+        "label": "Anthropic Frontier Red Team, Patterns and problems in emerging multiagent systems",
+        "url": "https://www.anthropic.com/research/multiagent-systems",
+        "date": "13-08-2026"
+      },
+      {
+        "label": "TechCrunch",
+        "url": "https://techcrunch.com/2026/08/13/anthropic-set-ai-agents-loose-on-the-same-task-they-started-a-turf-war/",
+        "date": "13-08-2026"
+      }
+    ],
+    "published_at": "2026-08-19",
+    "embedding": null
   }
 ]
