@@ -105,7 +105,8 @@
       "agent-evaluation"
     ],
     "articles": [
-      "verification-horizon-coding-agent-rewards"
+      "verification-horizon-coding-agent-rewards",
+      "coordinator-title-buys-no-information"
     ],
     "addedOn": "14-07-2026"
   },
@@ -914,7 +915,8 @@
       "agent-evaluation"
     ],
     "articles": [
-      "code-review-agents-signal-to-noise"
+      "code-review-agents-signal-to-noise",
+      "coordinator-title-buys-no-information"
     ],
     "addedOn": "12-07-2026"
   },
@@ -985,6 +987,31 @@
       "command-denylist-not-a-security-boundary"
     ],
     "addedOn": "17-07-2026"
+  },
+  {
+    "id": "communication-topology",
+    "label": {
+      "fr": "Topologie de communication",
+      "en": "Communication topology"
+    },
+    "definition": {
+      "fr": "Le graphe des agents qui échangent réellement des messages dans un système multi-agents, avec sa densité et sa courbe de croissance. C'est une propriété d'un système en fonctionnement, et elle se mesure : la messagerie directe augmente au départ de façon proche du quadratique quand le nombre d'agents croît, et le graphe observé peut suivre la structure d'information de la tâche de plus près que les rôles attribués sur le papier.",
+      "en": "The graph of which agents actually exchange messages in a multi-agent system, together with its density and its growth curve. It is a property of a running system and has to be measured: direct messaging initially increases close to quadratically as the agent count rises, and the observed graph can track the information structure of the task more closely than the roles assigned on paper."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "message graph",
+      "communication graph",
+      "agent message topology"
+    ],
+    "related": [
+      "multi-agent-orchestration",
+      "agent-scaffold"
+    ],
+    "articles": [
+      "coordinator-title-buys-no-information"
+    ],
+    "addedOn": "20-08-2026"
   },
   {
     "id": "complete-mediation",
@@ -1407,6 +1434,32 @@
       "publication-guardrails-factcheck"
     ],
     "addedOn": "23-05-2026"
+  },
+  {
+    "id": "false-consensus",
+    "label": {
+      "fr": "Faux consensus",
+      "en": "False consensus"
+    },
+    "definition": {
+      "fr": "Une défaillance multi-agents où les relecteurs convergent vers l'accord sans preuves suffisantes : l'équipe rapporte alors un résultat vérifié qu'elle n'a jamais vérifié.",
+      "en": "A multi-agent failure in which reviewers converge on agreement without sufficient evidence, so the team reports a verified result it never verified."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "faux consensus",
+      "agreement without evidence",
+      "consensus collapse"
+    ],
+    "related": [
+      "adversarial-verification",
+      "code-review-agent",
+      "multi-agent-orchestration"
+    ],
+    "articles": [
+      "coordinator-title-buys-no-information"
+    ],
+    "addedOn": "20-08-2026"
   },
   {
     "id": "false-success",
@@ -2118,7 +2171,8 @@
       "error-compounding"
     ],
     "articles": [
-      "multi-agent-gains-compute-artifact"
+      "multi-agent-gains-compute-artifact",
+      "coordinator-title-buys-no-information"
     ],
     "addedOn": "13-07-2026"
   },
@@ -2667,7 +2721,8 @@
       "reward-hacking-inflates-coding-benchmarks",
       "verification-horizon-coding-agent-rewards",
       "harness-over-model-has-no-global-ordering",
-      "allowlist-verbe-capacite-2026-08"
+      "allowlist-verbe-capacite-2026-08",
+      "coordinator-title-buys-no-information"
     ],
     "addedOn": "06-07-2026"
   },
@@ -2880,6 +2935,32 @@
       "code-review-agents-signal-to-noise"
     ],
     "addedOn": "12-07-2026"
+  },
+  {
+    "id": "shared-file-coordination",
+    "label": {
+      "fr": "Coordination par fichiers partagés",
+      "en": "Shared-file coordination"
+    },
+    "definition": {
+      "fr": "Coordonner des agents par un artefact partagé que tous lisent et écrivent, au lieu de messages répétés en un-à-un. Le procédé est rapporté, sur des tâches à fort volume de messages à huit agents, comme réduisant les tokens de sortie, et comme ajoutant du surcoût quand les fichiers portent déjà la coordination : un choix à justifier au cas par cas.",
+      "en": "Coordinating agents through a shared artifact they all read and write, instead of repeated one-to-one messages. It has been reported, on message-heavy work at eight agents, to cut output tokens, and to add overhead where the files already carry the coordination, which makes it a conditional move to justify per workload."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "shared workspace",
+      "file channel",
+      "shared artifact coordination"
+    ],
+    "related": [
+      "multi-agent-orchestration",
+      "communication-topology",
+      "agent-plan-file"
+    ],
+    "articles": [
+      "coordinator-title-buys-no-information"
+    ],
+    "addedOn": "20-08-2026"
   },
   {
     "id": "shell-injection",

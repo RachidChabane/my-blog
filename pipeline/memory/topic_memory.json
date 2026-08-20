@@ -1722,5 +1722,171 @@
     ],
     "published_at": "2026-08-11",
     "embedding": null
+  },
+  {
+    "translation_key": "coordinator-title-buys-no-information",
+    "topic_id": "coordinator-role-is-the-wrong-multi-agent-knob",
+    "dedup_key": "designating a coordinator agent creates no communication hub and no reliable gain in multi agent coding while the shared file channel and structured disagreement move the numbers so the org chart is the wrong design knob",
+    "title": "Multi-agent design keeps buying titles when only the information channel pays",
+    "slugs": {
+      "fr": "le-design-multi-agents-achete-des-titres",
+      "en": "multi-agent-design-keeps-buying-titles"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "arXiv 2608.16801: We apply this instrument to 1902 runs",
+        "url": "https://arxiv.org/abs/2608.16801",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "We apply this instrument to 1902 runs, each evaluated with a fixed test suite, across configurations that vary the team size, the team structure, and the file policy.",
+        "source_date": "2026-08-17"
+      },
+      {
+        "source_id": "s2",
+        "label": "arXiv 2608.16801: cutting output tokens by about 42% at eight agents on message-heavy work",
+        "url": "https://arxiv.org/abs/2608.16801",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "Shared files can replace repeated 1-to-1 communication, cutting output tokens by about 42% at eight agents on message-heavy work, while adding overhead when files already carry the coordination.",
+        "source_date": "2026-08-17"
+      },
+      {
+        "source_id": "s3",
+        "label": "arXiv 2608.16801: Naming one agent as coordinator creates no communication hub",
+        "url": "https://arxiv.org/abs/2608.16801",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "Naming one agent as coordinator creates no communication hub and provides no reliable improvement in success.",
+        "source_date": "2026-08-17"
+      },
+      {
+        "source_id": "s4",
+        "label": "arXiv 2608.16801: Across 244 additional runs, agents still reach for it in four fifths of runs",
+        "url": "https://arxiv.org/abs/2608.16801",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "Across 244 additional runs, agents still reach for it in four fifths of runs, while the coordinator and file-channel findings reproduce.",
+        "source_date": "2026-08-17"
+      },
+      {
+        "source_id": "s5",
+        "label": "arXiv 2608.16801: Direct messaging initially increases close to quadratically",
+        "url": "https://arxiv.org/abs/2608.16801",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "Direct messaging initially increases close to quadratically with the number of agents, with much of this growth coming from an early round of introductions.",
+        "source_date": "2026-08-17"
+      },
+      {
+        "source_id": "s6",
+        "label": "arXiv 2608.16801: an unprompted tendency for agents to seek out hidden grading material",
+        "url": "https://arxiv.org/abs/2608.16801",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "We also observe an unprompted tendency for agents to seek out hidden grading material.",
+        "source_date": "2026-08-17"
+      },
+      {
+        "source_id": "s7",
+        "label": "arXiv 2608.16801: Work built around a shared specification produces dense, highly connected teams",
+        "url": "https://arxiv.org/abs/2608.16801",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "Work built around a shared specification produces dense, highly connected teams, while pipeline tasks produce sparse networks organised around local interfaces.",
+        "source_date": "2026-08-17"
+      },
+      {
+        "source_id": "s8",
+        "label": "arXiv 2608.18167: scaling agent count yields diminishing returns on repository-level coding tasks",
+        "url": "https://arxiv.org/abs/2608.18167",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "Early multi-agent LLM systems often used role-separated teams, yet scaling agent count yields diminishing returns on repository-level coding tasks.",
+        "source_date": "2026-08-16"
+      },
+      {
+        "source_id": "s9",
+        "label": "arXiv 2608.18167: outperforming a five-agent baseline while using only three agents",
+        "url": "https://arxiv.org/abs/2608.18167",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "On LiveCodeBench, AR achieves the highest pass rate among tested methods, outperforming a five-agent baseline while using only three agents.",
+        "source_date": "2026-08-16"
+      },
+      {
+        "source_id": "s10",
+        "label": "arXiv 2608.18167: naive AR exposes a false-consensus failure mode",
+        "url": "https://arxiv.org/abs/2608.18167",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "On SWE-PRBench, naive AR exposes a false-consensus failure mode, where agents converge on agreement without sufficient evidence, but a single prompt iteration that adds disagreement explicitly achieves the highest F1 among tested methods.",
+        "source_date": "2026-08-16"
+      },
+      {
+        "source_id": "s11",
+        "label": "arXiv 2608.18167: it requires that disagreement be minimal, structured, and evidence-grounded",
+        "url": "https://arxiv.org/abs/2608.18167",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "it requires that disagreement be minimal, structured, and evidence-grounded.",
+        "source_date": "2026-08-16"
+      },
+      {
+        "source_id": "s12",
+        "label": "arXiv 2608.18167: a minimal cooperative code-review protocol",
+        "url": "https://arxiv.org/abs/2608.18167",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "We introduce Adversarial Review (AR), a minimal cooperative code-review protocol in which a main coding agent works with a reviewer and a critic agent.",
+        "source_date": "2026-08-16"
+      },
+      {
+        "source_id": "s13",
+        "label": "Anthropic Frontier Red Team: Patterns and problems in emerging multiagent systems",
+        "url": "https://www.anthropic.com/research/multiagent-systems",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "Frontier Red Team   Patterns and problems in emerging multiagent systems  Aug 13, 2026",
+        "source_date": "2026-08-13"
+      },
+      {
+        "source_id": "s14",
+        "label": "Anthropic Frontier Red Team: But these prompts did not make much difference.",
+        "url": "https://www.anthropic.com/research/multiagent-systems",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "prompt, which designated one agent as the CEO, and told all subsequent agents to take assignments from it. But these prompts did not make much difference.",
+        "source_date": "2026-08-13"
+      },
+      {
+        "source_id": "s15",
+        "label": "Anthropic Frontier Red Team: 18 out of 30 agents decided to create a git branch",
+        "url": "https://www.anthropic.com/research/multiagent-systems",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "18 out of 30 agents decided to create a git branch with the exact same branch name,",
+        "source_date": "2026-08-13"
+      },
+      {
+        "source_id": "s16",
+        "label": "Anthropic Frontier Red Team: we initiated 45 different agents and gave each one its own virtual machine",
+        "url": "https://www.anthropic.com/research/multiagent-systems",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "we initiated 45 different agents and gave each one its own virtual machine, a shared forum on which they could coordinate, and an identical prompt that asked them to find vulnerabilities in a set of 15 open-source software projects.",
+        "source_date": "2026-08-13"
+      },
+      {
+        "source_id": "s17",
+        "label": "Anthropic Frontier Red Team: let each swarm run for 12 hours",
+        "url": "https://www.anthropic.com/research/multiagent-systems",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "We varied the model generation and the number of agents in each swarm, and let each swarm run for 12 hours.",
+        "source_date": "2026-08-13"
+      },
+      {
+        "source_id": "s18",
+        "label": "Anthropic Frontier Red Team: Only Sonnet 5 is able to maintain both a high merge fraction",
+        "url": "https://www.anthropic.com/research/multiagent-systems",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "Only Sonnet 5 is able to maintain both a high merge fraction while directly collaborating and sharing code with other agents.",
+        "source_date": "2026-08-13"
+      },
+      {
+        "source_id": "s19",
+        "label": "Anthropic Frontier Red Team: multiagent systems \\ Anthropic",
+        "url": "https://www.anthropic.com/research/multiagent-systems",
+        "retrieved_at": "2026-08-20",
+        "excerpt": "Patterns and problems in multiagent systems \\ Anthropic",
+        "source_date": "2026-08-13"
+      }
+    ],
+    "published_at": "2026-08-20",
+    "embedding": null
   }
 ]
