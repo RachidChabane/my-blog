@@ -1465,5 +1465,29 @@
     ],
     "published_at": "2026-08-19",
     "embedding": null
+  },
+  {
+    "translation_key": "statem-runbook-portability-terminal-bench",
+    "topic_id": "statem-runbook-portability-terminal-bench",
+    "dedup_key": "statem runbook portability terminal bench",
+    "title": "StateM reads as a portability result: the runbook transfers unchanged to GPT-5.6",
+    "slugs": {
+      "fr": "statem-runbook-transfere-tel-quel-terminal-bench",
+      "en": "statem-runbook-transfers-unchanged-terminal-bench"
+    },
+    "sources": [
+      {
+        "label": "arXiv 2608.15089, StateM harness scaling preprint",
+        "url": "https://arxiv.org/abs/2608.15089",
+        "date": "15-08-2026"
+      },
+      {
+        "label": "Terminal-Bench 2.1 leaderboard, tbench.ai",
+        "url": "https://www.tbench.ai/leaderboard/terminal-bench/2.1",
+        "date": "12-08-2026"
+      }
+    ],
+    "published_at": "2026-08-20",
+    "embedding": null
   }
 ]
