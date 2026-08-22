@@ -118,8 +118,8 @@ test.describe('conditional sections (omit when empty)', () => {
   test('EN: a project with no links and no related omits those sections; enrichment still renders', async ({
     page,
   }) => {
-    // multi-model-ai-platform has links: [] and no relatedArticles
-    await page.goto('/en/work/multi-model-ai-platform/');
+    // claude-plan-execute has links: [] and no relatedArticles
+    await page.goto('/en/work/claude-plan-execute/');
     await expect(page.locator('a.rc-linkchip')).toHaveCount(0); // Links omitted
     await expect(page.locator('.rc-rel')).toHaveCount(0); // Related omitted
     // the optional enrichment renders: the interactive architecture diagram present
