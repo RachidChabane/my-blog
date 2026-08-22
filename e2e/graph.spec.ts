@@ -1,9 +1,18 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 // Knowledge graph — /[lang]/graph/. The island lays nodes out deterministically
 // (golden-angle seeding, no randomness), so node presence/labels are stable.
 // Selectors use classes/data-attrs (language-robust); copy assertions stay
 // per-locale where they pin the strings table.
+
+// The layout pass ends in the island's `settle()`, and `settle()` is the ONLY
+// caller of `renderClusters()` — so the appearance of a cluster label is the
+// signal that node positions are final and safe to click. True in both branches:
+// under reduced motion (what this suite runs) the ticks are synchronous, and
+// under motion they run over rAF. Poll the count rather than pinning a number —
+// a cluster label is emitted only for themes holding >= 2 nodes.
+const graphSettled = (page: Page) =>
+  expect.poll(() => page.locator('.rc-gcluster').count()).toBeGreaterThan(0);
 
 test.describe('graph page renders', () => {
   test('FR: title, controls, and a populated SVG map', async ({ page }) => {
@@ -36,8 +45,8 @@ test.describe('node interactions', () => {
     await page.goto('/en/graph/');
     const rag = page.locator('.rc-gnode[data-id="rag"]');
     await rag.waitFor();
-    // settle the entrance animation before clicking a moving target
-    await page.waitForTimeout(1800);
+    // settle the layout before clicking a moving target
+    await graphSettled(page);
     await rag.click({ force: true });
 
     const panel = page.locator('[data-graph-panel]');
@@ -61,7 +70,7 @@ test.describe('node interactions', () => {
     page,
   }) => {
     await page.goto('/en/graph/');
-    await page.waitForTimeout(1800);
+    await graphSettled(page);
     const node = page.locator('.rc-gnode[data-id="embeddings"]');
     await node.focus();
     await page.keyboard.press('Enter');
@@ -77,9 +86,10 @@ test.describe('search and theme filter', () => {
     page,
   }) => {
     await page.goto('/en/graph/');
-    await page.waitForTimeout(1800);
+    await graphSettled(page);
     await page.locator('[data-graph-search]').fill('quantization');
-    await page.waitForTimeout(400); // debounce
+    // no sleep for the 140ms input debounce: the class assertions below retry
+    // until it fires.
     // the matching node is highlighted, an unrelated one is dimmed
     await expect(page.locator('.rc-gnode[data-id="quantization"]')).toHaveClass(
       /is-focus/
@@ -91,7 +101,7 @@ test.describe('search and theme filter', () => {
 
   test('theme filter dims other clusters', async ({ page }) => {
     await page.goto('/en/graph/');
-    await page.waitForTimeout(1800);
+    await graphSettled(page);
     await page.locator('[data-theme="evals-quality"]').click();
     await expect(
       page.locator('.rc-gnode[data-id="fact-checking"]')
