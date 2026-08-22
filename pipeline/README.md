@@ -30,8 +30,8 @@ config knobs (and optional `stage_descriptions`), and writes a per-run
 
 ## Run-dir contract (PINNED — do not change without re-verifying cpe)
 
-Each run is isolated so editorial runs never collide with the build slate's
-repo-root `plans/`:
+Each run is isolated, so editorial runs never collide with each other (nor, back
+when the site was being built, with the build slate's own repo-root `plans/`):
 
 ```
 pipeline/runs/<run_id>/
@@ -149,8 +149,9 @@ pipeline/invariants.yaml` are **intentionally** distinct from the build slate's
   `docs/persona.md` / `docs/invariants.yaml`: the editorial run is a separate
   slate with separate gates. Don't "fix" them to point at `docs/`. Both files are
   authored later (tasks 25/26); cpe injects `""`/empty for a missing file.
-- See `docs/writing-flow.md` (the content engine), `docs/persona.md` (conventions),
-  and `inventory/02-claude-plan-execute.md` (the cpe reference).
+- See `docs/writing-flow.md` (the content engine) and `docs/persona.md`
+  (conventions). The cpe reference lives with the tool itself, in the
+  `claude-plan-execute` repo.
 
 ```
 

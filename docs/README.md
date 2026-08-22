@@ -1,9 +1,9 @@
 **Purpose:** Index of every document in `/docs`, in reading order with a one-line synopsis. Start here.
-**Status:** draft — last revised 01-06-2026.
+**Status:** historical — the planning record the site was built from. Kept as written; not maintained against the shipped code.
 
 ## How `/docs` is organized
 
-This folder is **owner-only** planning material — the Stage-1 foundation produced by `project-bootstrap`. It is not the website; the site's content lives elsewhere (markdown posts, once the blog is built). The single client-facing artifact will be the pitch deck generated later via Claude Design (Stage 2).
+This folder is the planning foundation the build ran on: the design notes, requirements and decision records that the site was implemented from. It is not the website — the site's content lives in `src/content/` as Markdown. Where a document here disagrees with the code, the code is right; these pages are the record of what was intended, not a description of what shipped. For what actually got built and how, see the repo [`README.md`](../README.md) and the build narrative in [`RUN-LOG.md`](../RUN-LOG.md).
 
 **Project model in one line:** an autonomously AI-maintained blog + portfolio that publishes ~2 fact-checked articles per week (bilingual FR/EN) on cutting-edge AI engineering with zero hand-authoring, showcases Rachid Chabane's AI projects, and answers visitor questions via a RAG chatbot avatar.
 
