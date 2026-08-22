@@ -476,9 +476,9 @@ export function tagStrings(lang: Locale): TagStrings {
 }
 
 /**
- * S11 — 404 Not Found page copy. Localized headline, body, and back-to-home CTA.
- * Search affordance from the S11 spec is deferred until S9 (task TBD) — slot noted
- * in the 404 page as a TODO comment so the intent is not lost.
+ * S11 — 404 Not Found page copy. Localized headline, body, and the three CTAs
+ * the page offers a lost reader: home, the blog index, and search (`ctaSearch`,
+ * the S11 search affordance — shipped, pointing at the localized search page).
  */
 export interface NotFoundStrings {
   title: string;
