@@ -12,10 +12,17 @@
    slightly hotter ink for large display (section numerals, the title).
    ============================================================================ */
 
-/* ---- Self-hosted variable fonts (served from public/fonts/) -------------- */
+/* ---- Self-hosted variable fonts (served from public/fonts/) --------------
+   WOFF2, not raw TTF: the same full-charset variable faces at ~2.3x smaller
+   (2.6 MB -> 1.2 MB across the five files; the three the home page pulls drop
+   1423 KB -> 617 KB). TTF ships the glyf table uncompressed, which put ~1.1 s of
+   simulated transfer on the FCP/LCP critical path — the whole Lighthouse perf
+   gap. NOT subsetted: the pages mix FR/EN diacritics, arrows (U+2192 in the CTA
+   labels) and code punctuation, and a latin-only cut would silently tofu them.
+   Regenerate with `scripts/build-fonts.sh` after replacing a source TTF. */
 @font-face {
   font-family: 'Fraunces';
-  src: url('/fonts/Fraunces-Variable.ttf') format('truetype-variations');
+  src: url('/fonts/Fraunces-Variable.woff2') format('woff2');
   font-weight: 100 900;
   font-stretch: 100%;
   font-style: normal;
@@ -23,7 +30,7 @@
 }
 @font-face {
   font-family: 'Fraunces';
-  src: url('/fonts/Fraunces-Italic-Variable.ttf') format('truetype-variations');
+  src: url('/fonts/Fraunces-Italic-Variable.woff2') format('woff2');
   font-weight: 100 900;
   font-stretch: 100%;
   font-style: italic;
@@ -31,21 +38,21 @@
 }
 @font-face {
   font-family: 'Inter';
-  src: url('/fonts/Inter-Variable.ttf') format('truetype-variations');
+  src: url('/fonts/Inter-Variable.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Inter';
-  src: url('/fonts/Inter-Italic-Variable.ttf') format('truetype-variations');
+  src: url('/fonts/Inter-Italic-Variable.woff2') format('woff2');
   font-weight: 100 900;
   font-style: italic;
   font-display: swap;
 }
 @font-face {
   font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-Variable.ttf') format('truetype-variations');
+  src: url('/fonts/JetBrainsMono-Variable.woff2') format('woff2');
   font-weight: 100 800;
   font-style: normal;
   font-display: swap;

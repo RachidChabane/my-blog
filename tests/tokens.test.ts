@@ -53,13 +53,16 @@ describe('design tokens contract', () => {
     expect(css).toMatch(/--font-mono:\s*['"]JetBrains Mono['"]/);
   });
 
-  it('@font-face uses absolute /fonts/ URLs and every referenced TTF exists', () => {
+  it('@font-face uses absolute /fonts/ URLs and every referenced WOFF2 exists', () => {
     const urls = [...css.matchAll(/url\((['"]?)([^'")]+)\1\)/g)].map(
       (m) => m[2]
     );
     expect(urls.length).toBeGreaterThanOrEqual(5);
     for (const u of urls) {
       expect(u.startsWith('/fonts/')).toBe(true);
+      // WOFF2 only: raw TTF ships `glyf` uncompressed and put ~1.1s of transfer
+      // on the FCP/LCP critical path. Regenerate with `pnpm build:fonts`.
+      expect(u.endsWith('.woff2')).toBe(true);
       expect(existsSync(`${root}/public${u}`)).toBe(true);
     }
   });

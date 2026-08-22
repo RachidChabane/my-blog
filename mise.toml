@@ -32,6 +32,10 @@ run = "pnpm test"
 description = "End-to-end tests (Playwright)"
 run = "pnpm test:e2e"
 
+[tasks.build-fonts]
+description = "Regenerate public/fonts/*.woff2 from the canonical TTFs (needs woff2_compress)"
+run = "pnpm build:fonts"
+
 [tasks.build-index]
 description = "Build the avatar RAG index (add -- --push to upsert Vectorize + D1)"
 run = "pnpm build:index"
