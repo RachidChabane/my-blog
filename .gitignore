@@ -55,3 +55,13 @@ uv.lock
 __pycache__/
 .pytest_cache/
 .ruff_cache/
+
+# Owner-only build scratch (purged from history before this repo went public).
+# Raw agent planning dumps and the project inventory — superseded by the curated
+# narrative in RUN-LOG.md. Paths are ANCHORED with a leading slash on purpose:
+# the content engine writes its own per-run `plans/` under pipeline/runs*/, and
+# an unanchored `plans/` would swallow those too.
+/PROJECT-INVENTORY.md
+/inventory/
+/plans/
+/plans-writing-rigor/
