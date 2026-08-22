@@ -1489,5 +1489,29 @@
     ],
     "published_at": "2026-08-20",
     "embedding": null
+  },
+  {
+    "translation_key": "arc-agi-3-public-set-scope-travels-with-the-figure",
+    "topic_id": "arc-agi-3-public-set-scope-travels-with-the-figure",
+    "dedup_key": "arc agi 3 public set scope travels with the figure",
+    "title": "ARC Prize puts Claude Opus 5 at 30.2 percent on the ARC-AGI-3 public set, and NVIDIA says its AVO run is not a measurement of AVO",
+    "slugs": {
+      "fr": "arc-agi-3-le-perimetre-voyage-avec-le-chiffre",
+      "en": "arc-agi-3-public-set-scope-travels-with-the-figure"
+    },
+    "sources": [
+      {
+        "label": "NVIDIA Technical Blog, AVO on the ARC-AGI-3 public set",
+        "url": "https://developer.nvidia.com/blog/nvidia-avo-reaches-100-on-arc-agi-3-demonstrating-a-frontier-level-general-purpose-architecture-for-long-horizon-autonomous-agents/",
+        "date": "21-08-2026"
+      },
+      {
+        "label": "The New Stack, on ARC Prize's July ARC-AGI analysis",
+        "url": "https://thenewstack.io/nvidia-avo-arcagi3-benchmark/",
+        "date": "21-08-2026"
+      }
+    ],
+    "published_at": "2026-08-22",
+    "embedding": null
   }
 ]
