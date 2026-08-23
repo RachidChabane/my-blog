@@ -1513,5 +1513,29 @@
     ],
     "published_at": "2026-08-22",
     "embedding": null
+  },
+  {
+    "translation_key": "mlperf-client-2-0-tool-time-inside-the-score",
+    "topic_id": "mlperf-client-2-0-tool-time-inside-the-score",
+    "dedup_key": "mlperf client 2 0 tool time inside the score",
+    "title": "MLPerf Client 2.0 puts tool execution time inside the agentic score, and drops Phi 3.5 from the base lineup",
+    "slugs": {
+      "fr": "mlperf-client-2-0-le-temps-des-outils-dans-le-score",
+      "en": "mlperf-client-2-0-tool-time-inside-the-score"
+    },
+    "sources": [
+      {
+        "label": "MLCommons, MLPerf Client v2.0 release notes",
+        "url": "https://github.com/mlcommons/mlperf_client/releases/tag/v2.0",
+        "date": "18-08-2026"
+      },
+      {
+        "label": "Tom's Hardware, on the MLPerf Client 1.0 model lineup",
+        "url": "https://www.tomshardware.com/software/mlperf-client-1-0-ai-benchmark-released-new-testing-toolkit-sports-a-gui-covers-more-models-and-tasks-and-supports-more-hardware-acceleration-paths",
+        "date": "01-08-2025"
+      }
+    ],
+    "published_at": "2026-08-23",
+    "embedding": null
   }
 ]
