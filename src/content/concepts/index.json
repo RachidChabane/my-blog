@@ -356,7 +356,8 @@
     ],
     "articles": [
       "observability-is-not-evaluation",
-      "arret-anticipe-sondes-2026-08"
+      "arret-anticipe-sondes-2026-08",
+      "watermark-entropy-budget"
     ],
     "addedOn": "07-07-2026"
   },
@@ -1697,7 +1698,8 @@
       "batch-invariant-kernels"
     ],
     "articles": [
-      "llm-temp0-nondeterminism-batch-invariant"
+      "llm-temp0-nondeterminism-batch-invariant",
+      "watermark-entropy-budget"
     ],
     "addedOn": "22-06-2026"
   },
@@ -2277,7 +2279,8 @@
       "coding-agents"
     ],
     "articles": [
-      "llm-contribution-policy-premise-decides-the-leak"
+      "llm-contribution-policy-premise-decides-the-leak",
+      "watermark-entropy-budget"
     ],
     "addedOn": "08-08-2026"
   },
@@ -2410,6 +2413,33 @@
       "prompt-caching-prefix-stability"
     ],
     "addedOn": "10-06-2026"
+  },
+  {
+    "id": "provider-only-detection",
+    "label": {
+      "fr": "Détection réservée au fournisseur",
+      "en": "Provider-only detection"
+    },
+    "definition": {
+      "fr": "Une configuration où seule la partie qui fournit le modèle peut exécuter le détecteur d'un signal émis par son propre système : l'exploitant qui génère la sortie ne peut mesurer ni la présence de ce signal ni sa force. La vérification reste disponible au fournisseur, et à personne en aval.",
+      "en": "An arrangement in which only the party shipping the model can run the detector for a signal its own system emits, so the operator generating the output cannot measure whether that signal is present or how strong it is. Verification is available to the provider and to no one downstream."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "vendor-only detection",
+      "provider-held detector",
+      "detection asymmetry",
+      "détection réservée au fournisseur"
+    ],
+    "related": [
+      "text-watermarking",
+      "white-box-model-access",
+      "agent-observability"
+    ],
+    "articles": [
+      "watermark-entropy-budget"
+    ],
+    "addedOn": "23-08-2026"
   },
   {
     "id": "provider-refusal-behavior",
@@ -2752,6 +2782,33 @@
     "addedOn": "14-07-2026"
   },
   {
+    "id": "sampling-entropy",
+    "label": {
+      "fr": "Entropie d'échantillonnage",
+      "en": "Sampling entropy"
+    },
+    "definition": {
+      "fr": "La quantité de choix réel que porte la distribution du prochain token, à chaque étape de la génération. Une entropie élevée signifie que plusieurs suites sont presque aussi bonnes les unes que les autres ; une entropie faible signifie une distribution quasi déterministe, qui renvoie presque toujours la même réponse à une invite donnée.",
+      "en": "The amount of genuine choice a model's next-token distribution carries at each step of generation. High entropy means several continuations are close to equally good; low entropy means the distribution is nearly deterministic and almost always returns the same response to a given prompt."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "low entropy",
+      "low-entropy text",
+      "token-level entropy",
+      "entropie d'échantillonnage",
+      "faible entropie"
+    ],
+    "related": [
+      "inference-determinism",
+      "schema-constrained-tool-calling"
+    ],
+    "articles": [
+      "watermark-entropy-budget"
+    ],
+    "addedOn": "23-08-2026"
+  },
+  {
     "id": "schema-constrained-tool-calling",
     "label": {
       "fr": "Appel d'outil contraint par schéma",
@@ -2773,7 +2830,8 @@
       "model-context-protocol"
     ],
     "articles": [
-      "tool-calling-readout-not-descriptions"
+      "tool-calling-readout-not-descriptions",
+      "watermark-entropy-budget"
     ],
     "addedOn": "22-07-2026"
   },
@@ -3140,6 +3198,34 @@
       "swe-bench-private-holdout-trust"
     ],
     "addedOn": "18-06-2026"
+  },
+  {
+    "id": "text-watermarking",
+    "label": {
+      "fr": "Filigrane de texte",
+      "en": "Text watermarking"
+    },
+    "definition": {
+      "fr": "Une technique qui marque un texte généré au moment de l'échantillonnage, en modifiant la source de l'aléa utilisée pour choisir parmi les mots candidats, de sorte qu'une partie détentrice de la clé puisse ensuite tester statistiquement une séquence. Rien n'est ajouté au texte et aucun caractère caché n'est inséré ; la force de la marque varie selon la matière, un texte qui offrait peu de choix équivalents en portant moins.",
+      "en": "A technique that marks generated text at sampling time by changing the source of the randomness used to pick among candidate words, so that a party holding the key can later test a sequence statistically. Nothing is added to the text and no hidden characters are inserted, and the strength of the mark varies with the material: text that offered few equally good alternatives carries less of it."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "watermarking",
+      "text watermark",
+      "AI text watermarking",
+      "sampling-time watermark",
+      "filigrane de texte"
+    ],
+    "related": [
+      "sampling-entropy",
+      "inference-determinism",
+      "origin-attestation"
+    ],
+    "articles": [
+      "watermark-entropy-budget"
+    ],
+    "addedOn": "23-08-2026"
   },
   {
     "id": "thinking-token-budget",
