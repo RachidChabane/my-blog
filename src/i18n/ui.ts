@@ -329,7 +329,6 @@ export interface PortfolioIndexStrings {
   viewCta: string; // "Voir" / "View" (rendered "<viewCta> →", decorative)
   empty: string; // empty-state line
   statLive: string; // stat-line label — "En production" / "In production"
-  statBilingual: string; // stat-line label — "Bilingue" / "Bilingual"
 }
 
 export const PORTFOLIO_INDEX: Record<Locale, PortfolioIndexStrings> = {
@@ -341,7 +340,6 @@ export const PORTFOLIO_INDEX: Record<Locale, PortfolioIndexStrings> = {
     viewCta: 'Voir',
     empty: 'Aucun projet pour le moment.',
     statLive: 'En production',
-    statBilingual: 'Bilingue',
   },
   en: {
     eyebrow: 'Work',
@@ -351,7 +349,6 @@ export const PORTFOLIO_INDEX: Record<Locale, PortfolioIndexStrings> = {
     viewCta: 'View',
     empty: 'No projects yet.',
     statLive: 'In production',
-    statBilingual: 'Bilingual',
   },
 };
 

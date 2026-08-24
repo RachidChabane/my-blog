@@ -18,6 +18,7 @@ import {
   PROJECT_ORDER,
   isLiveStatus,
   getPublishedProjects,
+  countLiveProjects,
   toProjectCard,
   toProjectFeature,
   formatCount,
@@ -797,20 +798,22 @@ function projectEntry(
 
 /* ----------------------------------------------- 12. isLiveStatus */
 describe('isLiveStatus', () => {
-  it('classifies only production-live statuses as live', () => {
+  it("classifies production-live statuses as live (ported from the design's projects.jsx live flags)", () => {
     expect(isLiveStatus('shipped')).toBe(true);
     expect(isLiveStatus('publié')).toBe(true);
     expect(isLiveStatus('in production')).toBe(true);
     expect(isLiveStatus('en production')).toBe(true);
+    expect(isLiveStatus('active')).toBe(true);
+    expect(isLiveStatus('actif')).toBe(true);
     for (const s of [
-      'active',
-      'actif',
+      // Exact-match guards against the "active" root: paused is not live.
       'active (paused)',
       'actif (en pause)',
       'MVP ready',
       'MVP prêt',
       'pre-launch',
       'pré-lancement',
+      'open source',
     ]) {
       expect(isLiveStatus(s), s).toBe(false);
     }
@@ -825,16 +828,20 @@ describe('isLiveStatus', () => {
   });
 
   it('matches the real seed statuses in both langs (guards silent misclassification)', () => {
-    // Only mcp-secrets-vault (shipped / publié) is production-live.
+    // Live (5): atelier/athletic-tracker/claude-plan-execute (active/actif),
+    // cca-f-exam-trainer (in production/en production), mcp-secrets-vault
+    // (shipped/publié). Not live (3): sterna-ai-platform (open source),
+    // ijtihad-engine (active (paused) — exact-match excludes it),
+    // bayan-rag-platform (MVP ready, not yet deployed).
     const expectedLive: Record<string, boolean> = {
       'sterna-ai-platform': false,
-      'claude-plan-execute': false,
+      'claude-plan-execute': true,
       'cca-f-exam-trainer': true,
       'ijtihad-engine': false,
       'bayan-rag-platform': false,
-      atelier: false,
+      atelier: true,
       'mcp-secrets-vault': true,
-      'athletic-tracker': false,
+      'athletic-tracker': true,
     };
     for (const p of PORTFOLIO_PROJECTS) {
       const want = expectedLive[p.translationKey];
@@ -923,6 +930,68 @@ describe('getPublishedProjects', () => {
   });
 });
 
+/* ------------------------------------------ 14b. countLiveProjects */
+describe('countLiveProjects', () => {
+  it('counts only production-live, published, lang-matched projects', () => {
+    const projs = [
+      projectEntry({
+        translationKey: 'a',
+        slug: 'a',
+        status: 'active', // live
+      }),
+      projectEntry({
+        translationKey: 'b',
+        slug: 'b',
+        status: 'MVP ready', // not live
+      }),
+      projectEntry({
+        translationKey: 'c',
+        slug: 'c',
+        status: 'shipped', // live, but draft → excluded regardless
+        publishState: 'draft',
+      }),
+      projectEntry({
+        translationKey: 'd',
+        slug: 'd',
+        status: 'en production', // live, but wrong locale → excluded
+        lang: 'en',
+      }),
+    ];
+    expect(countLiveProjects(projs, 'fr')).toBe(1);
+    expect(countLiveProjects(projs, 'en')).toBe(1); // only 'd', published + live
+  });
+
+  it('is 0 for an empty collection', () => {
+    expect(countLiveProjects([], 'fr')).toBe(0);
+  });
+
+  it('matches the real seed data: 5 live projects per locale', () => {
+    // Mirrors the isLiveStatus seed-status assertion above: atelier,
+    // athletic-tracker, claude-plan-execute (active/actif),
+    // cca-f-exam-trainer (in production/en production), and mcp-secrets-vault
+    // (shipped/publié) are production-live; bayan-rag-platform, ijtihad-engine
+    // and sterna-ai-platform are not.
+    const fr = PORTFOLIO_PROJECTS.map((p, i) =>
+      projectEntry({
+        translationKey: p.translationKey,
+        slug: `fr-${i}`,
+        lang: 'fr',
+        status: p.status.fr,
+      })
+    );
+    const en = PORTFOLIO_PROJECTS.map((p, i) =>
+      projectEntry({
+        translationKey: p.translationKey,
+        slug: `en-${i}`,
+        lang: 'en',
+        status: p.status.en,
+      })
+    );
+    expect(countLiveProjects([...fr, ...en], 'fr')).toBe(5);
+    expect(countLiveProjects([...fr, ...en], 'en')).toBe(5);
+  });
+});
+
 /* ----------------------------------------------- 15. toProjectCard */
 describe('toProjectCard', () => {
   it('builds the work href, maps fields, sets lang and a non-live isLive', () => {
@@ -932,16 +1001,16 @@ describe('toProjectCard', () => {
       name: 'Mon Projet',
       summary: 'Une ligne.',
       stack: ['TS', 'Astro'],
-      status: 'actif',
+      status: 'open source',
     });
     const card = toProjectCard(e, 'fr');
     expect(card.href).toBe('/fr/work/mon-projet/');
     expect(card.name).toBe('Mon Projet');
     expect(card.summary).toBe('Une ligne.');
     expect(card.stack).toEqual(['TS', 'Astro']);
-    expect(card.status).toBe('actif');
+    expect(card.status).toBe('open source');
     expect(card.lang).toBe('fr');
-    expect(card.isLive).toBe(isLiveStatus('actif')); // false
+    expect(card.isLive).toBe(isLiveStatus('open source')); // false
   });
 
   it('uses the localized slug; isLive tracks isLiveStatus for a live status', () => {

@@ -691,17 +691,23 @@ export const PROJECT_ORDER = [
 ] as const;
 
 /**
- * Statuses that earn the accent "live" status-dot. The design reserves the
- * accent for production-live status only ("l’accent ne sert qu’au survol et au
- * statut « en production »"), so match EXACTLY against a normalized set — not
- * `startsWith`, which would wrongly catch "active (paused)". Easily tuned later;
- * a documented editorial judgment, not pinned in e2e (visual → Playwright-MCP).
+ * Statuses that earn the accent "live" status-dot. Ported from the design's own
+ * project-card data (projects.jsx `live: true/false` per status), which marks
+ * both "En production"/"In production" AND "Actif"/"Active" as live, while
+ * "Open-source" and "En cours"/"In progress" (→ "MVP ready"/"MVP prêt" in the
+ * real content) stay non-live. Match EXACTLY against a normalized set — not
+ * `startsWith`, which would wrongly catch "active (paused)": a paused project
+ * is deliberately excluded even though it shares the "active" root. Easily
+ * tuned later; a documented editorial judgment, not pinned in e2e (visual →
+ * Playwright-MCP).
  */
 const LIVE_STATUSES: ReadonlySet<string> = new Set([
   'shipped',
   'in production', // EN
+  'active', // EN
   'publié',
   'en production', // FR
+  'actif', // FR
 ]);
 
 /** True when `status` denotes production-live (case-insensitive, trimmed). */
@@ -727,6 +733,21 @@ export function getPublishedProjects(
       if (ai !== bi) return ai - bi; // curated order
       return a.data.slug < b.data.slug ? -1 : a.data.slug > b.data.slug ? 1 : 0; // extras: alpha
     });
+}
+
+/**
+ * How many published projects for `lang` carry a production-live status
+ * (isLiveStatus). Backs the work-index "in production" stat — pure, so vitest
+ * can assert the tally without astro:content, and the route never hardcodes
+ * the number.
+ */
+export function countLiveProjects(
+  entries: ProjectEntryLike[],
+  lang: Locale
+): number {
+  return getPublishedProjects(entries, lang).filter((e) =>
+    isLiveStatus(e.data.status)
+  ).length;
 }
 
 /* ------------------------------------------------------- S1 home (task 10) */
