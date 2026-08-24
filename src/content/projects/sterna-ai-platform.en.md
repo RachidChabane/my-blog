@@ -58,6 +58,25 @@ architecture:
         - 'per-task quality gates'
         - 'gate-repair loops'
         - 'structured failure records'
+gallery:
+  - src: '/work/sterna-ai-platform/multi-model-chat.png'
+    alt: 'Three model panels — Claude Sonnet 4.5, GPT-5, Gemini 2.5 Flash — answering the same rate-limiter prompt side by side'
+    caption: 'Multi-model chat: one prompt, several models, one view'
+  - src: '/work/sterna-ai-platform/coding-agent-ide.png'
+    alt: 'A Monaco-based IDE panel over the coding agent sandbox, showing the file tree and an open TypeScript source file'
+    caption: 'Coding agent IDE: file tree, diffs, and live agent steps'
+  - src: '/work/sterna-ai-platform/issue-to-pr.png'
+    alt: 'The project side panel with Issues, Plans, and PRs tabs, showing a generated implementation plan for a GitHub issue'
+    caption: 'Issue to PR: plan, review, implement, ship'
+  - src: '/work/sterna-ai-platform/mcp-connectors.png'
+    alt: 'A browsable gallery of MCP connectors — GitHub, GitLab, Sentry, Playwright, and more — filterable by category'
+    caption: 'MCP connectors: a one-click marketplace of preconfigured servers, OAuth included'
+  - src: '/work/sterna-ai-platform/voice-rooms.png'
+    alt: 'A live voice room with two AI agent personas debating a product roadmap, shown as a timestamped conversation transcript'
+    caption: 'Voice rooms: multiple agents, live transcript'
+  - src: '/work/sterna-ai-platform/sparks.png'
+    alt: 'An AI-generated Pomodoro timer mini-app rendered live in the chat, with Start and Reset controls'
+    caption: 'Sparks: generated mini-apps, rendered and deployable'
 ---
 
 Sterna is a full-stack AI workspace: a Django/DRF backend pairing a React 19 + TypeScript frontend with FastAPI microservices, a Docker sandbox for code execution, and Kubernetes/Terraform infrastructure. Users run several models side by side in one conversation, hand GitHub issues to a sandboxed coding agent that writes reviewed implementation plans and pull requests through an in-browser IDE, query their own documents through pgvector RAG, join live multi-agent voice rooms, and see the measured tokens, cost, and latency on every single message.
