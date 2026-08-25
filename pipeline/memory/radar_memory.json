@@ -1537,5 +1537,29 @@
     ],
     "published_at": "2026-08-23",
     "embedding": null
+  },
+  {
+    "translation_key": "gemma-4-31b-groq-3-lpx-sram-sizing",
+    "topic_id": "gemma-4-31b-groq-3-lpx-sram-sizing",
+    "dedup_key": "gemma 4 31b groq 3 lpx sram sizing",
+    "title": "A 31 billion parameter model fits a single Groq 3 LPX rack whatever the data type",
+    "slugs": {
+      "fr": "modele-31-milliards-parametres-un-seul-rack-groq-3-lpx",
+      "en": "31-billion-parameter-model-single-groq-3-lpx-rack"
+    },
+    "sources": [
+      {
+        "label": "NVIDIA Technical Blog, Groq 3 LPX long-context interactivity",
+        "url": "https://developer.nvidia.com/blog/how-nvidia-groq-3-lpx-unlocks-ultrafast-interactivity-at-long-context-on-nvidia-vera-rubin/",
+        "date": "24-08-2026"
+      },
+      {
+        "label": "The Register, on the Groq 3 LPX benchmark numbers",
+        "url": "https://www.theregister.com/systems/2026/08/24/what-nvidias-first-groq-3-lpu-benchmarks-do-and-dont-tell-us-about-its-20b-gamble/5291880",
+        "date": "24-08-2026"
+      }
+    ],
+    "published_at": "2026-08-25",
+    "embedding": null
   }
 ]
