@@ -2043,5 +2043,163 @@
     ],
     "published_at": "2026-08-23",
     "embedding": null
+  },
+  {
+    "translation_key": "failure-record-in-context-drives-the-repeat",
+    "topic_id": "failure-record-in-context-drives-the-repeat",
+    "dedup_key": "what the agent harness writes back into the context after a failed tool call decides the next action because the verbatim failed call raises the odds of emitting it again while naming the recovery affordance is the receipt content that moves completion and retrying from a cleared context is the worst measured remedy",
+    "title": "What the harness writes back after a failed call",
+    "slugs": {
+      "fr": "ce-que-le-harnais-reecrit-apres-un-appel-en-echec",
+      "en": "what-the-harness-writes-back-after-a-failed-call"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "arXiv 2608.23651: Agent harnesses record a failed tool call and its error message in the transcript and ask the",
+        "url": "https://arxiv.org/abs/2608.23651",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "Agent harnesses record a failed tool call and its error message in the transcript and ask the model to continue, on the assumption that the error is corrective information. We measure whether it is.",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s2",
+        "label": "arXiv 2608.23651: we find the gain is negative for every instruction-tuned model we tested (6 checkpoints,",
+        "url": "https://arxiv.org/abs/2608.23651",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "we find the gain is negative for every instruction-tuned model we tested (6 checkpoints, 135M-1.7B, 4 families) in two environments: simulated tool calling and MBPP program repair",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s3",
+        "label": "arXiv 2608.23651: Over a fixed candidate set the probability of repeating the failed call rises from 0.06 to 0.54",
+        "url": "https://arxiv.org/abs/2608.23651",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "Over a fixed candidate set the probability of repeating the failed call rises from 0.06 to 0.54",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s4",
+        "label": "arXiv 2608.23651: surface form accounts for 83% of the damage, while the semantic contribution of marking it",
+        "url": "https://arxiv.org/abs/2608.23651",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "surface form accounts for 83% of the damage, while the semantic contribution of marking it failed is small and inconsistent in sign across environments",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s5",
+        "label": "arXiv 2608.23651: Replacing the verbatim call with a runtime-generated description of the failure removes 76% of",
+        "url": "https://arxiv.org/abs/2608.23651",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "Replacing the verbatim call with a runtime-generated description of the failure removes 76% of the inversion at no token cost, and making previously-failed strings unreachable at the decoder acts on the same term.",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s6",
+        "label": "arXiv 2608.23651: deleting the failed attempt to retry from a clean context, the standard prescription for",
+        "url": "https://arxiv.org/abs/2608.23651",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "deleting the failed attempt to retry from a clean context, the standard prescription for context contamination, is the worst harness we measured for repetition, because it restores the context that produced the failure",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s7",
+        "label": "arXiv 2608.19303: On a violation, the monitor preserves the result and issues a nonbinding receipt naming the",
+        "url": "https://arxiv.org/abs/2608.19303",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "On a violation, the monitor preserves the result and issues a nonbinding receipt naming the violated property and public recovery tools.",
+        "source_date": "2026-08-19"
+      },
+      {
+        "source_id": "s8",
+        "label": "arXiv 2608.19303: Outcome Monitors raise ToolMaze completion from 10.9% to 28.1% across four models in two",
+        "url": "https://arxiv.org/abs/2608.19303",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "Outcome Monitors raise ToolMaze completion from 10.9% to 28.1% across four models in two provider families and replicate in a third",
+        "source_date": "2026-08-19"
+      },
+      {
+        "source_id": "s9",
+        "label": "arXiv 2608.19303: removing the recovery-tool list eliminates the measured gain and restoring it recovers the",
+        "url": "https://arxiv.org/abs/2608.19303",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "removing the recovery-tool list eliminates the measured gain and restoring it recovers the effect; diagnostic detail and timing produce no detectable differences",
+        "source_date": "2026-08-19"
+      },
+      {
+        "source_id": "s10",
+        "label": "arXiv 2608.19303: Recovery tools are the active receipt content in these controls",
+        "url": "https://arxiv.org/abs/2608.19303",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "Recovery tools are the active receipt content in these controls",
+        "source_date": "2026-08-19"
+      },
+      {
+        "source_id": "s11",
+        "label": "arXiv 2608.22761: open-ended generation is prone to verbatim looping, in which models repeat spans already",
+        "url": "https://arxiv.org/abs/2608.22761",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "open-ended generation is prone to verbatim looping, in which models repeat spans already present in context",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s12",
+        "label": "arXiv 2608.22761: Standard defenses such as repetition, presence, and frequency penalties and n-gram blocking act",
+        "url": "https://arxiv.org/abs/2608.22761",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "Standard defenses such as repetition, presence, and frequency penalties and n-gram blocking act on token recurrence rather than the sequential structure of a loop",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s13",
+        "label": "arXiv 2608.22761: An intervention-matched placebo produces no comparable reduction, identifying suffix matching",
+        "url": "https://arxiv.org/abs/2608.22761",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "An intervention-matched placebo produces no comparable reduction, identifying suffix matching as the operative mechanism.",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s14",
+        "label": "arXiv 2608.22339: Prevailing agent self-evolution paradigms typically rely on a core assumption: equipping LLMs",
+        "url": "https://arxiv.org/abs/2608.22339",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "Prevailing agent self-evolution paradigms typically rely on a core assumption: equipping LLMs with skill memories derived from successful trajectories will monotonically improve their problem-solving capabilities.",
+        "source_date": "2026-08-23"
+      },
+      {
+        "source_id": "s15",
+        "label": "arXiv 2608.22339: procedure skills raise the wrong-tool margin by $47\\%$ over a memory-free baseline",
+        "url": "https://arxiv.org/abs/2608.22339",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "procedure skills raise the wrong-tool margin by $47\\%$ over a memory-free baseline",
+        "source_date": "2026-08-23"
+      },
+      {
+        "source_id": "s16",
+        "label": "arXiv 2608.22339: applicability conditions, risk cues, avoidance rules, and recovery notes",
+        "url": "https://arxiv.org/abs/2608.22339",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "applicability conditions, risk cues, avoidance rules, and recovery notes",
+        "source_date": "2026-08-23"
+      },
+      {
+        "source_id": "s17",
+        "label": "arXiv 2608.23635: clean end-to-end (E2E) success cannot identify where a tool-use failure originates or how it",
+        "url": "https://arxiv.org/abs/2608.23635",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "clean end-to-end (E2E) success cannot identify where a tool-use failure originates or how it propagates through a call",
+        "source_date": "2026-08-23"
+      },
+      {
+        "source_id": "s18",
+        "label": "arXiv 2608.23635: substantial robustness degradation, with tool-output/observation perturbation the dominant",
+        "url": "https://arxiv.org/abs/2608.23635",
+        "retrieved_at": "2026-08-26",
+        "excerpt": "substantial robustness degradation, with tool-output/observation perturbation the dominant bottleneck",
+        "source_date": "2026-08-23"
+      }
+    ],
+    "published_at": "2026-08-26",
+    "embedding": null
   }
 ]

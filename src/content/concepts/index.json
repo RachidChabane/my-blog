@@ -304,7 +304,8 @@
     ],
     "articles": [
       "active-context-compression-prune-history",
-      "agent-memory-benchmark-recall-not-trust"
+      "agent-memory-benchmark-recall-not-trust",
+      "failure-record-in-context-drives-the-repeat"
     ],
     "addedOn": "23-06-2026"
   },
@@ -443,7 +444,8 @@
       "harness-over-model-has-no-global-ordering",
       "instruction-file-structure-compliance",
       "swe-bench-private-holdout-trust",
-      "irreversible-actions-before-abstention"
+      "irreversible-actions-before-abstention",
+      "failure-record-in-context-drives-the-repeat"
     ],
     "addedOn": "17-06-2026"
   },
@@ -957,7 +959,8 @@
       "instruction-file-structure-compliance",
       "arret-anticipe-sondes-2026-08",
       "llm-contribution-policy-premise-decides-the-leak",
-      "agentic-coding-thins-the-public-record"
+      "agentic-coding-thins-the-public-record",
+      "failure-record-in-context-drives-the-repeat"
     ],
     "addedOn": "30-05-2026"
   },
@@ -1567,7 +1570,8 @@
     ],
     "articles": [
       "harness-over-model-has-no-global-ordering",
-      "swe-bench-private-holdout-trust"
+      "swe-bench-private-holdout-trust",
+      "failure-record-in-context-drives-the-repeat"
     ],
     "addedOn": "15-07-2026"
   },
@@ -2648,6 +2652,36 @@
     "addedOn": "27-05-2026"
   },
   {
+    "id": "recovery-affordance",
+    "label": {
+      "fr": "Affordance de récupération",
+      "en": "Recovery affordance"
+    },
+    "definition": {
+      "fr": "Information rendue à un agent après un échec qui nomme ce qu'il peut atteindre ensuite, par exemple la propriété violée et les outils de récupération accessibles, au lieu de décrire ce qui s'est passé. La note est non contraignante: elle oriente le pas suivant sans bloquer l'agent.",
+      "en": "Information handed back to an agent after a failure that names what it can reach next, such as the violated property and the available recovery tools, instead of describing what went wrong. The note is nonbinding: it steers the next step rather than blocking the agent."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "recovery tools list",
+      "nonbinding receipt",
+      "outcome monitor",
+      "forward-pointing feedback",
+      "affordance de recuperation"
+    ],
+    "related": [
+      "verbatim-failure-record",
+      "tool-use",
+      "agent-scaffold",
+      "state-safety",
+      "out-of-band-enforcement"
+    ],
+    "articles": [
+      "failure-record-in-context-drives-the-repeat"
+    ],
+    "addedOn": "26-08-2026"
+  },
+  {
     "id": "reliability-over-horizon",
     "label": {
       "fr": "Courbe de fiabilité selon l'horizon",
@@ -3354,7 +3388,8 @@
       "command-denylist-not-a-security-boundary",
       "prompt-injection-defense-layer-split",
       "tool-calling-readout-not-descriptions",
-      "irreversible-actions-before-abstention"
+      "irreversible-actions-before-abstention",
+      "failure-record-in-context-drives-the-repeat"
     ],
     "addedOn": "12-05-2026"
   },
@@ -3458,6 +3493,61 @@
       "hybrid-rag-rrf"
     ],
     "addedOn": "27-05-2026"
+  },
+  {
+    "id": "verbatim-failure-record",
+    "label": {
+      "fr": "Trace d'échec verbatim",
+      "en": "Verbatim failure record"
+    },
+    "definition": {
+      "fr": "Pratique consistant à réinjecter dans la transcription d'un agent l'appel d'outil fautif et son message d'erreur tels quels, en supposant que l'erreur constitue une information corrective. Comme la transcription fait office de prompt, l'appel recopié devient un candidat bien formé au pas suivant et augmente la probabilité que l'agent le répète.",
+      "en": "The practice of appending a failed tool call and its error message to an agent transcript unchanged, on the assumption that the error is corrective information. Because the transcript functions as a prompt, the copied call becomes a well-formed candidate at the next step and raises the odds the agent repeats it."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "failure record",
+      "failed call in context",
+      "verbatim error record",
+      "trace d echec verbatim"
+    ],
+    "related": [
+      "agent-scaffold",
+      "tool-use",
+      "context-budget",
+      "error-compounding"
+    ],
+    "articles": [
+      "failure-record-in-context-drives-the-repeat"
+    ],
+    "addedOn": "26-08-2026"
+  },
+  {
+    "id": "verbatim-looping",
+    "label": {
+      "fr": "Bouclage verbatim",
+      "en": "Verbatim looping"
+    },
+    "definition": {
+      "fr": "Défaillance de décodage où le modèle reproduit un segment déjà présent dans son contexte plutôt que de poursuivre la génération. Les pénalités de répétition, de présence et de fréquence ainsi que le blocage de n-grammes agissent sur la récurrence des jetons et manquent la structure séquentielle de la boucle.",
+      "en": "A decoding failure in which the model reproduces a span already present in its context instead of continuing the generation. Repetition, presence and frequency penalties and n-gram blocking act on token recurrence and miss the sequential structure of the loop."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "verbatim loop",
+      "repetition loop",
+      "suffix matching",
+      "boucle verbatim"
+    ],
+    "related": [
+      "verbatim-failure-record",
+      "sampling-entropy",
+      "long-context-degradation"
+    ],
+    "articles": [
+      "failure-record-in-context-drives-the-repeat"
+    ],
+    "addedOn": "26-08-2026"
   },
   {
     "id": "verification-horizon",

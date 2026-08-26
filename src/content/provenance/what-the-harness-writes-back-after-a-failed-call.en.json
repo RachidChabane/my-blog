@@ -1,0 +1,115 @@
+{
+  "slug": "what-the-harness-writes-back-after-a-failed-call",
+  "lang": "en",
+  "translationKey": "failure-record-in-context-drives-the-repeat",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Feedback That Backfires: Why Small Language Model Agents Repeat the Call They Just Watched Fail (arXiv:2608.23651)",
+      "url": "https://arxiv.org/abs/2608.23651",
+      "excerpt": "Agent harnesses record a failed tool call and its error message in the transcript and ask the model to continue, on the assumption that the error is corrective information. We measure whether it is."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Feedback That Backfires: Why Small Language Model Agents Repeat the Call They Just Watched Fail (arXiv:2608.23651)",
+      "url": "https://arxiv.org/abs/2608.23651",
+      "excerpt": "we find the gain is negative for every instruction-tuned model we tested (6 checkpoints, 135M-1.7B, 4 families) in two environments: simulated tool calling and MBPP program repair"
+    },
+    {
+      "sourceId": "s3",
+      "label": "Feedback That Backfires: Why Small Language Model Agents Repeat the Call They Just Watched Fail (arXiv:2608.23651)",
+      "url": "https://arxiv.org/abs/2608.23651",
+      "excerpt": "Over a fixed candidate set the probability of repeating the failed call rises from 0.06 to 0.54"
+    },
+    {
+      "sourceId": "s4",
+      "label": "Feedback That Backfires: Why Small Language Model Agents Repeat the Call They Just Watched Fail (arXiv:2608.23651)",
+      "url": "https://arxiv.org/abs/2608.23651",
+      "excerpt": "surface form accounts for 83% of the damage, while the semantic contribution of marking it failed is small and inconsistent in sign across environments"
+    },
+    {
+      "sourceId": "s5",
+      "label": "Feedback That Backfires: Why Small Language Model Agents Repeat the Call They Just Watched Fail (arXiv:2608.23651)",
+      "url": "https://arxiv.org/abs/2608.23651",
+      "excerpt": "Replacing the verbatim call with a runtime-generated description of the failure removes 76% of the inversion at no token cost, and making previously-failed strings unreachable at the decoder acts on the same term."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Feedback That Backfires: Why Small Language Model Agents Repeat the Call They Just Watched Fail (arXiv:2608.23651)",
+      "url": "https://arxiv.org/abs/2608.23651",
+      "excerpt": "deleting the failed attempt to retry from a clean context, the standard prescription for context contamination, is the worst harness we measured for repetition, because it restores the context that produced the failure"
+    },
+    {
+      "sourceId": "s7",
+      "label": "Outcome Monitors: Recovery Affordances for Silent Tool Failures (arXiv:2608.19303)",
+      "url": "https://arxiv.org/abs/2608.19303",
+      "excerpt": "On a violation, the monitor preserves the result and issues a nonbinding receipt naming the violated property and public recovery tools."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Outcome Monitors: Recovery Affordances for Silent Tool Failures (arXiv:2608.19303)",
+      "url": "https://arxiv.org/abs/2608.19303",
+      "excerpt": "Outcome Monitors raise ToolMaze completion from 10.9% to 28.1% across four models in two provider families and replicate in a third"
+    },
+    {
+      "sourceId": "s9",
+      "label": "Outcome Monitors: Recovery Affordances for Silent Tool Failures (arXiv:2608.19303)",
+      "url": "https://arxiv.org/abs/2608.19303",
+      "excerpt": "removing the recovery-tool list eliminates the measured gain and restoring it recovers the effect; diagnostic detail and timing produce no detectable differences"
+    },
+    {
+      "sourceId": "s10",
+      "label": "Outcome Monitors: Recovery Affordances for Silent Tool Failures (arXiv:2608.19303)",
+      "url": "https://arxiv.org/abs/2608.19303",
+      "excerpt": "Recovery tools are the active receipt content in these controls"
+    },
+    {
+      "sourceId": "s11",
+      "label": "Don't Repeat Yourself: Stopping Verbatim Loops at Sampling Time (arXiv:2608.22761)",
+      "url": "https://arxiv.org/abs/2608.22761",
+      "excerpt": "open-ended generation is prone to verbatim looping, in which models repeat spans already present in context"
+    },
+    {
+      "sourceId": "s12",
+      "label": "Don't Repeat Yourself: Stopping Verbatim Loops at Sampling Time (arXiv:2608.22761)",
+      "url": "https://arxiv.org/abs/2608.22761",
+      "excerpt": "Standard defenses such as repetition, presence, and frequency penalties and n-gram blocking act on token recurrence rather than the sequential structure of a loop"
+    },
+    {
+      "sourceId": "s13",
+      "label": "Don't Repeat Yourself: Stopping Verbatim Loops at Sampling Time (arXiv:2608.22761)",
+      "url": "https://arxiv.org/abs/2608.22761",
+      "excerpt": "An intervention-matched placebo produces no comparable reduction, identifying suffix matching as the operative mechanism."
+    },
+    {
+      "sourceId": "s14",
+      "label": "When Not to Imitate: Boundary-Aware Skill Memory for Reliable Tool-Use LLM Agents (arXiv:2608.22339)",
+      "url": "https://arxiv.org/abs/2608.22339",
+      "excerpt": "Prevailing agent self-evolution paradigms typically rely on a core assumption: equipping LLMs with skill memories derived from successful trajectories will monotonically improve their problem-solving capabilities."
+    },
+    {
+      "sourceId": "s15",
+      "label": "When Not to Imitate: Boundary-Aware Skill Memory for Reliable Tool-Use LLM Agents (arXiv:2608.22339)",
+      "url": "https://arxiv.org/abs/2608.22339",
+      "excerpt": "procedure skills raise the wrong-tool margin by $47\\%$ over a memory-free baseline"
+    },
+    {
+      "sourceId": "s16",
+      "label": "When Not to Imitate: Boundary-Aware Skill Memory for Reliable Tool-Use LLM Agents (arXiv:2608.22339)",
+      "url": "https://arxiv.org/abs/2608.22339",
+      "excerpt": "applicability conditions, risk cues, avoidance rules, and recovery notes"
+    },
+    {
+      "sourceId": "s17",
+      "label": "ToolRobustBench: Stage-Wise Perturbation Evaluation and Failure Diagnosis for Tool-Calling Agents (arXiv:2608.23635)",
+      "url": "https://arxiv.org/abs/2608.23635",
+      "excerpt": "clean end-to-end (E2E) success cannot identify where a tool-use failure originates or how it propagates through a call"
+    },
+    {
+      "sourceId": "s18",
+      "label": "ToolRobustBench: Stage-Wise Perturbation Evaluation and Failure Diagnosis for Tool-Calling Agents (arXiv:2608.23635)",
+      "url": "https://arxiv.org/abs/2608.23635",
+      "excerpt": "substantial robustness degradation, with tool-output/observation perturbation the dominant bottleneck"
+    }
+  ]
+}
