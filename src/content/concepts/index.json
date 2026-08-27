@@ -960,7 +960,8 @@
       "arret-anticipe-sondes-2026-08",
       "llm-contribution-policy-premise-decides-the-leak",
       "agentic-coding-thins-the-public-record",
-      "failure-record-in-context-drives-the-repeat"
+      "failure-record-in-context-drives-the-repeat",
+      "the-oracle-decides-repo-scale-migration"
     ],
     "addedOn": "30-05-2026"
   },
@@ -1571,7 +1572,8 @@
     "articles": [
       "harness-over-model-has-no-global-ordering",
       "swe-bench-private-holdout-trust",
-      "failure-record-in-context-drives-the-repeat"
+      "failure-record-in-context-drives-the-repeat",
+      "the-oracle-decides-repo-scale-migration"
     ],
     "addedOn": "15-07-2026"
   },
@@ -2103,6 +2105,35 @@
       "agent-memory-benchmark-recall-not-trust"
     ],
     "addedOn": "05-07-2026"
+  },
+  {
+    "id": "migration-completeness-check",
+    "label": {
+      "fr": "Contrôle de complétude de migration",
+      "en": "Migration completeness check"
+    },
+    "definition": {
+      "fr": "Étape de notation qui vérifie que la migration demandée a bien eu lieu dans le code, exécutée avant tout test comportemental. Placer ce contrôle en premier empêche qu'une exécution préservant le comportement par recopie de l'implémentation d'origine soit comptée comme un succès.",
+      "en": "A grading stage that verifies the required migration actually happened in the code, run before any behavioural test. Ordering the completeness check first stops a run that preserves behaviour by copying the original implementation from counting as a pass."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "Migration Audit",
+      "migration audit",
+      "migration completeness",
+      "staged grading protocol",
+      "controle de completude de migration"
+    ],
+    "related": [
+      "weak-oracle-tests",
+      "reward-hacking",
+      "swe-bench",
+      "harness-component-signal"
+    ],
+    "articles": [
+      "the-oracle-decides-repo-scale-migration"
+    ],
+    "addedOn": "27-08-2026"
   },
   {
     "id": "mixture-of-experts",
@@ -2786,7 +2817,8 @@
       "verification-horizon-coding-agent-rewards",
       "harness-over-model-has-no-global-ordering",
       "allowlist-verbe-capacite-2026-08",
-      "coordinator-title-buys-no-information"
+      "coordinator-title-buys-no-information",
+      "the-oracle-decides-repo-scale-migration"
     ],
     "addedOn": "06-07-2026"
   },
@@ -3130,6 +3162,60 @@
     "addedOn": "10-06-2026"
   },
   {
+    "id": "specification-first-refactoring",
+    "label": {
+      "fr": "Réusinage guidé par la spécification",
+      "en": "Specification-first refactoring"
+    },
+    "definition": {
+      "fr": "Protocole de réusinage où un agent rédige d'abord une spécification formelle du comportement visé, l'audite face au code source, implémente à partir de la spécification gelée, puis audite le code en retour face à elle. Il substitue un document audité dans les deux sens à l'oracle de tests dont le dépôt ne dispose pas, et sa règle d'arrêt est un nombre de passes de vérification consécutives sans anomalie.",
+      "en": "A refactoring protocol in which an agent first writes a formal specification of the target behaviour, audits it against the source code, implements against the frozen specification, then audits the code back against it. It substitutes a document audited in both directions for the test oracle the codebase does not have, and its stopping rule is a number of consecutive verification passes that return no findings."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "spec-first refactoring",
+      "specification-first protocol",
+      "reusinage guide par la specification"
+    ],
+    "related": [
+      "coding-agents",
+      "weak-oracle-tests",
+      "agent-scaffold",
+      "migration-completeness-check"
+    ],
+    "articles": [
+      "the-oracle-decides-repo-scale-migration"
+    ],
+    "addedOn": "27-08-2026"
+  },
+  {
+    "id": "specification-portability",
+    "label": {
+      "fr": "Portabilité d'une spécification",
+      "en": "Specification portability"
+    },
+    "definition": {
+      "fr": "Hypothèse selon laquelle une spécification rédigée par un agent de code peut être confiée à un autre agent et produire une implémentation équivalente. Les transferts mesurés montrent une dégradation qui dépend de l'agent receveur, ce qui conduit à traiter une spécification comme couplée à l'agent qui l'a produite plutôt que comme un artefact indépendant.",
+      "en": "The assumption that a specification written by one coding agent can be handed to another and still yield an equivalent implementation. Measured transfers show degradation that depends on the receiving agent, which argues for treating a specification as coupled to the agent that produced it rather than as an agent-neutral artifact."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "cross-agent transfer",
+      "spec transfer",
+      "agent-neutral specification",
+      "portabilite d une specification"
+    ],
+    "related": [
+      "specification-first-refactoring",
+      "coding-agents",
+      "agent-scaffold"
+    ],
+    "articles": [
+      "the-oracle-decides-repo-scale-migration"
+    ],
+    "addedOn": "27-08-2026"
+  },
+  {
     "id": "state-safety",
     "label": {
       "fr": "Sûreté de l'état",
@@ -3229,7 +3315,8 @@
     "articles": [
       "coding-agent-scaffold-confound",
       "reward-hacking-inflates-coding-benchmarks",
-      "swe-bench-private-holdout-trust"
+      "swe-bench-private-holdout-trust",
+      "the-oracle-decides-repo-scale-migration"
     ],
     "addedOn": "18-06-2026"
   },
@@ -3644,7 +3731,8 @@
     ],
     "articles": [
       "reward-hacking-inflates-coding-benchmarks",
-      "verification-frontiere-action-2026-08"
+      "verification-frontiere-action-2026-08",
+      "the-oracle-decides-repo-scale-migration"
     ],
     "addedOn": "06-07-2026"
   },

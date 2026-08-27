@@ -1,0 +1,133 @@
+{
+  "slug": "l-instrument-qui-garde-la-fusion-decide-de-ce-qui-passe",
+  "lang": "fr",
+  "translationKey": "the-oracle-decides-repo-scale-migration",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "SWE Refactor Bench: Can Coding Agents Complete a Long-Horizon, Whole-Repository Stack Migration? (arXiv:2608.23564)",
+      "url": "https://arxiv.org/abs/2608.23564",
+      "excerpt": "we introduce SWE Refactor Bench, a benchmark comprising 20 whole-repository migrations, covering 4 kinds of technical debt."
+    },
+    {
+      "sourceId": "s2",
+      "label": "SWE Refactor Bench: Can Coding Agents Complete a Long-Horizon, Whole-Repository Stack Migration? (arXiv:2608.23564)",
+      "url": "https://arxiv.org/abs/2608.23564",
+      "excerpt": "Existing benchmarks cannot answer this question because they evaluate only behavioural correctness, not whether the migration actually occurred."
+    },
+    {
+      "sourceId": "s3",
+      "label": "SWE Refactor Bench: Can Coding Agents Complete a Long-Horizon, Whole-Repository Stack Migration? (arXiv:2608.23564)",
+      "url": "https://arxiv.org/abs/2608.23564",
+      "excerpt": "This leads an easy hack: agents copy the original implementation to make tests pass. We call this Blindness."
+    },
+    {
+      "sourceId": "s4",
+      "label": "SWE Refactor Bench: Can Coding Agents Complete a Long-Horizon, Whole-Repository Stack Migration? (arXiv:2608.23564)",
+      "url": "https://arxiv.org/abs/2608.23564",
+      "excerpt": "A three-stage evaluation protocol measures both migration completeness and behavioural correctness. (1) Migration Audit verifies that the migration occurred."
+    },
+    {
+      "sourceId": "s5",
+      "label": "SWE Refactor Bench: Can Coding Agents Complete a Long-Horizon, Whole-Repository Stack Migration? (arXiv:2608.23564)",
+      "url": "https://arxiv.org/abs/2608.23564",
+      "excerpt": "Across 520 runs from 8 frontier models and 26 model-effort configurations, only 28 of 520 runs ($5.4\\%$) pass all three stages, 13 of the 20 tasks receive no accepted solution"
+    },
+    {
+      "sourceId": "s6",
+      "label": "SWE Refactor Bench: Can Coding Agents Complete a Long-Horizon, Whole-Repository Stack Migration? (arXiv:2608.23564)",
+      "url": "https://arxiv.org/abs/2608.23564",
+      "excerpt": "Migration completeness and behavioural correctness are distinct abilities: a few runs preserve behaviour by skipping the migration and are stopped at Migration Audit; most attempt it and break behaviour, and are stopped at Behavioural Tests."
+    },
+    {
+      "sourceId": "s7",
+      "label": "SWE Refactor Bench: Can Coding Agents Complete a Long-Horizon, Whole-Repository Stack Migration? (arXiv:2608.23564)",
+      "url": "https://arxiv.org/abs/2608.23564",
+      "excerpt": "Agent capability differs across migration categories: agents score $31.4$ on build toolchain rewrites but only $5.6$ on language rewrites."
+    },
+    {
+      "sourceId": "s8",
+      "label": "SWE-Bench ProMax: Benchmarking Agents on Large-Scale Multilingual Code Refactoring (arXiv:2608.09802)",
+      "url": "https://arxiv.org/abs/2608.09802",
+      "excerpt": "We introduce SWE-Bench ProMax, an expert-curated, multilingual code refactoring benchmark of 170 instances drawn from real commits across seven programming languages (Python, Java, TypeScript, Go, C, C++, and Rust)."
+    },
+    {
+      "sourceId": "s9",
+      "label": "SWE-Bench ProMax: Benchmarking Agents on Large-Scale Multilingual Code Refactoring (arXiv:2608.09802)",
+      "url": "https://arxiv.org/abs/2608.09802",
+      "excerpt": "a recent audit found that nearly 60% of unsolved SWE-bench Verified instances contain flawed tests -- either overly narrow tests that reject correct solutions or overly broad tests that check unstated requirements"
+    },
+    {
+      "sourceId": "s10",
+      "label": "SWE-Bench ProMax: Benchmarking Agents on Large-Scale Multilingual Code Refactoring (arXiv:2608.09802)",
+      "url": "https://arxiv.org/abs/2608.09802",
+      "excerpt": "issue descriptions are rewritten from scratch to provide precise, unambiguous specifications, and test suites are manually reviewed to remove overly narrow and overly broad tests."
+    },
+    {
+      "sourceId": "s11",
+      "label": "SWE-Bench ProMax: Benchmarking Agents on Large-Scale Multilingual Code Refactoring (arXiv:2608.09802)",
+      "url": "https://arxiv.org/abs/2608.09802",
+      "excerpt": "yielding a benchmark of challenging, large-scale refactoring tasks that average 11.4 modified files and 261.6 lines of code per instance, substantially exceeding the scale of existing benchmarks."
+    },
+    {
+      "sourceId": "s12",
+      "label": "SWE-Bench ProMax: Benchmarking Agents on Large-Scale Multilingual Code Refactoring (arXiv:2608.09802)",
+      "url": "https://arxiv.org/abs/2608.09802",
+      "excerpt": "Experiments with frontier models under two agent scaffolds show that the best model achieves only 41.2% resolve rate"
+    },
+    {
+      "sourceId": "s13",
+      "label": "Specification-first convergence with an AI coding agent (arXiv:2608.12440)",
+      "url": "https://arxiv.org/abs/2608.12440",
+      "excerpt": "This paper reports a single, fully instrumented case study of a large-scale architectural refactoring by an AI coding agent under a specification-first protocol, with no human review of the generated code and no pre-existing oracle to validate the target behaviour."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Specification-first convergence with an AI coding agent (arXiv:2608.12440)",
+      "url": "https://arxiv.org/abs/2608.12440",
+      "excerpt": "The system is a 717,725-line production TypeScript application across 3,648 files."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Specification-first convergence with an AI coding agent (arXiv:2608.12440)",
+      "url": "https://arxiv.org/abs/2608.12440",
+      "excerpt": "The protocol: formal specification by the agent, 14 refinement cycles auditing that specification against the source code, atomic implementation, a compile/test feedback loop, then 17 verification cycles auditing the code against the frozen specification."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Specification-first convergence with an AI coding agent (arXiv:2608.12440)",
+      "url": "https://arxiv.org/abs/2608.12440",
+      "excerpt": "Across 31 audit passes, 201 defects were corrected before any human executed the program."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Specification-first convergence with an AI coding agent (arXiv:2608.12440)",
+      "url": "https://arxiv.org/abs/2608.12440",
+      "excerpt": "The convergence criterion was empirical: two consecutive verification passes returning zero findings."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Specification-first convergence with an AI coding agent (arXiv:2608.12440)",
+      "url": "https://arxiv.org/abs/2608.12440",
+      "excerpt": "Elapsed: three days; cost: USD 2,430."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Specification Portability Across LLM Development Agents: Cross-Agent Compatibility in Specification-Driven Software Migration (arXiv:2608.21208)",
+      "url": "https://arxiv.org/abs/2608.21208",
+      "excerpt": "The results show that specification size alone does not predict implementation quality and that cross-agent transfer can produce substantial agent-dependent degradation."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Specification Portability Across LLM Development Agents: Cross-Agent Compatibility in Specification-Driven Software Migration (arXiv:2608.21208)",
+      "url": "https://arxiv.org/abs/2608.21208",
+      "excerpt": "The strongest replicated case occurred when Gemini directly consumed a Kiro-origin specification, producing a Token F1 of 0.035, SQL syntax validity of 2.33%, and AST mean similarity of 0.015."
+    },
+    {
+      "sourceId": "s21",
+      "label": "Specification Portability Across LLM Development Agents: Cross-Agent Compatibility in Specification-Driven Software Migration (arXiv:2608.21208)",
+      "url": "https://arxiv.org/abs/2608.21208",
+      "excerpt": "The findings suggest that specifications in heterogeneous SDD workflows should not automatically be treated as agent-neutral artifacts"
+    }
+  ]
+}
