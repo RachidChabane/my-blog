@@ -511,12 +511,13 @@ export function notFoundStrings(lang: Locale): NotFoundStrings {
 
 /**
  * About (S8) copy. Sibling table to ARTICLE_DETAIL / NOT_FOUND. The tagline + bio
- * are REAL first-person copy, grounded in the owner's public résumé (no fabricated
- * facts); the how-it-works note is REAL too, describing the autonomous pipeline (a
- * P2 credibility asset, no secrets), lifted verbatim from the design `T`
- * (about.jsx). `howLbl` intentionally matches ARTICLE_DETAIL.maintained. The bio
- * deliberately does NOT re-narrate the pipeline mechanics; that is the
- * how-it-works box's job, the section right below it.
+ * are REAL first-person copy, grounded in the owner's public résumé and the
+ * projects collection (no fabricated facts); the how-it-works note is REAL too,
+ * describing the autonomous pipeline (a P2 credibility asset, no secrets), lifted
+ * verbatim from the design `T` (about.jsx). `howLbl` intentionally matches
+ * ARTICLE_DETAIL.maintained. The bio deliberately does NOT re-narrate the
+ * pipeline mechanics; that is the how-it-works box's job, the section right
+ * below it.
  */
 export interface AboutStrings {
   metaDesc: string; // <meta name="description"> (site-level, safe)
@@ -524,8 +525,7 @@ export interface AboutStrings {
   title: string; // h1
   tagline: string; // one-line role/field strap under the h1
   bioH: string; // "Bio"
-  bioP1: string; // bio paragraph 1 (identity + day work + the applied-AI thread)
-  bioP2: string; // bio paragraph 2 (open source + research + this site; the thread)
+  bioP: string; // single bio paragraph (identity + work + open source + this site)
   contactH: string; // "Contact"
   contactPh: string; // hint shown as the value of any future owner-fill row
   howH: string; // "Comment ce site fonctionne" / "How this site works"
@@ -539,13 +539,9 @@ export const ABOUT: Record<Locale, AboutStrings> = {
       'À propos de Rachid Chabane et de ce carnet d’ingénierie IA maintenu de façon autonome.',
     eyebrow: 'Rachid Chabane',
     title: 'À propos',
-    tagline:
-      'Ingénieur logiciel à l’intersection du cloud et de l’IA appliquée, du besoin métier à la production. Basé à Lille.',
+    tagline: 'Ingénieur logiciel et IA. Lille, France.',
     bioH: 'Bio',
-    bioP1:
-      'Je suis Rachid Chabane, ingénieur full-stack et cloud basé à Lille. Le jour, je livre des services Java et Spring Boot sur Google Cloud, de bout en bout : du recueil du besoin métier à l’infrastructure, la CI/CD et l’astreinte en production. En parallèle, je conçois des systèmes d’IA agentique sur la stack Claude : orchestration multi-agents, outils MCP, récupération d’information et le context engineering qui garde un agent fiable sur la durée.',
-    bioP2:
-      'Ce versant de mon travail est publié en open source, dont un serveur MCP et une marketplace de plugins pour Claude Code, et prend aussi la forme de plateformes privées, parmi lesquelles un moteur de recherche autonome à l’origine de deux preprints avec DOI. Ce carnet est l’un de ces systèmes, écrit et maintenu par un agent plutôt que par moi. Le fil reste le même partout : bâtir des systèmes autonomes, et les rendre assez fiables pour les laisser tourner seuls.',
+    bioP: 'Je suis Rachid, ingénieur logiciel et IA basé à Lille. Je construis des systèmes d’IA, c’est mon métier : des agents, des pipelines de récupération d’information et l’outillage qui va avec, ainsi que l’infrastructure cloud sur laquelle ils tournent. Une bonne partie est open source : Sterna, un espace de travail IA multi-modèles, un serveur MCP publié sur npm, une marketplace de plugins pour Claude Code. Ce site est aussi l’un de ces systèmes : c’est un agent qui l’écrit et le maintient, pas moi.',
     contactH: 'Contact',
     contactPh: 'à compléter',
     howH: 'Comment ce site fonctionne',
@@ -558,13 +554,9 @@ export const ABOUT: Record<Locale, AboutStrings> = {
       'About Rachid Chabane and this autonomously maintained AI engineering notebook.',
     eyebrow: 'Rachid Chabane',
     title: 'About',
-    tagline:
-      'Software engineer working where cloud meets applied AI, from business requirements to production. Based in Lille, France.',
+    tagline: 'Software and AI engineer. Lille, France.',
     bioH: 'Bio',
-    bioP1:
-      'I’m Rachid Chabane, a full-stack and cloud engineer based in Lille. By day I ship Java and Spring Boot services on Google Cloud, owning the path from business requirements through infrastructure, CI/CD, and on-call production. Outside that work I build agentic-AI systems on the Claude stack: multi-agent orchestration, MCP tools, retrieval, and the context engineering that keeps long-running agents reliable.',
-    bioP2:
-      'That side of my work ships as open source, including a published MCP server and a Claude Code plugin marketplace, and as larger private platforms, among them an autonomous research engine behind two preprints with DOIs. This notebook is another of those systems, written and maintained by an agent rather than by me. The thread across all of it is the same: building autonomous systems, and making them reliable enough to leave running.',
+    bioP: 'I’m Rachid, a software and AI engineer based in Lille. I build AI systems for a living: agents, retrieval pipelines, the tooling around them, and the cloud infrastructure they run on. A lot of it is open source, like Sterna, a multi-model AI workspace, an MCP server published on npm, and a plugin marketplace for Claude Code. This site is one of those systems too: an agent writes and maintains it, not me.',
     contactH: 'Contact',
     contactPh: 'owner-filled',
     howH: 'How this site works',

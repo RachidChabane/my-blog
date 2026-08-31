@@ -21,9 +21,9 @@ test.describe('S8 About — renders in both locales (FR-A6)', () => {
     await expect(heads.nth(2)).toHaveText('Comment ce site fonctionne');
 
     await expect(page.locator('.rc-about__tagline')).toBeVisible();
-    // finished bio: two real prose paragraphs, no leftover bracketed placeholder.
+    // finished bio: one real prose paragraph, no leftover bracketed placeholder.
     const bio = page.locator('.rc-bio__p');
-    await expect(bio).toHaveCount(2);
+    await expect(bio).toHaveCount(1);
     await expect(bio.first()).toContainText('Lille');
     await expect(page.locator('.rc-bio')).not.toContainText('[');
     await expect(page.locator('.rc-howit__text')).toContainText(
