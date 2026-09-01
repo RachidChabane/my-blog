@@ -1561,5 +1561,29 @@
     ],
     "published_at": "2026-08-25",
     "embedding": null
+  },
+  {
+    "translation_key": "qwen38-27b-runtime-build-and-file-revision",
+    "topic_id": "qwen38-27b-runtime-build-and-file-revision",
+    "dedup_key": "qwen38 27b runtime build and file revision",
+    "title": "Running Qwen3.8 27B at 4-bit takes 17 GB and a current llama.cpp build",
+    "slugs": {
+      "fr": "qwen3-8-27b-version-du-runtime-et-des-fichiers",
+      "en": "qwen3-8-27b-runtime-build-and-file-revision"
+    },
+    "sources": [
+      {
+        "label": "Quesma Blog, benchmarking Qwen3.8 27B quantizations",
+        "url": "https://quesma.com/blog/qwen38-27b-quantizations-benchmarked/",
+        "date": "26-08-2026"
+      },
+      {
+        "label": "TerminalBytes, Qwen3.8 27B measured on a Mac Studio M3 Ultra",
+        "url": "https://terminalbytes.com/run-qwen-3-8-27b-locally/",
+        "date": "27-08-2026"
+      }
+    ],
+    "published_at": "2026-09-01",
+    "embedding": null
   }
 ]
