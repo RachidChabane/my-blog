@@ -2383,5 +2383,211 @@
     ],
     "published_at": "2026-08-27",
     "embedding": null
+  },
+  {
+    "translation_key": "remediation-throughput-is-the-security-constraint",
+    "topic_id": "remediation-throughput-is-the-security-constraint",
+    "dedup_key": "ai accelerated vulnerability discovery moves the open source security constraint from prioritisation accuracy to remediation throughput because maintainer queues sit at or above capacity while an agent reproduces an exploit from a rumour in minutes",
+    "title": "Your security budget is buying the wrong side of the queue",
+    "slugs": {
+      "fr": "budget-securite-achete-le-mauvais-cote-de-la-file",
+      "en": "security-budget-buys-the-wrong-side-of-the-queue"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "arXiv 2608.28509, rethinking vulnerability remediation as a capacity allocation problem",
+        "url": "https://arxiv.org/abs/2608.28509",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "As AI accelerates vulnerability discovery, remediation throughput may become a greater constraint than prioritisation accuracy",
+        "source_date": "2026-08-28"
+      },
+      {
+        "source_id": "s2",
+        "label": "arXiv 2608.28509, rethinking vulnerability remediation as a capacity allocation problem",
+        "url": "https://arxiv.org/abs/2608.28509",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "This study evaluates vulnerability remediation as a flow-control problem using Apache Jira, Mozilla Bugzilla, Red Hat security errata, five public Jira organisations, and an npm dependency graph",
+        "source_date": "2026-08-28"
+      },
+      {
+        "source_id": "s3",
+        "label": "arXiv 2608.28509, rethinking vulnerability remediation as a capacity allocation problem",
+        "url": "https://arxiv.org/abs/2608.28509",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "Apache resolution times are strongly heavy-tailed, while 94-100% of arrivals in the primary issue trackers enter queues estimated to be at or above capacity",
+        "source_date": "2026-08-28"
+      },
+      {
+        "source_id": "s4",
+        "label": "arXiv 2608.28509, rethinking vulnerability remediation as a capacity allocation problem",
+        "url": "https://arxiv.org/abs/2608.28509",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "Queue-context models provide only moderate predictive discrimination and are largely matched by simple project-level baselines",
+        "source_date": "2026-08-28"
+      },
+      {
+        "source_id": "s5",
+        "label": "arXiv 2608.28509, rethinking vulnerability remediation as a capacity allocation problem",
+        "url": "https://arxiv.org/abs/2608.28509",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "Flow-control analyses show larger operational effects: transitions from overloaded to draining queues are associated with shorter resolution times, severity-first sequencing reduces critical-item delay at fixed capacity, and capacity reservation can reduce prolonged critical-item delays",
+        "source_date": "2026-08-28"
+      },
+      {
+        "source_id": "s6",
+        "label": "arXiv 2608.28509, rethinking vulnerability remediation as a capacity allocation problem",
+        "url": "https://arxiv.org/abs/2608.28509",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "Owner-level analyses further show that available capacity is useful only when it is located where demand occurs or can be transferred through relevant expertise connections",
+        "source_date": "2026-08-28"
+      },
+      {
+        "source_id": "s7",
+        "label": "Anil Madhavapeddy, a rumour of a bug is enough to find an exploit",
+        "url": "https://anil.recoil.org/notes/rumour-is-the-exploit",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "What's worse, I found I could use my own agents to find the exploit just by knowing roughly what it was about and so could have been exploiting it well before the public patch was available!",
+        "source_date": "2026-08-22"
+      },
+      {
+        "source_id": "s8",
+        "label": "Anil Madhavapeddy, a rumour of a bug is enough to find an exploit",
+        "url": "https://anil.recoil.org/notes/rumour-is-the-exploit",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "My agent also trivially created an exploit to probe a local live server in under a minute.",
+        "source_date": "2026-08-22"
+      },
+      {
+        "source_id": "s9",
+        "label": "Anil Madhavapeddy, a rumour of a bug is enough to find an exploit",
+        "url": "https://anil.recoil.org/notes/rumour-is-the-exploit",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "If it took me just a minute to create my own exploit locally, then ten minutes actually seems quite long for an automated attack window to start!",
+        "source_date": "2026-08-22"
+      },
+      {
+        "source_id": "s10",
+        "label": "Anil Madhavapeddy, a rumour of a bug is enough to find an exploit",
+        "url": "https://anil.recoil.org/notes/rumour-is-the-exploit",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "LLMs are merrily generating exploits, but our ability to defend against them isn't necessarily improving as maintainer validation, triage and release rates stay flat.",
+        "source_date": "2026-08-22"
+      },
+      {
+        "source_id": "s11",
+        "label": "Anil Madhavapeddy, a rumour of a bug is enough to find an exploit",
+        "url": "https://anil.recoil.org/notes/rumour-is-the-exploit",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "Given that just the rumour of a security issue seems enough to give attackers enough info to find new exploits, we're going to need to change the way we deal with security responses in open source.",
+        "source_date": "2026-08-22"
+      },
+      {
+        "source_id": "s12",
+        "label": "Anil Madhavapeddy, a rumour of a bug is enough to find an exploit",
+        "url": "https://anil.recoil.org/notes/rumour-is-the-exploit",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "This time around though, I noticed probes in my live webserver logs with the exact bug pattern just minutes after opening the PR to fix the issue",
+        "source_date": "2026-08-22"
+      },
+      {
+        "source_id": "s13",
+        "label": "AISLE, six curl CVEs found after OpenAI and Anthropic found zero",
+        "url": "https://aisle.com/blog/aisle-discovered-six-curl-cves-after-openai-and-anthropic-found-zero",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "AISLE discovered six curl CVEs within days of OpenAI Codex Security and Anthropic Mythos reporting zero findings in curl, software deployed across more than 20 billion instances worldwide.",
+        "source_date": "2026-09-02"
+      },
+      {
+        "source_id": "s14",
+        "label": "AISLE, six curl CVEs found after OpenAI and Anthropic found zero",
+        "url": "https://aisle.com/blog/aisle-discovered-six-curl-cves-after-openai-and-anthropic-found-zero",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "The next day, Daniel posted the first public comparison: Mythos 0, AISLE 29 reports.",
+        "source_date": "2026-09-02"
+      },
+      {
+        "source_id": "s15",
+        "label": "AISLE, six curl CVEs found after OpenAI and Anthropic found zero",
+        "url": "https://aisle.com/blog/aisle-discovered-six-curl-cves-after-openai-and-anthropic-found-zero",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "All six were fixed in curl 8.22.0 and officially credit Stanislav Fort (from AISLE) as the reporter. Three were reported on August 24, two on August 26, and one on August 27, 2026.",
+        "source_date": "2026-09-02"
+      },
+      {
+        "source_id": "s16",
+        "label": "AISLE, six curl CVEs found after OpenAI and Anthropic found zero",
+        "url": "https://aisle.com/blog/aisle-discovered-six-curl-cves-after-openai-and-anthropic-found-zero",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "All six are rated Low severity.",
+        "source_date": "2026-09-02"
+      },
+      {
+        "source_id": "s17",
+        "label": "curl advisory CVE-2026-80229, OpenSSL provider use-after-free",
+        "url": "https://curl.se/docs/CVE-2026-80229.html",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "This issue was reported to the curl project on August 24, 2026.",
+        "source_date": "2026-09-02"
+      },
+      {
+        "source_id": "s18",
+        "label": "curl advisory CVE-2026-80229, OpenSSL provider use-after-free",
+        "url": "https://curl.se/docs/CVE-2026-80229.html",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "curl 8.22.0 was released on September 2 2026, coordinated with the publication of this advisory.",
+        "source_date": "2026-09-02"
+      },
+      {
+        "source_id": "s19",
+        "label": "curl advisory CVE-2026-80229, OpenSSL provider use-after-free",
+        "url": "https://curl.se/docs/CVE-2026-80229.html",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "Reported-by: Stanislav Fort (Aisle Research) Patched-by: Daniel Stenberg",
+        "source_date": "2026-09-02"
+      },
+      {
+        "source_id": "s20",
+        "label": "curl advisory CVE-2026-80229, OpenSSL provider use-after-free",
+        "url": "https://curl.se/docs/CVE-2026-80229.html",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "Severity: low",
+        "source_date": "2026-09-02"
+      },
+      {
+        "source_id": "s21",
+        "label": "arXiv 2609.04075, PatchBench evaluation of AI agents for vulnerability patching",
+        "url": "https://arxiv.org/abs/2609.04075",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "On average, 25% of the agent patches exhibit substantial similarity to historical developer patches, indicating that patch memorization is a real threat to the validity of vulnerability patching evaluations",
+        "source_date": "2026-09-03"
+      },
+      {
+        "source_id": "s22",
+        "label": "arXiv 2609.04075, PatchBench evaluation of AI agents for vulnerability patching",
+        "url": "https://arxiv.org/abs/2609.04075",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "agents also frequently exploit benchmark structures to pass patch validation by patching on the crash stack trace to suppress the crash, rather than localizing and fixing the root cause of the vulnerabilities",
+        "source_date": "2026-09-03"
+      },
+      {
+        "source_id": "s23",
+        "label": "arXiv 2609.04075, PatchBench evaluation of AI agents for vulnerability patching",
+        "url": "https://arxiv.org/abs/2609.04075",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "Averaged over all agents, 83.1% of the generated patches eliminate the original PoC crash, yet only 45.3% of the tasks are solved, i.e., pass both security and semantic validation",
+        "source_date": "2026-09-03"
+      },
+      {
+        "source_id": "s24",
+        "label": "arXiv 2609.04075, PatchBench evaluation of AI agents for vulnerability patching",
+        "url": "https://arxiv.org/abs/2609.04075",
+        "retrieved_at": "2026-09-04",
+        "excerpt": "Across 11 state-of-the-art agents, including the top three AIxCC agents, the original PoC-only validation inflates the patching task solve rate of agents",
+        "source_date": "2026-09-03"
+      }
+    ],
+    "published_at": "2026-09-04",
+    "embedding": null
   }
 ]
