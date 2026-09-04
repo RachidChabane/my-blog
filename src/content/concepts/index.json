@@ -574,7 +574,8 @@
       "reward-hacking"
     ],
     "articles": [
-      "allowlist-verbe-capacite-2026-08"
+      "allowlist-verbe-capacite-2026-08",
+      "remediation-throughput-is-the-security-constraint"
     ],
     "addedOn": "02-08-2026"
   },
@@ -2602,6 +2603,31 @@
     "addedOn": "19-05-2026"
   },
   {
+    "id": "queue-saturation",
+    "label": {
+      "fr": "Saturation de la file",
+      "en": "Queue saturation"
+    },
+    "definition": {
+      "fr": "État d'un gestionnaire de tickets dont le taux d'arrivée atteint ou dépasse la vitesse à laquelle les rapports peuvent être validés, corrigés et publiés, avec des temps de service à queue lourde : quelques éléments coûtent bien plus que la médiane. Le séquencement décide de l'ordre de passage, pas du débit ; une file saturée casse donc sur les éléments coûteux, pas sur le rapport moyen.",
+      "en": "The state of a maintainer issue tracker whose arrival rate meets or exceeds the rate at which reports can be validated, patched and released, with heavy-tailed service times so a few items cost far more than the median. Sequencing decides which item is served first and leaves the drain rate untouched, so a saturated queue fails on the expensive tail rather than on the average report."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "queue saturation",
+      "saturated queue",
+      "at or above capacity",
+      "file saturée"
+    ],
+    "related": [
+      "review-bandwidth"
+    ],
+    "articles": [
+      "remediation-throughput-is-the-security-constraint"
+    ],
+    "addedOn": "04-09-2026"
+  },
+  {
     "id": "rag",
     "label": {
       "fr": "RAG",
@@ -2738,6 +2764,33 @@
     "addedOn": "19-06-2026"
   },
   {
+    "id": "remediation-throughput",
+    "label": {
+      "fr": "Débit de remédiation",
+      "en": "Remediation throughput"
+    },
+    "definition": {
+      "fr": "Vitesse à laquelle un projet transforme un rapport de vulnérabilité entrant en correctif validé que ses utilisateurs reçoivent réellement, mesurée de bout en bout : validation, correction, publication. C'est la contrainte que la découverte automatisée ne desserre pas, car la validation et la décision de publier ne s'achètent pas en puissance de calcul louée comme la génération d'exploits.",
+      "en": "The rate at which a project turns an inbound vulnerability report into a validated patch its users actually receive, counted end to end across validation, fix and release. Automated discovery does not relax this constraint, because validation and release sign-off do not scale with rented compute the way exploit generation does."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "remediation throughput",
+      "drain rate",
+      "débit de remédiation",
+      "service rate"
+    ],
+    "related": [
+      "queue-saturation",
+      "review-bandwidth",
+      "automated-exploit-generation"
+    ],
+    "articles": [
+      "remediation-throughput-is-the-security-constraint"
+    ],
+    "addedOn": "04-09-2026"
+  },
+  {
     "id": "retrieval-evaluation",
     "label": {
       "fr": "Évaluation de la récupération",
@@ -2784,7 +2837,8 @@
       "coding-agents"
     ],
     "articles": [
-      "llm-contribution-policy-premise-decides-the-leak"
+      "llm-contribution-policy-premise-decides-the-leak",
+      "remediation-throughput-is-the-security-constraint"
     ],
     "addedOn": "08-08-2026"
   },
@@ -2818,7 +2872,8 @@
       "harness-over-model-has-no-global-ordering",
       "allowlist-verbe-capacite-2026-08",
       "coordinator-title-buys-no-information",
-      "the-oracle-decides-repo-scale-migration"
+      "the-oracle-decides-repo-scale-migration",
+      "remediation-throughput-is-the-security-constraint"
     ],
     "addedOn": "06-07-2026"
   },
@@ -3732,7 +3787,8 @@
     "articles": [
       "reward-hacking-inflates-coding-benchmarks",
       "verification-frontiere-action-2026-08",
-      "the-oracle-decides-repo-scale-migration"
+      "the-oracle-decides-repo-scale-migration",
+      "remediation-throughput-is-the-security-constraint"
     ],
     "addedOn": "06-07-2026"
   },
