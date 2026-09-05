@@ -1609,5 +1609,29 @@
     ],
     "published_at": "2026-09-04",
     "embedding": null
+  },
+  {
+    "translation_key": "gemini-3-8-flash-cost-per-task-rose-at-unchanged-token-pricing",
+    "topic_id": "gemini-3-8-flash-cost-per-task-rose-at-unchanged-token-pricing",
+    "dedup_key": "gemini 3 8 flash cost per task rose at unchanged token pricing",
+    "title": "Gemini 3.8 Flash costs about 40 percent more per task at unchanged token pricing",
+    "slugs": {
+      "fr": "gemini-3-8-flash-cout-par-tache-a-prix-inchange",
+      "en": "gemini-3-8-flash-cost-per-task-at-unchanged-pricing"
+    },
+    "sources": [
+      {
+        "label": "Artificial Analysis independent evaluation of Gemini 3.8 Flash",
+        "url": "https://artificialanalysis.ai/articles/gemini-3-8-flash",
+        "date": "02-09-2026"
+      },
+      {
+        "label": "The Register report on the Gemini 3.8 Flash release",
+        "url": "https://www.theregister.com/ai-and-ml/2026/09/02/with-gemini-38-flash-google-reminds-everyone-its-still-in-the-race/5294049",
+        "date": "02-09-2026"
+      }
+    ],
+    "published_at": "2026-09-05",
+    "embedding": null
   }
 ]
