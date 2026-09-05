@@ -450,6 +450,33 @@
     "addedOn": "17-06-2026"
   },
   {
+    "id": "applicability-ceiling",
+    "label": {
+      "fr": "Plafond d'éligibilité",
+      "en": "Applicability ceiling"
+    },
+    "definition": {
+      "fr": "Part des cas sur lesquels une étape conditionnelle peut effectivement se déclencher, les autres ne réunissant pas ses préconditions. Ce ratio borne le gain total de l'étape avant toute discussion sur son efficacité, et il se mesure sur un corpus d'échecs enregistré bien avant que l'étape ne soit construite.",
+      "en": "The share of cases on which a conditional stage can fire at all, the rest failing to meet its preconditions. That ratio caps the stage's total benefit before any argument about how well it performs, and it is measurable against a recorded failure corpus long before the stage is built."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "applicability ceiling",
+      "eligibility rate",
+      "trigger rate",
+      "firing rate",
+      "plafond d eligibilite"
+    ],
+    "related": [
+      "spectrum-based-fault-localization",
+      "proxy-metric"
+    ],
+    "articles": [
+      "repair-guidance-loses-to-resampling"
+    ],
+    "addedOn": "05-09-2026"
+  },
+  {
     "id": "ast-chunking",
     "label": {
       "fr": "Découpage par AST",
@@ -706,7 +733,8 @@
       "agent-evaluation"
     ],
     "articles": [
-      "ai-evaluation-compute-cost"
+      "ai-evaluation-compute-cost",
+      "repair-guidance-loses-to-resampling"
     ],
     "addedOn": "17-06-2026"
   },
@@ -873,6 +901,32 @@
       "slopcodebench-iterative-maintainability"
     ],
     "addedOn": "16-06-2026"
+  },
+  {
+    "id": "code-infilling",
+    "label": {
+      "fr": "Remplissage de code",
+      "en": "Code infilling"
+    },
+    "definition": {
+      "fr": "Génération d'un fragment de code destiné à combler un trou laissé dans un fichier, le modèle étant conditionné à la fois par le contexte qui précède et par celui qui suit. Le mode de défaillance propre à cette forme d'édition est la reproduction du fragment retiré : le contexte environnant suffit souvent à faire réécrire exactement ce qui venait d'être supprimé.",
+      "en": "Generating a code fragment to fill a hole left in a file, with the model conditioned on both the preceding and the following context. The failure mode specific to this edit shape is reproducing the removed fragment: the surrounding context is often enough to make the model write back exactly what was deleted."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "code infilling",
+      "span infilling",
+      "infilling",
+      "fill-in-the-middle",
+      "remplissage d intervalle"
+    ],
+    "related": [
+      "spectrum-based-fault-localization"
+    ],
+    "articles": [
+      "repair-guidance-loses-to-resampling"
+    ],
+    "addedOn": "05-09-2026"
   },
   {
     "id": "code-rag",
@@ -2403,6 +2457,33 @@
     "addedOn": "15-07-2026"
   },
   {
+    "id": "placebo-control-arm",
+    "label": {
+      "fr": "Bras de contrôle placebo",
+      "en": "Placebo control arm"
+    },
+    "definition": {
+      "fr": "Bras de comparaison qui applique la même intervention au mauvais endroit ou avec un contenu sans rapport, à budget égal, afin de séparer ce que vaut l'information visée de ce que vaut la forme de l'intervention. Sans ce bras, une amélioration mesurée peut venir entièrement des essais supplémentaires que l'intervention a dépensés.",
+      "en": "A comparison arm that applies the same intervention at the wrong location or with unrelated content, at an equal budget, to separate the value of the targeted information from the value of the intervention's shape. Without that arm, a measured improvement can come entirely from the extra attempts the intervention spent."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "placebo arm",
+      "placebo control",
+      "sham intervention",
+      "random-span control",
+      "bras placebo"
+    ],
+    "related": [
+      "thinking-token-budget",
+      "best-of-n-sampling"
+    ],
+    "articles": [
+      "repair-guidance-loses-to-resampling"
+    ],
+    "addedOn": "05-09-2026"
+  },
+  {
     "id": "private-holdout",
     "label": {
       "fr": "Holdout privé",
@@ -3271,6 +3352,32 @@
     "addedOn": "27-08-2026"
   },
   {
+    "id": "spectrum-based-fault-localization",
+    "label": {
+      "fr": "Localisation de fautes par spectre",
+      "en": "Spectrum-based fault localization"
+    },
+    "definition": {
+      "fr": "Technique qui classe les lignes de code par degré de suspicion à partir des traces d'exécution des tests : une ligne exécutée surtout par des tests en échec et rarement par des tests qui passent remonte dans le classement. Elle exige une suite de tests dont au moins un cas échoue, ce qui la rend inapplicable dès que la défaillance ne se manifeste pas dans un test exécutable.",
+      "en": "A technique that ranks code lines by suspiciousness from test execution traces: a line run mostly by failing tests and rarely by passing ones ranks high. It requires a test suite in which at least one case fails, so it cannot fire at all when the failure never surfaces in an executable test."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "spectrum-based fault localization",
+      "SBFL",
+      "fault localization",
+      "localisation de fautes par spectre",
+      "suspiciousness ranking"
+    ],
+    "related": [
+      "weak-oracle-tests"
+    ],
+    "articles": [
+      "repair-guidance-loses-to-resampling"
+    ],
+    "addedOn": "05-09-2026"
+  },
+  {
     "id": "state-safety",
     "label": {
       "fr": "Sûreté de l'état",
@@ -3424,7 +3531,8 @@
       "multi-agent-orchestration"
     ],
     "articles": [
-      "multi-agent-gains-compute-artifact"
+      "multi-agent-gains-compute-artifact",
+      "repair-guidance-loses-to-resampling"
     ],
     "addedOn": "13-07-2026"
   },
