@@ -1633,5 +1633,29 @@
     ],
     "published_at": "2026-09-05",
     "embedding": null
+  },
+  {
+    "translation_key": "ard-v0-91-json-ld-entries-and-per-service-trust",
+    "topic_id": "ard-v0-91-json-ld-entries-and-per-service-trust",
+    "dedup_key": "ard v0 91 json ld entries and per service trust",
+    "title": "ARD v0.91 standardises how agentic resources are described and leaves trust to each service",
+    "slugs": {
+      "fr": "ard-v0-91-entrees-json-ld-et-confiance-par-service",
+      "en": "ard-v0-91-json-ld-entries-and-per-service-trust"
+    },
+    "sources": [
+      {
+        "label": "Agentic Resource Discovery Specification v0.91",
+        "url": "https://agenticresourcediscovery.org/spec/",
+        "date": "26-08-2026"
+      },
+      {
+        "label": "The New Stack report on the ARD specification",
+        "url": "https://thenewstack.io/ard-agent-discovery-specification/",
+        "date": "31-08-2026"
+      }
+    ],
+    "published_at": "2026-09-06",
+    "embedding": null
   }
 ]
