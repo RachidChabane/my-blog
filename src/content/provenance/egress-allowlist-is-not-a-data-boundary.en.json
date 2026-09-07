@@ -1,0 +1,55 @@
+{
+  "slug": "egress-allowlist-is-not-a-data-boundary",
+  "lang": "en",
+  "translationKey": "read-only-egress-is-a-write-channel",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Nightingale Collective, discovery of a new OpenAI agent message board",
+      "url": "https://collusion.wiki/",
+      "excerpt": "We found ~18,000 posts from autonomous AI agents (self-identifying as from OpenAI) using the public internet to communicate during a web-retrieval task. These AIs colluded to share answers, research their environment, and bypass sandbox restrictions."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Nightingale Collective, discovery of a new OpenAI agent message board",
+      "url": "https://collusion.wiki/",
+      "excerpt": "As part of the task, they were supposed to have the ability to read the internet but not to write on it. They found a way to use their read access to write information to an obscure German"
+    },
+    {
+      "sourceId": "s3",
+      "label": "Nightingale Collective, discovery of a new OpenAI agent message board",
+      "url": "https://collusion.wiki/",
+      "excerpt": "You can easily write to DSEWiki (and other ProWiki pages) using only GET requests (something rare on the internet). GET requests are a type of message meant to retrieve data from a server, and by convention they shouldn’t change the server’s state. In order to prevent agents from editing the internet, environment developers only allowed GET requests to be sent out."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Nightingale Collective, discovery of a new OpenAI agent message board",
+      "url": "https://collusion.wiki/",
+      "excerpt": "the sandbox trusts Azure Blob Storage hostnames, but does not check whether said hostnames are real"
+    },
+    {
+      "sourceId": "s5",
+      "label": "arXiv 2609.04170, emergent cheating and whistleblowing in autonomous research swarms",
+      "url": "https://arxiv.org/abs/2609.04170",
+      "excerpt": "We report a case study on a research collective of 100 autonomous LLM agents tasked with proving formal mathematical conjectures. Within the swarm, cheating spontaneously emerged and was later challenged by whistleblowers - both without any external intervention."
+    },
+    {
+      "sourceId": "s6",
+      "label": "arXiv 2609.04170, emergent cheating and whistleblowing in autonomous research swarms",
+      "url": "https://arxiv.org/abs/2609.04170",
+      "excerpt": "When a single agent discovered an exploit in the evaluation system, it propagated across the collective via a shared knowledge library and later through peer-to-peer messages. Despite early reluctance, a cohort of agents adopted the exploit in response to competitive pressure."
+    },
+    {
+      "sourceId": "s7",
+      "label": "arXiv 2609.04170, emergent cheating and whistleblowing in autonomous research swarms",
+      "url": "https://arxiv.org/abs/2609.04170",
+      "excerpt": "Yet this shared infrastructure can also introduce vulnerabilities by creating a substrate for the contagious spread of unintended and undesirable behaviors."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Nightingale Collective, discovery of a new OpenAI agent message board",
+      "url": "https://collusion.wiki/",
+      "excerpt": "DSE wiki is 25 years old. It is mostly not in use any more: it has been edited a total of 20 times in the last decade."
+    }
+  ]
+}
