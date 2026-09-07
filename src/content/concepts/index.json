@@ -411,7 +411,8 @@
     ],
     "articles": [
       "command-denylist-not-a-security-boundary",
-      "allowlist-verbe-capacite-2026-08"
+      "allowlist-verbe-capacite-2026-08",
+      "read-only-egress-is-a-write-channel"
     ],
     "addedOn": "17-07-2026"
   },
@@ -1097,7 +1098,8 @@
       "least-privilege"
     ],
     "articles": [
-      "allowlist-verbe-capacite-2026-08"
+      "allowlist-verbe-capacite-2026-08",
+      "read-only-egress-is-a-write-channel"
     ],
     "addedOn": "02-08-2026"
   },
@@ -1374,6 +1376,34 @@
       "refusal-behavior-is-not-a-security-control"
     ],
     "addedOn": "26-07-2026"
+  },
+  {
+    "id": "egress-allowlist",
+    "label": {
+      "fr": "Allowlist de sortie",
+      "en": "Egress allowlist"
+    },
+    "definition": {
+      "fr": "Liste des destinations de sortie, parfois assortie des méthodes autorisées, qu'un processus a le droit d'atteindre, appliquée à son trafic réseau avant l'émission de la requête. Elle borne les endroits où le trafic peut aller ; elle ne borne pas ce que le serveur destinataire fait d'une requête qu'il accepte.",
+      "en": "A list of outbound destinations, sometimes together with permitted methods, that a process is allowed to reach, applied to its network traffic before the request leaves. It bounds where traffic can go; it does not bound what the receiving server does with a request it accepts."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "egress allowlist",
+      "egress filtering",
+      "outbound allowlist",
+      "network egress policy",
+      "liste d autorisation de sortie"
+    ],
+    "related": [
+      "agent-sandboxing",
+      "complete-mediation",
+      "trust-boundary"
+    ],
+    "articles": [
+      "read-only-egress-is-a-write-channel"
+    ],
+    "addedOn": "07-09-2026"
   },
   {
     "id": "embeddings",
@@ -1688,6 +1718,34 @@
       "arret-anticipe-sondes-2026-08"
     ],
     "addedOn": "06-08-2026"
+  },
+  {
+    "id": "hostname-pattern-allowlisting",
+    "label": {
+      "fr": "Allowlist par motif de nom d'hôte",
+      "en": "Hostname-pattern allowlisting"
+    },
+    "definition": {
+      "fr": "Autoriser une destination de sortie parce que son nom d'hôte correspond à une forme attendue, sans vérifier que ce nom est enregistré ni qu'il pointe vers une infrastructure maîtrisée par l'auteur de la politique. Un nom conforme au motif mais que personne ne possède reste une destination qu'un tiers peut revendiquer.",
+      "en": "Permitting an outbound destination because its hostname matches an expected shape, without checking that the name is registered and resolves to infrastructure the policy author controls. A name that fits the pattern but belongs to nobody stays a destination any third party can claim."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "hostname pattern allowlist",
+      "domain pattern matching",
+      "wildcard hostname allowlist",
+      "unregistered hostname",
+      "allowlist par motif de nom d hote"
+    ],
+    "related": [
+      "egress-allowlist",
+      "server-side-request-forgery",
+      "trust-boundary"
+    ],
+    "articles": [
+      "read-only-egress-is-a-write-channel"
+    ],
+    "addedOn": "07-09-2026"
   },
   {
     "id": "hybrid-retrieval",
@@ -2984,6 +3042,34 @@
     "addedOn": "14-07-2026"
   },
   {
+    "id": "safe-method-assumption",
+    "label": {
+      "fr": "Hypothèse de la méthode sûre",
+      "en": "Safe-method assumption"
+    },
+    "definition": {
+      "fr": "Croyance selon laquelle la méthode HTTP annonce ce qui va se produire à l'extrémité distante, de sorte que n'autoriser que les verbes de lecture bornerait un processus à la lecture. L'innocuité d'une méthode relève d'une convention observée par les serveurs bien élevés et non d'une propriété imposée par le protocole : c'est le gestionnaire qui reçoit la requête qui décide seul de conserver ou non son effet.",
+      "en": "The belief that an HTTP method declares what will happen at the far end, so that permitting only the reading verbs bounds a process to reading. Safety is a convention well-behaved servers observe rather than a property the protocol enforces, and the handler receiving the request decides on its own whether to persist its effect."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "safe method",
+      "safe methods",
+      "GET is read-only",
+      "verb-keyed policy",
+      "method-keyed egress",
+      "hypothese de methode sure"
+    ],
+    "related": [
+      "complete-mediation",
+      "egress-allowlist"
+    ],
+    "articles": [
+      "read-only-egress-is-a-write-channel"
+    ],
+    "addedOn": "07-09-2026"
+  },
+  {
     "id": "sampling-entropy",
     "label": {
       "fr": "Entropie d'échantillonnage",
@@ -3666,7 +3752,8 @@
       "prompt-injection-defense-layer-split",
       "refusal-behavior-is-not-a-security-control",
       "mcp-stateless-header-routing-2026-07",
-      "allowlist-verbe-capacite-2026-08"
+      "allowlist-verbe-capacite-2026-08",
+      "read-only-egress-is-a-write-channel"
     ],
     "addedOn": "01-07-2026"
   },
