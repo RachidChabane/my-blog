@@ -1657,5 +1657,34 @@
     ],
     "published_at": "2026-09-06",
     "embedding": null
+  },
+  {
+    "translation_key": "k2-horizon-six-model-fleet-and-per-model-open-artifacts",
+    "topic_id": "k2-horizon-six-model-fleet-and-per-model-open-artifacts",
+    "dedup_key": "k2 horizon six model fleet and per model open artifacts",
+    "title": "K2 Horizon ships six open models from 0.9B to 375B, and the openness arrives model by model",
+    "slugs": {
+      "fr": "k2-horizon-six-modeles-ouverts-ouverture-modele-par-modele",
+      "en": "k2-horizon-six-open-models-openness-model-by-model"
+    },
+    "sources": [
+      {
+        "label": "Institute of Foundation Models launch announcement",
+        "url": "https://mbzuai.ac.ae/news/mbzuais-institute-of-foundation-models-launches-k2-horizon-the-worlds-largest-fully-open-ai-models-in-history/",
+        "date": "03-09-2026"
+      },
+      {
+        "label": "CellCog reading of the published model cards",
+        "url": "https://cellcog.ai/blog/k2-horizon/",
+        "date": "04-09-2026"
+      },
+      {
+        "label": "Moor Insights and Strategy analyst account",
+        "url": "https://moorinsightsstrategy.com/mbzuai-ifm-launches-6-k2-horizon-frontier-models-doubles-down-on-openness-analyst-insight/",
+        "date": "03-09-2026"
+      }
+    ],
+    "published_at": "2026-09-08",
+    "embedding": null
   }
 ]
