@@ -1,0 +1,61 @@
+{
+  "slug": "what-your-agent-continuity-is-made-of",
+  "lang": "en",
+  "translationKey": "opaque-state-outscores-the-notes-you-can-read",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "ARC Prize, the two harnesses in one summary line",
+      "url": "https://arcprize.org/blog/astra",
+      "excerpt": "GPT-6 Astra scores 62.7% for $26K on ARC-AGI-3 Semi-Private with our Standard harness Standard harness enables a model to carry forward notes it chooses to keep with it throughout the environment. , and 99.9% for $19K with a Provider Adapter harness The Provider Adapter harness preserves opaque reasoning state between requests and uses compaction for longer conversations, allowing the model to reuse prior work. ."
+    },
+    {
+      "sourceId": "s2",
+      "label": "ARC Prize, what the Standard harness carries forward",
+      "url": "https://arcprize.org/blog/astra",
+      "excerpt": "When playing ARC-AGI-3, Astra chooses which strategy notes it would like to carry forward. It tracked objects, coordinates, rules, and unfinished plans, while also using a custom domain-specific language notation it generated for the environments."
+    },
+    {
+      "sourceId": "s3",
+      "label": "ARC Prize, score against cost across reasoning effort",
+      "url": "https://arcprize.org/blog/astra",
+      "excerpt": "At max reasoning effort, Astra solves games more efficiently, requiring fewer actions and therefore lowering total cost relative to the other reasoning-effort levels. Reasoning effort Standard harness Standard harness enables a model to carry forward notes it chooses to keep with it throughout the environment. Provider Adapter harness The Provider Adapter harness preserves opaque reasoning state between requests and uses compaction for longer conversations, allowing the model to reuse prior work. max 62.7%, $26,098 98.6%, $17,332 xhigh 59.3%, $37,317 98.4%, $18,147 high 54.8%, $40,705 99.9%, $18,817 medium 38.6%, $48,090 98.4%, $19,285 low 17.5%, $38,166 98.0%, $21,298 none 35.2%, $49,791 96.7%, $23,457"
+    },
+    {
+      "sourceId": "s4",
+      "label": "ARC Prize, action efficiency against the human baseline",
+      "url": "https://arcprize.org/blog/astra",
+      "excerpt": "GPT-6 Astra surpasses the human baseline in action efficiency on ARC-AGI-3. It used fewer actions than the median tested human on 96% of levels."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Sebastian Raschka, the system card on monitorability",
+      "url": "https://magazine.sebastianraschka.com/p/gpt-6-astra-looped-transformers-and",
+      "excerpt": "Now, Astra’s system card does state that there is also evidence of reduced monitorability of their reasoning traces, and there is a bit of regression relative to Sol. It’s mostly associated with shorter, less informative traces."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Sebastian Raschka, the chief scientist on what is fragile",
+      "url": "https://magazine.sebastianraschka.com/p/gpt-6-astra-looped-transformers-and",
+      "excerpt": "I want to prevent a race into unmonitorability kicked off by confused reporting. The depth of the computation graph for our present frontier models, including Astra, is within a factor of two of GPT-4. OpenAI has worked to preserve and utilize chain-of-thought monitoring since our very first reasoning models. We deeply care about this technique, as it can give us a view into how model alignment generalizes from its training distribution. I do think it is fragile and unfortunately trending in a negative direction, for reasons not contingent on architecture changes that I will write about soon."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Sebastian Raschka, why the harness is part of the score",
+      "url": "https://magazine.sebastianraschka.com/p/gpt-6-astra-looped-transformers-and",
+      "excerpt": "The harness setup depends on the benchmark . For example, GDPval-AA and AA-Briefcase use their open-source, minimal Stirrup harness across the different LLMs they compare. In the Intelligence Index v4.2 shown above, Terminal-Bench v2.1 uses Terminus 2, and τ³-Banking uses the τ-Bench harness. The separate Coding Agent Index also compares different coding-agent harnesses."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Artificial Analysis, the token-efficiency frontier",
+      "url": "https://artificialanalysis.ai/articles/benchmarking-gpt-6-astra",
+      "excerpt": "Defines the token efficiency Pareto frontier: All reasoning efforts from low to max sit on the Pareto frontier for Intelligence Index vs Output Tokens per Task. At max effort, Astra uses 27k output tokens per task, about a third of Claude Fable 5.1 (max with fallback) at 78k, for the same score."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Artificial Analysis, fewer turns and a lower score",
+      "url": "https://artificialanalysis.ai/articles/benchmarking-gpt-6-astra",
+      "excerpt": "Reduced performance in GDPval-AA v2: Compared to GPT-5.6 Sol, we observe a drop of ~45 Elo points in GDPval-AA v2 - a benchmark we adapted from OpenAI’s dataset measuring economically valuable tasks across 44 occupations. We observed GPT-6 Astra using significantly fewer turns than other models in GDPval tasks - 24 per task at max effort, compared to 45 for GPT-5.6 Sol and 60 turns per task for Claude Fable 5.1 and Claude Opus 5."
+    }
+  ]
+}

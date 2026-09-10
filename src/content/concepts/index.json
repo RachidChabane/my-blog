@@ -305,7 +305,8 @@
     "articles": [
       "active-context-compression-prune-history",
       "agent-memory-benchmark-recall-not-trust",
-      "failure-record-in-context-drives-the-repeat"
+      "failure-record-in-context-drives-the-repeat",
+      "opaque-state-outscores-the-notes-you-can-read"
     ],
     "addedOn": "23-06-2026"
   },
@@ -446,9 +447,38 @@
       "instruction-file-structure-compliance",
       "swe-bench-private-holdout-trust",
       "irreversible-actions-before-abstention",
-      "failure-record-in-context-drives-the-repeat"
+      "failure-record-in-context-drives-the-repeat",
+      "opaque-state-outscores-the-notes-you-can-read"
     ],
     "addedOn": "17-06-2026"
+  },
+  {
+    "id": "agent-state-portability",
+    "label": {
+      "fr": "Portabilité de l'état d'un agent",
+      "en": "Agent state portability"
+    },
+    "definition": {
+      "fr": "Propriété opérationnelle de ce qu'un agent transporte d'un tour au suivant : cet état peut-il être sérialisé, comparé d'un tour à l'autre, rejoué depuis le tour où l'exécution a échoué, et confié à un autre fournisseur sans refaire le travail déjà payé. Elle se décide au moment du choix du SDK, bien avant l'incident qui la met à l'épreuve, et elle est indépendante de la qualité des réponses de l'agent.",
+      "en": "The operational property of whatever an agent carries from one turn to the next: can that state be serialized, diffed between two turns, replayed from the turn a run failed on, and handed to a different provider without paying again for work already done. It is settled when the SDK is chosen, long before the incident that tests it, and it is independent of how good the agent's answers are."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "state portability",
+      "agent state portability",
+      "serializable agent state",
+      "continuity portability",
+      "portabilité de l'état d'agent"
+    ],
+    "related": [
+      "provider-held-reasoning-state",
+      "specification-portability",
+      "agent-memory"
+    ],
+    "articles": [
+      "opaque-state-outscores-the-notes-you-can-read"
+    ],
+    "addedOn": "10-09-2026"
   },
   {
     "id": "applicability-ceiling",
@@ -1151,7 +1181,8 @@
     ],
     "articles": [
       "coding-agent-scaffold-confound",
-      "active-context-compression-prune-history"
+      "active-context-compression-prune-history",
+      "opaque-state-outscores-the-notes-you-can-read"
     ],
     "addedOn": "18-06-2026"
   },
@@ -1658,7 +1689,8 @@
       "harness-over-model-has-no-global-ordering",
       "swe-bench-private-holdout-trust",
       "failure-record-in-context-drives-the-repeat",
-      "the-oracle-decides-repo-scale-migration"
+      "the-oracle-decides-repo-scale-migration",
+      "opaque-state-outscores-the-notes-you-can-read"
     ],
     "addedOn": "15-07-2026"
   },
@@ -2590,6 +2622,35 @@
     "addedOn": "10-06-2026"
   },
   {
+    "id": "provider-held-reasoning-state",
+    "label": {
+      "fr": "État de raisonnement détenu par le fournisseur",
+      "en": "Provider-held reasoning state"
+    },
+    "definition": {
+      "fr": "Continuité conservée sur les serveurs du fournisseur entre deux requêtes d'une même conversation, que l'appelant ne référence que par un identifiant opaque et qu'il ne peut ni lire ni sérialiser. Le modèle réutilise ainsi le travail des tours précédents sans que rien de ce travail ne transite par le client, si bien que l'exploitant loue la continuité de son agent au lieu de la détenir.",
+      "en": "Continuity kept on the provider's servers between two requests of the same conversation, which the caller references only through an opaque handle and can neither read nor serialize. The model reuses work from earlier turns without any of that work passing through the client, so the operator rents its agent's continuity rather than holding it."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "provider-held state",
+      "opaque reasoning state",
+      "server-side reasoning state",
+      "provider-side state handle",
+      "état de raisonnement opaque"
+    ],
+    "related": [
+      "stateless-protocol-core",
+      "context-compaction",
+      "agent-memory",
+      "provider-only-detection"
+    ],
+    "articles": [
+      "opaque-state-outscores-the-notes-you-can-read"
+    ],
+    "addedOn": "10-09-2026"
+  },
+  {
     "id": "provider-only-detection",
     "label": {
       "fr": "Détection réservée au fournisseur",
@@ -2793,6 +2854,60 @@
       "agentic-coding-thins-the-public-record"
     ],
     "addedOn": "27-05-2026"
+  },
+  {
+    "id": "reasoning-effort",
+    "label": {
+      "fr": "Effort de raisonnement",
+      "en": "Reasoning effort"
+    },
+    "definition": {
+      "fr": "Paramètre de requête exposé par un fournisseur qui règle la quantité de calcul consacrée au raisonnement avant la réponse, et donc le prix et la latence de chaque appel. Le réglage borne le calcul, pas le résultat : la réponse d'un système n'est pas garantie monotone dans le niveau choisi, et aucun cran n'apporte de capacité que le modèle n'a pas déjà.",
+      "en": "A provider-exposed request parameter that sets how much computation goes into reasoning before an answer, and therefore the price and latency of each call. The setting bounds compute, not outcome: a system's response is not guaranteed to be monotonic in the level chosen, and no setting buys a capability the model does not already have."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "reasoning effort",
+      "reasoning effort setting",
+      "effort level",
+      "test-time compute dial",
+      "effort de raisonnement"
+    ],
+    "related": [
+      "thinking-token-budget",
+      "cost-aware-evaluation"
+    ],
+    "articles": [
+      "opaque-state-outscores-the-notes-you-can-read"
+    ],
+    "addedOn": "10-09-2026"
+  },
+  {
+    "id": "reasoning-trace-monitorability",
+    "label": {
+      "fr": "Monitorabilité des traces de raisonnement",
+      "en": "Reasoning trace monitorability"
+    },
+    "definition": {
+      "fr": "Mesure de ce qu'un lecteur extérieur apprend réellement en lisant la trace de raisonnement qu'un modèle émet : une trace courte ou peu informative reste lisible tout en cessant d'être exploitable pour la surveillance. C'est une propriété de la sortie, accessible en boîte noire, qui peut se dégrader d'une version de modèle à la suivante sans qu'aucun changement d'architecture n'en soit responsable.",
+      "en": "How much an outside reader actually learns from the reasoning trace a model emits: a short or uninformative trace stays readable while ceasing to be useful for oversight. It is a property of the output, available to a black-box consumer, and it can degrade from one model version to the next without any architecture change being responsible."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "monitorability",
+      "chain-of-thought monitoring",
+      "reasoning trace monitorability",
+      "CoT monitoring",
+      "monitorabilité des traces de raisonnement"
+    ],
+    "related": [
+      "agent-observability",
+      "hidden-state-probing"
+    ],
+    "articles": [
+      "opaque-state-outscores-the-notes-you-can-read"
+    ],
+    "addedOn": "10-09-2026"
   },
   {
     "id": "recall-controlled-cascade",
