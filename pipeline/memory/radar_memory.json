@@ -1686,5 +1686,34 @@
     ],
     "published_at": "2026-09-08",
     "embedding": null
+  },
+  {
+    "translation_key": "agents-api-self-hosted-sandbox-ownership",
+    "topic_id": "agents-api-self-hosted-sandbox-ownership",
+    "dedup_key": "agents api self hosted sandbox ownership",
+    "title": "OpenAI's Agents API runs its harness against a sandbox you own",
+    "slugs": {
+      "fr": "openai-agents-api-bac-a-sable-auto-heberge",
+      "en": "openai-agents-api-self-hosted-sandbox"
+    },
+    "sources": [
+      {
+        "label": "OpenAI Agents API overview guide",
+        "url": "https://developers.openai.com/api/docs/guides/agents-api/overview.md",
+        "date": "10-09-2026"
+      },
+      {
+        "label": "E2B, agent workbench on the Agents API",
+        "url": "https://e2b.dev/resources/build-an-agent-workbench-on-openais-agents-api",
+        "date": "10-09-2026"
+      },
+      {
+        "label": "OpenAI developer changelog, Sep 10 Agents API public beta entry",
+        "url": "https://developers.openai.com/api/docs/changelog",
+        "date": "10-09-2026"
+      }
+    ],
+    "published_at": "2026-09-11",
+    "embedding": null
   }
 ]
