@@ -1,0 +1,79 @@
+{
+  "slug": "ce-que-votre-couche-d-autorisation-ne-regarde-jamais",
+  "lang": "fr",
+  "translationKey": "the-check-binds-the-action-not-the-decision",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Loss-of-control factorial study, framing",
+      "url": "https://arxiv.org/abs/2609.11024",
+      "excerpt": "Existing studies often attribute such failures to adversarial instructions, malicious environments, or conflicting objectives, leaving unclear how loss of control can emerge during otherwise legitimate task execution."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Loss-of-control factorial study, interaction result",
+      "url": "https://arxiv.org/abs/2609.11024",
+      "excerpt": "Across 1,800 unique trajectories, we find that neither degraded control nor unsafe opportunity alone produces substantial loss of control; when both are present, the loss-of-control rate reaches $55\\%$ in the full-factorial study and $62\\%$ across ten additional operational domains."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Loss-of-control factorial study, boundary restoration",
+      "url": "https://arxiv.org/abs/2609.11024",
+      "excerpt": "Restoring the original control boundary reduces the rate to $0\\%$ even when the unsafe action remains executable."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Loss-of-control factorial study, compaction ablation",
+      "url": "https://arxiv.org/abs/2609.11024",
+      "excerpt": "A context-management ablation further shows that compaction itself is not harmful: preserving the control constraints yields $0\\%$ loss of control, whereas omitting them increases the rate to $87\\%$."
+    },
+    {
+      "sourceId": "s5",
+      "label": "AP2 whisper-attack study, protocol gap",
+      "url": "https://arxiv.org/abs/2609.11757",
+      "excerpt": "Agent payment protocols such as AP2 produce cryptographically valid signatures for completed purchases, yet do not constrain the decisions that lead to them."
+    },
+    {
+      "sourceId": "s6",
+      "label": "AP2 whisper-attack study, attack rates",
+      "url": "https://arxiv.org/abs/2609.11757",
+      "excerpt": "the three attacks succeeded at rates of 90%, 56%, and 73.3%, respectively."
+    },
+    {
+      "sourceId": "s7",
+      "label": "AP2 whisper-attack study, breadth",
+      "url": "https://arxiv.org/abs/2609.11757",
+      "excerpt": "The same vulnerability appears across seventeen Google models, three unrelated agent frameworks, two cross-vendor anchors"
+    },
+    {
+      "sourceId": "s8",
+      "label": "AP2 whisper-attack study, defense principle",
+      "url": "https://arxiv.org/abs/2609.11757",
+      "excerpt": "we introduce A-VIP (AP2 Verified-Intent Protection), a protocol-layer defense that treats the signed intent as a capability grant"
+    },
+    {
+      "sourceId": "s9",
+      "label": "AP2 whisper-attack study, defense bindings",
+      "url": "https://arxiv.org/abs/2609.11757",
+      "excerpt": "The defense binds every credential lookup to the session that requested it and every cart line to the listing seen, while flagging unauthorized spending."
+    },
+    {
+      "sourceId": "s10",
+      "label": "AP2 whisper-attack study, residual attack",
+      "url": "https://arxiv.org/abs/2609.11757",
+      "excerpt": "The first two attacks leave structural traces that these bindings block with zero false positives. The third attack leaves no trace, so A-VIP surfaces unauthorized spending for user confirmation."
+    },
+    {
+      "sourceId": "s11",
+      "label": "EBL-Core execution-boundary profile, missing contract",
+      "url": "https://arxiv.org/abs/2609.11596",
+      "excerpt": "Authorization engines, policy languages, runtime monitors, provenance mechanisms, and agent guardrails provide important foundations, but do not necessarily define a common semantic contract for the final transition from a particular candidate action to execution authority."
+    },
+    {
+      "sourceId": "s12",
+      "label": "EBL-Core execution-boundary profile, stated limits",
+      "url": "https://arxiv.org/abs/2609.11596",
+      "excerpt": "These bounded results demonstrate executability of the specified subset, not human-intent correctness, evidence truth, complete mediation, production readiness, mechanized correctness, or deployment-level security."
+    }
+  ]
+}

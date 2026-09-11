@@ -364,6 +364,33 @@
     "addedOn": "07-07-2026"
   },
   {
+    "id": "agent-payment-protocol",
+    "label": {
+      "fr": "Protocole de paiement agentique",
+      "en": "Agent payment protocol"
+    },
+    "definition": {
+      "fr": "Un protocole qui permet à un agent de transiger pour le compte d'un utilisateur en transportant des enregistrements d'achat signés cryptographiquement, de sorte que chaque transaction aboutie puisse être vérifiée et imputée après coup. La signature porte sur la commande obtenue ; elle ne dit rien de la façon dont l'agent y est arrivé, si bien que la validité protocolaire et l'intention de l'utilisateur restent deux questions distinctes.",
+      "en": "A protocol that lets an agent transact on a user's behalf by carrying cryptographically signed records of the purchase, so every completed transaction can be verified and attributed after the fact. The signature covers the resulting order; it says nothing about how the agent arrived at that order, so protocol validity and user intent remain separate questions."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "agentic payment protocol",
+      "agent commerce protocol",
+      "agentic checkout",
+      "protocole de paiement agentique"
+    ],
+    "related": [
+      "trust-boundary",
+      "indirect-prompt-injection",
+      "complete-mediation"
+    ],
+    "articles": [
+      "the-check-binds-the-action-not-the-decision"
+    ],
+    "addedOn": "11-09-2026"
+  },
+  {
     "id": "agent-plan-file",
     "label": {
       "fr": "Fichier de plan d'agent",
@@ -1182,7 +1209,8 @@
     "articles": [
       "coding-agent-scaffold-confound",
       "active-context-compression-prune-history",
-      "opaque-state-outscores-the-notes-you-can-read"
+      "opaque-state-outscores-the-notes-you-can-read",
+      "the-check-binds-the-action-not-the-decision"
     ],
     "addedOn": "18-06-2026"
   },
@@ -1256,6 +1284,34 @@
       "afd-throughput-does-not-transfer-without-the-fabric"
     ],
     "addedOn": "04-05-2026"
+  },
+  {
+    "id": "control-boundary",
+    "label": {
+      "fr": "Frontière de contrôle",
+      "en": "Control boundary"
+    },
+    "definition": {
+      "fr": "La contrainte en vigueur pendant l'exécution d'une tâche, qui borne les actions qu'un agent peut entreprendre, par distinction avec le contrôle appliqué à un appel isolé. Elle réside dans ce que l'agent transporte ou dans ce que sa couche d'exécution impose : une gestion ordinaire du contexte peut donc l'affaiblir sans le moindre attaquant, et le fait qu'une action reste techniquement exécutable ne dit rien de la tenue de la frontière.",
+      "en": "The constraint in force while an agent executes a task, bounding which actions it may take, as distinct from the check applied to any single call. It lives in what the agent carries or in what its execution layer imposes, so routine context management can weaken it with no attacker involved, and an action remaining technically executable says nothing about whether the boundary still holds."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "control constraint",
+      "control boundary",
+      "execution control boundary",
+      "frontière de contrôle"
+    ],
+    "related": [
+      "trust-boundary",
+      "context-compaction",
+      "out-of-band-enforcement",
+      "action-boundary-precondition"
+    ],
+    "articles": [
+      "the-check-binds-the-action-not-the-decision"
+    ],
+    "addedOn": "11-09-2026"
   },
   {
     "id": "cost-aware-evaluation",
@@ -1823,7 +1879,8 @@
       "mcp-tool-poisoning-client-trust",
       "claude-code-action-supply-chain-auth",
       "command-denylist-not-a-security-boundary",
-      "prompt-injection-defense-layer-split"
+      "prompt-injection-defense-layer-split",
+      "the-check-binds-the-action-not-the-decision"
     ],
     "addedOn": "01-07-2026"
   },
@@ -1880,6 +1937,35 @@
       "instruction-file-structure-compliance"
     ],
     "addedOn": "21-07-2026"
+  },
+  {
+    "id": "intent-bound-authorization",
+    "label": {
+      "fr": "Autorisation liée à l'intention",
+      "en": "Intent-bound authorization"
+    },
+    "definition": {
+      "fr": "Accorder l'autorité à une action précise seulement lorsque cette action est rattachée à l'antécédent particulier qui l'a justifiée : la session qui a demandé une consultation, l'annonce dont provient une ligne du panier. Cela diffère du fait de restreindre un jeton ou d'autoriser une classe d'appels, qui autorisent une forme d'action et non cette action-ci pour cette raison-ci, et cela suppose donc d'enregistrer l'antécédent justificatif au moment où l'action est proposée.",
+      "en": "Granting authority to a specific action only when that action is tied to the particular antecedent that justified it: the session that requested a lookup, the listing a cart line was taken from. It differs from scoping a token or permitting a class of call, both of which authorize a shape of action rather than this action for this reason, and it therefore requires the justifying antecedent to be recorded at the moment the action is proposed."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "intent binding",
+      "intent-bound authorization",
+      "autorisation liée à l'intention"
+    ],
+    "related": [
+      "least-privilege",
+      "out-of-band-enforcement",
+      "complete-mediation",
+      "trust-boundary",
+      "agent-payment-protocol",
+      "control-boundary"
+    ],
+    "articles": [
+      "the-check-binds-the-action-not-the-decision"
+    ],
+    "addedOn": "11-09-2026"
   },
   {
     "id": "iterative-coding-benchmark",
@@ -2492,7 +2578,8 @@
       "instruction-file-structure-compliance",
       "irreversible-actions-before-abstention",
       "mcp-stateless-header-routing-2026-07",
-      "verification-frontiere-action-2026-08"
+      "verification-frontiere-action-2026-08",
+      "the-check-binds-the-action-not-the-decision"
     ],
     "addedOn": "19-07-2026"
   },
@@ -3868,7 +3955,8 @@
       "refusal-behavior-is-not-a-security-control",
       "mcp-stateless-header-routing-2026-07",
       "allowlist-verbe-capacite-2026-08",
-      "read-only-egress-is-a-write-channel"
+      "read-only-egress-is-a-write-channel",
+      "the-check-binds-the-action-not-the-decision"
     ],
     "addedOn": "01-07-2026"
   },
