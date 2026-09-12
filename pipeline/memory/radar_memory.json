@@ -1715,5 +1715,34 @@
     ],
     "published_at": "2026-09-11",
     "embedding": null
+  },
+  {
+    "translation_key": "cognition-swe-2-terminal-bench-version-decides-the-row",
+    "topic_id": "cognition-swe-2-terminal-bench-version-decides-the-row",
+    "dedup_key": "cognition swe 2 terminal bench version decides the row",
+    "title": "Cognition's SWE-2 leads Terminal-Bench 2.1 and loses Terminal-Bench 4 in the same table",
+    "slugs": {
+      "fr": "cognition-swe-2-version-de-terminal-bench-decide-du-classement",
+      "en": "cognition-swe-2-terminal-bench-version-decides-the-row"
+    },
+    "sources": [
+      {
+        "label": "Cognition, Introducing SWE-2: Pushing the Pareto Frontier",
+        "url": "https://cognition.com/blog/swe-2",
+        "date": "10-09-2026"
+      },
+      {
+        "label": "Tech Times, Cognition SWE-2 beats frontier coding AI",
+        "url": "https://www.techtimes.com/articles/327315/20260911/cognition-swe-2-beats-frontier-coding-ai-64-lower-cost-using-single-run-rl-training.htm",
+        "date": "11-09-2026"
+      },
+      {
+        "label": "CellCog blog, Cognition SWE-2: benchmarks and the row it loses",
+        "url": "https://cellcog.ai/blog/cognition-swe-2/",
+        "date": "10-09-2026"
+      }
+    ],
+    "published_at": "2026-09-12",
+    "embedding": null
   }
 ]
