@@ -475,7 +475,8 @@
       "swe-bench-private-holdout-trust",
       "irreversible-actions-before-abstention",
       "failure-record-in-context-drives-the-repeat",
-      "opaque-state-outscores-the-notes-you-can-read"
+      "opaque-state-outscores-the-notes-you-can-read",
+      "edit-unit-size-beside-edit-format"
     ],
     "addedOn": "17-06-2026"
   },
@@ -935,6 +936,31 @@
     "addedOn": "23-05-2026"
   },
   {
+    "id": "code-elision",
+    "label": {
+      "fr": "Élision de code",
+      "en": "Code elision"
+    },
+    "definition": {
+      "fr": "Défaillance d'un modèle de code qui, au lieu de réécrire du code inchangé, le remplace par un commentaire de substitution du type « reste du code inchangé ». Appliquée telle quelle, la modification supprime silencieusement ce code, d'où l'intérêt de formats qui obligent le modèle à ne restituer que ce qu'il modifie.",
+      "en": "A code model failure in which unchanged code is replaced by a placeholder comment such as \"rest of the code unchanged\" instead of being written out. Applied as is, the edit silently deletes that code, which is why formats that make the model return only what it changes are attractive."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "lazy comments",
+      "lazy coding",
+      "placeholder elision"
+    ],
+    "related": [
+      "edit-format",
+      "coding-agents"
+    ],
+    "articles": [
+      "edit-unit-size-beside-edit-format"
+    ],
+    "addedOn": "13-09-2026"
+  },
+  {
     "id": "code-erosion",
     "label": {
       "fr": "Érosion du code",
@@ -1074,7 +1100,8 @@
       "llm-contribution-policy-premise-decides-the-leak",
       "agentic-coding-thins-the-public-record",
       "failure-record-in-context-drives-the-repeat",
-      "the-oracle-decides-repo-scale-migration"
+      "the-oracle-decides-repo-scale-migration",
+      "edit-unit-size-beside-edit-format"
     ],
     "addedOn": "30-05-2026"
   },
@@ -1465,6 +1492,56 @@
     "addedOn": "26-07-2026"
   },
   {
+    "id": "edit-format",
+    "label": {
+      "fr": "Format d'édition",
+      "en": "Edit format"
+    },
+    "definition": {
+      "fr": "Représentation dans laquelle un modèle de code renvoie ses modifications à l'outil qui les applique : fichier réécrit en entier, blocs recherche-remplacement ou diff unifié. L'outil choisit ce format, souvent par modèle, et il influe sur la fiabilité de l'application des modifications comme sur le coût en jetons de sortie.",
+      "en": "The representation in which a code model returns its changes to the tool that applies them: a whole rewritten file, search-and-replace blocks, or a unified diff. The tool chooses the format, often per model, and it affects both how reliably edits apply and the output token cost."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "code edit format",
+      "diff format",
+      "whole-file output"
+    ],
+    "related": [
+      "coding-agents",
+      "agent-scaffold"
+    ],
+    "articles": [
+      "edit-unit-size-beside-edit-format"
+    ],
+    "addedOn": "13-09-2026"
+  },
+  {
+    "id": "edit-granularity",
+    "label": {
+      "fr": "Granularité d'édition",
+      "en": "Edit granularity"
+    },
+    "definition": {
+      "fr": "Quantité de code qu'une seule modification réécrit : quelques lignes, une fonction ou une méthode entière, ou le fichier complet. C'est un axe distinct du format d'édition, puisqu'un même format peut transporter des unités de tailles très différentes.",
+      "en": "How much code a single edit rewrites: a few lines, a whole function or method, or the complete file. It is a separate axis from the edit format, since the same format can carry units of very different sizes."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "edit unit size",
+      "edit locality",
+      "function-level edit"
+    ],
+    "related": [
+      "edit-format",
+      "coding-agents"
+    ],
+    "articles": [
+      "edit-unit-size-beside-edit-format"
+    ],
+    "addedOn": "13-09-2026"
+  },
+  {
     "id": "egress-allowlist",
     "label": {
       "fr": "Allowlist de sortie",
@@ -1746,7 +1823,8 @@
       "swe-bench-private-holdout-trust",
       "failure-record-in-context-drives-the-repeat",
       "the-oracle-decides-repo-scale-migration",
-      "opaque-state-outscores-the-notes-you-can-read"
+      "opaque-state-outscores-the-notes-you-can-read",
+      "edit-unit-size-beside-edit-format"
     ],
     "addedOn": "15-07-2026"
   },
