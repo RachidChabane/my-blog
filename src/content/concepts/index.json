@@ -159,7 +159,8 @@
       "agent-scaffold"
     ],
     "articles": [
-      "irreversible-actions-before-abstention"
+      "irreversible-actions-before-abstention",
+      "ask-when-unsure-is-gated-on-detection"
     ],
     "addedOn": "25-07-2026"
   },
@@ -250,7 +251,8 @@
       "swe-bench-private-holdout-trust",
       "irreversible-actions-before-abstention",
       "verification-frontiere-action-2026-08",
-      "arret-anticipe-sondes-2026-08"
+      "arret-anticipe-sondes-2026-08",
+      "ask-when-unsure-is-gated-on-detection"
     ],
     "addedOn": "12-05-2026"
   },
@@ -936,6 +938,33 @@
     "addedOn": "23-05-2026"
   },
   {
+    "id": "clarification-seeking",
+    "label": {
+      "fr": "Demande de clarification",
+      "en": "Clarification seeking"
+    },
+    "definition": {
+      "fr": "Comportement d'un agent qui interrompt une tâche pour poser à l'utilisateur une question ciblée sur une décision que la consigne laisse ouverte, puis reprend avec la réponse. Il ne se déclenche que sur les lacunes que l'agent a déjà repérées : sa valeur dépend donc de la détection de sous-spécification, qu'il ne remplace pas.",
+      "en": "An agent's behavior of pausing a task to ask the user a targeted question about a decision the instruction leaves open, then continuing with the answer. It only fires on gaps the agent has already detected, so its value depends on underspecification detection rather than replacing it."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "clarifying questions",
+      "ask when unsure",
+      "interactive clarification",
+      "question de clarification"
+    ],
+    "related": [
+      "underspecification-detection",
+      "agent-abstention",
+      "coding-agents"
+    ],
+    "articles": [
+      "ask-when-unsure-is-gated-on-detection"
+    ],
+    "addedOn": "14-09-2026"
+  },
+  {
     "id": "code-elision",
     "label": {
       "fr": "Élision de code",
@@ -1101,7 +1130,8 @@
       "agentic-coding-thins-the-public-record",
       "failure-record-in-context-drives-the-repeat",
       "the-oracle-decides-repo-scale-migration",
-      "edit-unit-size-beside-edit-format"
+      "edit-unit-size-beside-edit-format",
+      "ask-when-unsure-is-gated-on-detection"
     ],
     "addedOn": "30-05-2026"
   },
@@ -3844,7 +3874,8 @@
       "coding-agent-scaffold-confound",
       "reward-hacking-inflates-coding-benchmarks",
       "swe-bench-private-holdout-trust",
-      "the-oracle-decides-repo-scale-migration"
+      "the-oracle-decides-repo-scale-migration",
+      "ask-when-unsure-is-gated-on-detection"
     ],
     "addedOn": "18-06-2026"
   },
@@ -4037,6 +4068,34 @@
       "the-check-binds-the-action-not-the-decision"
     ],
     "addedOn": "01-07-2026"
+  },
+  {
+    "id": "underspecification-detection",
+    "label": {
+      "fr": "Détection de sous-spécification",
+      "en": "Underspecification detection"
+    },
+    "definition": {
+      "fr": "Capacité d'un agent à remarquer, à partir de la seule consigne, qu'une tâche laisse ouverte une décision nécessaire, et à localiser la décision qui manque. Elle conditionne aussi bien la question de clarification que le refus de la tâche, et les benchmarks la mesurent séparément de la résolution en privant le modèle de l'élément manquant.",
+      "en": "An agent's capacity to notice, from the instruction alone, that a task leaves a required decision open and to locate which decision is missing. It precedes both asking a clarifying question and declining the task, and benchmarks measure it apart from resolution by withholding the missing piece from the model."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "gap detection",
+      "ambiguity detection",
+      "underspecificity detection",
+      "specification gap localization",
+      "détection de lacune"
+    ],
+    "related": [
+      "agent-abstention",
+      "coding-agents",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "ask-when-unsure-is-gated-on-detection"
+    ],
+    "addedOn": "14-09-2026"
   },
   {
     "id": "unenforceable-by-design",
@@ -4264,7 +4323,8 @@
       "reward-hacking-inflates-coding-benchmarks",
       "verification-frontiere-action-2026-08",
       "the-oracle-decides-repo-scale-migration",
-      "remediation-throughput-is-the-security-constraint"
+      "remediation-throughput-is-the-security-constraint",
+      "ask-when-unsure-is-gated-on-detection"
     ],
     "addedOn": "06-07-2026"
   },
