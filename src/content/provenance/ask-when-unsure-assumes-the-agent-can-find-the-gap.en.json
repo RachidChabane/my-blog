@@ -1,0 +1,37 @@
+{
+  "slug": "ask-when-unsure-assumes-the-agent-can-find-the-gap",
+  "lang": "en",
+  "translationKey": "ask-when-unsure-is-gated-on-detection",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "IdeaAMBIG benchmark, what it separates",
+      "url": "https://arxiv.org/abs/2609.10539",
+      "excerpt": "We introduce IdeaAMBIG, a benchmark of 660 evidence-grounded instances: 163 real-world gaps from reproducibility reports and GitHub issues, and 497 controlled synthetic gaps injected into codification-ready references. IdeaAMBIG evaluates three capabilities: codification-readiness assessment, defect localization, and clarification action generation."
+    },
+    {
+      "sourceId": "s2",
+      "label": "IdeaAMBIG benchmark, localization against clarification",
+      "url": "https://arxiv.org/abs/2609.10539",
+      "excerpt": "Defect localization receives only the specification, whereas clarification additionally receives the annotated defect. Across 13 LLMs, the best model achieves 9.6% Macro Defect Recovery Rate on real-world instances but 80.6% Macro Clarification Action Success Rate when given the defect."
+    },
+    {
+      "sourceId": "s3",
+      "label": "IdeaAMBIG benchmark, oracle study and bottleneck",
+      "url": "https://arxiv.org/abs/2609.10539",
+      "excerpt": "In an oracle study, supplying the gold resolution raises the downstream codification-ready rate from 14% to 98%. Across all evaluated models, defect localization is the main bottleneck, with stronger clarification given the defect."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Ambig-SWE underspecified SWE-Bench variant, setup",
+      "url": "https://arxiv.org/abs/2502.13069",
+      "excerpt": "In this work, we study the ability of LLM agents to handle underspecified instructions in interactive code generation settings by evaluating proprietary and open-weight models on their performance across three key steps: (a) detecting underspecificity, (b) asking targeted clarification questions, and (c) leveraging the interaction to improve performance in underspecified scenarios. We introduce Ambig-SWE, an underspecified variant of SWE-Bench Verified, specifically designed to evaluate agent behavior under ambiguity and interaction."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Ambig-SWE underspecified SWE-Bench variant, findings",
+      "url": "https://arxiv.org/abs/2502.13069",
+      "excerpt": "Our findings reveal that models struggle to distinguish between well-specified and underspecified instructions. However, when models interact for underspecified inputs, they effectively obtain vital information from the user leading to significant improvements in performance, up to 74% over the non-interactive settings, underscoring the value of effective interaction."
+    }
+  ]
+}
