@@ -1778,5 +1778,54 @@
     ],
     "published_at": "2026-09-13",
     "embedding": null
+  },
+  {
+    "translation_key": "deepseek-v4-1-flash-v4-pro-reroute-withdrawn",
+    "topic_id": "deepseek-v4-1-flash-v4-pro-reroute-withdrawn",
+    "dedup_key": "deepseek v4 1 flash v4 pro reroute withdrawn",
+    "title": "DeepSeek withdrew the V4 Pro reroute it had set for September 14, and deepseek-v4-flash now names a different model",
+    "slugs": {
+      "fr": "deepseek-v4-1-flash-bascule-v4-pro-retiree",
+      "en": "deepseek-v4-1-flash-v4-pro-reroute-withdrawn"
+    },
+    "sources": [
+      {
+        "label": "DeepSeek news, Introducing DeepSeek-V4.1-Flash",
+        "url": "https://www.deepseek.com/en/news/deepseek-v4-1-flash/",
+        "date": "10-09-2026"
+      },
+      {
+        "label": "Hugging Face model card, deepseek-ai/DeepSeek-V4.1-Flash",
+        "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash",
+        "date": "10-09-2026"
+      },
+      {
+        "label": "SiliconANGLE, DeepSeek releases V4.1-Flash, says it outperforms flagship V4-Pro",
+        "url": "https://siliconangle.com/2026/09/10/deepseek-releases-v4-1-flash-says-it-outperforms-flagship-v4-pro/",
+        "date": "10-09-2026"
+      },
+      {
+        "label": "DeepSeek API docs, Models and Pricing",
+        "url": "https://api-docs.deepseek.com/quick_start/pricing",
+        "date": "11-09-2026"
+      },
+      {
+        "label": "Wayback Machine, DeepSeek pricing page captured at 07:47 UTC on 11 September 2026",
+        "url": "https://web.archive.org/web/20260911074742/https://api-docs.deepseek.com/quick_start/pricing/",
+        "date": "11-09-2026"
+      },
+      {
+        "label": "Wayback Machine, DeepSeek pricing page captured at 16:55 UTC on 11 September 2026",
+        "url": "https://web.archive.org/web/20260911165508/https://api-docs.deepseek.com/quick_start/pricing/",
+        "date": "11-09-2026"
+      },
+      {
+        "label": "TokenCost, DeepSeek V4.1 Flash pricing and the V4-Pro routing correction",
+        "url": "https://tokencost.app/blog/deepseek-v4-1-flash-pricing-v4-pro-routing",
+        "date": "12-09-2026"
+      }
+    ],
+    "published_at": "2026-09-14",
+    "embedding": null
   }
 ]
