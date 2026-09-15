@@ -795,7 +795,8 @@
     ],
     "articles": [
       "ai-evaluation-compute-cost",
-      "repair-guidance-loses-to-resampling"
+      "repair-guidance-loses-to-resampling",
+      "agent-session-budget-inflection-point"
     ],
     "addedOn": "17-06-2026"
   },
@@ -1392,7 +1393,8 @@
       "ai-evaluation-compute-cost",
       "glm-5-2-open-weight-where-you-run-it",
       "multi-agent-gains-compute-artifact",
-      "kimi-k3-ranked-endpoint-not-weights"
+      "kimi-k3-ranked-endpoint-not-weights",
+      "agent-session-budget-inflection-point"
     ],
     "addedOn": "17-06-2026"
   },
@@ -3407,6 +3409,32 @@
     "addedOn": "23-08-2026"
   },
   {
+    "id": "scaling-inflection-point",
+    "label": {
+      "fr": "Point d'inflexion du budget de session",
+      "en": "Scaling inflection point"
+    },
+    "definition": {
+      "fr": "Budget de tokens par session à partir duquel le gain marginal d'un agent, pour chaque token supplémentaire dépensé dans la même session, retombe au niveau du gain que ces mêmes tokens apporteraient sous forme d'échantillons indépendants. Il fixe un plafond par session et sert de taille de référence pour répartir un budget plus large entre sessions parallèles.",
+      "en": "The per-session token budget at which an agent's marginal gain from further tokens in the same session falls to the gain those tokens would buy as fresh independent samples. It sets a per-session cap and serves as the reference size for dividing a larger budget across parallel sessions."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "token budget inflection point",
+      "per-session budget cap",
+      "point de bascule du budget de tokens"
+    ],
+    "related": [
+      "test-time-scaling",
+      "best-of-n-sampling",
+      "cost-aware-evaluation"
+    ],
+    "articles": [
+      "agent-session-budget-inflection-point"
+    ],
+    "addedOn": "15-09-2026"
+  },
+  {
     "id": "schema-constrained-tool-calling",
     "label": {
       "fr": "Appel d'outil contraint par schéma",
@@ -3880,6 +3908,33 @@
     "addedOn": "18-06-2026"
   },
   {
+    "id": "test-time-scaling",
+    "label": {
+      "fr": "Mise à l'échelle à l'inférence",
+      "en": "Test-time scaling"
+    },
+    "definition": {
+      "fr": "Consacrer davantage de calcul d'inférence à une tâche pour en améliorer le résultat, selon deux axes : la mise à l'échelle séquentielle prolonge une même trajectoire par interaction itérative, la mise à l'échelle parallèle échantillonne plusieurs trajectoires indépendantes et n'en retient qu'une. Les deux axes butent sur des limites différentes : le contexte que le modèle exploite réellement pour la première, la capacité à désigner la meilleure trajectoire pour la seconde.",
+      "en": "Spending more inference compute on a task to improve its outcome, along two axes: sequential scaling extends one trajectory through iterative interaction, while parallel scaling samples several independent trajectories and keeps one. The two axes hit different limits: the context the model can actually use for the first, and the ability to identify the best trajectory for the second."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "sequential scaling",
+      "parallel scaling",
+      "test-time compute scaling",
+      "mise à l'échelle séquentielle"
+    ],
+    "related": [
+      "best-of-n-sampling",
+      "reasoning-effort",
+      "long-context-degradation"
+    ],
+    "articles": [
+      "agent-session-budget-inflection-point"
+    ],
+    "addedOn": "15-09-2026"
+  },
+  {
     "id": "text-watermarking",
     "label": {
       "fr": "Filigrane de texte",
@@ -3929,7 +3984,8 @@
     ],
     "articles": [
       "multi-agent-gains-compute-artifact",
-      "repair-guidance-loses-to-resampling"
+      "repair-guidance-loses-to-resampling",
+      "agent-session-budget-inflection-point"
     ],
     "addedOn": "13-07-2026"
   },
@@ -4225,6 +4281,33 @@
       "failure-record-in-context-drives-the-repeat"
     ],
     "addedOn": "26-08-2026"
+  },
+  {
+    "id": "verification-gap",
+    "label": {
+      "fr": "Écart de vérification",
+      "en": "Verification gap"
+    },
+    "definition": {
+      "fr": "Décalage entre la capacité à produire plusieurs solutions candidates et la capacité à désigner de façon fiable la meilleure d'entre elles. Il plafonne le rendement de la mise à l'échelle parallèle : sans évaluateur capable de classer les candidates avec précision et à faible coût, les échantillons supplémentaires ajoutent du coût sans gain équivalent sur le résultat retenu.",
+      "en": "The shortfall between generating several candidate solutions and reliably identifying the best one among them. It caps what parallel scaling returns: without a scorer that ranks candidates accurately and cheaply, extra samples add cost without a matching gain in the outcome that is kept."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "verifier gap",
+      "generation-verification gap",
+      "candidate selection gap"
+    ],
+    "related": [
+      "test-time-scaling",
+      "best-of-n-sampling",
+      "weak-oracle-tests",
+      "verification-horizon"
+    ],
+    "articles": [
+      "agent-session-budget-inflection-point"
+    ],
+    "addedOn": "15-09-2026"
   },
   {
     "id": "verification-horizon",

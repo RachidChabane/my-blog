@@ -1,0 +1,49 @@
+{
+  "slug": "size-the-agent-session-before-you-split-the-token-budget",
+  "lang": "en",
+  "translationKey": "agent-session-budget-inflection-point",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Elo-per-token study of agent test-time strategies, method",
+      "url": "https://arxiv.org/abs/2609.15309",
+      "excerpt": "We propose Elo-per-token analysis, which tracks the best solution found at each token budget and uses a Bradley-Terry model to aggregate within-task orderings into Elo ratings across tasks with different score scales. We apply it to four general-purpose agents on four open-ended benchmarks, with sessions of up to 100M tokens, and to three feedback-driven LLM optimization harnesses in controlled single-task interventions."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Elo-per-token study of agent test-time strategies, diminishing returns",
+      "url": "https://arxiv.org/abs/2609.15309",
+      "excerpt": "Independent sampling provides a theoretically characterized reference, for which Elo grows linearly with log compute. Against this reference, agents can initially convert tokens into Elo faster than independent sampling, but their marginal gains diminish and eventually fall below the reference."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Elo-per-token study of agent test-time strategies, human comparison",
+      "url": "https://arxiv.org/abs/2609.15309",
+      "excerpt": "In contrast, the strongest historical human contestants improve superlinearly over contest time on shared AtCoder Heuristic Contest tasks, providing evidence of continual learning and substantial headroom after agents slow down."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Elo-per-token study of agent test-time strategies, budget split",
+      "url": "https://arxiv.org/abs/2609.15309",
+      "excerpt": "We define the scaling inflection point as the per-session budget where marginal Elo gains match the independent-sampling reference. Using this point as the per-session budget, we split 100M tokens across parallel sessions on FrontierCS Polyomino Packing, gaining +264 Elo over one long session and +355 over ten short sessions."
+    },
+    {
+      "sourceId": "s5",
+      "label": "General AgentBench test-time scaling study, setup",
+      "url": "https://arxiv.org/abs/2602.18998",
+      "excerpt": "Using General AgentBench, we systematically study test-time scaling behaviors under sequential scaling (iterative interaction) and parallel scaling (sampling multiple trajectories)."
+    },
+    {
+      "sourceId": "s6",
+      "label": "General AgentBench test-time scaling study, findings",
+      "url": "https://arxiv.org/abs/2602.18998",
+      "excerpt": "Moreover, we find that neither scaling methodology yields effective performance improvements in practice, due to two fundamental limitations: context ceiling in sequential scaling and verification gap in parallel scaling."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Token consumption in agentic coding tasks, cost against accuracy",
+      "url": "https://arxiv.org/abs/2604.22750",
+      "excerpt": "token usage is highly variable and inherently stochastic: runs on the same task can differ by up to 30x in total tokens, and higher token usage does not translate into higher accuracy; instead, accuracy often peaks at intermediate cost and saturates at higher costs"
+    }
+  ]
+}
