@@ -1827,5 +1827,44 @@
     ],
     "published_at": "2026-09-14",
     "embedding": null
+  },
+  {
+    "translation_key": "sakana-fugu-ultra-v2-pool-excludes-frontier-scores-unaudited",
+    "topic_id": "sakana-fugu-ultra-v2-pool-excludes-frontier-scores-unaudited",
+    "dedup_key": "sakana fugu ultra v2 pool excludes frontier scores unaudited",
+    "title": "Sakana's Fugu Ultra v2 leaves Fable 5 and GPT-6-Astra out of a pool you can neither see nor narrow",
+    "slugs": {
+      "fr": "sakana-fugu-ultra-v2-pool-fixe-scores-non-verifies",
+      "en": "sakana-fugu-ultra-v2-pool-excludes-frontier-scores-unaudited"
+    },
+    "sources": [
+      {
+        "label": "Sakana AI blog, Introducing Fugu Max and Fugu Ultra v2",
+        "url": "https://sakana.ai/fugu-max-release/",
+        "date": "11-09-2026"
+      },
+      {
+        "label": "Sakana console, Supported models",
+        "url": "https://console.sakana.ai/models",
+        "date": "11-09-2026"
+      },
+      {
+        "label": "Sakana console, Pricing",
+        "url": "https://console.sakana.ai/pricing",
+        "date": "11-09-2026"
+      },
+      {
+        "label": "Sakana Fugu product page and FAQ",
+        "url": "https://sakana.ai/fugu/",
+        "date": "11-09-2026"
+      },
+      {
+        "label": "OrcaRouter blog, a competing router that does not carry Fugu, Fugu Ultra v2 explained by Alistair Wren",
+        "url": "https://www.orcarouter.ai/blog/fugu-ultra-v2-explained",
+        "date": "11-09-2026"
+      }
+    ],
+    "published_at": "2026-09-15",
+    "embedding": null
   }
 ]
