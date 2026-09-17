@@ -1,0 +1,61 @@
+{
+  "slug": "lossless-decoding-will-not-skip-your-eval-queue",
+  "lang": "en",
+  "translationKey": "lossless-decoding-precision-property",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Orthrus dual-view diffusion paper, the losslessness guarantee",
+      "url": "https://arxiv.org/abs/2605.12825",
+      "excerpt": "By employing an exact consensus mechanism between the two views, Orthrus guarantees lossless inference, delivering up to a 7.8x speedup with only an O(1) memory cache overhead and minimal parameter additions."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Independent Orthrus reproduction, the claim under test",
+      "url": "https://arxiv.org/abs/2609.15504",
+      "excerpt": "Its central claim is that an intra-model consensus mechanism enables lossless speculative decoding, producing the same output sequence as the autoregressive model. We independently reproduce Orthrus and examine this claim under different numerical precisions."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Independent Orthrus reproduction, trajectory matching at BF16",
+      "url": "https://arxiv.org/abs/2609.15504",
+      "excerpt": "Under BF16 inference, exact trajectory matching occurs in only 45% of cases for the authors’ checkpoint and 43% for our independently trained model across 1,190 prompts from 12 domains."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Independent Orthrus reproduction, where divergence concentrates",
+      "url": "https://arxiv.org/abs/2609.15504",
+      "excerpt": "The probability of exact matching is also strongly associated with the response-conditional perplexity of the reference model."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Independent Orthrus reproduction, downstream benchmarks and FP32",
+      "url": "https://arxiv.org/abs/2609.15504",
+      "excerpt": "Despite this trajectory divergence, Orthrus does not show systematic degradation on downstream lm-eval-harness benchmarks. In contrast, repeating the trajectory evaluation with FP32 yields exact trajectory matching on all evaluated prompts."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Independent Orthrus reproduction, what the divergence means",
+      "url": "https://arxiv.org/abs/2609.15504",
+      "excerpt": "they clarify an important limitation of strong losslessness claims for neural decoding systems: an algorithm may preserve the intended autoregressive computation in principle while still producing different discrete outputs when implemented with finite-precision arithmetic."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Independent Orthrus reproduction, what an evaluation must state",
+      "url": "https://arxiv.org/abs/2609.15504",
+      "excerpt": "We therefore argue that evaluations of “lossless” language-model acceleration should specify both the operational criterion for equivalence and the numerical precision under which it is measured."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Relaxed speculative decoding practitioner study, the lossless baseline",
+      "url": "https://arxiv.org/abs/2607.08690",
+      "excerpt": "Standard speculative decoding is lossless: its rejection and resampling steps exactly preserve the LLM’s sampling distribution. Recent work argues that relaxing this strict guarantee can yield further speed-ups, controlled capability-speed trade-offs"
+    },
+    {
+      "sourceId": "s9",
+      "label": "Relaxed speculative decoding practitioner study, the cost of relaxing",
+      "url": "https://arxiv.org/abs/2607.08690",
+      "excerpt": "Important takeaways include: relaxation can require considerable capability evaluation unlike lossless speculative decoding"
+    }
+  ]
+}
