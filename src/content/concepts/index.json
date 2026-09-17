@@ -1777,6 +1777,32 @@
     "addedOn": "03-08-2026"
   },
   {
+    "id": "finite-precision-divergence",
+    "label": {
+      "fr": "Divergence en précision finie",
+      "en": "Finite-precision divergence"
+    },
+    "definition": {
+      "fr": "Écart entre un algorithme équivalent à une référence en arithmétique exacte et son implémentation dans un format flottant comme le BF16, où un arrondi peut faire basculer un token et engager toute la suite de la séquence générée sur une autre trajectoire. Une affirmation d'équivalence n'a donc de sens qu'accompagnée de la précision numérique sous laquelle elle a été mesurée.",
+      "en": "The gap between an algorithm that is equivalent to a reference in exact arithmetic and its implementation in a floating-point format such as BF16, where rounding can flip a token and send the rest of the generated sequence down a different path. An equivalence claim is therefore only meaningful alongside the numerical precision under which it was measured."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "numerical precision divergence",
+      "floating-point divergence",
+      "precision-dependent equivalence",
+      "divergence numérique"
+    ],
+    "related": [
+      "inference-determinism",
+      "speculative-decoding"
+    ],
+    "articles": [
+      "lossless-decoding-precision-property"
+    ],
+    "addedOn": "17-09-2026"
+  },
+  {
     "id": "forensic-path-drill",
     "label": {
       "fr": "Exercice du chemin forensique",
@@ -2017,7 +2043,8 @@
     ],
     "articles": [
       "llm-temp0-nondeterminism-batch-invariant",
-      "watermark-entropy-budget"
+      "watermark-entropy-budget",
+      "lossless-decoding-precision-property"
     ],
     "addedOn": "22-06-2026"
   },
@@ -2314,7 +2341,8 @@
       "glm-5-2-open-weight-where-you-run-it",
       "kimi-k3-ranked-endpoint-not-weights",
       "afd-throughput-does-not-transfer-without-the-fabric",
-      "arret-anticipe-sondes-2026-08"
+      "arret-anticipe-sondes-2026-08",
+      "lossless-decoding-precision-property"
     ],
     "addedOn": "04-05-2026"
   },
@@ -3802,6 +3830,31 @@
     "addedOn": "05-09-2026"
   },
   {
+    "id": "speculative-decoding",
+    "label": {
+      "fr": "Décodage spéculatif",
+      "en": "Speculative decoding"
+    },
+    "definition": {
+      "fr": "Technique d'accélération de l'inférence où un mécanisme de brouillon peu coûteux propose plusieurs tokens que le modèle cible vérifie en une seule passe avant, en conservant le préfixe accepté. Dans sa forme standard, les étapes de rejet et de rééchantillonnage préservent exactement la distribution d'échantillonnage du modèle cible, d'où le qualificatif « sans perte ».",
+      "en": "An inference acceleration technique in which a cheap drafting mechanism proposes several tokens that the target model verifies in a single forward pass, keeping the accepted prefix. In its standard form the rejection and resampling steps exactly preserve the target model's sampling distribution, which is why it is called lossless."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "speculative sampling",
+      "draft-and-verify decoding",
+      "décodage spéculatif"
+    ],
+    "related": [
+      "llm-serving",
+      "verified-speculation"
+    ],
+    "articles": [
+      "lossless-decoding-precision-property"
+    ],
+    "addedOn": "17-09-2026"
+  },
+  {
     "id": "state-safety",
     "label": {
       "fr": "Sûreté de l'état",
@@ -4013,6 +4066,33 @@
       "afd-throughput-does-not-transfer-without-the-fabric"
     ],
     "addedOn": "30-06-2026"
+  },
+  {
+    "id": "token-trajectory-equivalence",
+    "label": {
+      "fr": "Équivalence de trajectoire de tokens",
+      "en": "Token-trajectory equivalence"
+    },
+    "definition": {
+      "fr": "Critère d'équivalence qui ne tient deux chemins de décodage pour identiques que s'ils émettent exactement la même séquence de tokens pour une invite donnée, en général en décodage glouton. Contrairement au score agrégé d'un benchmark, il fait apparaître chaque sortie modifiée, même quand la justesse moyenne sur la tâche ne bouge pas.",
+      "en": "An equivalence criterion that counts two decoding paths as identical only when they emit exactly the same token sequence for a given prompt, typically under greedy decoding. Unlike an aggregate benchmark score, it exposes every individual output that changed, even when average task accuracy stays flat."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "exact token match",
+      "decoding output equivalence",
+      "per-prompt exact match",
+      "équivalence de trajectoire"
+    ],
+    "related": [
+      "finite-precision-divergence",
+      "speculative-decoding",
+      "inference-determinism"
+    ],
+    "articles": [
+      "lossless-decoding-precision-property"
+    ],
+    "addedOn": "17-09-2026"
   },
   {
     "id": "tool-poisoning",
