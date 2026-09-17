@@ -1866,5 +1866,39 @@
     ],
     "published_at": "2026-09-15",
     "embedding": null
+  },
+  {
+    "translation_key": "typesafe-jev-workflow-evals-scored-against-frontier-reference",
+    "topic_id": "typesafe-jev-workflow-evals-scored-against-frontier-reference",
+    "dedup_key": "typesafe jev workflow evals scored against frontier reference",
+    "title": "TypeSafe's Jev ties sonnet 5 at 67.8% in workflow evals scored against GPT-6 Astra and Fable 5.1",
+    "slugs": {
+      "fr": "typesafe-jev-evals-workflow-notees-contre-reference-frontiere",
+      "en": "typesafe-jev-workflow-evals-scored-against-frontier-reference"
+    },
+    "sources": [
+      {
+        "label": "TypeSafe AI, Introducing System One Models and Jev",
+        "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+        "date": "15-09-2026"
+      },
+      {
+        "label": "TypeSafe docs, API reference",
+        "url": "https://docs.typesafe.ai/api",
+        "date": "15-09-2026"
+      },
+      {
+        "label": "TypeSafe workflow evals",
+        "url": "https://evals.typesafe.ai/",
+        "date": "15-09-2026"
+      },
+      {
+        "label": "Anthony Maio, Jev: The Language Model That Won't Talk",
+        "url": "https://anthonymaio.substack.com/p/jev-the-language-model-that-wont",
+        "date": "16-09-2026"
+      }
+    ],
+    "published_at": "2026-09-17",
+    "embedding": null
   }
 ]
