@@ -713,7 +713,8 @@
       "private-holdout"
     ],
     "articles": [
-      "swe-bench-private-holdout-trust"
+      "swe-bench-private-holdout-trust",
+      "patch-quality-rate-needs-a-consistent-grader"
     ],
     "addedOn": "24-07-2026"
   },
@@ -770,7 +771,8 @@
       "agent-memory-benchmark-recall-not-trust",
       "cli-agent-productivity-proxy-choice",
       "swe-bench-private-holdout-trust",
-      "afd-throughput-does-not-transfer-without-the-fabric"
+      "afd-throughput-does-not-transfer-without-the-fabric",
+      "patch-quality-rate-needs-a-consistent-grader"
     ],
     "addedOn": "18-06-2026"
   },
@@ -1830,6 +1832,34 @@
     "addedOn": "26-07-2026"
   },
   {
+    "id": "grader-agreement",
+    "label": {
+      "fr": "Accord entre évaluateurs",
+      "en": "Grader agreement"
+    },
+    "definition": {
+      "fr": "Fréquence à laquelle une étape d'étiquetage attribue deux fois la même étiquette au même élément, mesurée soit entre deux évaluateurs de même nature, soit entre un évaluateur et une relecture humaine. Sans ce chiffre, un taux publié n'est qu'un tirage dans une distribution non caractérisée, car agrandir l'échantillon ne corrige en rien une étape d'étiquetage qui bouge.",
+      "en": "How often a labelling step assigns the same item the same label twice, measured either between two graders of the same class or between a grader and human review. Without that number a reported rate is one draw from an uncharacterised distribution, because enlarging the sample does nothing about a labelling step that moves."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "inter-rater reliability",
+      "inter-annotator agreement",
+      "grader agreement",
+      "labelling reproducibility",
+      "accord entre évaluateurs"
+    ],
+    "related": [
+      "llm-as-a-judge",
+      "proxy-metric",
+      "benchmark-auditability"
+    ],
+    "articles": [
+      "patch-quality-rate-needs-a-consistent-grader"
+    ],
+    "addedOn": "18-09-2026"
+  },
+  {
     "id": "hardware-flops-utilization",
     "label": {
       "fr": "Taux d'utilisation des FLOPS matériels",
@@ -1882,7 +1912,8 @@
       "failure-record-in-context-drives-the-repeat",
       "the-oracle-decides-repo-scale-migration",
       "opaque-state-outscores-the-notes-you-can-read",
-      "edit-unit-size-beside-edit-format"
+      "edit-unit-size-beside-edit-format",
+      "patch-quality-rate-needs-a-consistent-grader"
     ],
     "addedOn": "15-07-2026"
   },
@@ -1970,6 +2001,34 @@
       "read-only-egress-is-a-write-channel"
     ],
     "addedOn": "07-09-2026"
+  },
+  {
+    "id": "human-control-arm",
+    "label": {
+      "fr": "Bras de contrôle humain",
+      "en": "Human control arm"
+    },
+    "definition": {
+      "fr": "Bras d'une étude où des auteurs humains traitent les mêmes tâches que le système automatisé, dans les mêmes conditions de travail et selon la même procédure d'évaluation. À défaut, un taux humain cité à côté d'un taux machine se mesure sur une autre règle, et l'écart entre les deux tient au décalage des protocoles plutôt qu'à une comparaison.",
+      "en": "The arm of a study in which human authors perform the same tasks as the automated system, under the same working conditions and scored by the same grading procedure. Without it, a human rate quoted beside a machine rate is measured on a different ruler, and the difference between the two is an artifact of the mismatch rather than a comparison."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "human baseline",
+      "human control arm",
+      "matched-conditions comparison",
+      "comparable conditions",
+      "bras de contrôle humain"
+    ],
+    "related": [
+      "placebo-control-arm",
+      "proxy-metric",
+      "grader-agreement"
+    ],
+    "articles": [
+      "patch-quality-rate-needs-a-consistent-grader"
+    ],
+    "addedOn": "18-09-2026"
   },
   {
     "id": "hybrid-retrieval",
@@ -2285,7 +2344,8 @@
       "evaluation-harness"
     ],
     "articles": [
-      "verification-frontiere-action-2026-08"
+      "verification-frontiere-action-2026-08",
+      "patch-quality-rate-needs-a-consistent-grader"
     ],
     "addedOn": "03-08-2026"
   },
@@ -2952,7 +3012,8 @@
       "retrieval-evaluation"
     ],
     "articles": [
-      "cli-agent-productivity-proxy-choice"
+      "cli-agent-productivity-proxy-choice",
+      "patch-quality-rate-needs-a-consistent-grader"
     ],
     "addedOn": "18-07-2026"
   },
