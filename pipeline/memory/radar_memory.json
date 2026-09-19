@@ -1900,5 +1900,44 @@
     ],
     "published_at": "2026-09-17",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-code-2-1-277-agents-md-builtin-plugin",
+    "topic_id": "claude-code-2-1-277-agents-md-builtin-plugin",
+    "dedup_key": "claude code 2 1 277 agents md builtin plugin",
+    "title": "Claude Code 2.1.277 reads AGENTS.md, and a built-in plugin decides when",
+    "slugs": {
+      "fr": "claude-code-2-1-277-lit-agents-md-plugin-integre",
+      "en": "claude-code-2-1-277-reads-agents-md-builtin-plugin"
+    },
+    "sources": [
+      {
+        "label": "Claude Code changelog, the 2.1.277 entry",
+        "url": "https://code.claude.com/docs/en/changelog",
+        "date": "18-09-2026"
+      },
+      {
+        "label": "Claude Code docs, how Claude remembers your project",
+        "url": "https://code.claude.com/docs/en/memory",
+        "date": "18-09-2026"
+      },
+      {
+        "label": "AGENTS.md, the open format for coding agents",
+        "url": "https://agents.md/",
+        "date": "19-09-2026"
+      },
+      {
+        "label": "WindowsForum news desk on Claude Code 2.1.277 and AGENTS.md",
+        "url": "https://windowsforum.com/news/claude-code-2-1-277-adds-agents-md-fallback-not-merge.445031/",
+        "date": "18-09-2026"
+      },
+      {
+        "label": "npm registry, @anthropic-ai/claude-code dist-tags and publish times",
+        "url": "https://registry.npmjs.org/@anthropic-ai/claude-code",
+        "date": "19-09-2026"
+      }
+    ],
+    "published_at": "2026-09-19",
+    "embedding": null
   }
 ]
