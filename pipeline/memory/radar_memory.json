@@ -1939,5 +1939,44 @@
     ],
     "published_at": "2026-09-19",
     "embedding": null
+  },
+  {
+    "translation_key": "sglang-0-5-20-responses-store-off-by-default",
+    "topic_id": "sglang-0-5-20-responses-store-off-by-default",
+    "dedup_key": "sglang 0 5 20 responses store off by default",
+    "title": "SGLang v0.5.20 turns off /v1/responses storage, and the reply still says store=true",
+    "slugs": {
+      "fr": "sglang-0-5-20-retention-responses-desactivee-par-defaut",
+      "en": "sglang-0-5-20-responses-storage-off-by-default"
+    },
+    "sources": [
+      {
+        "label": "SGLang v0.5.20 release notes, Responses API storage is opt-in",
+        "url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.20",
+        "date": "18-09-2026"
+      },
+      {
+        "label": "SGLang pull request 39122, migration notice",
+        "url": "https://github.com/sgl-project/sglang/pull/39122",
+        "date": "13-09-2026"
+      },
+      {
+        "label": "PyPI, sglang 0.5.20 upload date",
+        "url": "https://pypi.org/project/sglang/0.5.20/",
+        "date": "18-09-2026"
+      },
+      {
+        "label": "OpenAI platform docs, conversation state and previous_response_id",
+        "url": "https://platform.openai.com/docs/guides/conversation-state.md",
+        "date": "20-09-2026"
+      },
+      {
+        "label": "SGLang docs, prefill and decode disaggregation",
+        "url": "https://docs.sglang.io/advanced_features/pd_disaggregation.html",
+        "date": "20-09-2026"
+      }
+    ],
+    "published_at": "2026-09-20",
+    "embedding": null
   }
 ]
