@@ -34,6 +34,7 @@ RUN_FAILED = "run_failed"     # exit != 0, not a clean block (run-time, run_sche
 RUN_BLOCKED = "run_blocked"   # a task blocked / terminal_failure (run-time, run_scheduled)
 RUN_MISSED = "run_missed"     # expected fire had no run (monitor)
 RUN_STALLED = "run_stalled"   # run started, never finished within grace (monitor)
+API_UNREACHABLE = "api_unreachable"  # pre-flight: the model API never accepted a connection
 
 
 @dataclass(frozen=True)
@@ -215,6 +216,7 @@ __all__ = [
     "RUN_BLOCKED",
     "RUN_MISSED",
     "RUN_STALLED",
+    "API_UNREACHABLE",
     "Alert",
     "AlertSink",
     "CollectingAlertSink",

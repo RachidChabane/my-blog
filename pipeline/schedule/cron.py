@@ -30,9 +30,12 @@ from typing import TYPE_CHECKING
 from .cadence import DEFAULT_CADENCE, Cadence, run_id_for
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from ..config import PipelineConfig
     from ..runner import RunResult, SlateDriver
     from .alert import AlertSink
+    from .connectivity import WaitOutcome
 
 
 # ---------------------------------------------------------------------------
@@ -125,6 +128,57 @@ def run_scheduled(
         status = "failed"
     heartbeat.append_heartbeat(config, heartbeat.HeartbeatRecord(run_id, end, status, reason))
     return ScheduledOutcome(run_id=run_id, ran=True, alerted=True, run_result=rr)
+
+
+def api_preflight(
+    config: PipelineConfig,
+    sink: AlertSink,
+    *,
+    run_id: str,
+    now: datetime,
+    wait: Callable[[], WaitOutcome] | None = None,
+) -> bool:
+    """Wait (bounded) for the model API before driving; alert + record on give-up.
+
+    Returns True when the run may proceed. On False the caller must NOT drive: a
+    run started against an unreachable API idles to the phase cap and publishes
+    nothing (the 2026-09-21..25 outage). ``wait`` is injectable for tests.
+    """
+    import time
+
+    from . import alert, connectivity, heartbeat, pause
+
+    if pause.is_paused(config):
+        return True  # run_scheduled owns the paused path (heartbeat, no alert, no drive)
+    if wait is None:
+        def wait() -> WaitOutcome:
+            return connectivity.wait_until_reachable(
+                connectivity.tls_probe,
+                clock=time.monotonic,
+                sleep=time.sleep,
+                log=lambda line: print(line, flush=True),
+            )
+
+    outcome = wait()
+    if outcome.reachable:
+        return True
+    reason = (
+        f"{connectivity.API_HOST} unreachable for {outcome.waited_seconds / 60:.0f} min "
+        f"({len(outcome.failures)} probes); last: {outcome.last.describe()}"
+    )
+    sink.emit(
+        alert.Alert(
+            alert.API_UNREACHABLE,
+            run_id,
+            reason,
+            now,
+            detail={"attempts": [f.describe() for f in outcome.failures]},
+        )
+    )
+    heartbeat.append_heartbeat(
+        config, heartbeat.HeartbeatRecord(run_id, now, "failed", reason)
+    )
+    return False
 
 
 # ---------------------------------------------------------------------------
@@ -406,8 +460,14 @@ def _run_summary(outcome: ScheduledOutcome) -> str:
 
 def _cmd_run(config: PipelineConfig, *, now: datetime) -> int:
     from ..runner import CpeLoopDriver
+    from . import connectivity
 
-    outcome = run_scheduled(config, CpeLoopDriver(config), _default_sink(config), now=now)
+    sink = _default_sink(config)
+    with connectivity.run_lock(connectivity.shared_lock_dir(config.repo_root)):
+        if not api_preflight(config, sink, run_id=run_id_for(now), now=now):
+            print(f"run {run_id_for(now)}: model API unreachable; not driven (alert delivered)")
+            return 0
+        outcome = run_scheduled(config, CpeLoopDriver(config), sink, now=now)
     print(_run_summary(outcome))
     _after_run(config, outcome, now=now)  # M-13 push + M-14 uptime ping (run-to-completion only)
     return 0  # ran / idempotent / paused are all success; only a harness error raises

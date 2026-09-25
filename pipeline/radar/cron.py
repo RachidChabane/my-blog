@@ -147,9 +147,15 @@ def _default_sink(config: PipelineConfig) -> AlertSink:
 
 def _cmd_run(config: PipelineConfig, *, now: datetime) -> int:
     from ..runner import CpeLoopDriver
-    from ..schedule import deploy
+    from ..schedule import connectivity, deploy
+    from ..schedule.cron import api_preflight
 
-    outcome = run_radar_scheduled(config, CpeLoopDriver(config), _default_sink(config), now=now)
+    sink = _default_sink(config)
+    with connectivity.run_lock(connectivity.shared_lock_dir(config.repo_root)):
+        if not api_preflight(config, sink, run_id=run_id_for(now), now=now):
+            print(f"radar {run_id_for(now)}: model API unreachable; not driven (alert delivered)")
+            return 0
+        outcome = run_radar_scheduled(config, CpeLoopDriver(config), sink, now=now)
     if outcome.paused:
         print(f"radar {outcome.run_id}: schedule paused; not driven")
     elif outcome.already_complete:
