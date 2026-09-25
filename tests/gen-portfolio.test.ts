@@ -8,7 +8,7 @@ import {
   safetyCheck,
 } from '../scripts/gen-portfolio';
 
-const EXPECTED_PROJECT_COUNT = 8;
+const EXPECTED_PROJECT_COUNT = 9;
 
 describe('generateAll()', () => {
   const files = generateAll();

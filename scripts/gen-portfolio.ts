@@ -713,6 +713,69 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
         'scission de facturation 2026). Installation via le système natif /plugin de Claude Code.',
     },
   },
+
+  // ── 8. shallnot ───────────────────────────────────────────────────────────
+  // Public repository (Apache-2.0); the GitHub link is part of the entry.
+  {
+    translationKey: 'shallnot',
+    stack: ['Go', 'YAML', 'JUnit XML', 'GitHub Actions', 'Claude Code'],
+    status: { en: 'active', fr: 'actif' },
+    links: [
+      { label: 'GitHub', url: 'https://github.com/RachidChabane/shallnot' },
+    ],
+    publishState: 'published',
+    en: {
+      slug: 'shallnot',
+      name: 'shallnot: Spec-to-Test Traceability Gate for Coding Agents',
+      summary:
+        'A deterministic gate that stops a coding agent from reporting work as done while a ' +
+        'requirement still has no passing test, joining specs, test sources and JUnit XML ' +
+        'results in a single static Go binary that never calls a model.',
+      body:
+        "shallnot closes the loop on an agent's self-report. Every requirement in a Markdown " +
+        'or YAML spec carries an ID and a revision, written `PWD-2~1`; every test cites one ' +
+        'through a `[verifies PWD-2~1]` tag, placed wherever its runner will echo it into ' +
+        'JUnit XML. The gate joins those three inputs and fails unless each requirement is ' +
+        'cited by a test that actually ran and passed, so a tag sitting in a comment, or on a ' +
+        'test that never executed, binds nothing. Bumping a revision invalidates every test ' +
+        'still citing the previous meaning, which stops a reworded requirement from riding on ' +
+        'a stale green. `shallnot init` equips a repository in one command: config for the ' +
+        'detected runner, agent instructions, skills, and an end-of-turn hook that hands the ' +
+        'findings back so the agent keeps working instead of stopping. Determinism is enforced ' +
+        'rather than promised: an architecture test fails the build if the binary ever links a ' +
+        'networking package, or if the domain and analysis layers reach for a file. The tool ' +
+        'gates itself, binding its own 57 requirements to tagged tests in its CI. What a pass ' +
+        'does not prove is that the tests are any good, and the project says so plainly: ' +
+        'judging that is a review job, left to a skill rather than claimed by the gate.',
+    },
+    fr: {
+      slug: 'shallnot-fr',
+      name: 'shallnot: Porte de Traçabilité Specs-Tests pour Agents de Code',
+      summary:
+        "Une porte déterministe qui empêche un agent de code d'annoncer un travail terminé " +
+        "tant qu'une exigence n'a pas de test qui passe, en joignant les spécifications, les " +
+        'sources de tests et les résultats JUnit XML dans un unique binaire Go statique qui ' +
+        "n'appelle jamais de modèle.",
+      body:
+        "shallnot referme la boucle sur ce que l'agent déclare de lui-même. Chaque exigence " +
+        "d'une spécification Markdown ou YAML porte un identifiant et une révision, notés " +
+        '`PWD-2~1`; chaque test en cite une via une étiquette `[verifies PWD-2~1]`, placée là ' +
+        'où son runner la reportera dans le JUnit XML. La porte joint ces trois entrées et ' +
+        "échoue tant que chaque exigence n'est pas citée par un test réellement exécuté et " +
+        'réussi: une étiquette posée dans un commentaire, ou sur un test qui ne tourne jamais, ' +
+        'ne lie rien. Incrémenter une révision invalide tous les tests qui citent encore le ' +
+        "sens précédent, ce qui empêche une exigence reformulée de profiter d'un vert périmé. " +
+        '`shallnot init` outille un dépôt en une commande: configuration du runner détecté, ' +
+        "instructions d'agent, skills, et un hook de fin de tour qui renvoie les constats pour " +
+        "que l'agent poursuive au lieu de s'arrêter. Le déterminisme est imposé plutôt que " +
+        "promis: un test d'architecture fait échouer le build si le binaire lie un paquet " +
+        "réseau, ou si les couches domaine et analyse touchent un fichier. L'outil se contrôle " +
+        'lui-même, en liant ses propres 57 exigences à des tests étiquetés dans sa CI. Ce que ' +
+        'le vert ne prouve pas, à savoir la qualité des tests eux-mêmes, le projet le dit sans ' +
+        'détour: ce jugement relève de la revue, confié à un skill plutôt que revendiqué par ' +
+        'la porte.',
+    },
+  },
 ];
 
 // Authoritative override layer (scripts/_enrichment-data.json, keyed by translationKey).
