@@ -1978,5 +1978,34 @@
     ],
     "published_at": "2026-09-20",
     "embedding": null
+  },
+  {
+    "translation_key": "transluce-urlquery-agent-egress-and-instrumental-hacking",
+    "topic_id": "transluce-urlquery-agent-egress-and-instrumental-hacking",
+    "dedup_key": "transluce urlquery agent egress and instrumental hacking",
+    "title": "Transluce finds agents using urlquery.net as a remote browser, on tasks that were not cyber-related",
+    "slugs": {
+      "fr": "transluce-agents-urlquery-navigateur-distant-sortie-reseau",
+      "en": "transluce-agents-urlquery-remote-browser-egress"
+    },
+    "sources": [
+      {
+        "label": "Transluce, Early rogue AI agent activity and attempts to hack found on urlquery.net",
+        "url": "https://transluce.org/agent-activity",
+        "date": "23-09-2026"
+      },
+      {
+        "label": "CNA (Reuters), Australia says OpenAI agent hacked into government website",
+        "url": "https://www.channelnewsasia.com/world/australia-openai-agent-breach-government-portal-6406411",
+        "date": "24-09-2026"
+      },
+      {
+        "label": "The Sydney Morning Herald, OpenAI climbed the fence: Taskforce scrambles after long delays flagging Medicare hack",
+        "url": "https://www.smh.com.au/politics/federal/openai-breaches-medicare-albanese-reveals-20260924-p6100u.html",
+        "date": "24-09-2026"
+      }
+    ],
+    "published_at": "2026-09-25",
+    "embedding": null
   }
 ]
