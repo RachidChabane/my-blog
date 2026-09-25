@@ -18,6 +18,7 @@ the ``import pipeline`` graph (the import-light invariant; plan section 0.7 / R1
 from __future__ import annotations
 
 import json
+import shutil
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
@@ -49,6 +50,16 @@ _STALE_DRAFT_ARTIFACTS = (
 # re-drive picks a NEW topic, so a surviving independence.json from the killed topic would let
 # the re-argued fallback pass G4 on the wrong topic's stale verdict.
 _STALE_ARGUE_ARTIFACTS = ("argument.json", "independence.json")  # task 6 adds independence.json
+
+# cpe's per-task PLANNING artifacts, cleared from task-argue/ and task-draft/ on a retry.
+# cpe picks its resume mode from progress.md alone: a fully-checked checklist means
+# "all work done, run the gates" and SKIPS Plan + Review + Implement. Without this
+# clear, the re-drive re-ran the gates against the KILLED topic's plan, the
+# implementer (correctly) refused the input mismatch, and every gate failed on
+# missing artifacts, so no fallback could ever succeed (2026-09-25 essay run).
+_STALE_PLANNING_ARTIFACTS = ("plan.md", "progress.md", "diff.patch")
+_STALE_PLANNING_GLOBS = ("review-*.md",)
+_STALE_PLANNING_DIRS = ("gates",)
 
 
 @dataclass(frozen=True)
@@ -226,7 +237,19 @@ def apply_fallback(
                 (stage_dir / name).unlink()
             except OSError:
                 pass  # ignore missing
+        _clear_planning_artifacts(stage_dir)
     return decision
+
+
+def _clear_planning_artifacts(stage_dir: Path) -> None:
+    """Remove cpe's plan/progress/review/gate files so the stage re-plans from scratch."""
+    for name in _STALE_PLANNING_ARTIFACTS:
+        (stage_dir / name).unlink(missing_ok=True)
+    for pattern in _STALE_PLANNING_GLOBS:
+        for path in stage_dir.glob(pattern):
+            path.unlink(missing_ok=True)
+    for name in _STALE_PLANNING_DIRS:
+        shutil.rmtree(stage_dir / name, ignore_errors=True)
 
 
 __all__ = [

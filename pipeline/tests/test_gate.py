@@ -720,6 +720,37 @@ def test_apply_fallback_retry(tmp_path):
     assert not (argue_dir / "independence.json").exists()  # task 6: stale G4 findings cleared
 
 
+def test_apply_fallback_retry_clears_planning_artifacts_so_the_new_topic_replans(tmp_path):
+    """Regression (2026-09-25): a surviving, fully-checked progress.md made cpe skip Plan +
+    Review + Implement for the fallback topic, so every draft gate failed on missing files."""
+    cfg = PipelineConfig(repo_root=tmp_path / "repo")
+    run_dir = tmp_path / "run"
+    (run_dir / "plans" / "task-select").mkdir(parents=True)
+    (run_dir / "plans" / "task-research").mkdir(parents=True)
+    (run_dir / "plans" / "task-select" / "brief.md").write_text(
+        _fixture_text("brief.valid.md"), encoding="utf-8"
+    )
+    (run_dir / "plans" / "task-research" / "candidates.json").write_text(
+        _fixture_text("candidates.valid.json"), encoding="utf-8"
+    )
+    stage_dirs = [run_dir / "plans" / "task-argue", run_dir / "plans" / "task-draft"]
+    for stage in stage_dirs:
+        (stage / "gates").mkdir(parents=True)
+        (stage / "gates" / "style-fr.txt").write_text("FAIL", encoding="utf-8")
+        (stage / "plan.md").write_text("# plan for the KILLED topic", encoding="utf-8")
+        (stage / "progress.md").write_text("- [x] 1. all done\n", encoding="utf-8")
+        (stage / "review-1.md").write_text("APPROVED", encoding="utf-8")
+        (stage / "diff.patch").write_text("", encoding="utf-8")
+        (stage / "resolved-config.json").write_text("{}", encoding="utf-8")
+    _seed_state_blocked_draft(run_dir)
+
+    assert apply_fallback(run_dir, cfg, attempts_used=0, blocked_task="draft").action == "retry"
+    for stage in stage_dirs:
+        for gone in ("plan.md", "progress.md", "review-1.md", "diff.patch", "gates"):
+            assert not (stage / gone).exists(), f"{stage.name}/{gone} survived the fallback"
+        assert (stage / "resolved-config.json").exists()  # config is not topic state
+
+
 def test_apply_fallback_dry_skips_and_alerts(tmp_path):
     cfg = PipelineConfig(repo_root=tmp_path / "repo")
     run_dir = tmp_path / "run"
