@@ -1,0 +1,49 @@
+{
+  "slug": "faster-runners-cannot-absorb-agent-ci-load",
+  "lang": "en",
+  "translationKey": "agent-ci-load-and-the-unearned-green",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Linear, AI coding has made CI a bottleneck (the constraint)",
+      "url": "https://linear.app/now/ci-bottleneck-reworked",
+      "excerpt": "Agents have made it exponentially faster to ship code, but validating those changes hasn’t quite kept up at the same rate. Every PR still has to pass through CI, so as development accelerates, CI becomes a bottleneck, driving up infrastructure costs and leaving developers and agents waiting longer for feedback."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Linear, AI coding has made CI a bottleneck (the result)",
+      "url": "https://linear.app/now/ci-bottleneck-reworked",
+      "excerpt": "Despite our test suites almost quadrupling since the start of the year, we brought pull request wait time down from more than 6 minutes to just over 5, while cutting runner time per test roughly in half."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Linear, AI coding has made CI a bottleneck (input gating)",
+      "url": "https://linear.app/now/ci-bottleneck-reworked",
+      "excerpt": "Every run starts by checking which paths a PR touched and whether these tests have already passed for the same inputs."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Industrial AI-assisted remediation field study, the setting",
+      "url": "https://arxiv.org/abs/2609.29172",
+      "excerpt": "We report on a 15-day exploratory single-case field study in which an experienced developer used a command-line AI coding buddy to remediate widespread issues in a closed-source industrial C++ repository."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Industrial AI-assisted remediation field study, saturation",
+      "url": "https://arxiv.org/abs/2609.29172",
+      "excerpt": "AI-assisted remediation rapidly generated hundreds of commits touching thousands of lines, saturating CI and reviewer attention."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Industrial AI-assisted remediation field study, the new bottleneck",
+      "url": "https://arxiv.org/abs/2609.29172",
+      "excerpt": "When mechanical editing is cheap, CI capacity, review effort, and change orchestration become primary bottlenecks."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Industrial AI-assisted remediation field study, change granularity",
+      "url": "https://arxiv.org/abs/2609.29172",
+      "excerpt": "Naïve per-file commits overloaded build-on-commit CI; Switching to directory-based batching and capping the number of files per change restored throughput, but still required explicit review solicitation, negotiation of acceptable commit granularity, and iterative follow-up to resolve build and static-analysis failures."
+    }
+  ]
+}

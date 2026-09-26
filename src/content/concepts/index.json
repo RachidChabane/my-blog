@@ -896,6 +896,33 @@
     "addedOn": "10-06-2026"
   },
   {
+    "id": "change-orchestration",
+    "label": {
+      "fr": "Orchestration des changements",
+      "en": "Change orchestration"
+    },
+    "definition": {
+      "fr": "Décider comment un flux de changements de code est dimensionné, regroupé et ordonné avant d'atteindre la CI et la revue, y compris la granularité des commits et le plafond de fichiers par changement. Ce réglage déplace la charge entre la CI et la revue, et pèse d'autant plus que les changements arrivent plus vite que l'une ou l'autre ne peut les absorber, comme avec les agents de code.",
+      "en": "Deciding how a stream of code changes is sized, batched and sequenced before it reaches CI and review, including commit granularity and the cap on files per change. The setting moves load between CI and review, and it matters most when changes arrive faster than either stage can absorb them, as with coding agents."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "change sizing",
+      "change batching",
+      "change sequencing",
+      "commit granularity",
+      "granularité des commits"
+    ],
+    "related": [
+      "review-bandwidth",
+      "coding-agents"
+    ],
+    "articles": [
+      "agent-ci-load-and-the-unearned-green"
+    ],
+    "addedOn": "26-09-2026"
+  },
+  {
     "id": "chunking",
     "label": {
       "fr": "Découpage en chunks",
@@ -1134,7 +1161,8 @@
       "failure-record-in-context-drives-the-repeat",
       "the-oracle-decides-repo-scale-migration",
       "edit-unit-size-beside-edit-format",
-      "ask-when-unsure-is-gated-on-detection"
+      "ask-when-unsure-is-gated-on-detection",
+      "agent-ci-load-and-the-unearned-green"
     ],
     "addedOn": "30-05-2026"
   },
@@ -3013,7 +3041,8 @@
     ],
     "articles": [
       "cli-agent-productivity-proxy-choice",
-      "patch-quality-rate-needs-a-consistent-grader"
+      "patch-quality-rate-needs-a-consistent-grader",
+      "agent-ci-load-and-the-unearned-green"
     ],
     "addedOn": "18-07-2026"
   },
@@ -3378,7 +3407,8 @@
     ],
     "articles": [
       "llm-contribution-policy-premise-decides-the-leak",
-      "remediation-throughput-is-the-security-constraint"
+      "remediation-throughput-is-the-security-constraint",
+      "agent-ci-load-and-the-unearned-green"
     ],
     "addedOn": "08-08-2026"
   },
@@ -4020,6 +4050,55 @@
       "ask-when-unsure-is-gated-on-detection"
     ],
     "addedOn": "18-06-2026"
+  },
+  {
+    "id": "test-hermeticity",
+    "label": {
+      "fr": "Herméticité des tests",
+      "en": "Test hermeticity"
+    },
+    "definition": {
+      "fr": "Propriété d'un test dont le résultat ne dépend que des entrées connues du système de build, comme les fichiers source et les dépendances déclarés. Un test qui lit aussi l'horloge, une variable d'environnement ou le réseau n'est pas hermétique : un cache ou un saut de test fondé sur ses seules entrées déclarées peut alors réutiliser un résultat qui ne vaut plus.",
+      "en": "The property of a test whose result depends only on inputs the build system knows about, such as declared source files and dependencies. A test that also reads the clock, an environment variable or the network is non-hermetic, so a cache or skip decision keyed on its declared inputs can reuse a result that no longer holds."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "hermeticity",
+      "hermetic tests",
+      "undeclared input",
+      "herméticité",
+      "entrée non déclarée"
+    ],
+    "related": [],
+    "articles": [
+      "agent-ci-load-and-the-unearned-green"
+    ],
+    "addedOn": "26-09-2026"
+  },
+  {
+    "id": "test-result-caching",
+    "label": {
+      "fr": "Mise en cache des résultats de test",
+      "en": "Test result caching"
+    },
+    "definition": {
+      "fr": "Réutiliser un succès déjà enregistré au lieu de relancer un test quand toutes les entrées dont il dépend sont identiques à celles d'une exécution antérieure, en général vérifiées par hachage des chemins touchés et des dépendances. Le gain est maximal sur des changements ciblés ou répétés, et le résultat réutilisé ne vaut que ce que vaut la déclaration des entrées.",
+      "en": "Reusing a recorded pass instead of rerunning a test when every input it depends on matches an earlier run, usually checked by hashing the touched paths and dependencies. It saves the most on narrow or repeated changes, and a reused result is only as trustworthy as the input declaration behind it."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "input-keyed test skipping",
+      "cached test result",
+      "skip unchanged tests",
+      "résultat de test en cache"
+    ],
+    "related": [
+      "test-hermeticity"
+    ],
+    "articles": [
+      "agent-ci-load-and-the-unearned-green"
+    ],
+    "addedOn": "26-09-2026"
   },
   {
     "id": "test-time-scaling",

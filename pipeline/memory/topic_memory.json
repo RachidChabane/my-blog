@@ -3425,5 +3425,67 @@
     ],
     "published_at": "2026-09-18",
     "embedding": null
+  },
+  {
+    "translation_key": "agent-ci-load-and-the-unearned-green",
+    "topic_id": "agent-change-volume-moves-the-bottleneck-to-ci",
+    "dedup_key": "ai coding agent change volume makes continuous integration capacity the delivery bottleneck as reported independently by a product engineering team and an industrial field study",
+    "title": "Faster runners alone cannot absorb the CI load agents create",
+    "slugs": {
+      "fr": "des-runners-plus-rapides-n-absorbent-pas-la-ci-des-agents",
+      "en": "faster-runners-cannot-absorb-agent-ci-load"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Linear, AI coding has made CI a bottleneck (the constraint)",
+        "url": "https://linear.app/now/ci-bottleneck-reworked",
+        "retrieved_at": "2026-09-26",
+        "excerpt": "Agents have made it exponentially faster to ship code, but validating those changes hasn’t quite kept up at the same rate. Every PR still has to pass through CI, so as development accelerates, CI becomes a bottleneck, driving up infrastructure costs and leaving developers and agents waiting longer for feedback.",
+        "source_date": "2026-09-21"
+      },
+      {
+        "source_id": "s2",
+        "label": "Linear, AI coding has made CI a bottleneck (the result)",
+        "url": "https://linear.app/now/ci-bottleneck-reworked",
+        "retrieved_at": "2026-09-26",
+        "excerpt": "Despite our test suites almost quadrupling since the start of the year, we brought pull request wait time down from more than 6 minutes to just over 5, while cutting runner time per test roughly in half.",
+        "source_date": "2026-09-21"
+      },
+      {
+        "source_id": "s3",
+        "label": "Linear, AI coding has made CI a bottleneck (input gating)",
+        "url": "https://linear.app/now/ci-bottleneck-reworked",
+        "retrieved_at": "2026-09-26",
+        "excerpt": "Every run starts by checking which paths a PR touched and whether these tests have already passed for the same inputs.",
+        "source_date": "2026-09-21"
+      },
+      {
+        "source_id": "s4",
+        "label": "Industrial AI-assisted remediation field study, the setting",
+        "url": "https://arxiv.org/abs/2609.29172",
+        "retrieved_at": "2026-09-26",
+        "excerpt": "We report on a 15-day exploratory single-case field study in which an experienced developer used a command-line AI coding buddy to remediate widespread issues in a closed-source industrial C++ repository.",
+        "source_date": "2026-09-24"
+      },
+      {
+        "source_id": "s5",
+        "label": "Industrial AI-assisted remediation field study, saturation",
+        "url": "https://arxiv.org/abs/2609.29172",
+        "retrieved_at": "2026-09-26",
+        "excerpt": "AI-assisted remediation rapidly generated hundreds of commits touching thousands of lines, saturating CI and reviewer attention.",
+        "source_date": "2026-09-24"
+      },
+      {
+        "source_id": "s6",
+        "label": "Industrial AI-assisted remediation field study, the new bottleneck",
+        "url": "https://arxiv.org/abs/2609.29172",
+        "retrieved_at": "2026-09-26",
+        "excerpt": "When mechanical editing is cheap, CI capacity, review effort, and change orchestration become primary bottlenecks.",
+        "source_date": "2026-09-24"
+      }
+    ],
+    "published_at": "2026-09-26",
+    "embedding": null
   }
 ]
