@@ -2007,5 +2007,34 @@
     ],
     "published_at": "2026-09-25",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-opus-5-5-cache-read-price-cut-and-max-output-tokens",
+    "topic_id": "claude-opus-5-5-cache-read-price-cut-and-max-output-tokens",
+    "dedup_key": "claude opus 5 5 cache read price cut and max output tokens",
+    "title": "Claude Opus 5.5 cuts cache reads by 60%, but at max effort Artificial Analysis measures it level with Opus 5 per task",
+    "slugs": {
+      "fr": "claude-opus-5-5-lectures-cache-effort-max-cout",
+      "en": "claude-opus-5-5-cache-reads-max-effort-cost"
+    },
+    "sources": [
+      {
+        "label": "Anthropic, \"Introducing Claude Opus 5.5\"",
+        "url": "https://www.anthropic.com/claude-opus-5-5",
+        "date": "22-09-2026"
+      },
+      {
+        "label": "Artificial Analysis, \"Claude Opus 5.5 takes the top spot on the Artificial Analysis Intelligence Index\"",
+        "url": "https://artificialanalysis.ai/articles/claude-opus-5-5",
+        "date": "22-09-2026"
+      },
+      {
+        "label": "Simon Willison, \"Claude Opus 5.5, GPT-6 Sol, GPT-6 Luna, and a new price war\"",
+        "url": "https://simonwillison.net/2026/Sep/22/opus-and-sol-and-luna/",
+        "date": "22-09-2026"
+      }
+    ],
+    "published_at": "2026-09-26",
+    "embedding": null
   }
 ]
