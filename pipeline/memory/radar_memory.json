@@ -2036,5 +2036,34 @@
     ],
     "published_at": "2026-09-26",
     "embedding": null
+  },
+  {
+    "translation_key": "gpt-6-luna-automationbench-up-coding-agent-index-down",
+    "topic_id": "gpt-6-luna-automationbench-up-coding-agent-index-down",
+    "dedup_key": "gpt 6 luna automationbench up coding agent index down",
+    "title": "GPT-6 Sol and Luna halve GPT-5.6 promotional prices, and Artificial Analysis measures Luna at max 2 points lower on its Coding Agent Index",
+    "slugs": {
+      "fr": "gpt-6-sol-luna-baisse-prix-agents-de-code",
+      "en": "gpt-6-sol-luna-price-cut-coding-agent-split"
+    },
+    "sources": [
+      {
+        "label": "OpenAI, \"Introducing GPT-6 Sol and Luna\"",
+        "url": "https://openai.com/index/introducing-gpt-6-sol-and-luna/",
+        "date": "22-09-2026"
+      },
+      {
+        "label": "Artificial Analysis, \"GPT-6 Sol and Luna push the cost efficiency frontier\"",
+        "url": "https://artificialanalysis.ai/articles/gpt-6-sol-and-luna-push-the-cost-efficiency-frontier",
+        "date": "22-09-2026"
+      },
+      {
+        "label": "Simon Willison, \"Claude Opus 5.5, GPT-6 Sol, GPT-6 Luna, and a new price war\"",
+        "url": "https://simonwillison.net/2026/Sep/22/opus-and-sol-and-luna/",
+        "date": "22-09-2026"
+      }
+    ],
+    "published_at": "2026-09-27",
+    "embedding": null
   }
 ]
