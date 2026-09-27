@@ -1,0 +1,61 @@
+{
+  "slug": "telemetry-is-a-behaviour-setting-for-coding-agents",
+  "lang": "en",
+  "translationKey": "telemetry-off-forks-coding-agent-behaviour",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "blog.szypowi.cz, Claude Code reads AGENTS.md only when telemetry is on (summary)",
+      "url": "https://blog.szypowi.cz/p/claude-code-reads-agents.md-only-when-telemetry-is-on/",
+      "excerpt": "the loader sits behind a remote feature flag. With telemetry or nonessential traffic turned off, a local AGENTS.md is skipped without a warning."
+    },
+    {
+      "sourceId": "s2",
+      "label": "blog.szypowi.cz, Claude Code reads AGENTS.md only when telemetry is on (gate)",
+      "url": "https://blog.szypowi.cz/p/claude-code-reads-agents.md-only-when-telemetry-is-on/",
+      "excerpt": "When Claude Code cannot fetch the flag, the plugin is unavailable, and the local file is never read."
+    },
+    {
+      "sourceId": "s3",
+      "label": "blog.szypowi.cz, Claude Code reads AGENTS.md only when telemetry is on (silence)",
+      "url": "https://blog.szypowi.cz/p/claude-code-reads-agents.md-only-when-telemetry-is-on/",
+      "excerpt": "None of these cases print a warning. The session starts, the model answers without the project instructions, and nothing tells you that a file was skipped."
+    },
+    {
+      "sourceId": "s4",
+      "label": "anthropics/claude-code issue 95690, independent reproduction in the thread",
+      "url": "https://github.com/anthropics/claude-code/issues/95690",
+      "excerpt": "AGENTS.md is skipped in the very first session after install, and skipped every time when feature-flag fetching is disabled (`DISABLE_GROWTHBOOK=1` or nonessential traffic off), which is exactly what CI runners do. It loads fine once the flag is cached locally, so this is a rollout-gating gap rather than a parser bug."
+    },
+    {
+      "sourceId": "s5",
+      "label": "blog.szypowi.cz, Claude Code reads AGENTS.md only when telemetry is on (diagnosis)",
+      "url": "https://blog.szypowi.cz/p/claude-code-reads-agents.md-only-when-telemetry-is-on/",
+      "excerpt": "I confirmed the cause with a canary word and a string search through the binary, and most people will not do that."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Anthropic, Claude Code CHANGELOG (AGENTS.md fix entry)",
+      "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+      "excerpt": "Changed AGENTS.md support to also work on Amazon Bedrock, Google Vertex AI, Microsoft Foundry, LLM gateways, and sessions with telemetry disabled"
+    },
+    {
+      "sourceId": "s7",
+      "label": "Anthropic, Claude Code release notes (telemetry settings notice)",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.282",
+      "excerpt": "Added a startup notice, and /status and claude doctor entries, listing telemetry variables in a project's settings files that were ignored or that turned telemetry off"
+    },
+    {
+      "sourceId": "s8",
+      "label": "Anthropic, Claude Code release notes (telemetry-off default mode)",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.283",
+      "excerpt": "Changed interactive sessions on third-party providers or with telemetry off to start in auto mode when no permission mode is configured; permissions.defaultMode still overrides it"
+    },
+    {
+      "sourceId": "s9",
+      "label": "anthropics/claude-code issue 95690, opening report",
+      "url": "https://github.com/anthropics/claude-code/issues/95690",
+      "excerpt": "No error. No warning. It just doesn't load."
+    }
+  ]
+}

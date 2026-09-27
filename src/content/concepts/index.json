@@ -279,7 +279,8 @@
       "context-budget"
     ],
     "articles": [
-      "instruction-file-structure-compliance"
+      "instruction-file-structure-compliance",
+      "telemetry-off-forks-coding-agent-behaviour"
     ],
     "addedOn": "21-07-2026"
   },
@@ -391,6 +392,32 @@
       "the-check-binds-the-action-not-the-decision"
     ],
     "addedOn": "11-09-2026"
+  },
+  {
+    "id": "agent-permission-mode",
+    "label": {
+      "fr": "Mode de permission d'agent",
+      "en": "Agent permission mode"
+    },
+    "definition": {
+      "fr": "Réglage qui détermine les actions qu'un agent de code peut effectuer sans demander l'accord d'un humain, de la confirmation de chaque appel d'outil jusqu'à l'exécution de modifications et de commandes sans supervision. Non renseigné, il prend une valeur par défaut choisie par le client, qui peut dépendre de l'environnement, si bien qu'un même dépôt peut tourner avec une autonomie différente selon la machine.",
+      "en": "The setting that decides which actions a coding agent may take without asking a human first, from confirming every tool call to running edits and commands unattended. Left unset, it takes a default chosen by the client that can depend on the environment, so the same repository can run with different autonomy on different machines."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "permission mode",
+      "default permission mode",
+      "permissions.defaultMode",
+      "mode de permission"
+    ],
+    "related": [
+      "least-privilege",
+      "coding-agents"
+    ],
+    "articles": [
+      "telemetry-off-forks-coding-agent-behaviour"
+    ],
+    "addedOn": "27-09-2026"
   },
   {
     "id": "agent-plan-file",
@@ -1162,7 +1189,8 @@
       "the-oracle-decides-repo-scale-migration",
       "edit-unit-size-beside-edit-format",
       "ask-when-unsure-is-gated-on-detection",
-      "agent-ci-load-and-the-unearned-green"
+      "agent-ci-load-and-the-unearned-green",
+      "telemetry-off-forks-coding-agent-behaviour"
     ],
     "addedOn": "30-05-2026"
   },
@@ -2161,6 +2189,31 @@
       "instruction-file-structure-compliance"
     ],
     "addedOn": "21-07-2026"
+  },
+  {
+    "id": "instruction-load-canary",
+    "label": {
+      "fr": "Canari de chargement des instructions",
+      "en": "Instruction-load canary"
+    },
+    "definition": {
+      "fr": "Vérification qui place un mot unique et impossible à deviner dans le fichier d'instructions d'un agent, demande à l'agent de le restituer et échoue si le mot ne revient pas. Exécutée dans l'environnement réel, sans accès aux fichiers pour l'agent, elle vérifie que les instructions ont bien atteint le contexte du modèle, et non seulement que le fichier existe.",
+      "en": "A check that plants a unique, unguessable word in an agent's instruction file, asks the agent to repeat it, and fails when the word does not come back. Run in the real environment with file access unavailable to the agent, it tests whether the instructions actually reached the model's context, not merely whether the file exists."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "canary word",
+      "instruction canary",
+      "canary check",
+      "mot canari"
+    ],
+    "related": [
+      "agent-instruction-file"
+    ],
+    "articles": [
+      "telemetry-off-forks-coding-agent-behaviour"
+    ],
+    "addedOn": "27-09-2026"
   },
   {
     "id": "intent-bound-authorization",
@@ -3358,6 +3411,32 @@
       "remediation-throughput-is-the-security-constraint"
     ],
     "addedOn": "04-09-2026"
+  },
+  {
+    "id": "remote-feature-flag",
+    "label": {
+      "fr": "Feature flag distant",
+      "en": "Remote feature flag"
+    },
+    "definition": {
+      "fr": "Interrupteur dont un client déjà livré récupère la valeur auprès du service de l'éditeur plutôt que dans sa configuration locale, ce qui permet à une même version d'activer ou non un chemin de code selon l'utilisateur ou la session. Si la récupération échoue ou est bloquée, le client retombe sur une valeur par défaut intégrée, ce qui peut modifier son comportement sans le signaler.",
+      "en": "A switch whose value a shipped client fetches from the vendor's service rather than from its local configuration, so one build can enable or disable a code path per user or session. When the fetch fails or is blocked, the client falls back to a built-in default, which can change its behaviour without saying so."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "feature flag",
+      "remote flag",
+      "remote configuration flag",
+      "feature flag distant"
+    ],
+    "related": [
+      "agent-instruction-file",
+      "canary-deployment"
+    ],
+    "articles": [
+      "telemetry-off-forks-coding-agent-behaviour"
+    ],
+    "addedOn": "27-09-2026"
   },
   {
     "id": "retrieval-evaluation",
