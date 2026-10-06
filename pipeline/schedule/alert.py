@@ -17,6 +17,8 @@ No ``pipeline.*`` runtime imports (leaf).
 from __future__ import annotations
 
 import json
+import shutil
+import subprocess
 import sys
 import urllib.error
 import urllib.request
@@ -35,6 +37,7 @@ RUN_BLOCKED = "run_blocked"   # a task blocked / terminal_failure (run-time, run
 RUN_MISSED = "run_missed"     # expected fire had no run (monitor)
 RUN_STALLED = "run_stalled"   # run started, never finished within grace (monitor)
 API_UNREACHABLE = "api_unreachable"  # pre-flight: the model API never accepted a connection
+AUTH_EXPIRED = "auth_expired"        # pre-flight: the Claude login expired (needs /login)
 
 
 @dataclass(frozen=True)
@@ -166,6 +169,60 @@ class WebhookAlertSink:
                 )
 
 
+class MacNotificationAlertSink:
+    """Posts each alert as a macOS notification via ``terminal-notifier``.
+
+    The File/Log sinks only write to disk, so the 2026-09-21..25 network outage and
+    the 2026-09-28..10-06 expired login both ran silently for days. This sink puts
+    every alert on the owner's screen the morning it happens. ``run`` and
+    ``binary`` are injectable for the offline test; with no binary it is a no-op.
+    """
+
+    TITLE = "my-blog pipeline"
+
+    def __init__(
+        self,
+        *,
+        binary: str | None = None,
+        run: Callable[..., object] = subprocess.run,
+    ) -> None:
+        self.binary = binary if binary is not None else shutil.which("terminal-notifier")
+        self._run = run
+
+    def emit(self, alert: Alert) -> None:
+        if not self.binary:
+            return
+        self._run(
+            [
+                self.binary,
+                "-title", self.TITLE,
+                "-subtitle", f"{alert.kind} · {alert.run_id}",
+                "-message", alert.reason,
+                "-group", f"myblog-{alert.kind}",
+            ],
+            check=False,
+            capture_output=True,
+            timeout=30,
+        )
+
+
+def build_default_sink(
+    state_dir: Path,
+    *,
+    webhook_url: str | None = None,
+    notifier: AlertSink | None = None,
+) -> MultiAlertSink:
+    """The one place both schedules (essay + radar) assemble their alert channels."""
+    sinks: list[AlertSink] = [
+        FileAlertSink(Path(state_dir) / "alerts.jsonl"),
+        LogAlertSink(),
+        notifier if notifier is not None else MacNotificationAlertSink(),
+    ]
+    if webhook_url:  # M-14 owner channel, off unless configured
+        sinks.append(WebhookAlertSink(webhook_url))
+    return MultiAlertSink(sinks)
+
+
 def ping_uptime(
     url: str,
     *,
@@ -217,6 +274,9 @@ __all__ = [
     "RUN_MISSED",
     "RUN_STALLED",
     "API_UNREACHABLE",
+    "AUTH_EXPIRED",
+    "MacNotificationAlertSink",
+    "build_default_sink",
     "Alert",
     "AlertSink",
     "CollectingAlertSink",

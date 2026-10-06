@@ -35,7 +35,7 @@ if TYPE_CHECKING:
     from ..config import PipelineConfig
     from ..runner import RunResult, SlateDriver
     from .alert import AlertSink
-    from .connectivity import WaitOutcome
+    from .connectivity import AuthResult, WaitOutcome
 
 
 # ---------------------------------------------------------------------------
@@ -137,6 +137,7 @@ def api_preflight(
     run_id: str,
     now: datetime,
     wait: Callable[[], WaitOutcome] | None = None,
+    auth: Callable[[], AuthResult] | None = None,
 ) -> bool:
     """Wait (bounded) for the model API before driving; alert + record on give-up.
 
@@ -161,7 +162,7 @@ def api_preflight(
 
     outcome = wait()
     if outcome.reachable:
-        return True
+        return _auth_preflight(config, sink, run_id=run_id, now=now, auth=auth)
     reason = (
         f"{connectivity.API_HOST} unreachable for {outcome.waited_seconds / 60:.0f} min "
         f"({len(outcome.failures)} probes); last: {outcome.last.describe()}"
@@ -178,6 +179,26 @@ def api_preflight(
     heartbeat.append_heartbeat(
         config, heartbeat.HeartbeatRecord(run_id, now, "failed", reason)
     )
+    return False
+
+
+def _auth_preflight(
+    config: PipelineConfig,
+    sink: AlertSink,
+    *,
+    run_id: str,
+    now: datetime,
+    auth: Callable[[], AuthResult] | None,
+) -> bool:
+    """Fail fast on an expired Claude login: no retry can fix it, only ``/login`` can."""
+    from . import alert, connectivity, heartbeat
+
+    result = (auth or connectivity.claude_auth_probe)()
+    if result.status != "expired":
+        return True
+    reason = "Claude login expired: run `claude` then /login on this Mac, then kickstart the job"
+    sink.emit(alert.Alert(alert.AUTH_EXPIRED, run_id, reason, now, detail={"probe": result.detail}))
+    heartbeat.append_heartbeat(config, heartbeat.HeartbeatRecord(run_id, now, "failed", reason))
     return False
 
 
@@ -382,23 +403,11 @@ def render_launchd_plist(
 
 
 def _default_sink(config: PipelineConfig) -> AlertSink:
-    from .alert import (
-        AlertSink as _AlertSink,
-    )
-    from .alert import (
-        FileAlertSink,
-        LogAlertSink,
-        MultiAlertSink,
-        WebhookAlertSink,
-    )
+    from .alert import build_default_sink
 
-    sinks: list[_AlertSink] = [
-        FileAlertSink(config.schedule_state_dir / "alerts.jsonl"),
-        LogAlertSink(),
-    ]
-    if config.alert_webhook_url:  # M-14 owner channel, off unless configured
-        sinks.append(WebhookAlertSink(config.alert_webhook_url))
-    return MultiAlertSink(sinks)
+    return build_default_sink(
+        config.schedule_state_dir, webhook_url=config.alert_webhook_url
+    )
 
 
 def _after_run(

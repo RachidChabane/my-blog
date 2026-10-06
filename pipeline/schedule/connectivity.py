@@ -20,6 +20,8 @@ from __future__ import annotations
 import fcntl
 import socket
 import ssl
+import subprocess
+import tempfile
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -113,6 +115,59 @@ def wait_until_reachable(
         sleep(interval)
 
 
+# --- Claude login (2026-09-28..10-06 outage) ---------------------------------
+# The OAuth login behind the subscription expires; every TUI call then answers
+# "Login expired · Please run /login" and the run idles to the phase cap. Waiting
+# never fixes it, so the gate fails fast and names the action instead.
+AUTH_PROBE_ARGV = ("claude", "-p", "Reply with the single word ok", "--model", "haiku")
+AUTH_PROBE_TIMEOUT_SECONDS = 180
+AUTH_EXPIRED_MARKERS = (
+    "login expired",
+    "not logged in",
+    "please run /login",
+    "authentication_failed",
+    "oauth token has expired",
+)
+
+
+@dataclass(frozen=True)
+class AuthResult:
+    """``expired`` blocks the run; ``ok`` and ``unknown`` let it proceed."""
+
+    status: str  # "ok" | "expired" | "unknown"
+    detail: str = ""
+
+
+def classify_auth_output(returncode: int, output: str) -> AuthResult:
+    """Pure: map a ``claude -p`` probe's exit code + output to an auth verdict."""
+    lowered = output.lower()
+    if any(marker in lowered for marker in AUTH_EXPIRED_MARKERS):
+        return AuthResult("expired", output.strip()[:200])
+    if returncode == 0 and output.strip():
+        return AuthResult("ok")
+    # Anything else (timeout, crash, empty output) is not proof of an expired login;
+    # blocking on it would trade a known failure for false negatives.
+    return AuthResult("unknown", f"exit {returncode}: {output.strip()[:200]}")
+
+
+def claude_auth_probe(
+    run: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
+) -> AuthResult:
+    """Real adapter: one minimal headless call, from a neutral cwd."""
+    try:
+        done = run(
+            list(AUTH_PROBE_ARGV),
+            cwd=tempfile.gettempdir(),
+            capture_output=True,
+            text=True,
+            timeout=AUTH_PROBE_TIMEOUT_SECONDS,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return AuthResult("unknown", f"{type(exc).__name__}: {exc}")
+    return classify_auth_output(done.returncode, f"{done.stdout}\n{done.stderr}")
+
+
 @contextmanager
 def run_lock(state_dir: Path) -> Iterator[None]:
     """Exclusive, blocking, process-lifetime lock shared by every scheduled job."""
@@ -126,6 +181,9 @@ def run_lock(state_dir: Path) -> Iterator[None]:
 
 
 __all__ = [
+    "AuthResult",
+    "claude_auth_probe",
+    "classify_auth_output",
     "API_HOST",
     "MAX_WAIT_SECONDS",
     "RETRY_INTERVAL_SECONDS",

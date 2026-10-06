@@ -133,16 +133,11 @@ def render_crontab(
 
 
 def _default_sink(config: PipelineConfig) -> AlertSink:
-    from ..schedule.alert import AlertSink as _AlertSink
-    from ..schedule.alert import FileAlertSink, LogAlertSink, MultiAlertSink, WebhookAlertSink
+    from ..schedule.alert import build_default_sink
 
-    sinks: list[_AlertSink] = [
-        FileAlertSink(config.schedule_state_dir / "alerts.jsonl"),
-        LogAlertSink(),
-    ]
-    if config.alert_webhook_url:
-        sinks.append(WebhookAlertSink(config.alert_webhook_url))
-    return MultiAlertSink(sinks)
+    return build_default_sink(
+        config.schedule_state_dir, webhook_url=config.alert_webhook_url
+    )
 
 
 def _cmd_run(config: PipelineConfig, *, now: datetime) -> int:

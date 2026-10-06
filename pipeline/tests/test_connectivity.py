@@ -14,12 +14,26 @@ import pytest
 
 from pipeline.config import PipelineConfig
 from pipeline.schedule import connectivity, cron, heartbeat, pause
-from pipeline.schedule.alert import API_UNREACHABLE, CollectingAlertSink
-from pipeline.schedule.connectivity import ProbeResult, WaitOutcome, wait_until_reachable
+from pipeline.schedule.alert import (
+    API_UNREACHABLE,
+    AUTH_EXPIRED,
+    CollectingAlertSink,
+    MacNotificationAlertSink,
+    build_default_sink,
+)
+from pipeline.schedule.connectivity import (
+    AuthResult,
+    ProbeResult,
+    WaitOutcome,
+    classify_auth_output,
+    wait_until_reachable,
+)
 
 _NOW = datetime(2026, 9, 25, 5, 0, tzinfo=UTC)
 _REFUSED = ProbeResult(ok=False, addresses=("160.79.104.10",), error="ConnectionRefusedError")
 _OK = ProbeResult(ok=True, addresses=("160.79.104.10",))
+_AUTH_OK = AuthResult("ok")
+_AUTH_EXPIRED = AuthResult("expired", "Login expired · Please run /login")
 
 
 class _FakeClock:
@@ -88,7 +102,9 @@ def test_preflight_unreachable_alerts_records_and_blocks(config):
 def test_preflight_reachable_lets_the_run_proceed_silently(config):
     sink = CollectingAlertSink()
     ok = WaitOutcome(True, _OK)
-    assert cron.api_preflight(config, sink, run_id="2026-09-25", now=_NOW, wait=lambda: ok)
+    assert cron.api_preflight(
+        config, sink, run_id="2026-09-25", now=_NOW, wait=lambda: ok, auth=lambda: _AUTH_OK
+    )
     assert sink.alerts == [] and heartbeat.read_ledger(config) == []
 
 
@@ -122,3 +138,67 @@ def test_both_jobs_share_one_lock_dir(tmp_path):
     assert connectivity.shared_lock_dir(essay.repo_root) == connectivity.shared_lock_dir(
         radar.repo_root
     )
+
+
+def test_expired_login_blocks_fast_with_an_actionable_alert(config):
+    sink = CollectingAlertSink()
+    reachable = WaitOutcome(True, _OK)
+    assert not cron.api_preflight(
+        config, sink, run_id="2026-10-06", now=_NOW,
+        wait=lambda: reachable, auth=lambda: _AUTH_EXPIRED,
+    )
+    [alert] = sink.alerts
+    assert alert.kind == AUTH_EXPIRED and "/login" in alert.reason
+    assert heartbeat.read_ledger(config)[-1].status == "failed"
+
+
+def test_unknown_auth_result_does_not_block(config):
+    reachable = WaitOutcome(True, _OK)
+    assert cron.api_preflight(
+        config, CollectingAlertSink(), run_id="2026-10-06", now=_NOW,
+        wait=lambda: reachable, auth=lambda: AuthResult("unknown", "exit 1"),
+    )
+
+
+@pytest.mark.parametrize(
+    ("returncode", "output", "status"),
+    [
+        (0, "ok\n", "ok"),
+        (1, "Login expired · Please run /login", "expired"),
+        (0, "Not logged in · Please run /login", "expired"),
+        (1, "API Error: Connection refused", "unknown"),
+        (0, "", "unknown"),
+    ],
+)
+def test_classify_auth_output(returncode, output, status):
+    assert classify_auth_output(returncode, output).status == status
+
+
+def test_mac_notification_sink_posts_kind_run_and_reason():
+    calls = []
+    sink = MacNotificationAlertSink(binary="/bin/tn", run=lambda argv, **_: calls.append(argv))
+    from pipeline.schedule.alert import Alert  # noqa: PLC0415
+
+    sink.emit(Alert(AUTH_EXPIRED, "2026-10-06", "Claude login expired", _NOW))
+    [argv] = calls
+    assert argv[0] == "/bin/tn"
+    assert "Claude login expired" in argv and f"{AUTH_EXPIRED} · 2026-10-06" in argv
+
+
+def test_mac_notification_sink_is_a_noop_without_the_binary():
+    calls = []
+    sink = MacNotificationAlertSink(binary="", run=lambda argv, **_: calls.append(argv))
+    from pipeline.schedule.alert import Alert  # noqa: PLC0415
+
+    sink.emit(Alert(AUTH_EXPIRED, "2026-10-06", "x", _NOW))
+    assert calls == []
+
+
+def test_default_sink_includes_the_desktop_notifier(tmp_path):
+    notifier = CollectingAlertSink()
+    sink = build_default_sink(tmp_path, notifier=notifier)
+    from pipeline.schedule.alert import Alert  # noqa: PLC0415
+
+    sink.emit(Alert(API_UNREACHABLE, "2026-10-06", "down", _NOW))
+    assert [a.kind for a in notifier.alerts] == [API_UNREACHABLE]
+    assert (tmp_path / "alerts.jsonl").exists()
