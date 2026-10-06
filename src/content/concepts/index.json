@@ -2426,7 +2426,8 @@
     ],
     "articles": [
       "verification-frontiere-action-2026-08",
-      "patch-quality-rate-needs-a-consistent-grader"
+      "patch-quality-rate-needs-a-consistent-grader",
+      "kolibri-tokenizer-is-the-sovereign-model-cost-lever"
     ],
     "addedOn": "03-08-2026"
   },
@@ -2669,7 +2670,8 @@
     ],
     "articles": [
       "kimi-k3-ranked-endpoint-not-weights",
-      "afd-throughput-does-not-transfer-without-the-fabric"
+      "afd-throughput-does-not-transfer-without-the-fabric",
+      "kolibri-tokenizer-is-the-sovereign-model-cost-lever"
     ],
     "addedOn": "23-07-2026"
   },
@@ -2798,7 +2800,8 @@
       "prompt-injection-defense-layer-split",
       "tool-calling-readout-not-descriptions",
       "kimi-k3-ranked-endpoint-not-weights",
-      "refusal-behavior-is-not-a-security-control"
+      "refusal-behavior-is-not-a-security-control",
+      "kolibri-tokenizer-is-the-sovereign-model-cost-lever"
     ],
     "addedOn": "04-05-2026"
   },
@@ -3121,6 +3124,32 @@
       "publication-guardrails-factcheck"
     ],
     "addedOn": "23-05-2026"
+  },
+  {
+    "id": "quality-classifier-filtering",
+    "label": {
+      "fr": "Filtrage par classifieur de qualité",
+      "en": "Quality-classifier filtering"
+    },
+    "definition": {
+      "fr": "Curation des données de pré-entraînement où un classifieur note la qualité de chaque document et écarte ceux qui obtiennent un score faible. Ce classifieur est souvent entraîné sur des annotations produites par un modèle de langage plus grand, qui décide ainsi indirectement de ce que garde le corpus final.",
+      "en": "Pretraining data curation in which a classifier scores each document for quality and drops the low-scoring ones. The classifier is often trained on labels produced by a larger language model, which thereby decides indirectly what the final corpus keeps."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "quality classifier",
+      "text-quality classifier",
+      "quality filtering",
+      "classifieur de qualité"
+    ],
+    "related": [
+      "llm-as-a-judge",
+      "training-data-lineage"
+    ],
+    "articles": [
+      "kolibri-tokenizer-is-the-sovereign-model-cost-lever"
+    ],
+    "addedOn": "06-10-2026"
   },
   {
     "id": "quantization",
@@ -3920,6 +3949,32 @@
     "addedOn": "10-06-2026"
   },
   {
+    "id": "sovereign-ai",
+    "label": {
+      "fr": "IA souveraine",
+      "en": "Sovereign AI"
+    },
+    "definition": {
+      "fr": "Maîtrise de la chaîne de l'IA par une juridiction ou une organisation donnée : qui construit les modèles, où les données sont traitées et où les modèles s'exécutent. États et éditeurs n'en retiennent pas le même périmètre ; les garanties concrètes dépendent donc de ce que chaque revendication documente.",
+      "en": "Control over the AI stack by a given jurisdiction or organization: who builds the models, where data is processed and where models run. Governments and vendors scope the term differently, so the concrete guarantees depend on what each claim documents."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "sovereign model",
+      "AI sovereignty",
+      "modèle souverain",
+      "souveraineté de l'IA"
+    ],
+    "related": [
+      "data-residency",
+      "open-weight-models"
+    ],
+    "articles": [
+      "kolibri-tokenizer-is-the-sovereign-model-cost-lever"
+    ],
+    "addedOn": "06-10-2026"
+  },
+  {
     "id": "specification-first-refactoring",
     "label": {
       "fr": "Réusinage guidé par la spécification",
@@ -4131,6 +4186,31 @@
     "addedOn": "18-06-2026"
   },
   {
+    "id": "synthetic-data-rephrasing",
+    "label": {
+      "fr": "Reformulation synthétique des données",
+      "en": "Synthetic data rephrasing"
+    },
+    "definition": {
+      "fr": "Réécriture de documents d'entraînement existants par un modèle de langage, par exemple sous forme d'article encyclopédique, de dialogue question-réponse ou de passage plus propre, en conservant leur contenu. Les faits viennent du texte d'origine, mais la formulation qu'apprend le modèle entraîné vient du générateur, qui entre ainsi dans la lignée de ses données.",
+      "en": "Rewriting existing training documents with a language model, for example as an encyclopedia entry, a question-and-answer dialogue or a cleaner passage, while keeping their content. The facts come from the original text, but the phrasing the trained model learns comes from the generator, which therefore becomes part of the model's data lineage."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "synthetic rephrasing",
+      "web data rephrasing",
+      "LLM rephrasing",
+      "reformulation synthétique"
+    ],
+    "related": [
+      "training-data-lineage"
+    ],
+    "articles": [
+      "kolibri-tokenizer-is-the-sovereign-model-cost-lever"
+    ],
+    "addedOn": "06-10-2026"
+  },
+  {
     "id": "test-hermeticity",
     "label": {
       "fr": "Herméticité des tests",
@@ -4314,6 +4394,31 @@
     "addedOn": "17-09-2026"
   },
   {
+    "id": "tokenizer-efficiency",
+    "label": {
+      "fr": "Efficacité de la tokenisation",
+      "en": "Tokenizer efficiency"
+    },
+    "definition": {
+      "fr": "Nombre de tokens qu'un tokenizer consomme pour encoder un texte donné, qui varie selon la langue et le domaine. Moins de tokens pour un même texte réduit le coût de chaque requête et libère de la place dans la fenêtre de contexte, mais le gain ne vaut que pour la part du trafic rédigée dans la langue où il a été mesuré.",
+      "en": "How many tokens a tokenizer needs to encode a given text, which varies by language and domain. Fewer tokens for the same text lowers the cost of each request and frees context window space, but the gain applies only to the share of traffic written in the language where it was measured."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "tokenizer fertility",
+      "tokens per word",
+      "token efficiency",
+      "fertilité du tokenizer"
+    ],
+    "related": [
+      "context-window"
+    ],
+    "articles": [
+      "kolibri-tokenizer-is-the-sovereign-model-cost-lever"
+    ],
+    "addedOn": "06-10-2026"
+  },
+  {
     "id": "tool-poisoning",
     "label": {
       "fr": "Empoisonnement d'outils",
@@ -4394,6 +4499,31 @@
       "failure-record-in-context-drives-the-repeat"
     ],
     "addedOn": "12-05-2026"
+  },
+  {
+    "id": "training-data-lineage",
+    "label": {
+      "fr": "Lignée des données d'entraînement",
+      "en": "Training data lineage"
+    },
+    "definition": {
+      "fr": "Registre documenté de l'origine du corpus d'entraînement d'un modèle et des traitements et modèles qui l'ont transformé : sources, filtres, classifieurs et générateurs. Une lignée peut être entièrement tracée et inclure malgré tout des modèles tiers ; la traçabilité et l'absence d'influence extérieure sont donc deux exigences distinctes.",
+      "en": "The documented record of where a model's training corpus came from and which processes and models transformed it: sources, filters, classifiers and generators. A lineage can be fully accounted for and still include third-party models, so auditability and the absence of outside influence are separate requirements."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "data lineage",
+      "training data provenance",
+      "corpus lineage",
+      "lignée des données"
+    ],
+    "related": [
+      "open-weight-models"
+    ],
+    "articles": [
+      "kolibri-tokenizer-is-the-sovereign-model-cost-lever"
+    ],
+    "addedOn": "06-10-2026"
   },
   {
     "id": "trust-boundary",

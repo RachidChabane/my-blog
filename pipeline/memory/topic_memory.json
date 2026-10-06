@@ -3564,5 +3564,59 @@
     ],
     "published_at": "2026-09-27",
     "embedding": null
+  },
+  {
+    "translation_key": "kolibri-tokenizer-is-the-sovereign-model-cost-lever",
+    "topic_id": "kolibri-tokenizer-is-the-sovereign-model-cost-lever",
+    "dedup_key": "a sovereign german open weight moe model wins on tokenizer efficiency for german text as an independent count confirms while its sovereignty claim covers deployment not training data provenance",
+    "title": "Kolibri's sovereignty is an audit trail you have to read",
+    "slugs": {
+      "fr": "la-souverainete-de-kolibri-est-une-piste-d-audit-a-lire",
+      "en": "kolibri-sovereignty-is-an-audit-trail-you-have-to-read"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Aleph Alpha blog, Kolibri release, architecture",
+        "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model",
+        "retrieved_at": "2026-10-06",
+        "excerpt": "Kolibri is an English-German Mixture-of-Experts Transformer with 78B total parameters, 3B active.",
+        "source_date": "2026-10-03"
+      },
+      {
+        "source_id": "s2",
+        "label": "tej.as, independent Kolibri tokenizer measurement on legal German",
+        "url": "https://tej.as/blog/aleph-alpha-kolibri",
+        "retrieved_at": "2026-10-06",
+        "excerpt": "On legal German, Kolibri needed 15% fewer tokens than GPT-5’s tokenizer, even more than Aleph Alpha’s own 11.2%. In English it tied with it.",
+        "source_date": "2026-10-03"
+      },
+      {
+        "source_id": "s3",
+        "label": "tej.as, Kolibri training data provenance (restating the vendor model card)",
+        "url": "https://tej.as/blog/aleph-alpha-kolibri",
+        "retrieved_at": "2026-10-06",
+        "excerpt": "Sovereign doesn’t mean that nothing from outside Europe went in. The model card says so itself: English web text was rephrased with Google’s Gemma 4 , German with Mistral-NeMo . Qwen3-32B labeled data for the quality filters.",
+        "source_date": "2026-10-03"
+      },
+      {
+        "source_id": "s4",
+        "label": "Aleph Alpha blog, Kolibri release, sovereign positioning",
+        "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model",
+        "retrieved_at": "2026-10-06",
+        "excerpt": "Kolibri is a specialized language model built for sovereign mission-critical work in regulated areas including public administration, industrials and aerospace.",
+        "source_date": "2026-10-03"
+      },
+      {
+        "source_id": "s5",
+        "label": "Aleph Alpha blog, Kolibri release, German compression claim",
+        "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model",
+        "retrieved_at": "2026-10-06",
+        "excerpt": "Because of the 21% German share in our data, it compresses German language better than other SOTA models.",
+        "source_date": "2026-10-03"
+      }
+    ],
+    "published_at": "2026-10-06",
+    "embedding": null
   }
 ]

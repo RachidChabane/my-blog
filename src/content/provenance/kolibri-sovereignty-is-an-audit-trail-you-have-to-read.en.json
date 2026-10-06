@@ -1,0 +1,85 @@
+{
+  "slug": "kolibri-sovereignty-is-an-audit-trail-you-have-to-read",
+  "lang": "en",
+  "translationKey": "kolibri-tokenizer-is-the-sovereign-model-cost-lever",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Aleph Alpha blog, Kolibri release, architecture",
+      "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model",
+      "excerpt": "Kolibri is an English-German Mixture-of-Experts Transformer with 78B total parameters, 3B active."
+    },
+    {
+      "sourceId": "s2",
+      "label": "tej.as, independent Kolibri tokenizer measurement on legal German",
+      "url": "https://tej.as/blog/aleph-alpha-kolibri",
+      "excerpt": "On legal German, Kolibri needed 15% fewer tokens than GPT-5’s tokenizer, even more than Aleph Alpha’s own 11.2%. In English it tied with it."
+    },
+    {
+      "sourceId": "s3",
+      "label": "tej.as, Kolibri training data provenance (restating the vendor model card)",
+      "url": "https://tej.as/blog/aleph-alpha-kolibri",
+      "excerpt": "Sovereign doesn’t mean that nothing from outside Europe went in. The model card says so itself: English web text was rephrased with Google’s Gemma 4 , German with Mistral-NeMo . Qwen3-32B labeled data for the quality filters."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Aleph Alpha blog, Kolibri release, sovereign positioning",
+      "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model",
+      "excerpt": "Kolibri is a specialized language model built for sovereign mission-critical work in regulated areas including public administration, industrials and aerospace."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Aleph Alpha blog, Kolibri release, German compression claim",
+      "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model",
+      "excerpt": "Because of the 21% German share in our data, it compresses German language better than other SOTA models."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Aleph Alpha blog, Kolibri release, sovereignty definition",
+      "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model",
+      "excerpt": "Sovereignty, for us, combines two dimensions: how we built the model, and how it transfers to our customers."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Aleph Alpha blog, Kolibri release, supply-chain integrity claim",
+      "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model",
+      "excerpt": "We offer full supply-chain integrity and account for every decision, from data ingestion, through pre- and post-training, to the final evaluations."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Aleph Alpha blog, Kolibri release, deployment freedom claim",
+      "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model",
+      "excerpt": "Customers have full freedom of deployment and intellectual-property safety, so compliance comes as an inherited property of the model."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Aleph Alpha blog, Kolibri release, German rephrasing method",
+      "url": "https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model",
+      "excerpt": "The second was to rephrase German documents we already had. An LLM rewrites an organic German document in the style of an encyclopedia entry, a Q&A dialogue or a text passage, preserving its content."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Aleph Alpha Kolibri-1 model card, synthetic data policy",
+      "url": "https://huggingface.co/Aleph-Alpha/Kolibri-1",
+      "excerpt": "We generated synthetic data using permissively-licensed LLMs."
+    },
+    {
+      "sourceId": "s11",
+      "label": "Aleph Alpha Kolibri-1 model card, German rephrasing model",
+      "url": "https://huggingface.co/Aleph-Alpha/Kolibri-1",
+      "excerpt": "German synthetic rephrasings of web data were produced with Mistral-NeMo-12B."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Aleph Alpha Kolibri-1 model card, English rephrasing model",
+      "url": "https://huggingface.co/Aleph-Alpha/Kolibri-1",
+      "excerpt": "Deduplicated English Common Crawl was rephrased with Gemma-4-26B-A4B following a Nemotron-CC-style recipe, using five prompt templates applied to each seed document: diverse QA pairs, distillation, knowledge list, knowledge extraction, and encyclopedia-style rewriting."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Aleph Alpha Kolibri-1 model card, quality-classifier annotations",
+      "url": "https://huggingface.co/Aleph-Alpha/Kolibri-1",
+      "excerpt": "LLM-as-a-judge annotations using Qwen3-32B over randomly sampled English Common Crawl were generated as training data for our text-quality classifiers"
+    }
+  ]
+}
