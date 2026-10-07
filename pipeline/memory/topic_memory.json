@@ -3618,5 +3618,91 @@
     ],
     "published_at": "2026-10-06",
     "embedding": null
+  },
+  {
+    "translation_key": "decision-model-confidence-gate",
+    "topic_id": "decision-model-confidence-gate-fails-beyond-known-ground",
+    "dedup_key": "a decision model marketed as calibrated keeps high confidence when the prompt holds no basis for an answer so a confidence threshold gate routes unknowable cases to automation as an independent audit of jev measured",
+    "title": "A confidence threshold should not carry a decision-model gate alone",
+    "slugs": {
+      "fr": "seuil-de-confiance-aiguillage-modele-de-decision",
+      "en": "confidence-threshold-decision-model-gate"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "TypeSafe blog, introducing System One models and Jev, calibrated decisions claim",
+        "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+        "retrieved_at": "2026-10-07",
+        "excerpt": "Calibrated decisions: answers with epistemically honest probabilities on System One tasks.",
+        "source_date": "2026-09-15"
+      },
+      {
+        "source_id": "s2",
+        "label": "TypeSafe blog, introducing System One models and Jev, automation rationale",
+        "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+        "retrieved_at": "2026-10-07",
+        "excerpt": "If a model can do a task 95% of the time but doesn’t say when it’s in the 5%, it can’t automate that task.",
+        "source_date": "2026-09-15"
+      },
+      {
+        "source_id": "s3",
+        "label": "Synthpop, does a decision model know when it is guessing, audit subject",
+        "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+        "retrieved_at": "2026-10-07",
+        "excerpt": "We tested the best-known one, Jev from TypeSafe AI",
+        "source_date": "2026-10-01"
+      },
+      {
+        "source_id": "s4",
+        "label": "Synthpop, does a decision model know when it is guessing, audit scale",
+        "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+        "retrieved_at": "2026-10-07",
+        "excerpt": "We tested both claims in about 575,000 Jev calls.",
+        "source_date": "2026-10-01"
+      },
+      {
+        "source_id": "s5",
+        "label": "Synthpop, does a decision model know when it is guessing, familiar vs beyond-boundary finding",
+        "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+        "retrieved_at": "2026-10-07",
+        "excerpt": "On familiar closed-choice tasks, confidence tracked accuracy well and supported useful filtering. When the prompt contained no basis for an answer, or the question fell beyond the observed knowledge boundary, confidence often stayed high.",
+        "source_date": "2026-10-01"
+      },
+      {
+        "source_id": "s6",
+        "label": "Synthpop, does a decision model know when it is guessing, no-hints test result",
+        "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+        "retrieved_at": "2026-10-07",
+        "excerpt": "Jev was still 32–36% sure of its top pick on average. An even split across the options would be about 1%, and that's roughly how often it was right.",
+        "source_date": "2026-10-01"
+      },
+      {
+        "source_id": "s7",
+        "label": "Synthpop, does a decision model know when it is guessing, option-order test",
+        "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+        "retrieved_at": "2026-10-07",
+        "excerpt": "We asked the same question with the six options in all 720 possible orders, and Jev picked \"one\" every time, with 0.80 on average.",
+        "source_date": "2026-10-01"
+      },
+      {
+        "source_id": "s8",
+        "label": "Synthpop, does a decision model know when it is guessing, conclusion",
+        "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+        "retrieved_at": "2026-10-07",
+        "excerpt": "Jev's confidence is useful on familiar ground and unreliable beyond it, and correcting the number afterwards doesn't help.",
+        "source_date": "2026-10-01"
+      },
+      {
+        "source_id": "s9",
+        "label": "arXiv 2610.01006, decision-model confidence beyond the knowledge boundary, abstract",
+        "url": "https://arxiv.org/abs/2610.01006",
+        "retrieved_at": "2026-10-07",
+        "excerpt": "Decision models return probabilities intended for routing, abstention and automated action. Calibration makes those probabilities useful on average, but does not establish whether low confidence reflects chance or missing knowledge, nor whether confidence falls when a model moves beyond what it knows.",
+        "source_date": "2026-10-01"
+      }
+    ],
+    "published_at": "2026-10-07",
+    "embedding": null
   }
 ]

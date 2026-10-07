@@ -1,0 +1,115 @@
+{
+  "slug": "seuil-de-confiance-aiguillage-modele-de-decision",
+  "lang": "fr",
+  "translationKey": "decision-model-confidence-gate",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "TypeSafe blog, introducing System One models and Jev, calibrated decisions claim",
+      "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+      "excerpt": "Calibrated decisions: answers with epistemically honest probabilities on System One tasks."
+    },
+    {
+      "sourceId": "s2",
+      "label": "TypeSafe blog, introducing System One models and Jev, automation rationale",
+      "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+      "excerpt": "If a model can do a task 95% of the time but doesn’t say when it’s in the 5%, it can’t automate that task."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Synthpop, does a decision model know when it is guessing, audit subject",
+      "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+      "excerpt": "We tested the best-known one, Jev from TypeSafe AI"
+    },
+    {
+      "sourceId": "s4",
+      "label": "Synthpop, does a decision model know when it is guessing, audit scale",
+      "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+      "excerpt": "We tested both claims in about 575,000 Jev calls."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Synthpop, does a decision model know when it is guessing, familiar vs beyond-boundary finding",
+      "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+      "excerpt": "On familiar closed-choice tasks, confidence tracked accuracy well and supported useful filtering. When the prompt contained no basis for an answer, or the question fell beyond the observed knowledge boundary, confidence often stayed high."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Synthpop, does a decision model know when it is guessing, no-hints test result",
+      "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+      "excerpt": "Jev was still 32–36% sure of its top pick on average. An even split across the options would be about 1%, and that's roughly how often it was right."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Synthpop, does a decision model know when it is guessing, option-order test",
+      "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+      "excerpt": "We asked the same question with the six options in all 720 possible orders, and Jev picked \"one\" every time, with 0.80 on average."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Synthpop, does a decision model know when it is guessing, conclusion",
+      "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+      "excerpt": "Jev's confidence is useful on familiar ground and unreliable beyond it, and correcting the number afterwards doesn't help."
+    },
+    {
+      "sourceId": "s9",
+      "label": "arXiv 2610.01006, Beyond Answer Confidence, preprint by the Synthpop audit authors, abstract",
+      "url": "https://arxiv.org/abs/2610.01006",
+      "excerpt": "Decision models return probabilities intended for routing, abstention and automated action. Calibration makes those probabilities useful on average, but does not establish whether low confidence reflects chance or missing knowledge, nor whether confidence falls when a model moves beyond what it knows."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Synthpop, does a decision model know when it is guessing, fair-die question behind the option-order test",
+      "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+      "excerpt": "The die is fair, so each face has a one-in-six chance and nothing in the question favours \"one\". By saying 77%, Jev claims to know something it can't. This wasn't one unlucky call. We asked the same question with the six options in all 720 possible orders, and Jev picked \"one\" every time, with 0.80 on average."
+    },
+    {
+      "sourceId": "s11",
+      "label": "Synthpop, does a decision model know when it is guessing, scope of the test",
+      "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+      "excerpt": "Other versions and model families may behave differently."
+    },
+    {
+      "sourceId": "s12",
+      "label": "TypeSafe docs, Confidence, high-confidence range",
+      "url": "https://docs.typesafe.ai/confidence",
+      "excerpt": "High confidence: Act automatically. The model has a clear read and you can proceed without human involvement."
+    },
+    {
+      "sourceId": "s13",
+      "label": "TypeSafe docs, Confidence, low-confidence range",
+      "url": "https://docs.typesafe.ai/confidence",
+      "excerpt": "Low confidence: Do not act. Route to a human, request clarification, or fall back to a different system. The model is telling you it does not have enough information or the question is not a good fit."
+    },
+    {
+      "sourceId": "s14",
+      "label": "TypeSafe docs, Confidence, setting thresholds",
+      "url": "https://docs.typesafe.ai/confidence",
+      "excerpt": "Start with conservative thresholds, test with your own data, and adjust as you observe results."
+    },
+    {
+      "sourceId": "s15",
+      "label": "TypeSafe docs, Jev 1.13 jaggedness, failure-mode table row on choice option order",
+      "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13",
+      "excerpt": "Choice option order Reorder the options and check the answer is consistent"
+    },
+    {
+      "sourceId": "s16",
+      "label": "Bartosz Mikulski, TypeSafe's Jev can't see, test setup",
+      "url": "https://mikulskibartosz.name/typesafe-jev-guess-what-i-drew",
+      "excerpt": "So I turned every drawing into text and made Jev guess what I drew anyway."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Bartosz Mikulski, TypeSafe's Jev can't see, answer distribution",
+      "url": "https://mikulskibartosz.name/typesafe-jev-guess-what-i-drew",
+      "excerpt": "Jev answered airplane for 209 of the 400 drawings."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Synthpop, does a decision model know when it is guessing, authorship disclosure",
+      "url": "https://www.synthpop.ai/resources/does-a-decision-model-know-when-it-is-guessing-post-1",
+      "excerpt": "Disclosure pending author confirmation: any commercial or financial relationships with TypeSafe, TypeLLM or other relevant model providers."
+    }
+  ]
+}

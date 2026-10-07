@@ -22,7 +22,8 @@
     ],
     "articles": [
       "code-review-agents-signal-to-noise",
-      "irreversible-actions-before-abstention"
+      "irreversible-actions-before-abstention",
+      "decision-model-confidence-gate"
     ],
     "addedOn": "12-07-2026"
   },
@@ -51,7 +52,8 @@
       "tool-reversibility"
     ],
     "articles": [
-      "verification-frontiere-action-2026-08"
+      "verification-frontiere-action-2026-08",
+      "decision-model-confidence-gate"
     ],
     "addedOn": "03-08-2026"
   },
@@ -1277,6 +1279,31 @@
     "addedOn": "02-08-2026"
   },
   {
+    "id": "confidence-calibration",
+    "label": {
+      "fr": "Calibration de la confiance",
+      "en": "Confidence calibration"
+    },
+    "definition": {
+      "fr": "Accord entre la probabilité qu'un modèle annonce et la fréquence à laquelle il a raison : sur un grand nombre de réponses données avec une même probabilité, à peu près cette proportion doit être juste. C'est une propriété de moyenne, si bien qu'un modèle bien calibré peut encore répondre avec assurance sur une entrée isolée pour laquelle il n'avait aucun élément.",
+      "en": "The agreement between the probability a model states and how often it is right: across many answers given at the same stated probability, about that share should be correct. It is a property of averages, so a well-calibrated model can still answer confidently on a single input it had no basis for."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "calibration",
+      "model calibration",
+      "calibrated confidence",
+      "calibration du modèle"
+    ],
+    "related": [
+      "abstain-by-default"
+    ],
+    "articles": [
+      "decision-model-confidence-gate"
+    ],
+    "addedOn": "07-10-2026"
+  },
+  {
     "id": "context-budget",
     "label": {
       "fr": "Budget de contexte",
@@ -2087,6 +2114,32 @@
     "addedOn": "18-09-2026"
   },
   {
+    "id": "human-in-the-loop",
+    "label": {
+      "fr": "Humain dans la boucle",
+      "en": "Human in the loop"
+    },
+    "definition": {
+      "fr": "Conception d'un système qui confie certains cas à une personne, pour revue ou décision, avant toute action automatisée, en général ceux qui passent sous un seuil de confiance ou sortent des conditions sur lesquelles le système a été validé. Son coût croît avec le volume transmis : la règle d'aiguillage fixe à la fois le risque résiduel et la charge de revue.",
+      "en": "A system design that hands selected cases to a person for review or decision before any automated action, typically those below a confidence threshold or outside the conditions the system was validated on. Its cost grows with the volume handed over, so the routing rule sets both the residual risk and the review workload."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "HITL",
+      "human escalation",
+      "human review routing",
+      "humain dans la boucle"
+    ],
+    "related": [
+      "abstain-by-default",
+      "action-boundary-precondition"
+    ],
+    "articles": [
+      "decision-model-confidence-gate"
+    ],
+    "addedOn": "07-10-2026"
+  },
+  {
     "id": "hybrid-retrieval",
     "label": {
       "fr": "Récupération hybride",
@@ -2269,6 +2322,30 @@
       "slopcodebench-iterative-maintainability"
     ],
     "addedOn": "16-06-2026"
+  },
+  {
+    "id": "knowledge-boundary",
+    "label": {
+      "fr": "Frontière de connaissance",
+      "en": "Knowledge boundary"
+    },
+    "definition": {
+      "fr": "Limite des entrées sur lesquelles les réponses d'un modèle sont fiables, fixée par ce que couvrent réellement son entraînement et sa requête. Au-delà, le modèle produit toujours une réponse et sa confiance affichée ne baisse pas forcément ; la confiance seule ne révèle donc pas que la limite a été franchie.",
+      "en": "The edge of the inputs on which a model's answers are reliable, set by what its training and its prompt actually cover. Past that edge a model still produces an answer and its stated confidence does not necessarily drop, so confidence alone does not reveal that the edge was crossed."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "beyond-boundary input",
+      "competence boundary",
+      "frontière de connaissance"
+    ],
+    "related": [
+      "confidence-calibration"
+    ],
+    "articles": [
+      "decision-model-confidence-gate"
+    ],
+    "addedOn": "07-10-2026"
   },
   {
     "id": "knowledge-coverage",
@@ -2806,6 +2883,31 @@
     "addedOn": "04-05-2026"
   },
   {
+    "id": "option-order-bias",
+    "label": {
+      "fr": "Biais d'ordre des options",
+      "en": "Option-order bias"
+    },
+    "definition": {
+      "fr": "Dépendance systématique d'un modèle à choix multiples envers la place qu'occupe une option dans la liste, qu'on teste d'ordinaire en permutant les options pour voir si le contenu choisi change. Ce test ne détecte que la dépendance à la position : une préférence fixe pour le contenu d'une option résiste à tous les ordres.",
+      "en": "A multiple-choice model's systematic dependence on where an option sits in the list, usually tested by permuting the options and checking whether the chosen content changes. The permutation check detects position dependence only: a fixed preference for one option's content survives every ordering."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "option order bias",
+      "choice-order bias",
+      "permutation consistency check",
+      "biais d'ordre des options"
+    ],
+    "related": [
+      "confidence-calibration"
+    ],
+    "articles": [
+      "decision-model-confidence-gate"
+    ],
+    "addedOn": "07-10-2026"
+  },
+  {
     "id": "origin-attestation",
     "label": {
       "fr": "Attestation d'origine",
@@ -2941,6 +3043,32 @@
       "repair-guidance-loses-to-resampling"
     ],
     "addedOn": "05-09-2026"
+  },
+  {
+    "id": "prediction-distribution-monitoring",
+    "label": {
+      "fr": "Surveillance de la distribution des prédictions",
+      "en": "Prediction distribution monitoring"
+    },
+    "definition": {
+      "fr": "Suivi de la part du trafic réel qu'occupe chaque classe de sortie ou chaque réponse, avec une alerte quand l'une de ces parts s'écarte nettement de son niveau attendu. Elle se passe des probabilités du modèle et peut donc repérer un modèle qui dérive vers une seule réponse alors que sa confiance affichée paraît normale.",
+      "en": "Tracking the share of live traffic that each output class or answer takes, and alerting when one share moves far from its expected level. It needs no access to the model's probabilities, so it can catch a model drifting toward one answer while its stated confidence looks normal."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "output distribution monitoring",
+      "answer-share alarm",
+      "prediction drift monitoring",
+      "surveillance des prédictions"
+    ],
+    "related": [
+      "agent-observability",
+      "option-order-bias"
+    ],
+    "articles": [
+      "decision-model-confidence-gate"
+    ],
+    "addedOn": "07-10-2026"
   },
   {
     "id": "private-holdout",
