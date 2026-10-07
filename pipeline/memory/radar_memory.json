@@ -2065,5 +2065,39 @@
     ],
     "published_at": "2026-09-27",
     "embedding": null
+  },
+  {
+    "translation_key": "mistral-large-4-preview-still-in-training-measured-at-half-price",
+    "topic_id": "mistral-large-4-preview-still-in-training-measured-at-half-price",
+    "dedup_key": "mistral large 4 preview still in training measured at half price",
+    "title": "Mistral Large 4 previews at 50% off for two weeks with its reinforcement learning run still in flight, and Artificial Analysis scores the snapshot at 38",
+    "slugs": {
+      "fr": "mistral-large-4-preversion-score-date-de-peremption",
+      "en": "mistral-large-4-preview-score-shelf-life"
+    },
+    "sources": [
+      {
+        "label": "Mistral docs, \"Changelog\"",
+        "url": "https://docs.mistral.ai/getting-started/changelog",
+        "date": "06-10-2026"
+      },
+      {
+        "label": "Mistral docs, \"Mistral Large 4\" model card",
+        "url": "https://docs.mistral.ai/models/mistral-large-4-0",
+        "date": "06-10-2026"
+      },
+      {
+        "label": "Mistral, \"Introducing Mistral Large 4\"",
+        "url": "https://mistral.ai/news/mistral-large-4/",
+        "date": "06-10-2026"
+      },
+      {
+        "label": "Artificial Analysis, \"Mistral has released Mistral Large 4\"",
+        "url": "https://artificialanalysis.ai/articles/mistral-large-4-france-ai",
+        "date": "06-10-2026"
+      }
+    ],
+    "published_at": "2026-10-07",
+    "embedding": null
   }
 ]
