@@ -2099,5 +2099,34 @@
     ],
     "published_at": "2026-10-07",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-haiku-5-5-prompt-length-price-tier-at-100k",
+    "topic_id": "claude-haiku-5-5-prompt-length-price-tier-at-100k",
+    "dedup_key": "claude haiku 5 5 prompt length price tier at 100k",
+    "title": "Claude Haiku 5.5 prices prompts over 100k tokens 5x higher, and Artificial Analysis says its provisional cost figures do not include the step up cost",
+    "slugs": {
+      "fr": "claude-haiku-5-5-palier-de-prix-prompts-100k",
+      "en": "claude-haiku-5-5-100k-prompt-price-tier"
+    },
+    "sources": [
+      {
+        "label": "Anthropic, \"Introducing Claude Haiku 5.5\"",
+        "url": "https://www.anthropic.com/claude-haiku-5-5",
+        "date": "07-10-2026"
+      },
+      {
+        "label": "Artificial Analysis, \"Anthropic has released Claude Haiku 5.5\"",
+        "url": "https://artificialanalysis.ai/articles/claude-haiku-5-5",
+        "date": "07-10-2026"
+      },
+      {
+        "label": "Simon Willison, \"Claude Haiku 5.5\"",
+        "url": "https://simonwillison.net/2026/Oct/7/claude-haiku-5-5/",
+        "date": "07-10-2026"
+      }
+    ],
+    "published_at": "2026-10-08",
+    "embedding": null
   }
 ]
