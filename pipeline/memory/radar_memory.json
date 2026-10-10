@@ -2128,5 +2128,39 @@
     ],
     "published_at": "2026-10-08",
     "embedding": null
+  },
+  {
+    "translation_key": "mxc-1-0-enforcement-mode-writes-no-activity-report",
+    "topic_id": "mxc-1-0-enforcement-mode-writes-no-activity-report",
+    "dedup_key": "mxc 1 0 enforcement mode writes no activity report",
+    "title": "Microsoft Execution Containers is generally available, and its Enforcement mode applies the policy without an activity report",
+    "slugs": {
+      "fr": "mxc-1-0-mode-enforcement-sans-rapport-activite",
+      "en": "mxc-1-0-enforcement-mode-no-activity-report"
+    },
+    "sources": [
+      {
+        "label": "Windows Developer Blog, \"Microsoft Execution Containers: Policy-driven containment for AI agents\"",
+        "url": "https://blogs.windows.com/windowsdeveloper/2026/10/07/microsoft-execution-containers-policy-driven-containment-for-ai-agents/",
+        "date": "07-10-2026"
+      },
+      {
+        "label": "GitHub, microsoft/mxc release \"MXC SDK v1.0.0\"",
+        "url": "https://github.com/microsoft/mxc/releases/tag/v1.0.0",
+        "date": "07-10-2026"
+      },
+      {
+        "label": "Rajesh Beri, \"Microsoft's MXC Agent Containers Ship Before Intune Can Manage Them\"",
+        "url": "https://www.beri.net/article/microsoft-execution-containers-mxc-ga-windows-11-agent-sandbox-intune-entra-agent-365-coming-soon",
+        "date": "07-10-2026"
+      },
+      {
+        "label": "WindowsForum, \"Microsoft Execution Containers v1.0 Goes GA\"",
+        "url": "https://windowsforum.com/news/microsoft-execution-containers-v1-0-goes-ga-windows-11-updates-isolation-modes-and-agent-security.447534/",
+        "date": "07-10-2026"
+      }
+    ],
+    "published_at": "2026-10-10",
+    "embedding": null
   }
 ]
