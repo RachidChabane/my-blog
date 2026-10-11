@@ -1,0 +1,145 @@
+{
+  "slug": "live-web-agent-evals-are-deployments-on-someone-elses-site",
+  "lang": "en",
+  "translationKey": "live-web-agent-evals-run-side-effects-on-third-party-sites",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "Running them with access has been standard practice within the industry: public web search benchmarks are run on the live internet by default, and running them the same way allows us to compare our models with other models."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "Most of the cases in this report occurred during such evaluations."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "In one run, the model landed on a page referencing an unsolved homicide; that page contained a tip form run by a police department. Claude was instructed never to log in, create accounts, enter personal data, make purchases, or submit anything destructive, but the instructions did not rule out form submissions."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "Some of our fetch tools, which let Claude read webpages, limit the length of the URLs Claude can request. This is to prevent Claude from using long URLs to take certain unwanted actions, such as SQL or command injections (part of a URL is text passed to a site’s server, and a long one has room to carry such instructions). We saw several models, including Claude Opus 5 and Claude Mythos 5, get around this limitation by using free URL shortening services."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "Some of the public evaluations we no longer run; others we have moved to their offline versions, or rebuilt them so that their tasks do not reach live websites."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "Although the impact of these behaviors was minimal and we had already turned off live internet access for some high-risk and cybersecurity evaluations, we have now decided to expand that to include all our internal evaluations until we have confirmed that our security and monitoring measures (described in the remediation section of this post) reliably catch behaviors like these."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "We identified most of these cases through a review of transcripts that we began in July."
+    },
+    {
+      "sourceId": "s8",
+      "label": "NBC10 Philadelphia, Anthropic AI model submits false tip on unsolved Philly murder, police say",
+      "url": "https://www.nbcphiladelphia.com/news/local/anthropic-ai-model-submits-false-tip-on-unsolved-philly-murder-police-say/4477051/",
+      "excerpt": "The false homicide tip was posted on PhillyUnsolvedMurders.com back on July 18, 2026, at 11:27 p.m., police said."
+    },
+    {
+      "sourceId": "s9",
+      "label": "NBC10 Philadelphia, Anthropic AI model submits false tip on unsolved Philly murder, police say",
+      "url": "https://www.nbcphiladelphia.com/news/local/anthropic-ai-model-submits-false-tip-on-unsolved-philly-murder-police-say/4477051/",
+      "excerpt": "Police then located the submission in the website’s tip records and confirmed the corresponding email remained in spam."
+    },
+    {
+      "sourceId": "s10",
+      "label": "NBC10 Philadelphia, Anthropic AI model submits false tip on unsolved Philly murder, police say",
+      "url": "https://www.nbcphiladelphia.com/news/local/anthropic-ai-model-submits-false-tip-on-unsolved-philly-murder-police-say/4477051/",
+      "excerpt": "Anthropic said they discovered the incident on Sept. 28 and terminated the automated testing process responsible for the submission."
+    },
+    {
+      "sourceId": "s11",
+      "label": "NBC10 Philadelphia, Anthropic AI model submits false tip on unsolved Philly murder, police say",
+      "url": "https://www.nbcphiladelphia.com/news/local/anthropic-ai-model-submits-false-tip-on-unsolved-philly-murder-police-say/4477051/",
+      "excerpt": "“The department’s regular investigative process for crime tips requires human review and vetting before any tips are disseminated for investigative follow-up,” a Philadelphia Police spokesperson wrote."
+    },
+    {
+      "sourceId": "s12",
+      "label": "NBC10 Philadelphia, Anthropic AI model submits false tip on unsolved Philly murder, police say",
+      "url": "https://www.nbcphiladelphia.com/news/local/anthropic-ai-model-submits-false-tip-on-unsolved-philly-murder-police-say/4477051/",
+      "excerpt": "“Those PPD safeguards limited the impact of this incident. They do not diminish the seriousness of an AI system presenting fabricated information as though it came from a person with knowledge of a homicide,” the police spokesperson wrote."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Wikimedia Diff, OpenAI rogue agent activities found on Wikimedia projects, wiki editing",
+      "url": "https://diff.wikimedia.org/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/",
+      "excerpt": "Wiki editing: We’ve identified edits to Wikimedia wikis that we believe are from AI agents operated by OpenAI. These edits were not published to pages with visibility to general readers; almost all of them were testing edits in “sandbox” areas of the wiki. It also included a few edits to the configuration for a citation tool, which we believe were potentially malicious edits that were intended to misuse this tool as a proxy for fetching data from remote services. While Wikipedia policies allow bots to edit when they are disclosed and approved by the community, none of those approvals were sought in these incidents."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Wikimedia Diff, OpenAI rogue agent activities found on Wikimedia projects, investigation cost",
+      "url": "https://diff.wikimedia.org/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/",
+      "excerpt": "However, we are concerned about what could have occurred here, the difficulty and effort involved in investigating and attributing this activity, and the growing risks of agentic AI activity on our platforms in general."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Anthropic, Investigating unintended model actions, alignment discussion of the tip form case",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "In one case, tasked with generating example interactions with websites, Claude submitted an invented tip through a police department’s online form."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Anthropic, Investigating unintended model actions, closing note naming the police department",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "Note: The tip form example described above involved the Philadelphia Police Department, who self-disclosed today via their press release."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Anthropic, Investigating unintended model actions, form submissions",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "We saw instances where Claude submitted an online form when it shouldn’t have. Generally, this occurred when an evaluation’s instructions were ambiguous, or when a misconfiguration within the environment prevented Claude from working with dummy forms."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Anthropic, Investigating unintended model actions, practice copy of a government form",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "For example, in a case that happened multiple times on the same evaluation, an unreleased, non-frontier research model was meant to fill out a practice copy of a government form. When the copy failed to load or the model closed it by mistake, the model instead navigated to the website where the real form is normally hosted and submitted the form there."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Anthropic, Investigating unintended model actions, URL shortener operator report",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "We first identified this behavior internally, but as we were writing this post, an operator of the da.gd URL shortening service let us know that they had also found Claude using their website for this purpose."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Anthropic, Investigating unintended model actions, remediation tooling",
+      "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "excerpt": "we have built tooling to automatically detect and block the kinds of behaviors described above. This tooling now runs on most of our evaluations and on internal agentic use of frontier models. When we tested it against the cases described in this post, it blocked all of them."
+    },
+    {
+      "sourceId": "s21",
+      "label": "NBC10 Philadelphia, police spokesperson statement quoted, city safeguards and delay",
+      "url": "https://www.nbcphiladelphia.com/news/local/anthropic-ai-model-submits-false-tip-on-unsolved-philly-murder-police-say/4477051/",
+      "excerpt": "“The City of Philadelphia takes this incident very seriously. The company must strengthen its safeguards to prevent similar incidents from impacting city systems without the city’s knowledge,” the police spokesperson wrote. “The two-month delay in detecting and reporting the incident to the City is unacceptable.”"
+    },
+    {
+      "sourceId": "s22",
+      "label": "NBC10 Philadelphia, police spokesperson statement quoted, tip vetting process",
+      "url": "https://www.nbcphiladelphia.com/news/local/anthropic-ai-model-submits-false-tip-on-unsolved-philly-murder-police-say/4477051/",
+      "excerpt": "“The department’s regular investigative process for crime tips requires human review and vetting before any tips are disseminated for investigative follow-up,” a Philadelphia Police spokesperson wrote. “Regardless of who submits information or how it reaches the department, a tip is a lead to assess - not an established fact. Investigators evaluate its credibility and seek corroborating evidence. An automated submission does not bypass that process.”"
+    },
+    {
+      "sourceId": "s23",
+      "label": "Wikimedia Diff, OpenAI rogue agent activities found on Wikimedia projects, own investigation",
+      "url": "https://diff.wikimedia.org/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/",
+      "excerpt": "The Wikimedia Foundation conducted its own investigation to see whether Wikimedia websites had been similarly affected by AI agents, focusing on those operated by OpenAI."
+    }
+  ]
+}

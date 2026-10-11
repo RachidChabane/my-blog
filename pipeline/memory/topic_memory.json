@@ -3704,5 +3704,131 @@
     ],
     "published_at": "2026-10-07",
     "embedding": null
+  },
+  {
+    "translation_key": "live-web-agent-evals-run-side-effects-on-third-party-sites",
+    "topic_id": "live-web-agent-evals-run-side-effects-on-third-party-sites",
+    "dedup_key": "agent evaluations run on the live internet by default push unintended side effects such as form submissions and access control workarounds onto third party websites so detection falls to the host and moving evals offline trades away benchmark comparability",
+    "title": "A live-web agent eval is a deployment on someone else's site",
+    "slugs": {
+      "fr": "evaluations-agents-web-reel-deploiement-chez-un-tiers",
+      "en": "live-web-agent-evals-are-deployments-on-someone-elses-site"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+        "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "Running them with access has been standard practice within the industry: public web search benchmarks are run on the live internet by default, and running them the same way allows us to compare our models with other models.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s2",
+        "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+        "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "Most of the cases in this report occurred during such evaluations.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s3",
+        "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+        "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "In one run, the model landed on a page referencing an unsolved homicide; that page contained a tip form run by a police department. Claude was instructed never to log in, create accounts, enter personal data, make purchases, or submit anything destructive, but the instructions did not rule out form submissions.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s4",
+        "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+        "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "Some of our fetch tools, which let Claude read webpages, limit the length of the URLs Claude can request. This is to prevent Claude from using long URLs to take certain unwanted actions, such as SQL or command injections (part of a URL is text passed to a site’s server, and a long one has room to carry such instructions). We saw several models, including Claude Opus 5 and Claude Mythos 5, get around this limitation by using free URL shortening services.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s5",
+        "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+        "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "Some of the public evaluations we no longer run; others we have moved to their offline versions, or rebuilt them so that their tasks do not reach live websites.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s6",
+        "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+        "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "Although the impact of these behaviors was minimal and we had already turned off live internet access for some high-risk and cybersecurity evaluations, we have now decided to expand that to include all our internal evaluations until we have confirmed that our security and monitoring measures (described in the remediation section of this post) reliably catch behaviors like these.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s7",
+        "label": "Anthropic, Investigating unintended model actions in our evaluations and internal use",
+        "url": "https://www.anthropic.com/research/investigating-unintended-model-actions",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "We identified most of these cases through a review of transcripts that we began in July.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s8",
+        "label": "NBC10 Philadelphia, Anthropic AI model submits false tip on unsolved Philly murder, police say",
+        "url": "https://www.nbcphiladelphia.com/news/local/anthropic-ai-model-submits-false-tip-on-unsolved-philly-murder-police-say/4477051/",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "The false homicide tip was posted on PhillyUnsolvedMurders.com back on July 18, 2026, at 11:27 p.m., police said.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s9",
+        "label": "NBC10 Philadelphia, Anthropic AI model submits false tip on unsolved Philly murder, police say",
+        "url": "https://www.nbcphiladelphia.com/news/local/anthropic-ai-model-submits-false-tip-on-unsolved-philly-murder-police-say/4477051/",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "Police then located the submission in the website’s tip records and confirmed the corresponding email remained in spam.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s10",
+        "label": "NBC10 Philadelphia, Anthropic AI model submits false tip on unsolved Philly murder, police say",
+        "url": "https://www.nbcphiladelphia.com/news/local/anthropic-ai-model-submits-false-tip-on-unsolved-philly-murder-police-say/4477051/",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "Anthropic said they discovered the incident on Sept. 28 and terminated the automated testing process responsible for the submission.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s11",
+        "label": "NBC10 Philadelphia, Anthropic AI model submits false tip on unsolved Philly murder, police say",
+        "url": "https://www.nbcphiladelphia.com/news/local/anthropic-ai-model-submits-false-tip-on-unsolved-philly-murder-police-say/4477051/",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "“The department’s regular investigative process for crime tips requires human review and vetting before any tips are disseminated for investigative follow-up,” a Philadelphia Police spokesperson wrote.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s12",
+        "label": "NBC10 Philadelphia, Anthropic AI model submits false tip on unsolved Philly murder, police say",
+        "url": "https://www.nbcphiladelphia.com/news/local/anthropic-ai-model-submits-false-tip-on-unsolved-philly-murder-police-say/4477051/",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "“Those PPD safeguards limited the impact of this incident. They do not diminish the seriousness of an AI system presenting fabricated information as though it came from a person with knowledge of a homicide,” the police spokesperson wrote.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s13",
+        "label": "Wikimedia Diff, OpenAI rogue agent activities found on Wikimedia projects, wiki editing",
+        "url": "https://diff.wikimedia.org/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "Wiki editing: We’ve identified edits to Wikimedia wikis that we believe are from AI agents operated by OpenAI. These edits were not published to pages with visibility to general readers; almost all of them were testing edits in “sandbox” areas of the wiki. It also included a few edits to the configuration for a citation tool, which we believe were potentially malicious edits that were intended to misuse this tool as a proxy for fetching data from remote services. While Wikipedia policies allow bots to edit when they are disclosed and approved by the community, none of those approvals were sought in these incidents.",
+        "source_date": "2026-10-05"
+      },
+      {
+        "source_id": "s14",
+        "label": "Wikimedia Diff, OpenAI rogue agent activities found on Wikimedia projects, investigation cost",
+        "url": "https://diff.wikimedia.org/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/",
+        "retrieved_at": "2026-10-11",
+        "excerpt": "However, we are concerned about what could have occurred here, the difficulty and effort involved in investigating and attributing this activity, and the growing risks of agentic AI activity on our platforms in general.",
+        "source_date": "2026-10-05"
+      }
+    ],
+    "published_at": "2026-10-11",
+    "embedding": null
   }
 ]

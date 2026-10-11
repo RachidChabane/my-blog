@@ -254,9 +254,36 @@
       "irreversible-actions-before-abstention",
       "verification-frontiere-action-2026-08",
       "arret-anticipe-sondes-2026-08",
-      "ask-when-unsure-is-gated-on-detection"
+      "ask-when-unsure-is-gated-on-detection",
+      "live-web-agent-evals-run-side-effects-on-third-party-sites"
     ],
     "addedOn": "12-05-2026"
+  },
+  {
+    "id": "agent-identity-disclosure",
+    "label": {
+      "fr": "Identification déclarée des agents",
+      "en": "Agent identity disclosure"
+    },
+    "definition": {
+      "fr": "Pratique qui consiste à faire s'identifier un agent automatisé auprès des sites qu'il visite, par une identité stable et attribuable et une déclaration de ce qu'il fait, comme l'exigent déjà les politiques relatives aux robots de certains sites. Sans elle, l'hôte ne peut que repérer un trafic inhabituel et doit établir seul qui l'a envoyé.",
+      "en": "The practice of having an automated agent identify itself to the sites it visits, through a stable, attributable identity and a declaration of what it is doing, as some sites' bot policies already require. Without it, a host can only spot unusual traffic and must work out on its own who sent it."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "agent identification",
+      "bot disclosure",
+      "declared automation",
+      "identification des agents"
+    ],
+    "related": [
+      "live-web-evaluation",
+      "trust-boundary"
+    ],
+    "articles": [
+      "live-web-agent-evals-run-side-effects-on-third-party-sites"
+    ],
+    "addedOn": "11-10-2026"
   },
   {
     "id": "agent-instruction-file",
@@ -471,7 +498,8 @@
     "articles": [
       "command-denylist-not-a-security-boundary",
       "allowlist-verbe-capacite-2026-08",
-      "read-only-egress-is-a-write-channel"
+      "read-only-egress-is-a-write-channel",
+      "live-web-agent-evals-run-side-effects-on-third-party-sites"
     ],
     "addedOn": "17-07-2026"
   },
@@ -1682,7 +1710,8 @@
       "trust-boundary"
     ],
     "articles": [
-      "read-only-egress-is-a-write-channel"
+      "read-only-egress-is-a-write-channel",
+      "live-web-agent-evals-run-side-effects-on-third-party-sites"
     ],
     "addedOn": "07-09-2026"
   },
@@ -1805,6 +1834,33 @@
       "publication-guardrails-factcheck"
     ],
     "addedOn": "23-05-2026"
+  },
+  {
+    "id": "fail-closed",
+    "label": {
+      "fr": "Refus en cas de défaillance",
+      "en": "Fail-closed"
+    },
+    "definition": {
+      "fr": "Principe de conception selon lequel un contrôle qui ne parvient pas à décider, ou dont une dépendance manque, refuse l'action au lieu de l'autoriser. Un contrôle qui laisse passer en cas de défaillance fait l'inverse : un service factice absent ou une règle illisible se transforme alors en accès libre au service réel.",
+      "en": "A design rule under which a control that cannot reach a decision, or whose dependency is missing, denies the action rather than allowing it. A control that fails open does the reverse: a missing fake service or an unreadable rule turns into unrestricted access to the real one."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "fail closed",
+      "fail-safe default",
+      "default deny",
+      "refus par défaut"
+    ],
+    "related": [
+      "egress-allowlist",
+      "agent-sandboxing",
+      "least-privilege"
+    ],
+    "articles": [
+      "live-web-agent-evals-run-side-effects-on-third-party-sites"
+    ],
+    "addedOn": "11-10-2026"
   },
   {
     "id": "false-consensus",
@@ -2480,6 +2536,33 @@
     "addedOn": "08-08-2026"
   },
   {
+    "id": "live-web-evaluation",
+    "label": {
+      "fr": "Évaluation sur le web réel",
+      "en": "Live-web evaluation"
+    },
+    "definition": {
+      "fr": "Exécution d'un benchmark d'agent sur de vrais sites publics plutôt que sur une copie enregistrée ou simulée, souvent pour que les scores restent comparables à ceux d'autres modèles mesurés de la même façon. Les actions de l'agent atteignent des sites dont les propriétaires n'ont jamais accepté d'accueillir le test, si bien que tout effet de bord retombe sur un tiers.",
+      "en": "Running an agent benchmark against real public websites instead of a recorded or simulated copy, often so scores stay comparable with other models measured the same way. The agent's actions reach sites whose owners never agreed to host the test, so any side effect lands on a third party."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "live web evaluation",
+      "live-internet benchmark",
+      "online web benchmark",
+      "évaluation sur le web réel"
+    ],
+    "related": [
+      "agent-evaluation",
+      "offline-evaluation",
+      "state-safety"
+    ],
+    "articles": [
+      "live-web-agent-evals-run-side-effects-on-third-party-sites"
+    ],
+    "addedOn": "11-10-2026"
+  },
+  {
     "id": "llm-as-a-judge",
     "label": {
       "fr": "Modèle juge",
@@ -2847,7 +2930,8 @@
       "evaluation-harness"
     ],
     "articles": [
-      "observability-is-not-evaluation"
+      "observability-is-not-evaluation",
+      "live-web-agent-evals-run-side-effects-on-third-party-sites"
     ],
     "addedOn": "07-07-2026"
   },
@@ -3732,7 +3816,8 @@
       "egress-allowlist"
     ],
     "articles": [
-      "read-only-egress-is-a-write-channel"
+      "read-only-egress-is-a-write-channel",
+      "live-web-agent-evals-run-side-effects-on-third-party-sites"
     ],
     "addedOn": "07-09-2026"
   },
