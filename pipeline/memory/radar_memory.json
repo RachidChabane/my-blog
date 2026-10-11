@@ -2162,5 +2162,34 @@
     ],
     "published_at": "2026-10-10",
     "embedding": null
+  },
+  {
+    "translation_key": "embeddinggemma-2-128d-truncation-costs-multimodal-quality",
+    "topic_id": "embeddinggemma-2-128d-truncation-costs-multimodal-quality",
+    "dedup_key": "embeddinggemma 2 128d truncation costs multimodal quality",
+    "title": "EmbeddingGemma 2 puts text, images, video and audio in one space, and its 128-dimension setting drops the MMEB multimodal score from 59.01 to 45.65",
+    "slugs": {
+      "fr": "embeddinggemma-2-troncature-128d-qualite-multimodale",
+      "en": "embeddinggemma-2-128d-truncation-multimodal-quality"
+    },
+    "sources": [
+      {
+        "label": "Google, \"EmbeddingGemma 2: an open, lightweight multimodal embedding model\"",
+        "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+        "date": "06-10-2026"
+      },
+      {
+        "label": "Google AI for Developers, \"EmbeddingGemma 2 model card\"",
+        "url": "https://ai.google.dev/gemma/docs/embeddinggemma/model_card_2",
+        "date": "06-10-2026"
+      },
+      {
+        "label": "BrainDetox, \"What to Check When Choosing an On-Device Multimodal Embedder - EmbeddingGemma 2 Configurations, Truncation, and Input Limits\"",
+        "url": "https://braindetox.kr/en/posts/embeddinggemma_2_multimodal_embedding_on_device_2026.html",
+        "date": "07-10-2026"
+      }
+    ],
+    "published_at": "2026-10-11",
+    "embedding": null
   }
 ]
