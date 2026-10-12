@@ -1220,7 +1220,8 @@
       "edit-unit-size-beside-edit-format",
       "ask-when-unsure-is-gated-on-detection",
       "agent-ci-load-and-the-unearned-green",
-      "telemetry-off-forks-coding-agent-behaviour"
+      "telemetry-off-forks-coding-agent-behaviour",
+      "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output"
     ],
     "addedOn": "30-05-2026"
   },
@@ -3310,7 +3311,8 @@
     "articles": [
       "cli-agent-productivity-proxy-choice",
       "patch-quality-rate-needs-a-consistent-grader",
-      "agent-ci-load-and-the-unearned-green"
+      "agent-ci-load-and-the-unearned-green",
+      "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output"
     ],
     "addedOn": "18-07-2026"
   },
@@ -3463,6 +3465,33 @@
       "agentic-coding-thins-the-public-record"
     ],
     "addedOn": "27-05-2026"
+  },
+  {
+    "id": "randomized-controlled-trial",
+    "label": {
+      "fr": "Essai contrôlé randomisé",
+      "en": "Randomized controlled trial"
+    },
+    "definition": {
+      "fr": "Protocole d'étude qui répartit les participants entre les conditions par tirage au sort, de sorte qu'un écart de résultats entre les groupes puisse être imputé à la condition plutôt qu'à la composition des groupes. Une comparaison faite après coup entre participants regroupés selon la façon dont ils ont choisi d'agir relève de l'observation et n'hérite pas de cette garantie causale.",
+      "en": "A study design that assigns participants to conditions at random, so that a difference in outcomes between groups can be attributed to the condition rather than to who ended up in each group. A comparison drawn afterward between participants grouped by how they chose to behave is observational and does not inherit that causal warrant."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "RCT",
+      "randomized trial",
+      "randomised controlled trial",
+      "essai contrôlé randomisé"
+    ],
+    "related": [
+      "selection-bias",
+      "human-control-arm",
+      "placebo-control-arm"
+    ],
+    "articles": [
+      "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output"
+    ],
+    "addedOn": "12-10-2026"
   },
   {
     "id": "reasoning-effort",
@@ -3849,6 +3878,32 @@
     "addedOn": "23-08-2026"
   },
   {
+    "id": "scaffolded-assistance",
+    "label": {
+      "fr": "Assistance par étayage",
+      "en": "Scaffolded assistance"
+    },
+    "definition": {
+      "fr": "Configuration d'un assistant d'IA qui guide l'apprenant par des indices, des explications et des renvois vers les éléments utiles plutôt que de lui livrer des réponses toutes faites, afin qu'il continue de mener le raisonnement et d'écrire lui-même la solution.",
+      "en": "An AI assistant configuration that guides a learner with hints, explanations and pointers to the relevant material instead of handing over finished answers, so the learner still does the reasoning and writes the solution."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "explain-first mode",
+      "hint-based tutoring",
+      "guided assistance",
+      "assistance guidée"
+    ],
+    "related": [
+      "unassisted-performance-gap",
+      "coding-agents"
+    ],
+    "articles": [
+      "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output"
+    ],
+    "addedOn": "12-10-2026"
+  },
+  {
     "id": "scaling-inflection-point",
     "label": {
       "fr": "Point d'inflexion du budget de session",
@@ -3923,7 +3978,8 @@
     ],
     "articles": [
       "cli-agent-productivity-proxy-choice",
-      "agentic-coding-thins-the-public-record"
+      "agentic-coding-thins-the-public-record",
+      "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output"
     ],
     "addedOn": "18-07-2026"
   },
@@ -4766,6 +4822,33 @@
       "the-check-binds-the-action-not-the-decision"
     ],
     "addedOn": "01-07-2026"
+  },
+  {
+    "id": "unassisted-performance-gap",
+    "label": {
+      "fr": "Écart de performance sans assistance",
+      "en": "Unassisted performance gap"
+    },
+    "definition": {
+      "fr": "Baisse de la performance d'une personne sur une tâche une fois l'assistant d'IA retiré, mesurée par rapport à des personnes qui ont fait le même travail sans lui. L'assistance peut améliorer le score obtenu avec l'outil tout en dégradant la performance une fois l'outil retiré ; un travail produit avec l'assistant ne prouve donc pas que la compétence a été acquise.",
+      "en": "The drop in how well a person performs a task once an AI assistant is taken away, measured against people who did the same work without one. Assistance can raise the score obtained with the tool while lowering performance once the tool is removed, so work produced with the assistant is not evidence that the skill was learned."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "skill formation cost",
+      "unassisted performance",
+      "assistance withdrawal effect",
+      "écart de performance sans assistance"
+    ],
+    "related": [
+      "randomized-controlled-trial",
+      "proxy-metric",
+      "coding-agents"
+    ],
+    "articles": [
+      "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output"
+    ],
+    "addedOn": "12-10-2026"
   },
   {
     "id": "underspecification-detection",

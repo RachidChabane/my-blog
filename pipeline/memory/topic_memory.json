@@ -3830,5 +3830,163 @@
     ],
     "published_at": "2026-10-11",
     "embedding": null
+  },
+  {
+    "translation_key": "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output",
+    "topic_id": "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output",
+    "dedup_key": "ai assistance lifts immediate task performance but lowers unassisted performance and persistence and impairs coding skill formation as two independent randomized trials find with the harm concentrated in answer seeking and full delegation use while explanation seeking use preserves learning",
+    "title": "Switch the assistant off before you trust a new engineer's review",
+    "slugs": {
+      "fr": "coupez-l-assistant-avant-de-vous-fier-a-la-relecture-d-un-nouvel-arrivant",
+      "en": "switch-the-assistant-off-before-trusting-a-new-engineers-review"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Paper, AI Assistance Reduces Persistence and Hurts Independent Performance",
+        "url": "https://arxiv.org/abs/2604.04721",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "Here, through a series of randomized controlled trials on human-AI interactions (N = 1,222), we provide causal evidence for two key consequences of AI assistance: reduced persistence and impairment of unassisted performance.",
+        "source_date": "2026-10-03"
+      },
+      {
+        "source_id": "s2",
+        "label": "Paper, AI Assistance Reduces Persistence and Hurts Independent Performance",
+        "url": "https://arxiv.org/abs/2604.04721",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "Across a variety of tasks, including mathematical reasoning and reading comprehension, we find that although AI assistance improves performance in the short-term, people perform significantly worse without AI and are more likely to give up. Notably, these effects emerge after only brief interactions with AI (approximately 10 minutes).",
+        "source_date": "2026-10-03"
+      },
+      {
+        "source_id": "s3",
+        "label": "Paper, AI Assistance Reduces Persistence and Hurts Independent Performance",
+        "url": "https://arxiv.org/abs/2604.04721",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "Our analysis suggests that the persistence effect is concentrated among participants who used the AI to obtain direct solutions.",
+        "source_date": "2026-10-03"
+      },
+      {
+        "source_id": "s4",
+        "label": "Paper, AI Assistance Reduces Persistence and Hurts Independent Performance",
+        "url": "https://arxiv.org/abs/2604.04721",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "These results focus on the AI-assisted subset of our RCT data and are cross-sectional in nature; therefore, the findings below are not necessarily causal.",
+        "source_date": "2026-10-03"
+      },
+      {
+        "source_id": "s5",
+        "label": "UC Berkeley news, Using AI for Just 10 Minutes Erodes Your Ability to Persist at Hard Things",
+        "url": "https://vcresearch.berkeley.edu/news/using-ai-just-10-minutes-erodes-your-ability-persist-hard-things",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "A preliminary draft made waves earlier this year, and the team presented the updated, peer-reviewed paper this week at the Conference on Language Modeling.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s6",
+        "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+        "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "We found that using AI assistance led to a statistically significant decrease in mastery.",
+        "source_date": "2026-01-29"
+      },
+      {
+        "source_id": "s7",
+        "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+        "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "the AI group averaged 50% on the quiz, compared to 67% in the hand-coding group",
+        "source_date": "2026-01-29"
+      },
+      {
+        "source_id": "s8",
+        "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+        "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "On average, participants in the AI group finished about two minutes faster, although the difference was not statistically significant.",
+        "source_date": "2026-01-29"
+      },
+      {
+        "source_id": "s9",
+        "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+        "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "The largest gap in scores between the two groups was on debugging questions, suggesting that the ability to understand when code is incorrect and why it fails may be a particular area of concern if AI impedes coding development.",
+        "source_date": "2026-01-29"
+      },
+      {
+        "source_id": "s10",
+        "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+        "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "The participants who showed stronger mastery used AI assistance not just to produce code but to build comprehension while doing so",
+        "source_date": "2026-01-29"
+      },
+      {
+        "source_id": "s11",
+        "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+        "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "We recruited 52 (mostly junior) software engineers, each of whom had been using Python at least once a week for over a year.",
+        "source_date": "2026-01-29"
+      },
+      {
+        "source_id": "s12",
+        "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+        "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "participants in the AI group scored 17% lower than those who coded by hand",
+        "source_date": "2026-01-29"
+      },
+      {
+        "source_id": "s13",
+        "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+        "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "were unfamiliar with Trio, the Python library on which our tasks were based.",
+        "source_date": "2026-01-29"
+      },
+      {
+        "source_id": "s14",
+        "label": "Paper, How AI Impacts Skill Formation",
+        "url": "https://arxiv.org/abs/2601.20245",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "We find that AI use impairs conceptual understanding, code reading, and debugging abilities, without delivering significant efficiency gains on average.",
+        "source_date": "2026-01-28"
+      },
+      {
+        "source_id": "s15",
+        "label": "Paper, How AI Impacts Skill Formation",
+        "url": "https://arxiv.org/abs/2601.20245",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "Participants who fully delegated coding tasks showed some productivity improvements, but at the cost of learning the library.",
+        "source_date": "2026-01-28"
+      },
+      {
+        "source_id": "s16",
+        "label": "Paper, How AI Impacts Skill Formation",
+        "url": "https://arxiv.org/abs/2601.20245",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "We identify six distinct AI interaction patterns, three of which involve cognitive engagement and preserve learning outcomes even when participants receive AI assistance.",
+        "source_date": "2026-01-28"
+      },
+      {
+        "source_id": "s17",
+        "label": "UC Berkeley news, Using AI for Just 10 Minutes Erodes Your Ability to Persist at Hard Things",
+        "url": "https://vcresearch.berkeley.edu/news/using-ai-just-10-minutes-erodes-your-ability-persist-hard-things",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "A UC Berkeley researcher co-authored a study that raises profound questions about how we interact with artificial intelligence in education",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s18",
+        "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+        "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+        "retrieved_at": "2026-10-12",
+        "excerpt": "How AI assistance impacts the formation of coding skills \\ Anthropic",
+        "source_date": "2026-01-29"
+      }
+    ],
+    "published_at": "2026-10-12",
+    "embedding": null
   }
 ]

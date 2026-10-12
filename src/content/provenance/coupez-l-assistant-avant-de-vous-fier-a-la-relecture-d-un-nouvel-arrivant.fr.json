@@ -1,0 +1,169 @@
+{
+  "slug": "coupez-l-assistant-avant-de-vous-fier-a-la-relecture-d-un-nouvel-arrivant",
+  "lang": "fr",
+  "translationKey": "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Paper, AI Assistance Reduces Persistence and Hurts Independent Performance",
+      "url": "https://arxiv.org/abs/2604.04721",
+      "excerpt": "Here, through a series of randomized controlled trials on human-AI interactions (N = 1,222), we provide causal evidence for two key consequences of AI assistance: reduced persistence and impairment of unassisted performance."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Paper, AI Assistance Reduces Persistence and Hurts Independent Performance",
+      "url": "https://arxiv.org/abs/2604.04721",
+      "excerpt": "Across a variety of tasks, including mathematical reasoning and reading comprehension, we find that although AI assistance improves performance in the short-term, people perform significantly worse without AI and are more likely to give up. Notably, these effects emerge after only brief interactions with AI (approximately 10 minutes)."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Paper, AI Assistance Reduces Persistence and Hurts Independent Performance",
+      "url": "https://arxiv.org/abs/2604.04721",
+      "excerpt": "Our analysis suggests that the persistence effect is concentrated among participants who used the AI to obtain direct solutions."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Paper, AI Assistance Reduces Persistence and Hurts Independent Performance",
+      "url": "https://arxiv.org/abs/2604.04721",
+      "excerpt": "These results focus on the AI-assisted subset of our RCT data and are cross-sectional in nature; therefore, the findings below are not necessarily causal."
+    },
+    {
+      "sourceId": "s5",
+      "label": "UC Berkeley news, Using AI for Just 10 Minutes Erodes Your Ability to Persist at Hard Things",
+      "url": "https://vcresearch.berkeley.edu/news/using-ai-just-10-minutes-erodes-your-ability-persist-hard-things",
+      "excerpt": "A preliminary draft made waves earlier this year, and the team presented the updated, peer-reviewed paper this week at the Conference on Language Modeling."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "We found that using AI assistance led to a statistically significant decrease in mastery."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "the AI group averaged 50% on the quiz, compared to 67% in the hand-coding group"
+    },
+    {
+      "sourceId": "s8",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "On average, participants in the AI group finished about two minutes faster, although the difference was not statistically significant."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "The largest gap in scores between the two groups was on debugging questions, suggesting that the ability to understand when code is incorrect and why it fails may be a particular area of concern if AI impedes coding development."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "The participants who showed stronger mastery used AI assistance not just to produce code but to build comprehension while doing so"
+    },
+    {
+      "sourceId": "s11",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "We recruited 52 (mostly junior) software engineers, each of whom had been using Python at least once a week for over a year."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "participants in the AI group scored 17% lower than those who coded by hand"
+    },
+    {
+      "sourceId": "s13",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "were unfamiliar with Trio, the Python library on which our tasks were based."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Paper, How AI Impacts Skill Formation",
+      "url": "https://arxiv.org/abs/2601.20245",
+      "excerpt": "We find that AI use impairs conceptual understanding, code reading, and debugging abilities, without delivering significant efficiency gains on average."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Paper, How AI Impacts Skill Formation",
+      "url": "https://arxiv.org/abs/2601.20245",
+      "excerpt": "Participants who fully delegated coding tasks showed some productivity improvements, but at the cost of learning the library."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Paper, How AI Impacts Skill Formation",
+      "url": "https://arxiv.org/abs/2601.20245",
+      "excerpt": "We identify six distinct AI interaction patterns, three of which involve cognitive engagement and preserve learning outcomes even when participants receive AI assistance."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "How AI assistance impacts the formation of coding skills \\ Anthropic"
+    },
+    {
+      "sourceId": "s19",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills, causal-link caveat on interaction patterns",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "Our qualitative analysis does not draw a causal link between interaction patterns and learning outcomes, but it does point to behaviors associated with different learning outcomes."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills, conceptual inquiry pattern",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "Participants in this group only asked conceptual questions and relied on their improved understanding to complete the task. Although this group encountered many errors, they also independently resolved them. On average, this mode was the fastest among high-scoring patterns and second fastest overall, after AI delegation."
+    },
+    {
+      "sourceId": "s21",
+      "label": "Knowledge at Wharton, Without Guardrails, Generative AI Can Harm Education, study design",
+      "url": "https://knowledge.wharton.upenn.edu/article/without-guardrails-generative-ai-can-harm-education/",
+      "excerpt": "A new study led by researchers at Wharton and Penn reveals that using generative AI improves student performance, but also makes it harder for students to learn and acquire new skills. The researchers designed an experiment with nearly 1,000 high school math students in Turkey to determine whether large language models can harm or help their education."
+    },
+    {
+      "sourceId": "s22",
+      "label": "Knowledge at Wharton, Without Guardrails, Generative AI Can Harm Education, GPT Tutor condition",
+      "url": "https://knowledge.wharton.upenn.edu/article/without-guardrails-generative-ai-can-harm-education/",
+      "excerpt": "A second group was given GPT Tutor, an interface similar to ChatGPT-4 but with safeguards. It includes teacher input and is designed to guide students with hints rather than directly giving answers."
+    },
+    {
+      "sourceId": "s23",
+      "label": "Knowledge at Wharton, Without Guardrails, Generative AI Can Harm Education, GPT Base results",
+      "url": "https://knowledge.wharton.upenn.edu/article/without-guardrails-generative-ai-can-harm-education/",
+      "excerpt": "During the AI-assisted practice session, the GPT Base group performed 48% better than the control group. But when AI assistance was taken away from the Base group and they were given an exam on the material, they performed 17% worse than the control group."
+    },
+    {
+      "sourceId": "s24",
+      "label": "Knowledge at Wharton, Without Guardrails, Generative AI Can Harm Education, GPT Tutor results",
+      "url": "https://knowledge.wharton.upenn.edu/article/without-guardrails-generative-ai-can-harm-education/",
+      "excerpt": "The GPT Tutor group performed an astonishing 127% better in the AI-assisted practice session, yet scored about the same on the exam as the control group."
+    },
+    {
+      "sourceId": "s25",
+      "label": "Knowledge at Wharton, Without Guardrails, Generative AI Can Harm Education, reading of the Tutor result",
+      "url": "https://knowledge.wharton.upenn.edu/article/without-guardrails-generative-ai-can-harm-education/",
+      "excerpt": "In contrast, the performance by the Tutor group shows that these harms are mitigated when AI is deployed with teacher-guided conditions and limits."
+    },
+    {
+      "sourceId": "s26",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills, study design",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "Our latest study, a randomized controlled trial with software developers as participants, investigates this potential downside of using AI at work."
+    },
+    {
+      "sourceId": "s27",
+      "label": "Paper, AI Assistance Reduces Persistence and Hurts Independent Performance, related-work summary of Bastani et al.",
+      "url": "https://arxiv.org/abs/2604.04721",
+      "excerpt": "Bastani et al. (2025) found that GPT-4 assistance during math practice degraded later unaided performance in high school students, though a scaffolded tutor condition partially mitigated this harm"
+    },
+    {
+      "sourceId": "s28",
+      "label": "Anthropic, How AI assistance impacts the formation of coding skills, recruitment criteria",
+      "url": "https://www.anthropic.com/research/AI-assistance-coding-skills",
+      "excerpt": "We recruited 52 (mostly junior) software engineers, each of whom had been using Python at least once a week for over a year. We also made sure they were at least somewhat familiar with AI coding assistance, and were unfamiliar with Trio, the Python library on which our tasks were based."
+    }
+  ]
+}
