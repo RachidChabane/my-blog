@@ -2191,5 +2191,39 @@
     ],
     "published_at": "2026-10-11",
     "embedding": null
+  },
+  {
+    "translation_key": "clef-flash-24k-hosted-context-truncates-long-state",
+    "topic_id": "clef-flash-24k-hosted-context-truncates-long-state",
+    "dedup_key": "clef flash 24k hosted context truncates long state",
+    "title": "Cloudflare cuts Clef-flash to $0.038 per million tokens and 24K of hosted context, and a longer text state is truncated to fit",
+    "slugs": {
+      "fr": "clef-flash-contexte-24k-state-tronque",
+      "en": "clef-flash-24k-context-truncates-long-state"
+    },
+    "sources": [
+      {
+        "label": "Cloudflare Changelog, \"Clef-omni adds audio and video input, Clef-flash is now cheaper, and Clef is faster\"",
+        "url": "https://developers.cloudflare.com/changelog/post/2026-10-09-clef-omni-workers-ai/",
+        "date": "09-10-2026"
+      },
+      {
+        "label": "Cloudflare docs source, clef-flash.json model definition at commit 970ac72",
+        "url": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/970ac7295d27cc146b7d88ed29f4463a4f02b78d/src/content/workers-ai-models/clef-flash.json",
+        "date": "09-10-2026"
+      },
+      {
+        "label": "Cloudflare docs source, \"How media inputs are billed\" partial for the Clef model pages at commit 970ac72",
+        "url": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/970ac7295d27cc146b7d88ed29f4463a4f02b78d/src/content/partials/workers-ai/clef-media-input-pricing.mdx",
+        "date": "09-10-2026"
+      },
+      {
+        "label": "DataStudios, \"Cloudflare Clef-omni: 30B Multimodal Model, Benchmarks & Pricing\"",
+        "url": "https://www.datastudios.org/post/cloudflare-clef-omni-30b-audio-video-ai-decisions",
+        "date": "11-10-2026"
+      }
+    ],
+    "published_at": "2026-10-12",
+    "embedding": null
   }
 ]
