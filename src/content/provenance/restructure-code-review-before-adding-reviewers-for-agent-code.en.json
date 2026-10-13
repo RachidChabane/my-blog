@@ -1,0 +1,211 @@
+{
+  "slug": "restructure-code-review-before-adding-reviewers-for-agent-code",
+  "lang": "en",
+  "translationKey": "agent-coding-gains-stop-at-the-review-queue",
+  "citations": [
+    {
+      "sourceId": "s2",
+      "label": "Fiona Chen (Harvard), Artificial Intelligence in the Firm: Bottlenecks in Software Production",
+      "url": "https://fion.ac/",
+      "excerpt": "Artificial Intelligence in the Firm: Bottlenecks in Software Production Job Market Paper with James Stratton, August 2026"
+    },
+    {
+      "sourceId": "s3",
+      "label": "Fiona Chen (Harvard), Artificial Intelligence in the Firm: Bottlenecks in Software Production",
+      "url": "https://fion.ac/",
+      "excerpt": "We study the impacts of AI coding assistants and agents on software engineering work, using a novel proprietary dataset from an engineering analytics platform, covering 300 million work events"
+    },
+    {
+      "sourceId": "s4",
+      "label": "Fiona Chen (Harvard), Artificial Intelligence in the Firm: Bottlenecks in Software Production",
+      "url": "https://fion.ac/",
+      "excerpt": "across 718 firms. We use a staggered difference-in-differences design, exploiting variation in firm-level adoption timing of AI coding assistants and agents. Both technologies increase coding productivity. However, productivity gains do not fully pass through to changes in software output or employment."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Fiona Chen (Harvard), Artificial Intelligence in the Firm: Bottlenecks in Software Production",
+      "url": "https://fion.ac/",
+      "excerpt": "For AI agents, this incomplete pass-through reflects a bottleneck from code review: review times increase, a larger share of code updates require revisions, and reviews involve more comments."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Ars Technica, reporting the Chen and Stratton study",
+      "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+      "excerpt": "Harvard University researchers Fiona Chen and James Stratton made use of aggregated analytics data from Jellyfish"
+    },
+    {
+      "sourceId": "s7",
+      "label": "Ars Technica, reporting the Chen and Stratton study",
+      "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+      "excerpt": "The introduction of AI coding agents at a firm leads to a 30 percent increase in total lines of code generated, a 20 percent rise in the number of total commits, and a 23 percent increase in pull requests on average, the researchers write."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Ars Technica, reporting the Chen and Stratton study",
+      "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+      "excerpt": "the resolution rate for Issues and Epics (i.e. wholesale software features) tracked by tools like Jira did not change in a statistically significant way after AI tools were introduced"
+    },
+    {
+      "sourceId": "s9",
+      "label": "Ars Technica, reporting the Chen and Stratton study",
+      "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+      "excerpt": "time between a pull request getting submitted and it being merged into the codebase balloons 49 percent on average after AI agents are introduced."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Ars Technica, reporting the Chen and Stratton study",
+      "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+      "excerpt": "In response to this change, the researchers found a 14 percent increase in the share of workers performing code reviews after AI agents"
+    },
+    {
+      "sourceId": "s11",
+      "label": "Ars Technica, reporting the Chen and Stratton study",
+      "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+      "excerpt": "AI agents are still a relatively new part of the coding world, of course, and there have been significant updates and upgrades to their output even since this study"
+    },
+    {
+      "sourceId": "s12",
+      "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv)",
+      "url": "https://arxiv.org/abs/2607.07980",
+      "excerpt": "A motivating observational analysis of public GITHUB activity finds that agent-authored pull requests are reviewed less often, merged several times faster, and discussed less than human-authored ones, yet the direction of these trends flips under different but equally defensible analysis choices"
+    },
+    {
+      "sourceId": "s13",
+      "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv)",
+      "url": "https://arxiv.org/abs/2607.07980",
+      "excerpt": "AI does not fix the sign of that effect: the team sets it, through the expertise its humans bring and how it structures the review process."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv)",
+      "url": "https://arxiv.org/abs/2607.07980",
+      "excerpt": "we collect 38,709 grey-literature documents (engineering blogs and Reddit threads), filter to those substantively about code review, and code a stratified random sample of 3,100 with an LLM-assisted pipeline"
+    },
+    {
+      "sourceId": "s15",
+      "label": "Martin Monperrus, The End of Code Review (arXiv)",
+      "url": "https://arxiv.org/abs/2606.13175",
+      "excerpt": "We argue that coding agents have crossed a threshold of capability at which traditional human code review is no longer a necessary component of a software quality pipeline."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Martin Monperrus, The End of Code Review (arXiv)",
+      "url": "https://arxiv.org/abs/2606.13175",
+      "excerpt": "the naive integration in which agents write code and humans remain the mandatory reviewers is a dead end because it neither provides meaningful assurance nor scales with AI-assisted throughput."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Martin Monperrus, The End of Code Review (arXiv)",
+      "url": "https://arxiv.org/abs/2606.13175",
+      "excerpt": "The End of Code Review: Coding Agents Supersede Human Inspection Authors: Martin Monperrus"
+    },
+    {
+      "sourceId": "s18",
+      "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv)",
+      "url": "https://arxiv.org/abs/2607.07980",
+      "excerpt": "Title: 3100 Opinions on Code Review in an AI World: Building Causal Theory from Practitioner Discourse Authors: Shyam Agarwal , Courtney Miller , Christian Kästner , Bogdan Vasilescu"
+    },
+    {
+      "sourceId": "s19",
+      "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv)",
+      "url": "https://arxiv.org/abs/2607.07980",
+      "excerpt": "Its central claim is that review has become the control point through which an agent’s effect on software is decided, and that AI does not set the sign of that effect."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv)",
+      "url": "https://arxiv.org/abs/2607.07980",
+      "excerpt": "Coding agents now author entire pull requests, and practitioners sharply disagree about what this does to code review: whether it becomes the bottleneck, whether human review is still necessary"
+    },
+    {
+      "sourceId": "s22",
+      "label": "Chen and Stratton, Artificial Intelligence in the Firm (paper PDF), coding output effects of agents",
+      "url": "https://fion.ac/jellyfish.pdf",
+      "excerpt": "AI agents lead to large and significant increases in all three measures: 30% for lines of code, 20% for commits, and 23% for pull requests."
+    },
+    {
+      "sourceId": "s23",
+      "label": "Chen and Stratton, Artificial Intelligence in the Firm (paper PDF), firm-level output measures",
+      "url": "https://fion.ac/jellyfish.pdf",
+      "excerpt": "We next ask whether these productivity gains translate into increases in firm-level software output, using two measures of output: resolution of Jira issues, which occurs once a body of coding work is deployed to production; and resolution of Jira epics, which represent completion of entire projects or features. We find small positive, but statistically insignificant, effects on both measures following adoption of AI assistants and AI agents."
+    },
+    {
+      "sourceId": "s24",
+      "label": "Chen and Stratton, Artificial Intelligence in the Firm (paper PDF), bound on output gain from agents",
+      "url": "https://fion.ac/jellyfish.pdf",
+      "excerpt": "For agents, our estimates rule out an increase in output of larger than 12% of the baseline mean"
+    },
+    {
+      "sourceId": "s25",
+      "label": "Chen and Stratton, Artificial Intelligence in the Firm (paper PDF), code review bottleneck",
+      "url": "https://fion.ac/jellyfish.pdf",
+      "excerpt": "We find evidence of a bottleneck from the code review process: The average time to review a pull request increases by 49%, the share of pull requests with changes requested nearly doubles, and the number of comments per pull request increases by 35%."
+    },
+    {
+      "sourceId": "s26",
+      "label": "Chen and Stratton, Artificial Intelligence in the Firm (paper PDF), reallocation toward review",
+      "url": "https://fion.ac/jellyfish.pdf",
+      "excerpt": "Firms also reallocate labor toward review activities: the share of workers performing code reviews increases by 14%."
+    },
+    {
+      "sourceId": "s27",
+      "label": "Chen and Stratton, Artificial Intelligence in the Firm (paper PDF), conclusion on the review bottleneck",
+      "url": "https://fion.ac/jellyfish.pdf",
+      "excerpt": "In particular, code review becomes the bottleneck. Following adoption of AI agents, the code review process significantly increases in lengths, pull requests are more likely to require revisions, and reviewers leave more comments. Firms respond by reallocating labor towards code review. This bottleneck is not simply alleviated through adoption of AI code review tools"
+    },
+    {
+      "sourceId": "s28",
+      "label": "Chen and Stratton, Artificial Intelligence in the Firm (paper PDF), quoted engineer account",
+      "url": "https://fion.ac/jellyfish.pdf",
+      "excerpt": "For instance, one junior software engineer describes: People could make a huge number of commits quickly, but code review was still the bottleneck. On one project, only one senior engineer was allowed to approve changes because he was the expert on the codebase. He was so bandwidth constrained that he could only review my code once a week. After some outages that were caused by AI-generated commits, there were also new rules requiring senior engineer approval for AI-generated code, which created even more review bottlenecks."
+    },
+    {
+      "sourceId": "s29",
+      "label": "Chen and Stratton, Artificial Intelligence in the Firm (paper PDF), implication on measurement",
+      "url": "https://fion.ac/jellyfish.pdf",
+      "excerpt": "First, measuring the returns to AI requires evaluating the entire production process. Many managers rely on intermediate productivity metrics, such as lines of code or commits; however, these may not accurately capture the true gains from AI adoption."
+    },
+    {
+      "sourceId": "s30",
+      "label": "Chen and Stratton, Artificial Intelligence in the Firm (paper PDF), implication on organization",
+      "url": "https://fion.ac/jellyfish.pdf",
+      "excerpt": "Second, realizing the benefits of AI adoption requires complementary organizational investments. Changes in one production stage may shift the bottleneck to another, and hence necessitate reallocation of labor."
+    },
+    {
+      "sourceId": "s31",
+      "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv), practitioner refrain",
+      "url": "https://arxiv.org/abs/2607.07980",
+      "excerpt": "A common refrain is that agents now produce code faster than humans can review it, so that review becomes the delivery bottleneck"
+    },
+    {
+      "sourceId": "s32",
+      "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv), throughput premise",
+      "url": "https://arxiv.org/abs/2607.07980",
+      "excerpt": "Practitioner accounts usually start with the same premise of how coding agents decouple the rate at which code is produced from the rate at which it can be reviewed: “Reviewer throughput grows linearly with headcount. AI generation throughput grows multiplicatively per developer”"
+    },
+    {
+      "sourceId": "s33",
+      "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv), proposition on review load",
+      "url": "https://arxiv.org/abs/2607.07980",
+      "excerpt": "P1. Higher review load decreases review depth, which impacts efficiency and effectiveness."
+    },
+    {
+      "sourceId": "s34",
+      "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv), proposition on review governance",
+      "url": "https://arxiv.org/abs/2607.07980",
+      "excerpt": "P17. The effect of review governance policy on review latency is contested: its sign is set by policy calibration, lower latency under a risk-tiered policy that gates only material changes, higher latency under a blanket policy that gates every change."
+    },
+    {
+      "sourceId": "s35",
+      "label": "Martin Monperrus, The End of Code Review (arXiv), review capacity",
+      "url": "https://arxiv.org/abs/2606.13175",
+      "excerpt": "Human review capacity does not scale and the result is a bottleneck that grows proportionally with the productivity gain that AI coding delivers."
+    },
+    {
+      "sourceId": "s36",
+      "label": "Martin Monperrus, The End of Code Review (arXiv), rubber-stamp argument",
+      "url": "https://arxiv.org/abs/2606.13175",
+      "excerpt": "In practice, reviews of agent-generated code become rubber-stamps: the human approves because the code looks correct, because the tests pass, and because the cognitive cost of genuine scrutiny is prohibitive"
+    }
+  ]
+}

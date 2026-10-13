@@ -3988,5 +3988,182 @@
     ],
     "published_at": "2026-10-12",
     "embedding": null
+  },
+  {
+    "translation_key": "agent-coding-gains-stop-at-the-review-queue",
+    "topic_id": "agent-coding-gains-stop-at-the-review-queue",
+    "dedup_key": "agent coding gains do not pass through to firm level software output because human code review absorbs them and the team review design rather than the agent sets whether agent output becomes shipped features",
+    "title": "Restructure code review before you add reviewers for agent code",
+    "slugs": {
+      "fr": "repensez-la-revue-de-code-avant-d-y-affecter-plus-de-monde",
+      "en": "restructure-code-review-before-adding-reviewers-for-agent-code"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Fiona Chen (Harvard), Artificial Intelligence in the Firm: Bottlenecks in Software Production",
+        "url": "https://fion.ac/",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "Fiona Chen I am a Ph.D. candidate in Business Economics at Harvard University"
+      },
+      {
+        "source_id": "s2",
+        "label": "Fiona Chen (Harvard), Artificial Intelligence in the Firm: Bottlenecks in Software Production",
+        "url": "https://fion.ac/",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "Artificial Intelligence in the Firm: Bottlenecks in Software Production Job Market Paper with James Stratton, August 2026"
+      },
+      {
+        "source_id": "s3",
+        "label": "Fiona Chen (Harvard), Artificial Intelligence in the Firm: Bottlenecks in Software Production",
+        "url": "https://fion.ac/",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "We study the impacts of AI coding assistants and agents on software engineering work, using a novel proprietary dataset from an engineering analytics platform, covering 300 million work events"
+      },
+      {
+        "source_id": "s4",
+        "label": "Fiona Chen (Harvard), Artificial Intelligence in the Firm: Bottlenecks in Software Production",
+        "url": "https://fion.ac/",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "across 718 firms. We use a staggered difference-in-differences design, exploiting variation in firm-level adoption timing of AI coding assistants and agents. Both technologies increase coding productivity. However, productivity gains do not fully pass through to changes in software output or employment."
+      },
+      {
+        "source_id": "s5",
+        "label": "Fiona Chen (Harvard), Artificial Intelligence in the Firm: Bottlenecks in Software Production",
+        "url": "https://fion.ac/",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "For AI agents, this incomplete pass-through reflects a bottleneck from code review: review times increase, a larger share of code updates require revisions, and reviews involve more comments."
+      },
+      {
+        "source_id": "s6",
+        "label": "Ars Technica, reporting the Chen and Stratton study",
+        "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "Harvard University researchers Fiona Chen and James Stratton made use of aggregated analytics data from Jellyfish",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s7",
+        "label": "Ars Technica, reporting the Chen and Stratton study",
+        "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "The introduction of AI coding agents at a firm leads to a 30 percent increase in total lines of code generated, a 20 percent rise in the number of total commits, and a 23 percent increase in pull requests on average, the researchers write.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s8",
+        "label": "Ars Technica, reporting the Chen and Stratton study",
+        "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "the resolution rate for Issues and Epics (i.e. wholesale software features) tracked by tools like Jira did not change in a statistically significant way after AI tools were introduced",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s9",
+        "label": "Ars Technica, reporting the Chen and Stratton study",
+        "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "time between a pull request getting submitted and it being merged into the codebase balloons 49 percent on average after AI agents are introduced.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s10",
+        "label": "Ars Technica, reporting the Chen and Stratton study",
+        "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "In response to this change, the researchers found a 14 percent increase in the share of workers performing code reviews after AI agents",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s11",
+        "label": "Ars Technica, reporting the Chen and Stratton study",
+        "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "AI agents are still a relatively new part of the coding world, of course, and there have been significant updates and upgrades to their output even since this study",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s12",
+        "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv)",
+        "url": "https://arxiv.org/abs/2607.07980",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "A motivating observational analysis of public GITHUB activity finds that agent-authored pull requests are reviewed less often, merged several times faster, and discussed less than human-authored ones, yet the direction of these trends flips under different but equally defensible analysis choices",
+        "source_date": "2026-07-08"
+      },
+      {
+        "source_id": "s13",
+        "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv)",
+        "url": "https://arxiv.org/abs/2607.07980",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "AI does not fix the sign of that effect: the team sets it, through the expertise its humans bring and how it structures the review process.",
+        "source_date": "2026-07-08"
+      },
+      {
+        "source_id": "s14",
+        "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv)",
+        "url": "https://arxiv.org/abs/2607.07980",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "we collect 38,709 grey-literature documents (engineering blogs and Reddit threads), filter to those substantively about code review, and code a stratified random sample of 3,100 with an LLM-assisted pipeline",
+        "source_date": "2026-07-08"
+      },
+      {
+        "source_id": "s15",
+        "label": "Martin Monperrus, The End of Code Review (arXiv)",
+        "url": "https://arxiv.org/abs/2606.13175",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "We argue that coding agents have crossed a threshold of capability at which traditional human code review is no longer a necessary component of a software quality pipeline.",
+        "source_date": "2026-06-11"
+      },
+      {
+        "source_id": "s16",
+        "label": "Martin Monperrus, The End of Code Review (arXiv)",
+        "url": "https://arxiv.org/abs/2606.13175",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "the naive integration in which agents write code and humans remain the mandatory reviewers is a dead end because it neither provides meaningful assurance nor scales with AI-assisted throughput.",
+        "source_date": "2026-06-11"
+      },
+      {
+        "source_id": "s17",
+        "label": "Martin Monperrus, The End of Code Review (arXiv)",
+        "url": "https://arxiv.org/abs/2606.13175",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "The End of Code Review: Coding Agents Supersede Human Inspection Authors: Martin Monperrus",
+        "source_date": "2026-06-11"
+      },
+      {
+        "source_id": "s18",
+        "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv)",
+        "url": "https://arxiv.org/abs/2607.07980",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "Title: 3100 Opinions on Code Review in an AI World: Building Causal Theory from Practitioner Discourse Authors: Shyam Agarwal , Courtney Miller , Christian Kästner , Bogdan Vasilescu",
+        "source_date": "2026-07-08"
+      },
+      {
+        "source_id": "s19",
+        "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv)",
+        "url": "https://arxiv.org/abs/2607.07980",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "Its central claim is that review has become the control point through which an agent’s effect on software is decided, and that AI does not set the sign of that effect.",
+        "source_date": "2026-07-08"
+      },
+      {
+        "source_id": "s20",
+        "label": "Agarwal, Miller, Kästner, Vasilescu, 3100 Opinions on Code Review in an AI World (arXiv)",
+        "url": "https://arxiv.org/abs/2607.07980",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "Coding agents now author entire pull requests, and practitioners sharply disagree about what this does to code review: whether it becomes the bottleneck, whether human review is still necessary",
+        "source_date": "2026-07-08"
+      },
+      {
+        "source_id": "s21",
+        "label": "Ars Technica, reporting the Chen and Stratton study",
+        "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
+        "retrieved_at": "2026-10-13",
+        "excerpt": "AI coding agents generate more code, but not more software - Ars Technica",
+        "source_date": "2026-10-09"
+      }
+    ],
+    "published_at": "2026-10-13",
+    "embedding": null
   }
 ]
