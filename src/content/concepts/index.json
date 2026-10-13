@@ -881,6 +881,33 @@
     "addedOn": "27-05-2026"
   },
   {
+    "id": "bottleneck-shift",
+    "label": {
+      "fr": "Déplacement du goulot d'étranglement",
+      "en": "Bottleneck shift"
+    },
+    "definition": {
+      "fr": "Phénomène par lequel l'accélération d'une étape d'une chaîne de production reporte la contrainte limitante sur une étape suivante, si bien que le gain obtenu à cette étape ne se répercute pas entièrement sur la production finale. Dans la livraison logicielle avec des agents de code, une génération plus rapide peut faire de la revue ou de la fusion l'étape qui fixe le débit : le gain se lit alors sur le code produit et pas sur le travail résolu.",
+      "en": "The effect by which speeding up one stage of a production pipeline moves the binding constraint to a later stage, so the gain at that stage does not fully pass through to finished output. In software delivery with coding agents, faster code generation can leave review or merge as the stage that sets throughput, and the gain then shows up in code produced rather than in work resolved."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "shifting bottleneck",
+      "incomplete pass-through",
+      "pass-through gap",
+      "goulot d'étranglement"
+    ],
+    "related": [
+      "coding-agents",
+      "review-bandwidth",
+      "proxy-metric"
+    ],
+    "articles": [
+      "agent-coding-gains-stop-at-the-review-queue"
+    ],
+    "addedOn": "13-10-2026"
+  },
+  {
     "id": "cache-block-control",
     "label": {
       "fr": "Contrôle des blocs de cache",
@@ -1174,7 +1201,8 @@
     ],
     "articles": [
       "code-review-agents-signal-to-noise",
-      "coordinator-title-buys-no-information"
+      "coordinator-title-buys-no-information",
+      "agent-coding-gains-stop-at-the-review-queue"
     ],
     "addedOn": "12-07-2026"
   },
@@ -1221,7 +1249,8 @@
       "ask-when-unsure-is-gated-on-detection",
       "agent-ci-load-and-the-unearned-green",
       "telemetry-off-forks-coding-agent-behaviour",
-      "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output"
+      "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output",
+      "agent-coding-gains-stop-at-the-review-queue"
     ],
     "addedOn": "30-05-2026"
   },
@@ -2192,7 +2221,8 @@
       "action-boundary-precondition"
     ],
     "articles": [
-      "decision-model-confidence-gate"
+      "decision-model-confidence-gate",
+      "agent-coding-gains-stop-at-the-review-queue"
     ],
     "addedOn": "07-10-2026"
   },
@@ -3312,7 +3342,8 @@
       "cli-agent-productivity-proxy-choice",
       "patch-quality-rate-needs-a-consistent-grader",
       "agent-ci-load-and-the-unearned-green",
-      "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output"
+      "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output",
+      "agent-coding-gains-stop-at-the-review-queue"
     ],
     "addedOn": "18-07-2026"
   },
@@ -3757,7 +3788,8 @@
     "articles": [
       "llm-contribution-policy-premise-decides-the-leak",
       "remediation-throughput-is-the-security-constraint",
-      "agent-ci-load-and-the-unearned-green"
+      "agent-ci-load-and-the-unearned-green",
+      "agent-coding-gains-stop-at-the-review-queue"
     ],
     "addedOn": "08-08-2026"
   },
@@ -3820,6 +3852,33 @@
       "verification-horizon-coding-agent-rewards"
     ],
     "addedOn": "14-07-2026"
+  },
+  {
+    "id": "rubber-stamp-review",
+    "label": {
+      "fr": "Revue de pure forme",
+      "en": "Rubber-stamp review"
+    },
+    "definition": {
+      "fr": "Revue qui approuve une modification sans l'examiner réellement, parce que le code paraît plausible, que les tests passent et qu'une lecture attentive coûterait plus que le temps dont dispose le relecteur. La trace d'approbation subsiste alors que l'inspection qu'elle est censée attester n'a pas eu lieu : une étape de revue peut figurer sur chaque fusion sans rien intercepter.",
+      "en": "A review that approves a change without real scrutiny, because the code looks plausible, the tests pass, and close reading would cost more time than the reviewer has. The approval record survives while the inspection it stands for never happened, so a review step can appear on every merge and still catch nothing."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "rubber-stamping",
+      "rubber-stamp approval",
+      "approval without scrutiny",
+      "revue de complaisance"
+    ],
+    "related": [
+      "review-bandwidth",
+      "human-in-the-loop",
+      "code-review-agent"
+    ],
+    "articles": [
+      "agent-coding-gains-stop-at-the-review-queue"
+    ],
+    "addedOn": "13-10-2026"
   },
   {
     "id": "safe-method-assumption",
