@@ -2225,5 +2225,44 @@
     ],
     "published_at": "2026-10-12",
     "embedding": null
+  },
+  {
+    "translation_key": "muse-wonder-api-model-and-subscription-only-full",
+    "topic_id": "muse-wonder-api-model-and-subscription-only-full",
+    "dedup_key": "muse wonder api model and subscription only full",
+    "title": "Meta's Model API serves muse-wonder-1.0 at $4/$20 per million tokens, and Muse Wonder Full stays inside Muse Code subscriptions",
+    "slugs": {
+      "fr": "meta-muse-wonder-api-full-reserve-abonnement-muse-code",
+      "en": "meta-muse-wonder-api-model-full-subscription-only"
+    },
+    "sources": [
+      {
+        "label": "Meta Developers blog, \"Put your ideas to work with Muse Wonder and Muse Wonder Full\"",
+        "url": "https://dev.meta.ai/resources/blog/build-with-muse-wonder",
+        "date": "12-10-2026"
+      },
+      {
+        "label": "Meta Model API docs (undated page), \"Models\"",
+        "url": "https://dev.meta.ai/docs/models",
+        "date": "12-10-2026"
+      },
+      {
+        "label": "Meta Model API docs (undated page), \"Pricing and rate limits\"",
+        "url": "https://dev.meta.ai/docs/pricing-rate-limits",
+        "date": "12-10-2026"
+      },
+      {
+        "label": "Artificial Analysis, \"Muse Wonder and Muse Wonder Full: a material jump in intelligence over previous Meta models\"",
+        "url": "https://artificialanalysis.ai/articles/muse-wonder",
+        "date": "12-10-2026"
+      },
+      {
+        "label": "The Rundown, \"Muse Wonder: How to Use Meta's New AI for Work\"",
+        "url": "https://app.therundown.ai/guides/muse-wonder-guide",
+        "date": "12-10-2026"
+      }
+    ],
+    "published_at": "2026-10-13",
+    "embedding": null
   }
 ]
