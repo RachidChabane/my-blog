@@ -903,7 +903,8 @@
       "proxy-metric"
     ],
     "articles": [
-      "agent-coding-gains-stop-at-the-review-queue"
+      "agent-coding-gains-stop-at-the-review-queue",
+      "agent-write-volume-breaks-git-design-assumptions"
     ],
     "addedOn": "13-10-2026"
   },
@@ -1002,7 +1003,8 @@
       "coding-agents"
     ],
     "articles": [
-      "agent-ci-load-and-the-unearned-green"
+      "agent-ci-load-and-the-unearned-green",
+      "agent-write-volume-breaks-git-design-assumptions"
     ],
     "addedOn": "26-09-2026"
   },
@@ -1250,7 +1252,8 @@
       "agent-ci-load-and-the-unearned-green",
       "telemetry-off-forks-coding-agent-behaviour",
       "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output",
-      "agent-coding-gains-stop-at-the-review-queue"
+      "agent-coding-gains-stop-at-the-review-queue",
+      "agent-write-volume-breaks-git-design-assumptions"
     ],
     "addedOn": "30-05-2026"
   },
@@ -2912,7 +2915,8 @@
     ],
     "articles": [
       "multi-agent-gains-compute-artifact",
-      "coordinator-title-buys-no-information"
+      "coordinator-title-buys-no-information",
+      "agent-write-volume-breaks-git-design-assumptions"
     ],
     "addedOn": "13-07-2026"
   },
