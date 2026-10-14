@@ -2264,5 +2264,44 @@
     ],
     "published_at": "2026-10-13",
     "embedding": null
+  },
+  {
+    "translation_key": "gemini-4-argon-ga-long-decode-background-hops",
+    "topic_id": "gemini-4-argon-ga-long-decode-background-hops",
+    "dedup_key": "gemini 4 argon ga long decode background hops",
+    "title": "Gemini 4 Argon is GA, and on the Interactions API a response longer than 64K tokens runs as background hops",
+    "slugs": {
+      "fr": "gemini-4-argon-disponible-long-decode-tranches-arriere-plan",
+      "en": "gemini-4-argon-ga-long-decode-background-hops"
+    },
+    "sources": [
+      {
+        "label": "Gemini API docs, \"Release notes\"",
+        "url": "https://ai.google.dev/gemini-api/docs/changelog",
+        "date": "13-10-2026"
+      },
+      {
+        "label": "Gemini API docs, \"What's new in Gemini 4 Argon\"",
+        "url": "https://ai.google.dev/gemini-api/docs/latest-model",
+        "date": "13-10-2026"
+      },
+      {
+        "label": "Gemini API docs, \"Gemini 4 Argon\" model page",
+        "url": "https://ai.google.dev/gemini-api/docs/models/gemini-4-argon",
+        "date": "13-10-2026"
+      },
+      {
+        "label": "Gemini API docs, \"Gemini Developer API pricing\"",
+        "url": "https://ai.google.dev/gemini-api/docs/pricing",
+        "date": "13-10-2026"
+      },
+      {
+        "label": "ComputingForGeeks, \"Gemini 4 Argon Pricing, Benchmarks and API Tested\"",
+        "url": "https://computingforgeeks.com/gemini-4-argon-released-features-benchmarks/",
+        "date": "13-10-2026"
+      }
+    ],
+    "published_at": "2026-10-14",
+    "embedding": null
   }
 ]
