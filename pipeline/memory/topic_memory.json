@@ -4165,5 +4165,243 @@
     ],
     "published_at": "2026-10-13",
     "embedding": null
+  },
+  {
+    "translation_key": "agent-write-volume-breaks-git-design-assumptions",
+    "topic_id": "agent-write-volume-breaks-git-design-assumptions",
+    "dedup_key": "agent write volume breaks the offline full clone design assumption of git so anthropic replaced git with a server centric system and github rebuilt its git backend by splitting storage from compute while for most teams the lever is agent commit and checkpoint cadence",
+    "title": "Your agents do not need to push every checkpoint",
+    "slugs": {
+      "fr": "vos-agents-n-ont-pas-a-pousser-chaque-point-de-sauvegarde",
+      "en": "your-agents-do-not-need-to-push-every-checkpoint"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Anthropic Engineering, Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Engineering at Anthropic Redesigning source control at Anthropic Published Oct 13, 2026",
+        "source_date": "2026-10-13"
+      },
+      {
+        "source_id": "s2",
+        "label": "Anthropic Engineering, Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "As our merges per day grew more than tenfold, source control became our biggest development bottleneck.",
+        "source_date": "2026-10-13"
+      },
+      {
+        "source_id": "s3",
+        "label": "Anthropic Engineering, Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "The bottleneck, now, is all of the developer infrastructure built for human scale: source control, builds, and CI.",
+        "source_date": "2026-10-13"
+      },
+      {
+        "source_id": "s4",
+        "label": "Anthropic Engineering, Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "In May 2026, Anthropic averaged around 2,500 code changes merged per day; as of September, we merged over 30,000 per day.",
+        "source_date": "2026-10-13"
+      },
+      {
+        "source_id": "s5",
+        "label": "Anthropic Engineering, Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "we built Scion, an in-house version control system, and fully migrated our monorepo from git in five months.",
+        "source_date": "2026-10-13"
+      },
+      {
+        "source_id": "s6",
+        "label": "Anthropic Engineering, Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "we noticed that, like most companies, we were using git as a centralized system with one authoritative copy, but nearly all of our clients were agents and jobs that are online by definition.",
+        "source_date": "2026-10-13"
+      },
+      {
+        "source_id": "s7",
+        "label": "Anthropic Engineering, Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Clients are always online. Git assumes that clients work offline and need a complete copy of the repository.",
+        "source_date": "2026-10-13"
+      },
+      {
+        "source_id": "s8",
+        "label": "Anthropic Engineering, Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Our Scion infrastructure footprint is now 200x smaller than our previous git mirroring infrastructure in terms of CPU and memory requirements.",
+        "source_date": "2026-10-13"
+      },
+      {
+        "source_id": "s9",
+        "label": "Anthropic Engineering, Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "CI and research jobs check out code two orders of magnitude faster (in seconds rather than minutes), which frees up a sizable amount of capacity across the fleet; CI alone realized a 25% CPU capacity win.",
+        "source_date": "2026-10-13"
+      },
+      {
+        "source_id": "s10",
+        "label": "Anthropic Engineering, Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Scion is by no means a suitable replacement for git for general use.",
+        "source_date": "2026-10-13"
+      },
+      {
+        "source_id": "s11",
+        "label": "Anthropic Engineering, Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "really only make sense for truly enormous monorepos, with either tens of thousands of engineers or swarms of agents prolifically writing code.",
+        "source_date": "2026-10-13"
+      },
+      {
+        "source_id": "s12",
+        "label": "Anthropic Engineering, Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Plus, Anthropic is unique in that our ability to spend tokens for internal use far exceeds what any other business would realistically want to spend.",
+        "source_date": "2026-10-13"
+      },
+      {
+        "source_id": "s13",
+        "label": "GitHub Blog, Building Git infrastructure for agent-scale development",
+        "url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Building Git infrastructure for agent-scale development - The GitHub Blog",
+        "source_date": "2026-10-06"
+      },
+      {
+        "source_id": "s14",
+        "label": "GitHub Blog, Building Git infrastructure for agent-scale development",
+        "url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Agentic software development is driving the next architectural shift. With developers and agents working concurrently in repositories that receive millions of commits a day, these workloads demand a different Git architecture.",
+        "source_date": "2026-10-06"
+      },
+      {
+        "source_id": "s15",
+        "label": "GitHub Blog, Building Git infrastructure for agent-scale development",
+        "url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "The gap between a typical repository and the busiest ones is wider than most people expect.",
+        "source_date": "2026-10-06"
+      },
+      {
+        "source_id": "s16",
+        "label": "GitHub Blog, Building Git infrastructure for agent-scale development",
+        "url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "between September 2025 and August 2026, it increased to more than 2x its previous level, from 218.2 billion events per month to 473.3 billion.",
+        "source_date": "2026-10-06"
+      },
+      {
+        "source_id": "s17",
+        "label": "GitHub Blog, Building Git infrastructure for agent-scale development",
+        "url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "In September alone, developers and agents made 7.38 billion commits on GitHub, more than five times as many as a year earlier.",
+        "source_date": "2026-10-06"
+      },
+      {
+        "source_id": "s18",
+        "label": "GitHub Blog, Building Git infrastructure for agent-scale development",
+        "url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Commit turnaround becomes a bottleneck per agent. An agent in a tight loop commits or checkpoints after nearly every action. Its speed is bounded by how fast a single push completes, so latency that a human would never notice becomes the limiting factor.",
+        "source_date": "2026-10-06"
+      },
+      {
+        "source_id": "s19",
+        "label": "GitHub Blog, Building Git infrastructure for agent-scale development",
+        "url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Pushes grew 4.9x year over year, from 0.69 billion to 3.35 billion per month.",
+        "source_date": "2026-10-06"
+      },
+      {
+        "source_id": "s20",
+        "label": "GitHub Blog, Building Git infrastructure for agent-scale development",
+        "url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Writes are way harder. Every push has to be stored durably and made visible consistently before the next agent or CI job can build on it.",
+        "source_date": "2026-10-06"
+      },
+      {
+        "source_id": "s21",
+        "label": "GitHub Blog, Building Git infrastructure for agent-scale development",
+        "url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Authoritative repository data lives in Azure Blob Storage, which already provides durability and replication at Azure scale.",
+        "source_date": "2026-10-06"
+      },
+      {
+        "source_id": "s22",
+        "label": "GitHub Blog, Building Git infrastructure for agent-scale development",
+        "url": "https://github.blog/engineering/architecture-optimization/building-git-infrastructure-for-agent-scale-development/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "In internal benchmarks, it has delivered up to 35 times higher write throughput, with read capacity that scales on its own to meet demand.",
+        "source_date": "2026-10-06"
+      },
+      {
+        "source_id": "s23",
+        "label": "Meta, Sapling source control announcement",
+        "url": "https://engineering.fb.com/2022/11/15/open-source/sapling-source-control-scalable/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "POSTED ON NOVEMBER 15, 2022 TO DevInfra",
+        "source_date": "2022-11-15"
+      },
+      {
+        "source_id": "s24",
+        "label": "Meta, Sapling source control announcement",
+        "url": "https://engineering.fb.com/2022/11/15/open-source/sapling-source-control-scalable/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Sapling is a new Git-compatible source control client. Sapling emphasizes usability while also scaling to the largest repositories in the world.",
+        "source_date": "2022-11-15"
+      },
+      {
+        "source_id": "s25",
+        "label": "Meta, Sapling source control announcement",
+        "url": "https://engineering.fb.com/2022/11/15/open-source/sapling-source-control-scalable/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "At Meta, Sapling is primarily used for our large monolithic repository (or monorepo, for short)",
+        "source_date": "2022-11-15"
+      },
+      {
+        "source_id": "s26",
+        "label": "Meta, Sapling source control announcement",
+        "url": "https://engineering.fb.com/2022/11/15/open-source/sapling-source-control-scalable/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Although this requires being online, through efficient caching and indexes, we maintain a configurable ability to work offline in many common flows, like making a commit.",
+        "source_date": "2022-11-15"
+      },
+      {
+        "source_id": "s27",
+        "label": "Meta, Sapling source control announcement",
+        "url": "https://engineering.fb.com/2022/11/15/open-source/sapling-source-control-scalable/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "virtual file system (not yet publicly available) that makes it look and act as if you have the entire repository.",
+        "source_date": "2022-11-15"
+      },
+      {
+        "source_id": "s28",
+        "label": "Meta, Sapling source control announcement",
+        "url": "https://engineering.fb.com/2022/11/15/open-source/sapling-source-control-scalable/",
+        "retrieved_at": "2026-10-14",
+        "excerpt": "Clones and checkouts become very fast, and while accessing a file for the first time requires a network request, subsequent accesses are fast",
+        "source_date": "2022-11-15"
+      }
+    ],
+    "published_at": "2026-10-14",
+    "embedding": null
   }
 ]
