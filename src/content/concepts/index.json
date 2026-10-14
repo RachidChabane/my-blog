@@ -3666,6 +3666,32 @@
     "addedOn": "26-08-2026"
   },
   {
+    "id": "ref-update-coordination",
+    "label": {
+      "fr": "Coordination de la mise à jour des références",
+      "en": "Ref update coordination"
+    },
+    "definition": {
+      "fr": "Étape d'une écriture en gestion de versions qui exige un accord entre les répliques du serveur : déplacer une référence partagée, comme le pointeur d'une branche, vers le nouveau commit. Le stockage des objets peut se passer de cet accord ; lorsque chaque réplique y participe, un push ne se termine pas plus vite que la plus lente d'entre elles.",
+      "en": "The step of a version control write that must be agreed on across the server's replicas: moving a shared reference, such as a branch pointer, to the new commit. Storing the objects can proceed without that agreement; when every replica takes part in it, a push completes no faster than the slowest of them."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "ref update",
+      "reference update",
+      "branch pointer update",
+      "mise à jour de la référence"
+    ],
+    "related": [
+      "change-orchestration",
+      "bottleneck-shift"
+    ],
+    "articles": [
+      "agent-write-volume-breaks-git-design-assumptions"
+    ],
+    "addedOn": "14-10-2026"
+  },
+  {
     "id": "reliability-over-horizon",
     "label": {
       "fr": "Courbe de fiabilité selon l'horizon",
@@ -4152,6 +4178,31 @@
       "allowlist-verbe-capacite-2026-08"
     ],
     "addedOn": "02-08-2026"
+  },
+  {
+    "id": "server-side-version-control",
+    "label": {
+      "fr": "Gestion de versions côté serveur",
+      "en": "Server-side version control"
+    },
+    "definition": {
+      "fr": "Conception de la gestion de versions où les commits sont créés directement sur le serveur plutôt que dans un clone local : une modification est visible par tous les clients dès qu'elle existe, et il n'y a rien à pousser. Elle suppose des clients toujours connectés et renonce à la copie locale complète et aux commits hors ligne sur lesquels reposent les systèmes distribués comme git.",
+      "en": "A version control design in which commits are created directly on the server rather than in a local clone, so a change is visible to every client as soon as it exists and there is nothing to push. It assumes clients that are always online, and gives up the full local copy and offline commits that distributed systems such as git are built around."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "server-side commits",
+      "server-created changesets",
+      "commits côté serveur"
+    ],
+    "related": [
+      "ref-update-coordination",
+      "change-orchestration"
+    ],
+    "articles": [
+      "agent-write-volume-breaks-git-design-assumptions"
+    ],
+    "addedOn": "14-10-2026"
   },
   {
     "id": "severity-tiering",
