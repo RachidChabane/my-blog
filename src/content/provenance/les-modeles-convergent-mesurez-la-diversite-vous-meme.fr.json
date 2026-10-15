@@ -1,0 +1,157 @@
+{
+  "slug": "les-modeles-convergent-mesurez-la-diversite-vous-meme",
+  "lang": "fr",
+  "translationKey": "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "View a PDF of the paper titled Design Creativity Bench: Measuring creativity in LLM-Generated UI, by Aman Rusia and 3 other authors"
+    },
+    {
+      "sourceId": "s2",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "Our work introduces Design Creativity Bench, a benchmark that evaluates diversity and appropriateness in UI designs."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "Originality is 0.592 for same-prompt design pairs from different models (95% CI [0.582, 0.602]), far below the 0.764 for same-prompt human-model pairs (95% CI [0.751, 0.778])."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "Creative range is 0.581 across models (95% CI [0.567, 0.597]), against 0.902 for human designs (95% CI [0.884, 0.919])."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "Appropriateness is above 90% for every model in our test set, and the best model reaches 99.2%, slightly above the 98.0% for human designs. Our work shows that the default output of LLMs, though generally appropriate, is substantially more repetitive than the human baseline."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+      "url": "https://arxiv.org/abs/2510.22954",
+      "excerpt": "View a PDF of the paper titled Artificial Hivemind: The Open-Ended Homogeneity of Language Models (and Beyond), by Liwei Jiang and 9 other authors"
+    },
+    {
+      "sourceId": "s7",
+      "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+      "url": "https://arxiv.org/abs/2510.22954",
+      "excerpt": "we present a large-scale study of mode collapse in LMs, revealing a pronounced Artificial Hivemind effect in open-ended generation of LMs, characterized by (1) intra-model repetition, where a single model consistently generates similar responses, and more so (2) inter-model homogeneity, where different models produce strikingly similar outputs."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+      "url": "https://arxiv.org/abs/2510.22954",
+      "excerpt": "inter-model homogeneity , where different models independently converge on similar ideas with minor variations in phrasing. The latter warns that model ensembles may not yield true diversity when their constituents share overlapping alignment and training priors."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+      "url": "https://arxiv.org/abs/2510.22954",
+      "excerpt": "in 79% of cases, the average similarity exceeds 0.8. Since higher temperatures tend to produce incoherent text, these results show that even under maximally aggressive sampling, LMs still fail to generate diverse responses to open-ended queries."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+      "url": "https://arxiv.org/abs/2510.22954",
+      "excerpt": "Models often converge toward highly similar answers, undermining the assumed benefits of multi-model distillation. This insight carries significant implications for research on synthetic data curation, ensemble-based alignment, and constitutional AI."
+    },
+    {
+      "sourceId": "s11",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "[v1] Thu, 8 Oct 2026 09:09:33 UTC (1,719 KB)"
+    },
+    {
+      "sourceId": "s12",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "Originality measures differences between models on the same prompt, reported as mean dissimilarity of those design pairs."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "Differentiating the prompt does not differentiate the design. Table 3 ranks the models on creative range. The model is fixed and the prompt changes: both prompts state the same goal in the same page archetype and differ only in product domain and sample content."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "Appropriateness measures percentage of a brief’s acceptance criteria that a design satisfies."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "Model-generated designs resemble one another more than they resemble the human reference."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "We do not control for temperature, sampling or other decoding parameters. Hosted APIs are called with default temperature and sampling."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "No diversity-seeking prompting was attempted: all models receive the same prompt without any specialised techniques to invoke creative outputs."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "Repetition within one context is not measured: each design is generated in a fresh context, so we do not generate a second design while the first is still visible to the model."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+      "url": "https://arxiv.org/abs/2610.11539",
+      "excerpt": "All authors are affiliated with Kombai Inc., which develops AI products for UI design and front-end development."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+      "url": "https://arxiv.org/abs/2510.22954",
+      "excerpt": "As shown in Figure 6 , the average pairwise similarity between responses from different models ranges from 71 % 71\\% to 82 % 82\\% , with some pairs notably higher."
+    },
+    {
+      "sourceId": "s21",
+      "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+      "url": "https://arxiv.org/abs/2510.22954",
+      "excerpt": "Responses to the query “Write a metaphor about time” clustered by applying PCA to reduce sentence embeddings to two dimensions. Each of the 25 models generates 50 responses using top- p sampling ( p = 0.9 p=0.9 ) and temperature = 1.0 =1.0 . Despite the diversity of model families and sizes, the responses form just two visually prominent regions in the 2D projection : a dominant cluster on the left centered on the metaphor “time is a river,” and a smaller cluster on the right revolving around variations of “time is a weaver.”"
+    },
+    {
+      "sourceId": "s22",
+      "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+      "url": "https://arxiv.org/abs/2510.22954",
+      "excerpt": "We evaluate min- p decoding with the same setup and compute pairwise sentence embedding similarities. As shown in Figure 5 , while min- p reduces extreme repetition (fewer pairs above 0.9), 81 % 81\\% of response pairs still exceed 0.7 similarity and 61.2 % 61.2\\% exceed 0.8, revealing mode collapse even under diversity-oriented decoding."
+    },
+    {
+      "sourceId": "s23",
+      "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+      "url": "https://arxiv.org/abs/2510.22954",
+      "excerpt": "Our results across all 42 models show that the within-prompt similarity averaged 0.821, while the cross-paraphrase similarity averaged 0.781. Although responses to the original prompts showed slightly higher similarity scores, responses to paraphrased prompts also demonstrated high similarity (difference of only 0.04)."
+    },
+    {
+      "sourceId": "s24",
+      "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+      "url": "https://arxiv.org/abs/2510.22954",
+      "excerpt": "Without rigorous diagnostic frameworks such as Artificial Hivemind, practitioners risk overestimating cross-model diversity and unintentionally perpetuating homogenization across generations of language models."
+    },
+    {
+      "sourceId": "s25",
+      "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+      "url": "https://arxiv.org/abs/2510.22954",
+      "excerpt": "Despite using high-stochasticity decoding parameters (top- p = 0.9 =0.9 , t = 1.0 =1.0 ), responses from the same model remain highly repetitive, as shown in Figure 4 : in 79% of cases, the average similarity exceeds 0.8."
+    }
+  ]
+}

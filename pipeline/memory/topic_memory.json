@@ -4403,5 +4403,107 @@
     ],
     "published_at": "2026-10-14",
     "embedding": null
+  },
+  {
+    "translation_key": "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity",
+    "topic_id": "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity",
+    "dedup_key": "different llms converge on similar outputs for open ended and ui design tasks so swapping or ensembling models does not buy output diversity for generated product ui copy or synthetic data while functional evals still pass the repetitive output",
+    "title": "Different models converge, so measure diversity yourself",
+    "slugs": {
+      "fr": "les-modeles-convergent-mesurez-la-diversite-vous-meme",
+      "en": "different-models-converge-measure-diversity-yourself"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+        "url": "https://arxiv.org/abs/2610.11539",
+        "retrieved_at": "2026-10-15",
+        "excerpt": "View a PDF of the paper titled Design Creativity Bench: Measuring creativity in LLM-Generated UI, by Aman Rusia and 3 other authors",
+        "source_date": "2026-10-08"
+      },
+      {
+        "source_id": "s2",
+        "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+        "url": "https://arxiv.org/abs/2610.11539",
+        "retrieved_at": "2026-10-15",
+        "excerpt": "Our work introduces Design Creativity Bench, a benchmark that evaluates diversity and appropriateness in UI designs.",
+        "source_date": "2026-10-08"
+      },
+      {
+        "source_id": "s3",
+        "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+        "url": "https://arxiv.org/abs/2610.11539",
+        "retrieved_at": "2026-10-15",
+        "excerpt": "Originality is 0.592 for same-prompt design pairs from different models (95% CI [0.582, 0.602]), far below the 0.764 for same-prompt human-model pairs (95% CI [0.751, 0.778]).",
+        "source_date": "2026-10-08"
+      },
+      {
+        "source_id": "s4",
+        "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+        "url": "https://arxiv.org/abs/2610.11539",
+        "retrieved_at": "2026-10-15",
+        "excerpt": "Creative range is 0.581 across models (95% CI [0.567, 0.597]), against 0.902 for human designs (95% CI [0.884, 0.919]).",
+        "source_date": "2026-10-08"
+      },
+      {
+        "source_id": "s5",
+        "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+        "url": "https://arxiv.org/abs/2610.11539",
+        "retrieved_at": "2026-10-15",
+        "excerpt": "Appropriateness is above 90% for every model in our test set, and the best model reaches 99.2%, slightly above the 98.0% for human designs. Our work shows that the default output of LLMs, though generally appropriate, is substantially more repetitive than the human baseline.",
+        "source_date": "2026-10-08"
+      },
+      {
+        "source_id": "s6",
+        "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+        "url": "https://arxiv.org/abs/2510.22954",
+        "retrieved_at": "2026-10-15",
+        "excerpt": "View a PDF of the paper titled Artificial Hivemind: The Open-Ended Homogeneity of Language Models (and Beyond), by Liwei Jiang and 9 other authors",
+        "source_date": "2025-10-27"
+      },
+      {
+        "source_id": "s7",
+        "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+        "url": "https://arxiv.org/abs/2510.22954",
+        "retrieved_at": "2026-10-15",
+        "excerpt": "we present a large-scale study of mode collapse in LMs, revealing a pronounced Artificial Hivemind effect in open-ended generation of LMs, characterized by (1) intra-model repetition, where a single model consistently generates similar responses, and more so (2) inter-model homogeneity, where different models produce strikingly similar outputs.",
+        "source_date": "2025-10-27"
+      },
+      {
+        "source_id": "s8",
+        "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+        "url": "https://arxiv.org/abs/2510.22954",
+        "retrieved_at": "2026-10-15",
+        "excerpt": "inter-model homogeneity , where different models independently converge on similar ideas with minor variations in phrasing. The latter warns that model ensembles may not yield true diversity when their constituents share overlapping alignment and training priors.",
+        "source_date": "2025-10-27"
+      },
+      {
+        "source_id": "s9",
+        "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+        "url": "https://arxiv.org/abs/2510.22954",
+        "retrieved_at": "2026-10-15",
+        "excerpt": "in 79% of cases, the average similarity exceeds 0.8. Since higher temperatures tend to produce incoherent text, these results show that even under maximally aggressive sampling, LMs still fail to generate diverse responses to open-ended queries.",
+        "source_date": "2025-10-27"
+      },
+      {
+        "source_id": "s10",
+        "label": "Jiang et al., Artificial Hivemind: The Open-Ended Homogeneity of Language Models (arXiv 2510.22954)",
+        "url": "https://arxiv.org/abs/2510.22954",
+        "retrieved_at": "2026-10-15",
+        "excerpt": "Models often converge toward highly similar answers, undermining the assumed benefits of multi-model distillation. This insight carries significant implications for research on synthetic data curation, ensemble-based alignment, and constitutional AI.",
+        "source_date": "2025-10-27"
+      },
+      {
+        "source_id": "s11",
+        "label": "Rusia et al., Design Creativity Bench: Measuring creativity in LLM-Generated UI (arXiv 2610.11539)",
+        "url": "https://arxiv.org/abs/2610.11539",
+        "retrieved_at": "2026-10-15",
+        "excerpt": "[v1] Thu, 8 Oct 2026 09:09:33 UTC (1,719 KB)",
+        "source_date": "2026-10-08"
+      }
+    ],
+    "published_at": "2026-10-15",
+    "embedding": null
   }
 ]
