@@ -1545,6 +1545,32 @@
     "addedOn": "17-06-2026"
   },
   {
+    "id": "cross-model-homogeneity",
+    "label": {
+      "fr": "Homogénéité entre modèles",
+      "en": "Cross-model homogeneity"
+    },
+    "definition": {
+      "fr": "Tendance des modèles de langage issus de développeurs différents à donner des réponses très proches au même prompt ouvert, que l'on attribue d'ordinaire au chevauchement de leurs données d'entraînement et de leurs procédures d'alignement. Regrouper plusieurs modèles, ou passer de l'un à l'autre, élargit donc l'éventail des sorties moins que leurs origines distinctes ne le laissent penser.",
+      "en": "The tendency of language models from different developers to give closely similar answers to the same open-ended prompt, commonly attributed to overlapping training data and alignment procedures. Pooling several models, or swapping one for another, therefore widens the spread of outputs less than their different origins suggest."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "inter-model homogeneity",
+      "cross-model convergence",
+      "model ensemble convergence",
+      "homogénéité inter-modèles"
+    ],
+    "related": [
+      "mode-collapse",
+      "sampling-entropy"
+    ],
+    "articles": [
+      "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity"
+    ],
+    "addedOn": "15-10-2026"
+  },
+  {
     "id": "data-instruction-separation",
     "label": {
       "fr": "Séparation données/instructions",
@@ -2869,6 +2895,31 @@
       "kolibri-tokenizer-is-the-sovereign-model-cost-lever"
     ],
     "addedOn": "23-07-2026"
+  },
+  {
+    "id": "mode-collapse",
+    "label": {
+      "fr": "Effondrement de mode",
+      "en": "Mode collapse"
+    },
+    "definition": {
+      "fr": "Concentration des sorties d'un modèle génératif sur quelques réponses typiques, au lieu de couvrir l'éventail des réponses plausibles. Pour un modèle de langage, échantillonner plusieurs fois le même prompt ouvert renvoie alors des réponses quasi identiques : multiplier les tirages n'apporte guère de variété.",
+      "en": "The concentration of a generative model's outputs on a few typical responses instead of covering the range of plausible ones. For a language model, sampling the same open-ended prompt many times then returns near-identical answers, so repeated sampling buys little variety."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "output collapse",
+      "intra-model repetition",
+      "single-model repetition",
+      "répétition intra-modèle"
+    ],
+    "related": [
+      "sampling-entropy"
+    ],
+    "articles": [
+      "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity"
+    ],
+    "addedOn": "15-10-2026"
   },
   {
     "id": "model-context-protocol",
@@ -4206,6 +4257,34 @@
       "agent-write-volume-breaks-git-design-assumptions"
     ],
     "addedOn": "14-10-2026"
+  },
+  {
+    "id": "set-level-diversity-evaluation",
+    "label": {
+      "fr": "Évaluation de la diversité d'un lot",
+      "en": "Set-level diversity evaluation"
+    },
+    "definition": {
+      "fr": "Mesure de l'écart entre les sorties d'un lot généré pour un même prompt, en général par la similarité moyenne par paire de leurs embeddings, comparée à celle d'un lot de référence pour le même prompt. Elle repère une ressemblance que les contrôles par sortie, comme les critères d'acceptation, ne peuvent pas voir : le fait que les sorties diffèrent est une propriété de l'ensemble, pas d'une sortie isolée.",
+      "en": "Scoring how different a batch of outputs for one prompt are from one another, typically as the mean pairwise similarity of their embeddings compared with a reference batch for the same prompt. It catches sameness that per-output checks such as acceptance criteria cannot see, because distinctness is a property of the set rather than of any single output."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "batch diversity evaluation",
+      "mean pairwise similarity",
+      "diversity gate",
+      "diversité d'un lot"
+    ],
+    "related": [
+      "embeddings",
+      "proxy-metric",
+      "mode-collapse",
+      "cross-model-homogeneity"
+    ],
+    "articles": [
+      "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity"
+    ],
+    "addedOn": "15-10-2026"
   },
   {
     "id": "severity-tiering",
