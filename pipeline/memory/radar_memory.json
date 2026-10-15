@@ -2303,5 +2303,39 @@
     ],
     "published_at": "2026-10-14",
     "embedding": null
+  },
+  {
+    "translation_key": "opencode-2-mcp-servers-code-mode-by-default",
+    "topic_id": "opencode-2-mcp-servers-code-mode-by-default",
+    "dedup_key": "opencode 2 mcp servers code mode by default",
+    "title": "OpenCode 2.0 opts all MCP servers into code mode by default, so the agent can call your tools from a script",
+    "slugs": {
+      "fr": "opencode-2-serveurs-mcp-code-mode-par-defaut",
+      "en": "opencode-2-mcp-servers-code-mode-by-default"
+    },
+    "sources": [
+      {
+        "label": "Anomaly notes index",
+        "url": "https://anoma.ly/notes/",
+        "date": "12-10-2026"
+      },
+      {
+        "label": "Anomaly, \"OpenCode 2.0\" release note",
+        "url": "https://anoma.ly/notes/opencode-2-0/",
+        "date": "12-10-2026"
+      },
+      {
+        "label": "GitHub, anomalyco/opencode release v1.19.0",
+        "url": "https://github.com/anomalyco/opencode/releases/tag/v1.19.0",
+        "date": "11-10-2026"
+      },
+      {
+        "label": "explainx.ai, \"OpenCode 2.0: Code Mode, Background Agents and a Shared Server, and How to Upgrade\"",
+        "url": "https://explainx.ai/blog/opencode-2-0-code-mode-background-agents-shared-server-sdk-upgrade-guide-2026",
+        "date": "12-10-2026"
+      }
+    ],
+    "published_at": "2026-10-15",
+    "embedding": null
   }
 ]
