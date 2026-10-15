@@ -1766,7 +1766,8 @@
     ],
     "articles": [
       "hybrid-rag-rrf",
-      "ast-code-chunking"
+      "ast-code-chunking",
+      "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity"
     ],
     "addedOn": "27-05-2026"
   },
@@ -3347,7 +3348,8 @@
       "patch-quality-rate-needs-a-consistent-grader",
       "agent-ci-load-and-the-unearned-green",
       "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output",
-      "agent-coding-gains-stop-at-the-review-queue"
+      "agent-coding-gains-stop-at-the-review-queue",
+      "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity"
     ],
     "addedOn": "18-07-2026"
   },
@@ -3962,7 +3964,8 @@
       "schema-constrained-tool-calling"
     ],
     "articles": [
-      "watermark-entropy-budget"
+      "watermark-entropy-budget",
+      "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity"
     ],
     "addedOn": "23-08-2026"
   },
