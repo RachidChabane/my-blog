@@ -281,7 +281,8 @@
       "trust-boundary"
     ],
     "articles": [
-      "live-web-agent-evals-run-side-effects-on-third-party-sites"
+      "live-web-agent-evals-run-side-effects-on-third-party-sites",
+      "web-prompt-injection-scans-measure-what-crawlers-are-served"
     ],
     "addedOn": "11-10-2026"
   },
@@ -566,6 +567,33 @@
       "opaque-state-outscores-the-notes-you-can-read"
     ],
     "addedOn": "10-09-2026"
+  },
+  {
+    "id": "ai-targeted-cloaking",
+    "label": {
+      "fr": "Cloaking ciblant les agents IA",
+      "en": "AI-targeted cloaking"
+    },
+    "definition": {
+      "fr": "Pratique par laquelle un serveur renvoie un contenu différent sur le fond, et pas seulement dans son format, aux requêtes qu'il attribue à un agent ou à un crawler d'IA, d'après son user agent, son en-tête Accept ou les plages d'adresses IP que publie son fournisseur. L'agent lit, résume et relaie alors un contenu qu'un humain consultant la même URL ne voit jamais.",
+      "en": "A server returning different content in substance, not just in format, to requests it attributes to an AI agent or AI crawler, keyed on the user agent, the Accept header or the IP ranges the agent's provider publishes. The agent then reads, summarizes and repeats content that a human checking the same URL never sees."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "AI cloaking",
+      "agent-targeted cloaking",
+      "agent-only serving",
+      "cloaking ciblant les agents"
+    ],
+    "related": [
+      "indirect-prompt-injection",
+      "agent-identity-disclosure",
+      "trust-boundary"
+    ],
+    "articles": [
+      "web-prompt-injection-scans-measure-what-crawlers-are-served"
+    ],
+    "addedOn": "16-10-2026"
   },
   {
     "id": "applicability-ceiling",
@@ -1591,7 +1619,8 @@
       "trust-boundary"
     ],
     "articles": [
-      "prompt-injection-defense-layer-split"
+      "prompt-injection-defense-layer-split",
+      "web-prompt-injection-scans-measure-what-crawlers-are-served"
     ],
     "addedOn": "19-07-2026"
   },
@@ -1668,6 +1697,32 @@
       "deterministic-agent-workflows"
     ],
     "addedOn": "30-05-2026"
+  },
+  {
+    "id": "differential-fetch-check",
+    "label": {
+      "fr": "Contrôle par requêtes différentielles",
+      "en": "Differential fetch check"
+    },
+    "definition": {
+      "fr": "Méthode qui consiste à récupérer la même URL sous plusieurs identités de client (par exemple un navigateur et l'agent lui-même, avec son user agent et son en-tête Accept) et à comparer les en-têtes et le texte extrait pour repérer un serveur qui traite un client à part. Un diff vide n'écarte que les signaux d'identité que le contrôle reproduit : un serveur qui se fonde sur l'origine réseau lui échappe.",
+      "en": "Fetching the same URL under several client identities (such as a browser and the agent itself, with its own user agent and Accept header) and diffing the headers and the extracted text to catch a server that treats one client differently. A clean diff only clears the identity signals the check reproduces: a server keyed on network origin stays invisible to it."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "differential fetch",
+      "multi-identity fetch diff",
+      "user-agent diff",
+      "requêtes différentielles"
+    ],
+    "related": [
+      "ai-targeted-cloaking",
+      "agent-identity-disclosure"
+    ],
+    "articles": [
+      "web-prompt-injection-scans-measure-what-crawlers-are-served"
+    ],
+    "addedOn": "16-10-2026"
   },
   {
     "id": "dual-use-artifact-ambiguity",
@@ -2301,7 +2356,8 @@
       "claude-code-action-supply-chain-auth",
       "command-denylist-not-a-security-boundary",
       "prompt-injection-defense-layer-split",
-      "the-check-binds-the-action-not-the-decision"
+      "the-check-binds-the-action-not-the-decision",
+      "web-prompt-injection-scans-measure-what-crawlers-are-served"
     ],
     "addedOn": "01-07-2026"
   },
@@ -3400,7 +3456,8 @@
       "agent-ci-load-and-the-unearned-green",
       "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output",
       "agent-coding-gains-stop-at-the-review-queue",
-      "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity"
+      "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity",
+      "web-prompt-injection-scans-measure-what-crawlers-are-served"
     ],
     "addedOn": "18-07-2026"
   },
