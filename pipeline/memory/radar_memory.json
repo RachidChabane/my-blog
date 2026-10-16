@@ -2337,5 +2337,44 @@
     ],
     "published_at": "2026-10-15",
     "embedding": null
+  },
+  {
+    "translation_key": "muse-spark-open-license-attribution-label-and-model-service-revenue-agreement",
+    "topic_id": "muse-spark-open-license-attribution-label-and-model-service-revenue-agreement",
+    "dedup_key": "muse spark open license attribution label and model service revenue agreement",
+    "title": "Muse Spark Open's license requires a Built with Muse Spark Open label, and Model as a Service providers above $20 million in revenue need a separate agreement with Meta",
+    "slugs": {
+      "fr": "muse-spark-open-licence-mention-et-accord-model-as-a-service",
+      "en": "muse-spark-open-license-label-and-model-as-a-service-agreement"
+    },
+    "sources": [
+      {
+        "label": "Hugging Face, meta-models/Muse-Spark-Open-816B-A42B LICENSE.md",
+        "url": "https://huggingface.co/meta-models/Muse-Spark-Open-816B-A42B/blob/main/LICENSE.md",
+        "date": "15-10-2026"
+      },
+      {
+        "label": "Meta AI Research, \"Introducing Muse Spark Open\"",
+        "url": "https://research.meta.ai/blog/muse-spark-open",
+        "date": "15-10-2026"
+      },
+      {
+        "label": "Hugging Face, meta-models/Muse-Spark-Open-816B-A42B model card",
+        "url": "https://huggingface.co/meta-models/Muse-Spark-Open-816B-A42B",
+        "date": "15-10-2026"
+      },
+      {
+        "label": "MarkTechPost, \"Meta Releases Muse Spark Open: 816B Open-Weight MoE With 1M Context\"",
+        "url": "https://www.marktechpost.com/2026/10/15/meta-muse-spark-open-816b-open-weight-model/",
+        "date": "16-10-2026"
+      },
+      {
+        "label": "Unite.AI, \"Meta's 816B-Parameter Muse Spark Open Weights Are Now Public\"",
+        "url": "https://www.unite.ai/metas-816b-parameter-muse-spark-open-weights-are-now-public/",
+        "date": "15-10-2026"
+      }
+    ],
+    "published_at": "2026-10-16",
+    "embedding": null
   }
 ]
