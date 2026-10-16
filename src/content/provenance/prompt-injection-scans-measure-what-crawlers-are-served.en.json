@@ -1,0 +1,199 @@
+{
+  "slug": "prompt-injection-scans-measure-what-crawlers-are-served",
+  "lang": "en",
+  "translationKey": "web-prompt-injection-scans-measure-what-crawlers-are-served",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Signals Corps, prompt injection in HTTP headers (scan summary)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "We scanned the HTTP headers of 217 million crawled web responses for text aimed at AI agents. Most point agents to llms.txt files and MCP servers, and 30 sites sent injection attempts."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Signals Corps, prompt injection in HTTP headers (prank share)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "Prompt injection in HTTP headers is rare, and most of it is a joke. Of the 7,959 sites that sent a header aimed at AI, 30 tried to give an agent orders, and 22 of those were pranks."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Signals Corps, prompt injection in HTTP headers (agent test conditions)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "Second, the prompt has to give the site authority. Every everyday run flagged the header as text from the server and ignored it."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Signals Corps, prompt injection in HTTP headers (test scope)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "Each run is one fresh agent given one prompt once, on 12 or 14 October 2026, so read these as worked examples."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Signals Corps, prompt injection in HTTP headers (crawler identity limit)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "Common Crawl fetches as CCBot , so a server that shows special headers only to named AI agents showed us nothing, and agent-only cloaking cannot appear in these counts."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Signals Corps, prompt injection in HTTP headers (AI client labelling)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "Servers already label AI clients, and that is the finding in our scan worth watching."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Signals Corps, prompt injection in HTTP headers (detection sites)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "The 136 detection sites show that the first step is common. What they do next is not visible in the crawl."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Google, AI threats in the wild (sophistication)",
+      "url": "https://blog.google/security/prompt-injections-web/",
+      "excerpt": "We mostly found individual website authors who seemed to be running experiments or pranks, without replicating advanced IPI strategies found in recently published research."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Google, AI threats in the wild (coverage caveat)",
+      "url": "https://blog.google/security/prompt-injections-web/",
+      "excerpt": "For one, we scanned only an archive of the public web (CommonCrawl), which does not capture major social media sites."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Google, AI threats in the wild (trend)",
+      "url": "https://blog.google/security/prompt-injections-web/",
+      "excerpt": "We saw a relative increase of 32% in the malicious category between November 2025 and February 2026, repeating the scan on multiple versions of the archive."
+    },
+    {
+      "sourceId": "s11",
+      "label": "Khodayari et al., Indirect Prompt Injection in the Wild (scale)",
+      "url": "https://arxiv.org/abs/2604.27202",
+      "excerpt": "Analyzing 1.2B URLs from 24.8M hosts, we identify 15.3K validated instances across 11.7K pages."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Khodayari et al., Indirect Prompt Injection in the Wild (delivery)",
+      "url": "https://arxiv.org/abs/2604.27202",
+      "excerpt": "A key finding is that most instructions target machines rather than humans: about 70% appear in non-rendered HTML (e.g., headers, comments, metadata), and many visible cases are hidden via rendering techniques."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Khodayari et al., Indirect Prompt Injection in the Wild (compliance)",
+      "url": "https://arxiv.org/abs/2604.27202",
+      "excerpt": "Our results show compliance is limited but non-negligible, reaching up to 8% for smaller models on plain-text inputs, while structured representations reduce compliance by preserving structural cues."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Khodayari et al., Indirect Prompt Injection in the Wild (data sources)",
+      "url": "https://arxiv.org/abs/2604.27202",
+      "excerpt": "First, we use Common Crawl ( 13 ) , one of the largest publicly available web corpora, to capture prompt injections on the public web at scale."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Khodayari et al., Indirect Prompt Injection in the Wild (lower bound)",
+      "url": "https://arxiv.org/abs/2604.27202",
+      "excerpt": "Consequently, our measurement should be interpreted as a lower bound estimate of prompt injection prevalence."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Khodayari et al., Indirect Prompt Injection in the Wild (cloaking adoption)",
+      "url": "https://arxiv.org/abs/2604.27202",
+      "excerpt": "Publishers may also attempt to interfere with or redirect agent behavior through interface design, for example via dark patterns ( Ersoy et al., 2026 ) , or hiding content through adaptive content transformation using cloaking-style defenses ( Ersoy et al., 2026 ; Li et al., 2026b ) . However, these ideas are recent and not yet widely adopted in practice."
+    },
+    {
+      "sourceId": "s17",
+      "label": "SPLX, AI-targeted cloaking against AI browsers (setup)",
+      "url": "https://splx.ai/blog/ai-targeted-cloaking-openai-atlas",
+      "excerpt": "When the same URL is requested by an AI agent (e.g., User-Agent = ChatGPT-User or PerplexityBot, or new AI browsers Atlas and Comet), the server delivers a fabricated negative profile ."
+    },
+    {
+      "sourceId": "s18",
+      "label": "SPLX, AI-targeted cloaking against AI browsers (mechanism)",
+      "url": "https://splx.ai/blog/ai-targeted-cloaking-openai-atlas",
+      "excerpt": "The only change is the user-agent header , yet it completely alters the semantic meaning of the page."
+    },
+    {
+      "sourceId": "s19",
+      "label": "SPLX, AI-targeted cloaking against AI browsers (finding)",
+      "url": "https://splx.ai/blog/ai-targeted-cloaking-openai-atlas",
+      "excerpt": "AI crawlers can be deceived with trivial header checks, making AIO results vulnerable to narrative poisoning."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Signals Corps, prompt injection in HTTP headers (verdict)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "Most teams need no new controls."
+    },
+    {
+      "sourceId": "s21",
+      "label": "Signals Corps, prompt injection in HTTP headers (page title)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "Prompt injection in HTTP headers | Signals Corps"
+    },
+    {
+      "sourceId": "s22",
+      "label": "Google, AI threats in the wild (team)",
+      "url": "https://blog.google/security/prompt-injections-web/",
+      "excerpt": "At Google, our Threat Intelligence teams are dedicated to staying ahead of real-world adversarial activity, proactively monitoring emerging threats before they can impact users."
+    },
+    {
+      "sourceId": "s23",
+      "label": "Google, AI threats in the wild (sweep scope)",
+      "url": "https://blog.google/security/prompt-injections-web/",
+      "excerpt": "We initiated a broad sweep of the public web to monitor for known indirect prompt injection patterns."
+    },
+    {
+      "sourceId": "s24",
+      "label": "Khodayari et al., Indirect Prompt Injection in the Wild (authors)",
+      "url": "https://arxiv.org/abs/2604.27202",
+      "excerpt": "Indirect Prompt Injection in the Wild: An Empirical Study of Prevalence, Techniques, and Objectives, by Soheil Khodayari and 3 other authors"
+    },
+    {
+      "sourceId": "s25",
+      "label": "SPLX, AI-targeted cloaking against AI browsers (experiments)",
+      "url": "https://splx.ai/blog/ai-targeted-cloaking-openai-atlas",
+      "excerpt": "To explore how real this threat is, SPLX researchers ran controlled experiments, where a site detects AI crawlers and serves altered content."
+    },
+    {
+      "sourceId": "s26",
+      "label": "Signals Corps, prompt injection in HTTP headers (cloaking needs no obedience)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "Cloaking is the worrying part for two reasons. It needs no obedience: an agent that reads a cloaked page or résumé can repeat it as fact, as the AI tools in SPLX’s test did."
+    },
+    {
+      "sourceId": "s27",
+      "label": "Signals Corps, prompt injection in HTTP headers (cloaking hides from review)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "An analyst who checks the URL later with their own browser sees a clean response, and a server can key on the IP ranges that AI providers publish for their fetchers, which no check from your own network can reproduce."
+    },
+    {
+      "sourceId": "s28",
+      "label": "Signals Corps, prompt injection in HTTP headers (agent-identity check)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "To check an important site the way your agents reach it, fetch it with the agent’s user agent and Accept header."
+    },
+    {
+      "sourceId": "s29",
+      "label": "Signals Corps, prompt injection in HTTP headers (risk scoping)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "Otherwise, these four actions match the risk we found: low for header injection, and worth watching for cloaking."
+    },
+    {
+      "sourceId": "s30",
+      "label": "Signals Corps, prompt injection in HTTP headers (CCBot classified as AI bot)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "136 of the 139 detection sites in our scan sent a header saying they had classified the client, Common Crawl’s self-declared CCBot, as an AI bot. That only takes a user-agent match, and it is the first step cloaking needs."
+    },
+    {
+      "sourceId": "s31",
+      "label": "Signals Corps, prompt injection in HTTP headers (cloaking server test)",
+      "url": "https://www.signalscorps.com/blog/prompt-injection-in-http-headers/",
+      "excerpt": "We built a small cloaking server to see what a manual check reveals. It sends ordinary headers to everyone and adds one more when the user agent contains a published AI fetcher name or the Accept header asks for Markdown first."
+    },
+    {
+      "sourceId": "s32",
+      "label": "Common Crawl, CCBot (user agent)",
+      "url": "https://commoncrawl.org/ccbot",
+      "excerpt": "CCBot identifies itself in its UserAgent string as: CCBot/2.0"
+    }
+  ]
+}
