@@ -2376,5 +2376,44 @@
     ],
     "published_at": "2026-10-16",
     "embedding": null
+  },
+  {
+    "translation_key": "beam-dflash2-drafter-low-latency-recipe-disabled-for-high-throughput",
+    "topic_id": "beam-dflash2-drafter-low-latency-recipe-disabled-for-high-throughput",
+    "dedup_key": "beam dflash2 drafter low latency recipe disabled for high throughput",
+    "title": "Reflection's Beam ships with a DFlash2 speculative drafter, and SGLang's High-Throughput recipe disables it",
+    "slugs": {
+      "fr": "reflection-beam-drafter-dflash2-sglang-vllm-reglage-par-deploiement",
+      "en": "reflection-beam-dflash2-drafter-sglang-vllm-per-deployment-switch"
+    },
+    "sources": [
+      {
+        "label": "Reflection, \"Beam is now available\"",
+        "url": "https://reflection.ai/blog/beam-is-available",
+        "date": "16-10-2026"
+      },
+      {
+        "label": "AlphaSignal, \"Reflection AI Drops Beam, a 501B Open-Weight Agent Model for Coding\"",
+        "url": "https://alphasignal.ai/news/reflection-ai-drops-beam-a-501b-open-weight-agent-model-for-coding",
+        "date": "16-10-2026"
+      },
+      {
+        "label": "Hugging Face, reflection/Beam-1.0-501B-A23B-DFlash2 model card",
+        "url": "https://huggingface.co/reflection/Beam-1.0-501B-A23B-DFlash2",
+        "date": "16-10-2026"
+      },
+      {
+        "label": "SGLang Cookbook, \"Reflection Beam 1.0\"",
+        "url": "https://docs.sglang.io/cookbook/autoregressive/Reflection/Beam-1_0",
+        "date": "16-10-2026"
+      },
+      {
+        "label": "vLLM Recipes, \"reflection/Beam-1.0-501B-A23B\"",
+        "url": "https://recipes.vllm.ai/reflection/Beam-1.0-501B-A23B?features=reasoning%2Ctool_calling%2Cspec_decoding",
+        "date": "16-10-2026"
+      }
+    ],
+    "published_at": "2026-10-17",
+    "embedding": null
   }
 ]
