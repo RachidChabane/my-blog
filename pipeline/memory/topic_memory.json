@@ -4679,5 +4679,159 @@
     ],
     "published_at": "2026-10-16",
     "embedding": null
+  },
+  {
+    "translation_key": "agent-benchmarks-cover-little-of-the-work-your-agent-does",
+    "topic_id": "agent-benchmarks-cover-little-of-the-work-your-agent-does",
+    "dedup_key": "public ai agent benchmarks cover a narrow programming centric slice of occupational tasks as two llm tagged mappings to the onet taxonomy find so a leaderboard rank carries little signal for agents built for most knowledge work and teams must map their own task coverage",
+    "title": "Agent benchmarks crowd into software work, so map your own",
+    "slugs": {
+      "fr": "les-benchmarks-d-agents-s-entassent-dans-le-logiciel",
+      "en": "agent-benchmarks-crowd-into-software-work"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Mercor, A benchmark map of the US economy (occupation coverage)",
+        "url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "In our data set: only 208 of 923 occupations have a task with at least 5 benchmark prompts , and 6 of 22 job families have no such occupations."
+      },
+      {
+        "source_id": "s2",
+        "label": "Mercor, A benchmark map of the US economy (working hours)",
+        "url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "Our findings suggest that 90% of American working hours are spent on tasks with little or no coverage from existing benchmarks"
+      },
+      {
+        "source_id": "s3",
+        "label": "Mercor, A benchmark map of the US economy (consequence)",
+        "url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "This makes it very hard to know how good AI models are at the work Americans actually do."
+      },
+      {
+        "source_id": "s4",
+        "label": "Mercor, A benchmark map of the US economy (LLM judge tagging)",
+        "url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "Following work by Wang et al. , we then ask an LLM judge to tag each benchmark prompt with as many O*NET tasks as it thinks correspond to that prompt."
+      },
+      {
+        "source_id": "s5",
+        "label": "Mercor, A benchmark map of the US economy (method credit)",
+        "url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "We are indebted to Wang et al. for the O*NET tagging methodology"
+      },
+      {
+        "source_id": "s6",
+        "label": "Mercor, A benchmark map of the US economy (own held-out benchmarks)",
+        "url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "APEX benchmarks, where we have access to held-out benchmark prompts and are therefore able to map them to O*NET tasks."
+      },
+      {
+        "source_id": "s7",
+        "label": "Mercor, A benchmark map of the US economy (per-family cap)",
+        "url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "We capped the number of included benchmarks per job family, in significant part to account for the massive overrepresentation of software engineering and research tasks in popular benchmarks."
+      },
+      {
+        "source_id": "s8",
+        "label": "Mercor, A benchmark map of the US economy (provisional)",
+        "url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "Any incomplete list will necessarily bias down estimates of economic coverage, and it is difficult to bound that bias. We want to stress, therefore, that these results are provisional."
+      },
+      {
+        "source_id": "s9",
+        "label": "Mercor, A benchmark map of the US economy (where coverage sits)",
+        "url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "This explains why benchmarks are full of tasks in Software Engineering and Financial Analysis while sparse on tasks in Truck Driving and Gas Plant Operation."
+      },
+      {
+        "source_id": "s10",
+        "label": "Mercor, A benchmark map of the US economy (undercovered tail)",
+        "url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "The long tail of smaller, middle-income knowledge work jobs appears undercovered."
+      },
+      {
+        "source_id": "s11",
+        "label": "Mercor, A benchmark map of the US economy (saturation trade-off)",
+        "url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "The latter claim seems likely, given that benchmarks often overstate LLM performance in real-world deployments."
+      },
+      {
+        "source_id": "s12",
+        "label": "Wang et al., How Well Does Agent Development Reflect Real-World Work? (scope)",
+        "url": "https://arxiv.org/html/2603.01203v2",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "We first analyze 43 benchmarks and 72,342 tasks, measuring their alignment with human employment and capital allocation across all 1,016 real-world occupations in the U.S. labor market.",
+        "source_date": "2026-03-06"
+      },
+      {
+        "source_id": "s13",
+        "label": "Wang et al., How Well Does Agent Development Reflect Real-World Work? (mismatch)",
+        "url": "https://arxiv.org/html/2603.01203v2",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "We reveal substantial mismatches between agent development that tends to be programming-centric, and the categories in which human labor and economic value are concentrated.",
+        "source_date": "2026-03-06"
+      },
+      {
+        "source_id": "s14",
+        "label": "Wang et al., How Well Does Agent Development Reflect Real-World Work? (employment share)",
+        "url": "https://arxiv.org/html/2603.01203v2",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "We find that existing agent benchmarks are heavily concentrated in the computer and mathematical domain, which accounts for only 7.6% of U.S. employment, while other highly digitized and economically significant areas, such as management and legal work, remain substantially underrepresented.",
+        "source_date": "2026-03-06"
+      },
+      {
+        "source_id": "s15",
+        "label": "Wang et al., How Well Does Agent Development Reflect Real-World Work? (digitized but sparse)",
+        "url": "https://arxiv.org/html/2603.01203v2",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "Notably, Management, Legal, and Architecture and Engineering exhibit high ratios of digital work (88%, 70%, and 71%, respectively), but are sparsely covered by existing benchmarks (1.4%, 0.3%, 0.7% among all 19179 examples).",
+        "source_date": "2026-03-06"
+      },
+      {
+        "source_id": "s16",
+        "label": "Wang et al., How Well Does Agent Development Reflect Real-World Work? (annotation method)",
+        "url": "https://arxiv.org/html/2603.01203v2",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "We implement this via large language model (LLM)-based annotation with manual quality verification, enabling scalable processing across benchmarks",
+        "source_date": "2026-03-06"
+      },
+      {
+        "source_id": "s17",
+        "label": "Wang et al., How Well Does Agent Development Reflect Real-World Work? (software steelman)",
+        "url": "https://arxiv.org/html/2603.01203v2",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "On one hand, software can be used to perform tasks across a wide variety of domains, so developing software engineering abilities has the potential to accelerate other varieties of work.",
+        "source_date": "2026-03-06"
+      },
+      {
+        "source_id": "s18",
+        "label": "Wang et al., How Well Does Agent Development Reflect Real-World Work? (principles)",
+        "url": "https://arxiv.org/html/2603.01203v2",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "we propose three measurable principles for designing benchmarks that better capture socially important and technically challenging forms of work: coverage, realism, and granular evaluation.",
+        "source_date": "2026-03-06"
+      },
+      {
+        "source_id": "s19",
+        "label": "Mercor, A benchmark map of the US economy (benchmark list)",
+        "url": "https://www.mercor.com/research/labor-index/benchmark-map/",
+        "retrieved_at": "2026-10-17",
+        "excerpt": "To measure benchmark coverage, we start with a list of 29 benchmarks selected for their quality and economic relevance."
+      }
+    ],
+    "published_at": "2026-10-17",
+    "embedding": null
   }
 ]
