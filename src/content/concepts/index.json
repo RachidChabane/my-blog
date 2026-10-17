@@ -255,7 +255,8 @@
       "verification-frontiere-action-2026-08",
       "arret-anticipe-sondes-2026-08",
       "ask-when-unsure-is-gated-on-detection",
-      "live-web-agent-evals-run-side-effects-on-third-party-sites"
+      "live-web-agent-evals-run-side-effects-on-third-party-sites",
+      "agent-benchmarks-cover-little-of-the-work-your-agent-does"
     ],
     "addedOn": "12-05-2026"
   },
@@ -860,6 +861,34 @@
       "patch-quality-rate-needs-a-consistent-grader"
     ],
     "addedOn": "18-06-2026"
+  },
+  {
+    "id": "benchmark-task-coverage",
+    "label": {
+      "fr": "Couverture des tâches par les benchmarks",
+      "en": "Benchmark task coverage"
+    },
+    "definition": {
+      "fr": "Part des tâches d'une taxonomie des métiers qu'un ensemble de benchmarks met à l'épreuve, généralement mesurée en rattachant chaque prompt de benchmark aux tâches qu'il recouvre et en tenant une tâche pour couverte dès que suffisamment de prompts s'y rapportent. Le chiffre obtenu dépend de la liste de benchmarks retenue et de l'étiquetage, souvent confié à un juge LLM : un total non vérifié compte les décisions de l'étiqueteur plutôt que le travail réellement couvert.",
+      "en": "The share of the tasks in an occupational task taxonomy that a set of benchmarks exercises, commonly measured by tagging each benchmark prompt with the tasks it corresponds to and counting a task as covered once enough prompts map to it. The resulting figure depends on the benchmark list chosen and on the tagging step, often an LLM judge, so an unchecked total counts the tagger's decisions rather than the work actually covered."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "task-level benchmark coverage",
+      "occupational benchmark coverage",
+      "benchmark coverage map",
+      "couverture des tâches par les benchmarks"
+    ],
+    "related": [
+      "llm-as-a-judge",
+      "grader-agreement",
+      "proxy-metric",
+      "agent-evaluation"
+    ],
+    "articles": [
+      "agent-benchmarks-cover-little-of-the-work-your-agent-does"
+    ],
+    "addedOn": "17-10-2026"
   },
   {
     "id": "best-of-n-sampling",
@@ -2109,7 +2138,8 @@
       "benchmark-auditability"
     ],
     "articles": [
-      "patch-quality-rate-needs-a-consistent-grader"
+      "patch-quality-rate-needs-a-consistent-grader",
+      "agent-benchmarks-cover-little-of-the-work-your-agent-does"
     ],
     "addedOn": "18-09-2026"
   },
@@ -2704,7 +2734,8 @@
     "articles": [
       "verification-frontiere-action-2026-08",
       "patch-quality-rate-needs-a-consistent-grader",
-      "kolibri-tokenizer-is-the-sovereign-model-cost-lever"
+      "kolibri-tokenizer-is-the-sovereign-model-cost-lever",
+      "agent-benchmarks-cover-little-of-the-work-your-agent-does"
     ],
     "addedOn": "03-08-2026"
   },
@@ -3457,7 +3488,8 @@
       "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output",
       "agent-coding-gains-stop-at-the-review-queue",
       "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity",
-      "web-prompt-injection-scans-measure-what-crawlers-are-served"
+      "web-prompt-injection-scans-measure-what-crawlers-are-served",
+      "agent-benchmarks-cover-little-of-the-work-your-agent-does"
     ],
     "addedOn": "18-07-2026"
   },
