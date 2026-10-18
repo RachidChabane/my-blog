@@ -4833,5 +4833,211 @@
     ],
     "published_at": "2026-10-17",
     "embedding": null
+  },
+  {
+    "translation_key": "lean-kernel-cross-checks-only-help-when-kernels-fail-differently",
+    "topic_id": "lean-kernel-cross-checks-only-help-when-kernels-fail-differently",
+    "dedup_key": "rechecking ai generated lean proofs with several external kernels defends against ai found kernel soundness bugs only when the kernels fail independently because a port inherits the reference kernel bug and a stale external checker passed a false ai assisted disproof so checker diversity and current versions are the control",
+    "title": "A second proof checker only helps if it fails differently",
+    "slugs": {
+      "fr": "un-second-verificateur-ne-protege-que-s-il-echoue-autrement",
+      "en": "a-second-proof-checker-only-helps-if-it-fails-differently"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (AI-found vulnerabilities)",
+        "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "AI agents are very effective at finding vulnerabilities in our software. This includes the kernel (the proof checker) of the Lean proof assistant.",
+        "source_date": "2026-10-15"
+      },
+      {
+        "source_id": "s2",
+        "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (lake check)",
+        "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "Lean v4.35.0 comes with the lake check command. This command exports your development and rechecks it with leanchecker , the official Lean kernel without all the baggage around it.",
+        "source_date": "2026-10-15"
+      },
+      {
+        "source_id": "s3",
+        "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (paranoid mode)",
+        "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "Lean now ships with four additional kernels: nanoda , lean4lean , con-leche , and con-ron . You can recheck your development with all of them using the command lake check --paranoid .",
+        "source_date": "2026-10-15"
+      },
+      {
+        "source_id": "s4",
+        "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (con-leche)",
+        "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "Con-leche is the first kernel for Lean written in Lean and proven consistent. It was implemented and proven consistent by Claude (Fable and Opus), under heavy supervision by Joachim Breitner at the Lean FRO .",
+        "source_date": "2026-10-15"
+      },
+      {
+        "source_id": "s5",
+        "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (bug class removed)",
+        "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "This approach eliminates a complete class of bugs: programming mistakes in the kernel implementation.",
+        "source_date": "2026-10-15"
+      },
+      {
+        "source_id": "s6",
+        "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (residual trust)",
+        "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "However, con-leche is not bulletproof, because there might be bugs in the compiler and runtime used to build it.",
+        "source_date": "2026-10-15"
+      },
+      {
+        "source_id": "s7",
+        "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (scale)",
+        "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "The current approach for external kernels does not scale to developments of this size.",
+        "source_date": "2026-10-15"
+      },
+      {
+        "source_id": "s8",
+        "label": "Leonardo de Moura, Postmortem for Kernel Soundness Bug #14576 (Collatz disproof)",
+        "url": "https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "On July 25, Ramana Kumar published a repository containing a sorry -free \"disproof\" of the Collatz conjecture, produced with AI assistance. It is not a valid proof because it exploits a bug in the kernel's handling of nested inductive types.",
+        "source_date": "2026-08-01"
+      },
+      {
+        "source_id": "s9",
+        "label": "Leonardo de Moura, Postmortem for Kernel Soundness Bug #14576 (external checker passed it)",
+        "url": "https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "The original Collatz repository also passed a week-old version of nanoda , the main external checker.",
+        "source_date": "2026-08-01"
+      },
+      {
+        "source_id": "s10",
+        "label": "Leonardo de Moura, Postmortem for Kernel Soundness Bug #14576 (two bugs, current versions)",
+        "url": "https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "The practical consequence: checking with an independent kernel still works, since it required two distinct bugs in two implementations, but users who rely on it need current versions of both.",
+        "source_date": "2026-08-01"
+      },
+      {
+        "source_id": "s11",
+        "label": "Leonardo de Moura, Postmortem for Kernel Soundness Bug #14576 (port inherits the bug)",
+        "url": "https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "lean4lean is affected by the kernel bug, since its handling of inductives is a port of the reference implementation.",
+        "source_date": "2026-08-01"
+      },
+      {
+        "source_id": "s12",
+        "label": "Leonardo de Moura, Postmortem for the Kernel Soundness Bug Hunt (threat model)",
+        "url": "https://leodemoura.github.io/blog/2026-8-24-postmortem-for-the-kernel-soundness-bug-hunt/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "We consider AI-generated proofs a potential source of malicious proofs.",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s13",
+        "label": "Leonardo de Moura, Postmortem for the Kernel Soundness Bug Hunt (lake build limit)",
+        "url": "https://leodemoura.github.io/blog/2026-8-24-postmortem-for-the-kernel-soundness-bug-hunt/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "lake build does not protect users from adversarial proofs that try, for example, to corrupt memory using Lean extensions.",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s14",
+        "label": "Leonardo de Moura, Postmortem for the Kernel Soundness Bug Hunt (runtime exploit)",
+        "url": "https://leodemoura.github.io/blog/2026-8-24-postmortem-for-the-kernel-soundness-bug-hunt/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "Second, it figured out that the official Lean distribution for Linux was not using the latest GMP v6.3.0, but v6.1.2, which contains a known bug, and crafted a proof of False exploiting this bug.",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s15",
+        "label": "Leonardo de Moura, Postmortem for the Kernel Soundness Bug Hunt (public models)",
+        "url": "https://leodemoura.github.io/blog/2026-8-24-postmortem-for-the-kernel-soundness-bug-hunt/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "None of the groups using publicly available models reported any bugs.",
+        "source_date": "2026-08-24"
+      },
+      {
+        "source_id": "s16",
+        "label": "Thomas Hales (guest post), What mathematicians should know about the Lean Theorem Prover (cross-checking)",
+        "url": "https://terrytao.wordpress.com/2026/10/09/what-mathematicians-should-know-about-the-lean-theorem-proverquestions-of-reliability-and-ai/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "Cross-checking the proof by different kernels does not remove all doubt.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s17",
+        "label": "Thomas Hales (guest post), What mathematicians should know about the Lean Theorem Prover (shared defects)",
+        "url": "https://terrytao.wordpress.com/2026/10/09/what-mathematicians-should-know-about-the-lean-theorem-proverquestions-of-reliability-and-ai/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "Different kernels might have the same defects. Some of these errors can be mitigated by running different kernels that have been implemented in different programming languages on different hardware and operating systems.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s18",
+        "label": "Thomas Hales (guest post), What mathematicians should know about the Lean Theorem Prover (clean-room kernel)",
+        "url": "https://terrytao.wordpress.com/2026/10/09/what-mathematicians-should-know-about-the-lean-theorem-proverquestions-of-reliability-and-ai/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "a kernel implementation that does not look at the Lean 4 kernel source code, to avoid copying bugs from one kernel to another.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s19",
+        "label": "Thomas Hales (guest post), What mathematicians should know about the Lean Theorem Prover (Kepler encounter)",
+        "url": "https://terrytao.wordpress.com/2026/10/09/what-mathematicians-should-know-about-the-lean-theorem-proverquestions-of-reliability-and-ai/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "I learned of the bug this summer when it produced a short illicit proof of the Kepler conjecture in Lean.",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s20",
+        "label": "Ramana Kumar, CollatzLean README at the disproof commit (verification pipeline)",
+        "url": "https://raw.githubusercontent.com/xrchz/CollatzLean/a79357462a33d2a6babd4cf6c8d8bcd25425d653/README.md",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "The project pins Lean and Mathlib to v4.32.1.",
+        "source_date": "2026-07-25"
+      },
+      {
+        "source_id": "s21",
+        "label": "Ramana Kumar, CollatzLean README at the disproof commit (pinned external checker)",
+        "url": "https://raw.githubusercontent.com/xrchz/CollatzLean/a79357462a33d2a6babd4cf6c8d8bcd25425d653/README.md",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "independent checking by pinned Nanoda with no permitted axioms.",
+        "source_date": "2026-07-25"
+      },
+      {
+        "source_id": "s22",
+        "label": "Ramana Kumar, CollatzLean README at the disproof commit (claimed result)",
+        "url": "https://raw.githubusercontent.com/xrchz/CollatzLean/a79357462a33d2a6babd4cf6c8d8bcd25425d653/README.md",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "The argument is witness-free: it establishes existence of an exceptional orbit without selecting a concrete natural number.",
+        "source_date": "2026-07-25"
+      },
+      {
+        "source_id": "s23",
+        "label": "Thomas Hales (guest post), What mathematicians should know about the Lean Theorem Prover (byline)",
+        "url": "https://terrytao.wordpress.com/2026/10/09/what-mathematicians-should-know-about-the-lean-theorem-proverquestions-of-reliability-and-ai/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "This is a guest post by Thomas Hales",
+        "source_date": "2026-10-09"
+      },
+      {
+        "source_id": "s24",
+        "label": "Leonardo de Moura, Postmortem for the Kernel Soundness Bug Hunt (Lean FRO actions)",
+        "url": "https://leodemoura.github.io/blog/2026-8-24-postmortem-for-the-kernel-soundness-bug-hunt/",
+        "retrieved_at": "2026-10-18",
+        "excerpt": "the actions the Lean FRO is taking to increase trust.",
+        "source_date": "2026-08-24"
+      }
+    ],
+    "published_at": "2026-10-18",
+    "embedding": null
   }
 ]

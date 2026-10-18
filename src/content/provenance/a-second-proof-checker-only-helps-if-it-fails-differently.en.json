@@ -1,0 +1,187 @@
+{
+  "slug": "a-second-proof-checker-only-helps-if-it-fails-differently",
+  "lang": "en",
+  "translationKey": "lean-kernel-cross-checks-only-help-when-kernels-fail-differently",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (AI-found vulnerabilities)",
+      "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+      "excerpt": "AI agents are very effective at finding vulnerabilities in our software. This includes the kernel (the proof checker) of the Lean proof assistant."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (lake check)",
+      "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+      "excerpt": "Lean v4.35.0 comes with the lake check command. This command exports your development and rechecks it with leanchecker , the official Lean kernel without all the baggage around it."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (paranoid mode)",
+      "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+      "excerpt": "Lean now ships with four additional kernels: nanoda , lean4lean , con-leche , and con-ron . You can recheck your development with all of them using the command lake check --paranoid ."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (con-leche)",
+      "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+      "excerpt": "Con-leche is the first kernel for Lean written in Lean and proven consistent. It was implemented and proven consistent by Claude (Fable and Opus), under heavy supervision by Joachim Breitner at the Lean FRO ."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (bug class removed)",
+      "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+      "excerpt": "This approach eliminates a complete class of bugs: programming mistakes in the kernel implementation."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (residual trust)",
+      "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+      "excerpt": "However, con-leche is not bulletproof, because there might be bugs in the compiler and runtime used to build it."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Leonardo de Moura, Postmortem for Kernel Soundness Bug #14576 (Collatz disproof)",
+      "url": "https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/",
+      "excerpt": "On July 25, Ramana Kumar published a repository containing a sorry -free \"disproof\" of the Collatz conjecture, produced with AI assistance. It is not a valid proof because it exploits a bug in the kernel's handling of nested inductive types."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Leonardo de Moura, Postmortem for Kernel Soundness Bug #14576 (external checker passed it)",
+      "url": "https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/",
+      "excerpt": "The original Collatz repository also passed a week-old version of nanoda , the main external checker."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Leonardo de Moura, Postmortem for Kernel Soundness Bug #14576 (two bugs, current versions)",
+      "url": "https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/",
+      "excerpt": "The practical consequence: checking with an independent kernel still works, since it required two distinct bugs in two implementations, but users who rely on it need current versions of both."
+    },
+    {
+      "sourceId": "s11",
+      "label": "Leonardo de Moura, Postmortem for Kernel Soundness Bug #14576 (port inherits the bug)",
+      "url": "https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/",
+      "excerpt": "lean4lean is affected by the kernel bug, since its handling of inductives is a port of the reference implementation."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Leonardo de Moura, Postmortem for the Kernel Soundness Bug Hunt (threat model)",
+      "url": "https://leodemoura.github.io/blog/2026-8-24-postmortem-for-the-kernel-soundness-bug-hunt/",
+      "excerpt": "We consider AI-generated proofs a potential source of malicious proofs."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Leonardo de Moura, Postmortem for the Kernel Soundness Bug Hunt (lake build limit)",
+      "url": "https://leodemoura.github.io/blog/2026-8-24-postmortem-for-the-kernel-soundness-bug-hunt/",
+      "excerpt": "lake build does not protect users from adversarial proofs that try, for example, to corrupt memory using Lean extensions."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Leonardo de Moura, Postmortem for the Kernel Soundness Bug Hunt (runtime exploit)",
+      "url": "https://leodemoura.github.io/blog/2026-8-24-postmortem-for-the-kernel-soundness-bug-hunt/",
+      "excerpt": "However, our Linux CI was constructing Lean binaries using GMP v6.1.2 for libc compatibility purposes, which contained a bug that could be exploited to construct a proof of False"
+    },
+    {
+      "sourceId": "s15",
+      "label": "Leonardo de Moura, Postmortem for the Kernel Soundness Bug Hunt (public models)",
+      "url": "https://leodemoura.github.io/blog/2026-8-24-postmortem-for-the-kernel-soundness-bug-hunt/",
+      "excerpt": "None of the groups using publicly available models reported any bugs."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Thomas Hales (guest post), What mathematicians should know about the Lean Theorem Prover (cross-checking)",
+      "url": "https://terrytao.wordpress.com/2026/10/09/what-mathematicians-should-know-about-the-lean-theorem-proverquestions-of-reliability-and-ai/",
+      "excerpt": "Cross-checking the proof by different kernels does not remove all doubt."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Thomas Hales (guest post), What mathematicians should know about the Lean Theorem Prover (shared defects)",
+      "url": "https://terrytao.wordpress.com/2026/10/09/what-mathematicians-should-know-about-the-lean-theorem-proverquestions-of-reliability-and-ai/",
+      "excerpt": "Different kernels might have the same defects. Some of these errors can be mitigated by running different kernels that have been implemented in different programming languages on different hardware and operating systems."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Thomas Hales (guest post), What mathematicians should know about the Lean Theorem Prover (clean-room kernel)",
+      "url": "https://terrytao.wordpress.com/2026/10/09/what-mathematicians-should-know-about-the-lean-theorem-proverquestions-of-reliability-and-ai/",
+      "excerpt": "a kernel implementation that does not look at the Lean 4 kernel source code, to avoid copying bugs from one kernel to another."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Thomas Hales (guest post), What mathematicians should know about the Lean Theorem Prover (Kepler encounter)",
+      "url": "https://terrytao.wordpress.com/2026/10/09/what-mathematicians-should-know-about-the-lean-theorem-proverquestions-of-reliability-and-ai/",
+      "excerpt": "I learned of the bug this summer when it produced a short illicit proof of the Kepler conjecture in Lean."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Ramana Kumar, CollatzLean README at the disproof commit (verification pipeline)",
+      "url": "https://raw.githubusercontent.com/xrchz/CollatzLean/a79357462a33d2a6babd4cf6c8d8bcd25425d653/README.md",
+      "excerpt": "The project pins Lean and Mathlib to v4.32.1."
+    },
+    {
+      "sourceId": "s21",
+      "label": "Ramana Kumar, CollatzLean README at the disproof commit (pinned external checker)",
+      "url": "https://raw.githubusercontent.com/xrchz/CollatzLean/a79357462a33d2a6babd4cf6c8d8bcd25425d653/README.md",
+      "excerpt": "independent checking by pinned Nanoda with no permitted axioms."
+    },
+    {
+      "sourceId": "s22",
+      "label": "Ramana Kumar, CollatzLean README at the disproof commit (claimed result)",
+      "url": "https://raw.githubusercontent.com/xrchz/CollatzLean/a79357462a33d2a6babd4cf6c8d8bcd25425d653/README.md",
+      "excerpt": "The argument is witness-free: it establishes existence of an exceptional orbit without selecting a concrete natural number."
+    },
+    {
+      "sourceId": "s23",
+      "label": "Thomas Hales (guest post), What mathematicians should know about the Lean Theorem Prover (byline)",
+      "url": "https://terrytao.wordpress.com/2026/10/09/what-mathematicians-should-know-about-the-lean-theorem-proverquestions-of-reliability-and-ai/",
+      "excerpt": "This is a guest post by Thomas Hales"
+    },
+    {
+      "sourceId": "s24",
+      "label": "Leonardo de Moura, Postmortem for the Kernel Soundness Bug Hunt (Lean FRO actions)",
+      "url": "https://leodemoura.github.io/blog/2026-8-24-postmortem-for-the-kernel-soundness-bug-hunt/",
+      "excerpt": "the actions the Lean FRO is taking to increase trust."
+    },
+    {
+      "sourceId": "s25",
+      "label": "Ramana Kumar, CollatzLean README at the disproof commit (full verification list)",
+      "url": "https://raw.githubusercontent.com/xrchz/CollatzLean/a79357462a33d2a6babd4cf6c8d8bcd25425d653/README.md",
+      "excerpt": "The verification pipeline includes: - warnings as errors and unlimited heartbeats; - ordinary and full fresh `leanchecker` replay; - safety, closure, direct kernel, and axiom-dependency checks; - targeted `lean4export` of the public result; - independent checking by pinned Nanoda with no permitted axioms."
+    },
+    {
+      "sourceId": "s26",
+      "label": "Leonardo de Moura, Postmortem for Kernel Soundness Bug #14576 (nanoda bug already fixed)",
+      "url": "https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/",
+      "excerpt": "The nanoda bug was reported by Jeremy Chen and fixed a week before the Lean bug was reported. The proof was built so that the expression the kernel never inspects is one that the old nanoda accepted."
+    },
+    {
+      "sourceId": "s27",
+      "label": "Leonardo de Moura, Postmortem for Kernel Soundness Bug #14576 (nanoda lineage)",
+      "url": "https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/",
+      "excerpt": "nanoda is an independent kernel (aka proof/type checker) for Lean implemented in Rust by Chris Bailey"
+    },
+    {
+      "sourceId": "s28",
+      "label": "Leonardo de Moura, Postmortem for Kernel Soundness Bug #14576 (comparator tracks nanoda)",
+      "url": "https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/",
+      "excerpt": "comparator.live now runs nanoda by default, and nanoda is tracked daily so lean-eval and comparator stay current after upstream fixes."
+    },
+    {
+      "sourceId": "s29",
+      "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (con-ron lineage)",
+      "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+      "excerpt": "To minimize this kind of risk, Joachim used AI to translate con-leche to Rust and then used Aeneas to prove that the Rust version refines con-leche's checking algorithm. Aeneas is a tool for verifying Rust code using Lean. This kernel is called con-ron."
+    },
+    {
+      "sourceId": "s30",
+      "label": "Leonardo de Moura, Lean Now Ships with Verified Kernels (hardened official kernel)",
+      "url": "https://leodemoura.github.io/blog/2026-10-15-lean-now-ships-with-verified-kernels/",
+      "excerpt": "You can recheck your development with all of them using the command lake check --paranoid . In this mode, we also run a variant of the official kernel built with a hardened memory allocator, which turns memory corruption into a checked abort instead of a silently wrong answer."
+    },
+    {
+      "sourceId": "s31",
+      "label": "Leonardo de Moura, Postmortem for the Kernel Soundness Bug Hunt (GMP not the latest)",
+      "url": "https://leodemoura.github.io/blog/2026-8-24-postmortem-for-the-kernel-soundness-bug-hunt/",
+      "excerpt": "the official Lean distribution for Linux was not using the latest GMP v6.3.0"
+    }
+  ]
+}
