@@ -1704,6 +1704,32 @@
     "addedOn": "11-08-2026"
   },
   {
+    "id": "design-diversity",
+    "label": {
+      "fr": "Diversité de conception",
+      "en": "Design diversity"
+    },
+    "definition": {
+      "fr": "Fait d'exécuter plusieurs implémentations conçues séparément d'une même fonction, par exemple un vérificateur, et de n'agir que sur leur accord, afin qu'un bogue propre à une seule implémentation ne décide pas seul du résultat. La protection ne tient que si les implémentations échouent indépendamment : un portage d'une autre implémentation peut hériter du défaut même que la redondance devait intercepter, ce qu'on appelle une défaillance de mode commun, et une copie restée sur une ancienne version conserve des bogues connus qu'un adversaire peut combiner avec un bogue d'une autre implémentation.",
+      "en": "Running several separately designed implementations of the same function, such as a checker, and acting only on their agreement, so that a bug in one implementation cannot decide the outcome on its own. The protection holds only while the implementations fail independently: a port of another implementation can inherit the very defect the redundancy was meant to catch, which is called a common-mode failure, and an outdated copy keeps known bugs that an adversary can pair with a bug in another implementation."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "N-version programming",
+      "N-version checking",
+      "independent implementation checking",
+      "diversité des vérificateurs"
+    ],
+    "related": [
+      "version-pinning",
+      "adversarial-verification"
+    ],
+    "articles": [
+      "lean-kernel-cross-checks-only-help-when-kernels-fail-differently"
+    ],
+    "addedOn": "18-10-2026"
+  },
+  {
     "id": "deterministic-workflows",
     "label": {
       "fr": "Workflows d'agents déterministes",
@@ -3375,6 +3401,32 @@
       "prompt-caching-prefix-stability"
     ],
     "addedOn": "10-06-2026"
+  },
+  {
+    "id": "proof-checking-kernel",
+    "label": {
+      "fr": "Noyau de vérification de preuves",
+      "en": "Proof-checking kernel"
+    },
+    "definition": {
+      "fr": "Composant réduit d'un assistant de preuve qui contrôle chaque preuve au regard des règles d'inférence de la logique, de sorte que la confiance accordée à une preuve se ramène à la confiance dans ce composant plutôt que dans les tactiques, l'automatisation ou le modèle qui l'ont produite. Un bogue de correction logique dans le noyau permet d'accepter comme démontré un énoncé faux, d'où l'usage, dans certains assistants de preuve, d'exporter les preuves pour les faire revérifier par des noyaux implémentés séparément.",
+      "en": "The small component of a proof assistant that checks every proof against the inference rules of the logic, so that trust in a proof reduces to trust in that component rather than in the tactics, automation or model that produced it. A soundness bug in the kernel lets a false statement be accepted as proved, which is why some proof assistants export proofs so that separately implemented kernels can recheck them."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "proof kernel",
+      "proof assistant kernel",
+      "trusted proof checker",
+      "noyau d'assistant de preuve"
+    ],
+    "related": [
+      "design-diversity",
+      "trust-boundary"
+    ],
+    "articles": [
+      "lean-kernel-cross-checks-only-help-when-kernels-fail-differently"
+    ],
+    "addedOn": "18-10-2026"
   },
   {
     "id": "provider-held-reasoning-state",
@@ -5104,7 +5156,8 @@
       "mcp-stateless-header-routing-2026-07",
       "allowlist-verbe-capacite-2026-08",
       "read-only-egress-is-a-write-channel",
-      "the-check-binds-the-action-not-the-decision"
+      "the-check-binds-the-action-not-the-decision",
+      "lean-kernel-cross-checks-only-help-when-kernels-fail-differently"
     ],
     "addedOn": "01-07-2026"
   },
@@ -5368,6 +5421,31 @@
       "llm-temp0-nondeterminism-batch-invariant"
     ],
     "addedOn": "22-06-2026"
+  },
+  {
+    "id": "version-pinning",
+    "label": {
+      "fr": "Épinglage de version",
+      "en": "Version pinning"
+    },
+    "definition": {
+      "fr": "Fait de fixer une dépendance ou une chaîne d'outils à une version exacte, le plus souvent dans un fichier de verrouillage, pour que la compilation donne le même résultat à chaque reproduction. La copie épinglée ne reçoit plus les correctifs publiés en amont tant que personne ne déplace l'épingle : un épinglage qui sert la reproductibilité peut ainsi maintenir un bogue déjà corrigé dans un composant qui décide de ce qui est accepté.",
+      "en": "Fixing a dependency or toolchain to an exact version, usually in a lockfile, so that a build gives the same result each time it is reproduced. The pinned copy stops receiving upstream fixes until someone moves the pin, so a pin that serves reproducibility can keep an already-fixed bug inside a component that decides what is accepted."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "dependency pinning",
+      "pinned dependency",
+      "lockfile pinning",
+      "épinglage des dépendances"
+    ],
+    "related": [
+      "supply-chain-attack"
+    ],
+    "articles": [
+      "lean-kernel-cross-checks-only-help-when-kernels-fail-differently"
+    ],
+    "addedOn": "18-10-2026"
   },
   {
     "id": "vllm",
