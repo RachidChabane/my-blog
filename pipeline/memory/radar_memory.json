@@ -2415,5 +2415,44 @@
     ],
     "published_at": "2026-10-17",
     "embedding": null
+  },
+  {
+    "translation_key": "deepseek-search-fetch-request-billing-and-account-level-qps",
+    "topic_id": "deepseek-search-fetch-request-billing-and-account-level-qps",
+    "dedup_key": "deepseek search fetch request billing and account level qps",
+    "title": "DeepSeek opens Search and Fetch APIs priced per request, each rate-limited per account across all of its API keys",
+    "slugs": {
+      "fr": "deepseek-api-search-fetch-facturation-requete-limite-par-compte",
+      "en": "deepseek-search-fetch-api-per-request-billing-account-rate-limit"
+    },
+    "sources": [
+      {
+        "label": "DeepSeek API Docs, \"Search & Fetch\" guide",
+        "url": "https://api-docs.deepseek.com/guides/search/",
+        "date": "17-10-2026"
+      },
+      {
+        "label": "DeepSeek API Docs, Change Log entry \"Opening up the in-house search API\"",
+        "url": "https://api-docs.deepseek.com/updates",
+        "date": "17-10-2026"
+      },
+      {
+        "label": "DeepSeek API Docs news, \"DeepSeek-V4.1-Flash-1017: Wish-Driven Programming Made Real\"",
+        "url": "https://api-docs.deepseek.com/news/news261017/",
+        "date": "17-10-2026"
+      },
+      {
+        "label": "PPC Land (Luis Rijo), \"DeepSeek prices web search for AI agents at $0.75 per 1,000 calls\"",
+        "url": "https://ppc.land/deepseek-prices-web-search-for-ai-agents-at-0-75-per-1-000-calls/",
+        "date": "17-10-2026"
+      },
+      {
+        "label": "Startup Fortune (Dave Barr), \"DeepSeek Opens Its Search and Fetch APIs at $0.75 per 1,000 Calls\"",
+        "url": "https://startupfortune.com/deepseek-opens-its-search-and-fetch-apis-at-075-per-1000-calls/",
+        "date": "18-10-2026"
+      }
+    ],
+    "published_at": "2026-10-18",
+    "embedding": null
   }
 ]
