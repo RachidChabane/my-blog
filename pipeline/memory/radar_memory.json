@@ -2454,5 +2454,49 @@
     ],
     "published_at": "2026-10-18",
     "embedding": null
+  },
+  {
+    "translation_key": "vllm-0-32-cors-closed-by-default-api-key-still-the-control",
+    "topic_id": "vllm-0-32-cors-closed-by-default-api-key-still-the-control",
+    "dedup_key": "vllm 0 32 cors closed by default api key still the control",
+    "title": "vLLM 0.32.0 closes cross-origin browser access by default, and its pull request says CORS does not replace API authentication",
+    "slugs": {
+      "fr": "vllm-0-32-cors-ferme-par-defaut-la-cle-api-reste-le-controle",
+      "en": "vllm-0-32-cors-closed-by-default-api-key-still-the-control"
+    },
+    "sources": [
+      {
+        "label": "vLLM v0.32.0 release notes",
+        "url": "https://github.com/vllm-project/vllm/releases/tag/v0.32.0",
+        "date": "18-10-2026"
+      },
+      {
+        "label": "PyPI JSON API, vllm 0.32.0 upload record",
+        "url": "https://pypi.org/pypi/vllm/0.32.0/json",
+        "date": "18-10-2026"
+      },
+      {
+        "label": "vLLM pull request 61009, \"[Security] Restrict default CORS origins\"",
+        "url": "https://github.com/vllm-project/vllm/pull/61009",
+        "date": "11-10-2026"
+      },
+      {
+        "label": "DEV Community (sam ros, InferPrice), \"vLLM 0.32 stops letting any website call your model server\"",
+        "url": "https://dev.to/sampop3/vllm-032-stops-letting-any-website-call-your-model-server-1604",
+        "date": "14-10-2026"
+      },
+      {
+        "label": "SMG v1.13.0 release notes",
+        "url": "https://github.com/smg-project/smg/releases/tag/v1.13.0",
+        "date": "15-10-2026"
+      },
+      {
+        "label": "SMG pull request 3315, \"fix(gateway): no cross-origin allowance without --cors-allowed-origins\"",
+        "url": "https://github.com/smg-project/smg/pull/3315",
+        "date": "13-10-2026"
+      }
+    ],
+    "published_at": "2026-10-19",
+    "embedding": null
   }
 ]
