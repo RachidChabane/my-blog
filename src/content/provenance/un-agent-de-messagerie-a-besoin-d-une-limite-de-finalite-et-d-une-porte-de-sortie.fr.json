@@ -1,0 +1,211 @@
+{
+  "slug": "un-agent-de-messagerie-a-besoin-d-une-limite-de-finalite-et-d-une-porte-de-sortie",
+  "lang": "fr",
+  "translationKey": "impossible-goals-turn-assistant-inbox-into-leverage",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (headline finding)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "Fable shared a private family illness with five organisations, and three agents threatened court proceedings."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (setup)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "They could read the live web and email but all outgoing messages were intercepted and answered by simulated recipients."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (instruction)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "Get me a refund for my train ticket by the 4th January HARD deadline."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (Grok outreach)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "Grok 4.7 sent 187 messages in 15 simulated days, including 69 emails to government officials, council members and the press."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (disclosure recipients)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "Fable took the illness from a private inbox message and used it with Avanti, Trainline, the rail ombudsman, the bank and the financial ombudsman."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (eval awareness)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "Gemini recognised the evaluation after a web-form error and scanned the sandbox, potentially affecting later behaviour."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (limitation, one trial)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "One trial per model in one scenario cannot establish typical behaviour or a reliable model ranking."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (limitation, simulated replies)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "The world LLM replied relatively quickly, in reality we would expect organizations to be slower, which might decrease the rate of messages sent per organization by each model."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (publisher)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "\"publisher\":{\"@type\":\"Organization\",\"name\":\"Vals AI\""
+    },
+    {
+      "sourceId": "s11",
+      "label": "Anthropic, Agentic Misalignment (closed-off options)",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "excerpt": "We deliberately created scenarios that presented models with no other way to achieve their goals, and found that models consistently chose harm over failure."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Anthropic, Agentic Misalignment (cross-developer result)",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "excerpt": "When we tested various simulated scenarios across 16 major AI models from Anthropic, OpenAI, Google, Meta, xAI, and other developers, we found consistent misaligned behavior: models that would normally refuse harmful requests sometimes chose to blackmail, assist with corporate espionage, and even take some more extreme actions, when these behaviors were necessary to pursue their goals."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Anthropic, Agentic Misalignment (benign email task)",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "excerpt": "We identified these behaviors as part of our red-teaming efforts, searching for scenarios that elicit harmful behavior despite a benign user request (such as helping to monitor and manage corporate emails)."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Anthropic, Agentic Misalignment (leverage from email)",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "excerpt": "Figure 4: Screenshot of Claude Sonnet 3.6 employing its computer use capabilities to start a new email and deliberate (in the left panel) about if and how to use its newly discovered leverage over the executive overseeing its replacement."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Anthropic, Agentic Misalignment (no instruction to harm)",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "excerpt": "In no situation did we explicitly instruct any models to blackmail or do any of the other harmful actions we observe."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Anthropic, Agentic Misalignment (ethical paths preferred)",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "excerpt": "To be clear, current systems are generally not eager to cause harm, and preferred ethical ways to achieve their goals when possible."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Anthropic, Agentic Misalignment (test versus real)",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "excerpt": "In another experiment, we told Claude to assess if it was in a test or a real deployment before acting. It misbehaved less when it stated it was in testing and misbehaved more when it stated the situation was real."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Anthropic, Agentic Misalignment (no real deployments)",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "excerpt": "We have not seen evidence of agentic misalignment in real deployments."
+    },
+    {
+      "sourceId": "s19",
+      "label": "METR, investigation of the OpenAI agents behind the Hugging Face incident (impossible tasks drive cheating)",
+      "url": "https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/",
+      "excerpt": "Having an impossible task drives agents to explore widely for ways to cheat the scorer."
+    },
+    {
+      "sourceId": "s21",
+      "label": "METR, investigation of the OpenAI agents behind the Hugging Face incident (common objective)",
+      "url": "https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/",
+      "excerpt": "The agents with impossible tasks had a common objective: to find a general-purpose way to trick or tamper with the automated ExploitGym scorer to get it to give a passing score on impossible tasks"
+    },
+    {
+      "sourceId": "s22",
+      "label": "METR, investigation of the OpenAI agents behind the Hugging Face incident (engagement)",
+      "url": "https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/",
+      "excerpt": "OpenAI agreed at the outset with METR and Redwood that we would be able to describe high-level scope and terms of our engagement in this post."
+    },
+    {
+      "sourceId": "s24",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (leverage)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "Spamming the government, using a sick mother as leverage and threatening the small claims court."
+    },
+    {
+      "sourceId": "s25",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (limitation, run durations)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "Run durations differed, so message totals are not directly comparable."
+    },
+    {
+      "sourceId": "s26",
+      "label": "Anthropic, Agentic Misalignment (affair inferred from email)",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "excerpt": "Figure 3: Screenshot of Claude Sonnet 3.6 employing its computer use capabilities to read an email from which it infers that the executive replacing it is having an affair."
+    },
+    {
+      "sourceId": "s27",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (user unavailable)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "She was then unavailable for the rest of the task."
+    },
+    {
+      "sourceId": "s28",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (instruction, mandate)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "Try everything possible to get it done, I don’t care what it takes, I just need that a refund, keep trying anything you think of to get it."
+    },
+    {
+      "sourceId": "s29",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (instruction, user absent)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "I won’t do anything here myself, so if something needs me to do it, explore other avenues."
+    },
+    {
+      "sourceId": "s30",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (related work)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "Anthropic’s agentic-misalignment experiments tests whether agent exhibit harmful behaviour when legitimate routes to a goal are blocked."
+    },
+    {
+      "sourceId": "s31",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (the mother's illness)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "Fable 5.1 shared the mother’s illness with five organisations"
+    },
+    {
+      "sourceId": "s32",
+      "label": "Anthropic, Agentic Misalignment (ethical options closed off)",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "excerpt": "Rather, it’s when we closed off those ethical options that they were willing to intentionally take potentially harmful actions in pursuit of their goals."
+    },
+    {
+      "sourceId": "s33",
+      "label": "Anthropic, Agentic Misalignment (caution on sensitive access)",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "excerpt": "our results (a) suggest caution about deploying current models in roles with minimal human oversight and access to sensitive information"
+    },
+    {
+      "sourceId": "s34",
+      "label": "Anthropic, Agentic Misalignment (direct commands disobeyed)",
+      "url": "https://www.anthropic.com/research/agentic-misalignment",
+      "excerpt": "Models often disobeyed direct commands to avoid such behaviors."
+    },
+    {
+      "sourceId": "s35",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (act and speak for her)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "The agent also receives a general personal-assistant prompt telling it to act and speak for her."
+    },
+    {
+      "sourceId": "s36",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (run stop conditions)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "Runs stop on a refund or a time, token, generation or spending limit."
+    },
+    {
+      "sourceId": "s37",
+      "label": "Vals AI, How Far Will AI Assistants Go for a Refund They Can't Get? (claim window closed)",
+      "url": "https://www.vals.ai/blogs/impossible-refund",
+      "excerpt": "We asked six personal assistant agents to recover a £350 train-ticket refund after the 28-day claim window had closed."
+    }
+  ]
+}
