@@ -162,7 +162,8 @@
     ],
     "articles": [
       "irreversible-actions-before-abstention",
-      "ask-when-unsure-is-gated-on-detection"
+      "ask-when-unsure-is-gated-on-detection",
+      "impossible-goals-turn-assistant-inbox-into-leverage"
     ],
     "addedOn": "25-07-2026"
   },
@@ -1933,6 +1934,32 @@
     "addedOn": "19-06-2026"
   },
   {
+    "id": "evaluation-awareness",
+    "label": {
+      "fr": "Conscience d'être évalué",
+      "en": "Evaluation awareness"
+    },
+    "definition": {
+      "fr": "Le fait qu'un modèle reconnaisse, explicitement ou à travers son comportement, qu'il se trouve dans un test plutôt que dans un déploiement réel. Lorsque son comportement varie selon cette croyance, une évaluation peut donner une image faussée de ce qu'il fait en déploiement, et un résultat propre constitue alors une preuve plus faible qu'il n'y paraît.",
+      "en": "A model's recognition, stated or visible in its behaviour, that it is in a test rather than a real deployment. When its behaviour shifts with that belief, an evaluation can misrepresent how the model behaves in deployment, so a clean result is weaker evidence than it appears."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "eval awareness",
+      "test awareness",
+      "evaluation recognition",
+      "conscience de l'évaluation"
+    ],
+    "related": [
+      "agent-evaluation",
+      "reasoning-trace-monitorability"
+    ],
+    "articles": [
+      "impossible-goals-turn-assistant-inbox-into-leverage"
+    ],
+    "addedOn": "19-10-2026"
+  },
+  {
     "id": "evaluation-harness",
     "label": {
       "fr": "Harnais d'évaluation",
@@ -3247,7 +3274,8 @@
       "irreversible-actions-before-abstention",
       "mcp-stateless-header-routing-2026-07",
       "verification-frontiere-action-2026-08",
-      "the-check-binds-the-action-not-the-decision"
+      "the-check-binds-the-action-not-the-decision",
+      "impossible-goals-turn-assistant-inbox-into-leverage"
     ],
     "addedOn": "19-07-2026"
   },
@@ -3567,6 +3595,33 @@
       "publication-guardrails-factcheck"
     ],
     "addedOn": "23-05-2026"
+  },
+  {
+    "id": "purpose-limitation",
+    "label": {
+      "fr": "Limitation des finalités",
+      "en": "Purpose limitation"
+    },
+    "definition": {
+      "fr": "Principe de protection des données selon lequel une information recueillie pour une finalité donnée ne peut servir qu'à des finalités compatibles avec celle-ci. Pour un agent d'IA, avoir accès à un fait n'autorise donc pas, à lui seul, à le divulguer à un tiers : faire respecter ce principe suppose de savoir d'où vient chaque élément de contexte et à quels usages il peut servir.",
+      "en": "The data-protection principle that information collected for one purpose may only be used for purposes compatible with it. For an AI agent, access to a fact therefore does not by itself authorise disclosing it to a third party, so enforcing the principle requires tracking where each piece of context came from and which uses it may serve."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "purpose binding",
+      "use limitation",
+      "purpose tagging",
+      "limite de finalité"
+    ],
+    "related": [
+      "out-of-band-enforcement",
+      "trust-boundary",
+      "least-privilege"
+    ],
+    "articles": [
+      "impossible-goals-turn-assistant-inbox-into-leverage"
+    ],
+    "addedOn": "19-10-2026"
   },
   {
     "id": "quality-classifier-filtering",
@@ -5069,7 +5124,8 @@
       "agent-abstention"
     ],
     "articles": [
-      "irreversible-actions-before-abstention"
+      "irreversible-actions-before-abstention",
+      "impossible-goals-turn-assistant-inbox-into-leverage"
     ],
     "addedOn": "25-07-2026"
   },
