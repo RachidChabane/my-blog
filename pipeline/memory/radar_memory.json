@@ -2498,5 +2498,49 @@
     ],
     "published_at": "2026-10-19",
     "embedding": null
+  },
+  {
+    "translation_key": "nemotron-3-5-bolt-24gb-replay-time-and-reasoning-level",
+    "topic_id": "nemotron-3-5-bolt-24gb-replay-time-and-reasoning-level",
+    "dedup_key": "nemotron 3 5 bolt 24gb replay time and reasoning level",
+    "title": "Nemotron 3.5 Bolt 24GB trails Qwen3.6 and Gemma 4 on replay time in NVIDIA's own table, and medium reasoning cut Classmethod's 10 Japanese tasks from 356 to 91 seconds",
+    "slugs": {
+      "fr": "nemotron-3-5-bolt-24gb-temps-de-replay-et-niveau-de-raisonnement",
+      "en": "nemotron-3-5-bolt-24gb-replay-time-and-reasoning-level"
+    },
+    "sources": [
+      {
+        "label": "NVIDIA Research, \"NVIDIA Nemotron 3.5 Bolt 74B-A9B 24GB\" technical blog",
+        "url": "https://research.nvidia.com/labs/nemotron/Nemotron-3.5-Bolt-24GB/",
+        "date": "15-10-2026"
+      },
+      {
+        "label": "Hugging Face model card, nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB-GGUF",
+        "url": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB-GGUF",
+        "date": "15-10-2026"
+      },
+      {
+        "label": "Artificial Analysis, \"First AA-AgentPerf-Local results for an NVIDIA RTX Spark N1X laptop\"",
+        "url": "https://artificialanalysis.ai/articles/nvidia-rtx-spark-agentperf-local",
+        "date": "15-10-2026"
+      },
+      {
+        "label": "Artificial Analysis, \"NVIDIA Releases Nemotron 3.5 Super and Nemotron 3.5 Bolt\"",
+        "url": "https://artificialanalysis.ai/articles/nemotron-3-5-super-and-bolt",
+        "date": "15-10-2026"
+      },
+      {
+        "label": "Classmethod (Hiroshi Morishige), \"I ran the 2-bit quantized MoE Nemotron 3.5 Bolt 74B-A9B on DGX Spark\"",
+        "url": "https://dev.classmethod.jp/en/articles/dgx-spark-nemotron-3-5-bolt-74b-a9b-first-touch/",
+        "date": "16-10-2026"
+      },
+      {
+        "label": "Hugging Face, chat_template.jinja in nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB",
+        "url": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB/raw/main/chat_template.jinja",
+        "date": "15-10-2026"
+      }
+    ],
+    "published_at": "2026-10-20",
+    "embedding": null
   }
 ]
