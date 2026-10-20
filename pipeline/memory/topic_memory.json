@@ -5269,5 +5269,347 @@
     ],
     "published_at": "2026-10-19",
     "embedding": null
+  },
+  {
+    "translation_key": "attack-agent-harness-state-holds-the-secrets-it-finds",
+    "topic_id": "attack-agent-harness-state-holds-the-secrets-it-finds",
+    "dedup_key": "an agent harness keeps every discovered fact and every operator supplied credential in its own state store and web console so exposed attacker panels leaked hundreds of valid secrets while two separate investigations of ai driven intrusion campaigns read the operations off the harness record which makes harness state a credential store that needs authentication redaction and retention limits",
+    "title": "Your agent harness record is a credential store",
+    "slugs": {
+      "fr": "le-registre-de-votre-harnais-d-agent-est-un-coffre-a-identifiants",
+      "en": "your-agent-harness-record-is-a-credential-store"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Gambit Security, AI agents hacking online retailers: publisher",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "\"publisher\": { \"@type\": \"Organization\", \"name\": \"Gambit Security\" }",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s2",
+        "label": "Gambit Security, AI agents hacking online retailers: company description",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "Gambit Security keeps enterprises operating through disruption.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s3",
+        "label": "Gambit Security, AI agents hacking online retailers: summary",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "A financially motivated operator is running three open source AI harnesses against hundreds of online retailers, almost entirely unattended.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s4",
+        "label": "Gambit Security, AI agents hacking online retailers: marginal cost",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "A financially motivated threat actor is using open source AI harnesses to attack hundreds of online retailers, at a marginal cost of tens of dollars per company.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s5",
+        "label": "Gambit Security, AI agents hacking online retailers: September window",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "Between 10 and 15 September alone, 105 attack projects were launched and at least 27 companies were compromised to varying degrees.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s6",
+        "label": "Gambit Security, AI agents hacking online retailers: autonomy",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "Three AI harnesses ran almost the entire attack chain autonomously, working up to tens of companies a day.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s7",
+        "label": "Gambit Security, AI agents hacking online retailers: the three harnesses",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "The operator used three AI harnesses: Strix for vulnerability search, Cairn for autonomous end-to-end exploitation, and Hermes to orchestrate the campaign, launch intrusion jobs, steer the activity and give tactical guidance in the impact and other stages.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s8",
+        "label": "Gambit Security, AI agents hacking online retailers: Hermes state",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "Hermes is an open source autonomous AI agent with a persistent memory, skills that the agent writes and edits itself, a searchable archive of past sessions, scheduled jobs and a web console.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s9",
+        "label": "Gambit Security, AI agents hacking online retailers: human prompts",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "The human prompts are short instructions in Chinese, usually launching an attack, tasking the agent with a general next step, or what to do next after achieving access.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s10",
+        "label": "Gambit Security, AI agents hacking online retailers: Cairn engine",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "Cairn is an autonomous penetration testing engine. It receives target domains and an objective, such as to get a shell or admin access, then runs for hours until it achieves the objective, times out, or is stopped.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s11",
+        "label": "Gambit Security, AI agents hacking online retailers: handed credentials",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "Others were picked by hand or by other means, such as a New Zealand retailer and a US photo printing company that they handed to the agent already holding a working administrator password",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s12",
+        "label": "Gambit Security, AI agents hacking online retailers: verified in the wild",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "Second, live compromises we verified in the wild - skimmers that have been injected into websites and are still there, or have been removed since but logged in various scanners.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s13",
+        "label": "Gambit Security, AI agents hacking online retailers: AI claims caveat",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "While AI claims and reporting may turn out to be inaccurate, we rely on them in this report because we could verify substantial parts of the claims by the first two methods, which showed them to be accurate.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s14",
+        "label": "Gambit Security, AI agents hacking online retailers: interim report",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "The following is an interim report of our findings.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s15",
+        "label": "Gambit Security, AI agents hacking online retailers: possible errors",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "Nevertheless, due to the scale, incomplete data and early stage of the analysis, a few errors or inaccuracies are possible.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s16",
+        "label": "Gambit Security, AI agents hacking online retailers: deleted projects",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "The chart below shows the state of 48 of them. The other 57 were deleted and not available for analysis.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s17",
+        "label": "Gambit Security, AI agents hacking online retailers: per-company cost",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "Spread over the companies attacked, this is a marginal cost of a few US dollars to a few tens of US dollars for each targeted company.",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s18",
+        "label": "Gambit Security, AI agents hacking online retailers: cleanup damage",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "A second victim, a bicycle retailer, lost data when the agent created ZQ prefixed staging tables inside the database to hold the data, and the cleanup then dropped 180 tables whose names matched ZQ or Backup",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s19",
+        "label": "Gambit Security, AI agents hacking online retailers: byline date",
+        "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "September 22, 2026 14 mins read",
+        "source_date": "2026-09-22"
+      },
+      {
+        "source_id": "s20",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: TL;DR",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "An investigation by NorForge into publicly exposed AI-driven penetration-testing control panels has uncovered how they are extensively used in malicious cyber operations.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s21",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: vantage",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "We bring our extensive sandboxing expertise to AI agents, so you can see everything your agents do",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s22",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: publish date",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "\"datePublished\": \"2026-10-19\"",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s23",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: malicious panels",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "More than 20 exposed Cairn panels were identified as likely associated with malicious activity, providing an unusually detailed view of how threat actors select targets, direct autonomous agents, exploit vulnerabilities, and establish persistent access to compromised systems.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s24",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: red team exposure",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "In addition, a considerable number of apparently legitimate red team operations were also exposed this way, potentially placing clients at risk.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s25",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: prior report",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "In September 2026, Gambit Security reported on a criminal intrusion campaign targeting online marketplaces.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s26",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: scan method",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "Quick searches using the Shodan and Censys search engines reveal hosts running what appear to be AI harnesses of different kinds. Most need authorization to access. Most. But there are quite a few of these interfaces left open by their operators.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s27",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: what panels reveal",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "However; it is the nature of these panels that they reveal a great deal of sensitive information about the targets; including who they are, what weaknesses have been uncovered, account secrets and API keys, and whether they have been compromised or not.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s28",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: blackboard",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "The agent posts every fact onto a project-internal blackboard. A human operator can also add their own hints to the same blackboard.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s29",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: panel contents",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "They detail everything that the agent has discovered in the process, and if that was not enough, they include human input that includes credentials harvested elsewhere.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s30",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: secrets scan",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "We ran the secrets scanner Trufflehog over the data from these Cairn instances.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s31",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: secrets found",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "Literally hundreds of secrets of different kinds, from relatively trivial to extremely serious; with 11% verified valid by Trufflehog.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s32",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: unprotected controls",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "These panels appear completely unprotected, exposing what looks like the full administrative functionality of the harness.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s33",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: exposure regardless of outcome",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "In other words, having your site tested on an open Cairn instance is often a serious security issue, regardless of outcome of the test.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s34",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: red team nightmare",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "This has also proven to be a problem for legitimate red teams; gathering secrets from your client just to publish them on the Internet is a nightmare scenario.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s35",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: claim verified",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "Just to test, we checked if one of the claimed intrusions had really happened by fetching the shell URL mentioned in a completed task against a large hardware parts vendor. The URL did indeed serve an uploader webshell.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s36",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: success rate",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "But it is a reasonable assumption that for the harnesses we have seen in these campaigns, average success rate is hovering around 10%, with many of the remaining tasks achieving partial goals, or are able to gather information that can be used in later attempts.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s37",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: time to goal",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "If we concentrate on the tasks that did reach their goals, especially on the AIA0001 cluster which most resembles general purpose intrusion activity, we can now see that the average time from project start to goal met was a little under 23 hours, generating on average 140 facts per project.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s38",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: snapshot caveat",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "It is also worth noting that this is a snapshot at this point in time. Models and harnesses evolve very quickly.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s39",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: cost estimate",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "We estimate the average cost of a task to end up around $5 if one includes unsuccessful, early ending projects.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s40",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: cost uncertainty",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "The uncertainty here is however considerable, and numbers could be off by a clear margin.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s41",
+        "label": "NorForge, Inside Cairn exposed AI pentesting panels: conclusion",
+        "url": "https://norforge.com/blog/inside_cairn",
+        "retrieved_at": "2026-10-20",
+        "excerpt": "In the rush to gain quick results, many have forgotten basic security precautions, leading to them compromising their own operational security and also, unfortunately, exposing their targets to a far larger attack surface than the intent was.",
+        "source_date": "2026-10-19"
+      }
+    ],
+    "published_at": "2026-10-20",
+    "embedding": null
   }
 ]

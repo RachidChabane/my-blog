@@ -341,7 +341,8 @@
       "active-context-compression-prune-history",
       "agent-memory-benchmark-recall-not-trust",
       "failure-record-in-context-drives-the-repeat",
-      "opaque-state-outscores-the-notes-you-can-read"
+      "opaque-state-outscores-the-notes-you-can-read",
+      "attack-agent-harness-state-holds-the-secrets-it-finds"
     ],
     "addedOn": "23-06-2026"
   },
@@ -538,7 +539,8 @@
       "irreversible-actions-before-abstention",
       "failure-record-in-context-drives-the-repeat",
       "opaque-state-outscores-the-notes-you-can-read",
-      "edit-unit-size-beside-edit-format"
+      "edit-unit-size-beside-edit-format",
+      "attack-agent-harness-state-holds-the-secrets-it-finds"
     ],
     "addedOn": "17-06-2026"
   },
@@ -750,7 +752,8 @@
     ],
     "articles": [
       "allowlist-verbe-capacite-2026-08",
-      "remediation-throughput-is-the-security-constraint"
+      "remediation-throughput-is-the-security-constraint",
+      "attack-agent-harness-state-holds-the-secrets-it-finds"
     ],
     "addedOn": "02-08-2026"
   },
@@ -1601,6 +1604,33 @@
       "agent-session-budget-inflection-point"
     ],
     "addedOn": "17-06-2026"
+  },
+  {
+    "id": "credential-handle-indirection",
+    "label": {
+      "fr": "Indirection des identifiants par référence",
+      "en": "Credential handle indirection"
+    },
+    "definition": {
+      "fr": "Stocker dans l'état d'un agent une référence vers un secret, par exemple un chemin dans un coffre à secrets, plutôt que sa valeur, et laisser la couche d'outils résoudre cette référence au moment de l'appel. Le modèle, comme tout lecteur de cet état, ne voit que la référence : un registre divulgué révèle où se trouve une clé, pas la clé elle-même.",
+      "en": "Storing a reference to a secret, such as a path in a secrets vault, in an agent's state instead of the secret's value, and letting the tool layer resolve that reference at call time. The model, like every other reader of that state, sees only the reference, so a leaked record reveals where a key lives but not the key itself."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "credential handle",
+      "secret reference",
+      "secret indirection",
+      "référence de secret"
+    ],
+    "related": [
+      "least-privilege",
+      "agent-memory",
+      "agent-sandboxing"
+    ],
+    "articles": [
+      "attack-agent-harness-state-holds-the-secrets-it-finds"
+    ],
+    "addedOn": "20-10-2026"
   },
   {
     "id": "cross-model-homogeneity",
@@ -2705,7 +2735,8 @@
       "claude-code-action-supply-chain-auth",
       "command-denylist-not-a-security-boundary",
       "prompt-injection-defense-layer-split",
-      "allowlist-verbe-capacite-2026-08"
+      "allowlist-verbe-capacite-2026-08",
+      "attack-agent-harness-state-holds-the-secrets-it-finds"
     ],
     "addedOn": "11-07-2026"
   },
@@ -4294,6 +4325,32 @@
       "watermark-entropy-budget"
     ],
     "addedOn": "22-07-2026"
+  },
+  {
+    "id": "secret-scanning",
+    "label": {
+      "fr": "Détection de secrets",
+      "en": "Secret scanning"
+    },
+    "definition": {
+      "fr": "Recherche automatisée d'identifiants (clés d'API, mots de passe, jetons) dans des fichiers, des dépôts ou des données stockées, par correspondance de motifs, avec en option une vérification de chaque résultat auprès du service émetteur pour séparer les secrets encore valides des secrets périmés. Un résultat vérifié signale une fuite à traiter en révoquant le secret, sa simple suppression du fichier ne suffisant pas.",
+      "en": "Automated search for credentials (API keys, passwords, tokens) in files, repositories or stored data by pattern matching, optionally checking each hit against its issuing service to separate secrets that still work from dead ones. A verified hit is a leak to remediate by revoking the secret, since deleting it from the file is not enough."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "secrets scanning",
+      "credential scanning",
+      "secret detection",
+      "détection d'identifiants"
+    ],
+    "related": [
+      "credential-handle-indirection",
+      "least-privilege"
+    ],
+    "articles": [
+      "attack-agent-harness-state-holds-the-secrets-it-finds"
+    ],
+    "addedOn": "20-10-2026"
   },
   {
     "id": "selection-bias",
