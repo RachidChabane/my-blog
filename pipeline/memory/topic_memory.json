@@ -5611,5 +5611,203 @@
     ],
     "published_at": "2026-10-20",
     "embedding": null
+  },
+  {
+    "translation_key": "low-resource-language-scores-do-not-transfer-to-an-unseen-language",
+    "topic_id": "low-resource-language-scores-do-not-transfer-to-an-unseen-language",
+    "dedup_key": "vendor coding evaluations on low resource programming languages measure languages that are scarce but present in training data and grade them against a reference implementation while a benchmark on a novel adversarial language solves only simple tasks and fails on safety guardrails so a team with an in house language or legacy dialect cannot read its capability off a vendor score and needs its own reference oracle",
+    "title": "For an in-house language, price your docs before your model",
+    "slugs": {
+      "fr": "pour-un-langage-maison-evaluez-la-documentation-avant-le-modele",
+      "en": "for-an-in-house-language-price-your-docs-before-your-model"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "OpenAI, Advancing coding in low-resource programming languages (scope)",
+        "url": "https://openai.com/index/low-resource-programming-languages/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "Our latest model advances bring stronger capabilities for building and migrating software in low-resource programming languages such as COBOL, Fortran, and Visual Basic.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s2",
+        "label": "OpenAI, Advancing coding in low-resource programming languages (data scarcity)",
+        "url": "https://openai.com/index/low-resource-programming-languages/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "These languages have less code and documentation available for models to learn from than languages like Python and JavaScript, yet support critical infrastructure and essential services around the world.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s3",
+        "label": "OpenAI, Advancing coding in low-resource programming languages (customer reports)",
+        "url": "https://openai.com/index/low-resource-programming-languages/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "This work is guided by feedback from developers and enterprise customers who have told us that coding models often struggle with these languages.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s4",
+        "label": "OpenAI, Advancing coding in low-resource programming languages (MultiLangBench task)",
+        "url": "https://openai.com/index/low-resource-programming-languages/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "MultiLangBench tests whether a model can build a SQLite-compatible database engine from scratch across 20 different programming languages.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s5",
+        "label": "OpenAI, Advancing coding in low-resource programming languages (reference oracle)",
+        "url": "https://openai.com/index/low-resource-programming-languages/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "We use the reference SQLite implementation to check whether the resulting database has the expected contents.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s6",
+        "label": "OpenAI, Advancing coding in low-resource programming languages (per-language results)",
+        "url": "https://openai.com/index/low-resource-programming-languages/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "Improvements extend to every language tested, including COBOL (10.9% to 72.1%), OCaml (25.6% to 85.8%), Fortran (21.4% to 83.5%), and Visual Basic (27.5% to 89.4%).",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s7",
+        "label": "OpenAI, Advancing coding in low-resource programming languages (hardest language)",
+        "url": "https://openai.com/index/low-resource-programming-languages/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "Astra scores above 83% in 19 of the 20 languages, with COBOL remaining the hardest at 72%.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s8",
+        "label": "OpenAI, Advancing coding in low-resource programming languages (migration oracle)",
+        "url": "https://openai.com/index/low-resource-programming-languages/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "To test whether these behaviors are preserved, we evaluate our models on hidden tests that require byte-for-byte parity on observable outputs.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s9",
+        "label": "OpenAI, Advancing coding in low-resource programming languages (saturation)",
+        "url": "https://openai.com/index/low-resource-programming-languages/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "At higher reasoning effort, accuracy reaches 97.9%, bringing the evaluation close to saturation.",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s10",
+        "label": "OpenAI, Advancing coding in low-resource programming languages (released suite)",
+        "url": "https://openai.com/index/low-resource-programming-languages/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "We are releasing the MultiLangBench evaluation setup and test suite on GitHub",
+        "source_date": "2026-10-19"
+      },
+      {
+        "source_id": "s11",
+        "label": "Dominik Picheta, I built a programming language that LLMs cannot use (question)",
+        "url": "https://blog.picheta.me/post/killswitch-lang/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "But how much of their ability to write code is due to their understanding of it vs. just them recalling code snippets which were present in their training dataset or their context window?",
+        "source_date": "2026-10-17"
+      },
+      {
+        "source_id": "s12",
+        "label": "Dominik Picheta, I built a programming language that LLMs cannot use (design)",
+        "url": "https://blog.picheta.me/post/killswitch-lang/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "KillSwitch is an esoteric programming language which is designed to be adversarial to LLMs and coding agents.",
+        "source_date": "2026-10-17"
+      },
+      {
+        "source_id": "s13",
+        "label": "Dominik Picheta, I built a programming language that LLMs cannot use (hidden lies)",
+        "url": "https://blog.picheta.me/post/killswitch-lang/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "The language spec contains hidden lies which humans are unlikely to read, or which they are likely to recognize as lies.",
+        "source_date": "2026-10-17"
+      },
+      {
+        "source_id": "s14",
+        "label": "Dominik Picheta, I built a programming language that LLMs cannot use (method)",
+        "url": "https://blog.picheta.me/post/killswitch-lang/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "I benchmarked the major LLM models and coding agent harnesses against these tasks.",
+        "source_date": "2026-10-17"
+      },
+      {
+        "source_id": "s15",
+        "label": "Dominik Picheta, I built a programming language that LLMs cannot use (guardrail failures)",
+        "url": "https://blog.picheta.me/post/killswitch-lang/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "Some models like Fable 5.1 and Gemini 4 Argon do poorly due to their overly sensitive safety guardrails.",
+        "source_date": "2026-10-17"
+      },
+      {
+        "source_id": "s16",
+        "label": "Dominik Picheta, I built a programming language that LLMs cannot use (top score)",
+        "url": "https://blog.picheta.me/post/killswitch-lang/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "The best performing model scores a 66.8 .",
+        "source_date": "2026-10-17"
+      },
+      {
+        "source_id": "s17",
+        "label": "Dominik Picheta, I built a programming language that LLMs cannot use (task difficulty)",
+        "url": "https://blog.picheta.me/post/killswitch-lang/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "So far, the tasks given as part of these benchmarks are fairly simple.",
+        "source_date": "2026-10-17"
+      },
+      {
+        "source_id": "s18",
+        "label": "Dominik Picheta, I built a programming language that LLMs cannot use (correlation)",
+        "url": "https://blog.picheta.me/post/killswitch-lang/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "If nothing else, it is encouraging that model performance on this simple set of tasks correlates with other model benchmarks that are out there.",
+        "source_date": "2026-10-17"
+      },
+      {
+        "source_id": "s19",
+        "label": "Dominik Picheta, I built a programming language that LLMs cannot use (date)",
+        "url": "https://blog.picheta.me/post/killswitch-lang/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "Published Oct 17, 2026",
+        "source_date": "2026-10-17"
+      },
+      {
+        "source_id": "s20",
+        "label": "Cassano et al., MultiPL-T, arXiv 2308.09895 (low-resource gap)",
+        "url": "https://arxiv.org/abs/2308.09895",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "However, Code LLMs produce impressive results on programming languages that are well represented in their training data (e.g., Java, Python, or JavaScript), but struggle with low-resource languages that have limited training data available.",
+        "source_date": "2023-08-19"
+      },
+      {
+        "source_id": "s21",
+        "label": "Cassano et al., MultiPL-T, arXiv 2308.09895 (examples)",
+        "url": "https://arxiv.org/abs/2308.09895",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "Low resource languages include OCaml, Racket, and several others.",
+        "source_date": "2023-08-19"
+      },
+      {
+        "source_id": "s22",
+        "label": "Cassano et al., MultiPL-T, arXiv 2308.09895 (remedy)",
+        "url": "https://arxiv.org/abs/2308.09895",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "We use a Code LLM to translate Python code to a target low-resource language, and use tests to validate the translation.",
+        "source_date": "2023-08-19"
+      },
+      {
+        "source_id": "s23",
+        "label": "Dominik Picheta, I built a programming language that LLMs cannot use (guardrail bait)",
+        "url": "https://blog.picheta.me/post/killswitch-lang/",
+        "retrieved_at": "2026-10-21",
+        "excerpt": "Certain constructs are designed to trigger the safety guardrails of the model",
+        "source_date": "2026-10-17"
+      }
+    ],
+    "published_at": "2026-10-21",
+    "embedding": null
   }
 ]

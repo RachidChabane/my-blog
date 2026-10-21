@@ -257,7 +257,8 @@
       "arret-anticipe-sondes-2026-08",
       "ask-when-unsure-is-gated-on-detection",
       "live-web-agent-evals-run-side-effects-on-third-party-sites",
-      "agent-benchmarks-cover-little-of-the-work-your-agent-does"
+      "agent-benchmarks-cover-little-of-the-work-your-agent-does",
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
     ],
     "addedOn": "12-05-2026"
   },
@@ -862,7 +863,8 @@
       "cli-agent-productivity-proxy-choice",
       "swe-bench-private-holdout-trust",
       "afd-throughput-does-not-transfer-without-the-fabric",
-      "patch-quality-rate-needs-a-consistent-grader"
+      "patch-quality-rate-needs-a-consistent-grader",
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
     ],
     "addedOn": "18-06-2026"
   },
@@ -1314,7 +1316,8 @@
       "telemetry-off-forks-coding-agent-behaviour",
       "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output",
       "agent-coding-gains-stop-at-the-review-queue",
-      "agent-write-volume-breaks-git-design-assumptions"
+      "agent-write-volume-breaks-git-design-assumptions",
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
     ],
     "addedOn": "30-05-2026"
   },
@@ -1424,6 +1427,32 @@
       "decision-model-confidence-gate"
     ],
     "addedOn": "07-10-2026"
+  },
+  {
+    "id": "context-ablation",
+    "label": {
+      "fr": "Ablation du contexte",
+      "en": "Context ablation"
+    },
+    "definition": {
+      "fr": "Évaluation qui fixe le modèle, le harnais et le jeu de tâches, et ne fait varier que le contexte fourni à l'agent, par exemple en retirant, en altérant ou en corrigeant un document. L'écart de score entre les variantes est alors imputable à ce changement de contexte.",
+      "en": "An evaluation that holds the model, the harness and the task set fixed and varies only the context given to the agent, for example by removing, altering or correcting a document. The score difference between the variants can then be attributed to that change in context."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "documentation ablation",
+      "docs ablation",
+      "ablation de la documentation"
+    ],
+    "related": [
+      "harness-component-signal",
+      "agent-evaluation",
+      "agent-scaffold"
+    ],
+    "articles": [
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
+    ],
+    "addedOn": "21-10-2026"
   },
   {
     "id": "context-budget",
@@ -2280,7 +2309,8 @@
       "the-oracle-decides-repo-scale-migration",
       "opaque-state-outscores-the-notes-you-can-read",
       "edit-unit-size-beside-edit-format",
-      "patch-quality-rate-needs-a-consistent-grader"
+      "patch-quality-rate-needs-a-consistent-grader",
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
     ],
     "addedOn": "15-07-2026"
   },
@@ -2935,6 +2965,31 @@
     "addedOn": "19-06-2026"
   },
   {
+    "id": "low-resource-programming-language",
+    "label": {
+      "fr": "Langage de programmation peu doté",
+      "en": "Low-resource programming language"
+    },
+    "definition": {
+      "fr": "Langage de programmation pour lequel il existe peu de code et de documentation publics dont un modèle puisse apprendre, comme COBOL, Fortran, OCaml ou Racket. Les modèles de code, entraînés surtout sur des langages très représentés comme Python ou JavaScript, y peinent nettement plus.",
+      "en": "A programming language with little public code and documentation for models to learn from, such as COBOL, Fortran, OCaml or Racket. Code models trained mostly on well-represented languages like Python or JavaScript struggle noticeably more on it."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "low-resource language",
+      "low-resource programming languages",
+      "langage peu doté"
+    ],
+    "related": [
+      "coding-agents",
+      "training-data-lineage"
+    ],
+    "articles": [
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
+    ],
+    "addedOn": "21-10-2026"
+  },
+  {
     "id": "mast-failure-taxonomy",
     "label": {
       "fr": "Taxonomie des échecs MAST",
@@ -3567,7 +3622,8 @@
       "publication-guardrails"
     ],
     "articles": [
-      "refusal-behavior-is-not-a-security-control"
+      "refusal-behavior-is-not-a-security-control",
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
     ],
     "addedOn": "26-07-2026"
   },
@@ -5003,6 +5059,32 @@
       "agent-session-budget-inflection-point"
     ],
     "addedOn": "15-09-2026"
+  },
+  {
+    "id": "test-validated-code-translation",
+    "label": {
+      "fr": "Traduction de code validée par les tests",
+      "en": "Test-validated code translation"
+    },
+    "definition": {
+      "fr": "Production de données d'entraînement pour un langage peu doté : un modèle de code traduit du code existant, par exemple du Python, vers le langage cible, et seules les traductions qui passent les tests associés sont conservées. Les tests servent de filtre, si bien que la qualité des données obtenues dépend de leur capacité à rejeter une traduction fausse.",
+      "en": "Producing training data for a low-resource language by having a code model translate existing code, for example Python, into the target language and keeping only the translations that pass the accompanying tests. The tests act as the filter, so the quality of the resulting data depends on how well they reject a wrong translation."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "test-filtered code translation",
+      "cross-language training data translation",
+      "traduction filtrée par les tests"
+    ],
+    "related": [
+      "low-resource-programming-language",
+      "synthetic-data-rephrasing",
+      "training-data-lineage"
+    ],
+    "articles": [
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
+    ],
+    "addedOn": "21-10-2026"
   },
   {
     "id": "text-watermarking",
