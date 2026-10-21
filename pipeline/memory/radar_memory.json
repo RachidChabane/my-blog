@@ -2542,5 +2542,49 @@
     ],
     "published_at": "2026-10-20",
     "embedding": null
+  },
+  {
+    "translation_key": "deepinfer-offline-engine-without-kv-cache-and-data-parallel-load-balancing",
+    "topic_id": "deepinfer-offline-engine-without-kv-cache-and-data-parallel-load-balancing",
+    "dedup_key": "deepinfer offline engine without kv cache and data parallel load balancing",
+    "title": "DeepSeek's DeepInfer ships as an offline engine for SM100 and Ascend 950, without the KV cache system or the data-parallel load balancing behind its service",
+    "slugs": {
+      "fr": "deepinfer-moteur-hors-ligne-sans-cache-kv-ni-repartition-de-charge-data-parallel",
+      "en": "deepinfer-offline-engine-without-kv-cache-and-data-parallel-load-balancing"
+    },
+    "sources": [
+      {
+        "label": "DeepSeek, DeepInfer README.md",
+        "url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/README.md",
+        "date": "20-10-2026"
+      },
+      {
+        "label": "DeepSeek, DeepSeek V4.1 Flash Inference Deployment Q&A",
+        "url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/doc/inference_deployment_qa.md",
+        "date": "20-10-2026"
+      },
+      {
+        "label": "DeepSeek, deepinfer/environ.py in deepseek-ai/DeepInfer",
+        "url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/deepinfer/environ.py",
+        "date": "20-10-2026"
+      },
+      {
+        "label": "SiliconANGLE (Duncan Riley), DeepSeek open-sources DeepInfer, the inference framework behind its production services",
+        "url": "https://siliconangle.com/2026/10/20/deepseek-open-sources-deepinfer-the-inference-framework-behind-its-production-services/",
+        "date": "20-10-2026"
+      },
+      {
+        "label": "The Next Web, DeepSeek open-sources DeepInfer, the engine that runs its AI models",
+        "url": "https://thenextweb.com/news/deepseek-deepinfer-open-source-inference-engine",
+        "date": "20-10-2026"
+      },
+      {
+        "label": "GitHub pull request 147 on deepseek-ai/DeepInfer (open, unmerged), Add a minimal OpenAI-compatible chat server over the offline engine",
+        "url": "https://github.com/deepseek-ai/DeepInfer/pull/147",
+        "date": "21-10-2026"
+      }
+    ],
+    "published_at": "2026-10-21",
+    "embedding": null
   }
 ]
