@@ -2586,5 +2586,34 @@
     ],
     "published_at": "2026-10-21",
     "embedding": null
+  },
+  {
+    "translation_key": "litellm-1-107-0-wheel-only-payload-and-pip-retrigger",
+    "topic_id": "litellm-1-107-0-wheel-only-payload-and-pip-retrigger",
+    "dedup_key": "litellm 1 107 0 wheel only payload and pip retrigger",
+    "title": "LiteLLM 1.107.0's PyPI wheels carried a credential stealer its GitHub source tag did not, and running pip in an infected environment runs it again",
+    "slugs": {
+      "fr": "litellm-1-107-0-charge-dans-les-wheels-seulement-et-pip-qui-la-relance",
+      "en": "litellm-1-107-0-wheel-only-payload-and-pip-retrigger"
+    },
+    "sources": [
+      {
+        "label": "LiteLLM, Contained: Oct 21, 2026 LiteLLM release v1.107.0 Compromised",
+        "url": "https://docs.litellm.ai/blog/security-incident-oct-21-2026",
+        "date": "21-10-2026"
+      },
+      {
+        "label": "JFrog Security Research, LiteLLM Hijacked Again: Malicious 1.107.0 Wheels Steal Credentials and Load Remote Code",
+        "url": "https://research.jfrog.com/post/litellm-hijacked-again/",
+        "date": "21-10-2026"
+      },
+      {
+        "label": "SafeDep, Compromised LiteLLM 1.107.0 on PyPI Installs a Credential Stealer and Backdoor",
+        "url": "https://safedep.io/litellm-pypi-compromise-credential-stealer-backdoor/",
+        "date": "21-10-2026"
+      }
+    ],
+    "published_at": "2026-10-22",
+    "embedding": null
   }
 ]
