@@ -1317,7 +1317,8 @@
       "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output",
       "agent-coding-gains-stop-at-the-review-queue",
       "agent-write-volume-breaks-git-design-assumptions",
-      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language",
+      "system-prompt-persona-shifts-generated-code-security"
     ],
     "addedOn": "30-05-2026"
   },
@@ -1450,7 +1451,8 @@
       "agent-scaffold"
     ],
     "articles": [
-      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language",
+      "system-prompt-persona-shifts-generated-code-security"
     ],
     "addedOn": "21-10-2026"
   },
@@ -1507,6 +1509,31 @@
       "the-check-binds-the-action-not-the-decision"
     ],
     "addedOn": "18-06-2026"
+  },
+  {
+    "id": "context-conditioned-code-security",
+    "label": {
+      "fr": "Sécurité du code conditionnée par le contexte",
+      "en": "Context-conditioned code security"
+    },
+    "definition": {
+      "fr": "Variation de la sécurité du code produit par un modèle de langage selon des éléments du prompt étrangers à la tâche elle-même, comme le destinataire du code ou son secteur d'activité. Des études ont mesuré une part de code vulnérable qui augmente dans certains de ces contextes et diminue dans d'autres.",
+      "en": "Variation in the security of the code a language model generates, driven by details of the prompt that do not concern the task itself, such as who the code is for or the sector it serves. Studies have measured the share of vulnerable code rising under some of these contexts and falling under others."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "persona-conditioned code security",
+      "persona effect on generated code",
+      "effet du persona sur le code généré"
+    ],
+    "related": [
+      "coding-agents",
+      "context-ablation"
+    ],
+    "articles": [
+      "system-prompt-persona-shifts-generated-code-security"
+    ],
+    "addedOn": "22-10-2026"
   },
   {
     "id": "context-isolation",
@@ -2067,6 +2094,32 @@
       "afd-throughput-does-not-transfer-without-the-fabric"
     ],
     "addedOn": "27-07-2026"
+  },
+  {
+    "id": "exploit-based-security-evaluation",
+    "label": {
+      "fr": "Évaluation de sécurité par exploitation",
+      "en": "Exploit-based security evaluation"
+    },
+    "definition": {
+      "fr": "Mesure de la sécurité d'un code généré qui consiste à exécuter l'application puis à l'attaquer avec des exploits fonctionnels : une faille ne compte que si une attaque réussit contre le programme en cours d'exécution. Un analyseur statique signale au contraire le code qui correspond aux motifs décrits par ses règles, et peut manquer une faille dont le code n'en reproduit aucun.",
+      "en": "Scoring the security of generated code by running the application and attacking it with working exploits, so a flaw counts only when an attack succeeds against the running program. A static scanner instead reports code that matches the patterns its rules describe, and can miss a flaw whose code matches none of them."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "execution-based security evaluation",
+      "exploit-based evaluation",
+      "évaluation par exploits"
+    ],
+    "related": [
+      "context-conditioned-code-security",
+      "automated-exploit-generation",
+      "adaptive-attack-evaluation"
+    ],
+    "articles": [
+      "system-prompt-persona-shifts-generated-code-security"
+    ],
+    "addedOn": "22-10-2026"
   },
   {
     "id": "fact-checking",
@@ -3244,7 +3297,8 @@
     ],
     "articles": [
       "observability-is-not-evaluation",
-      "live-web-agent-evals-run-side-effects-on-third-party-sites"
+      "live-web-agent-evals-run-side-effects-on-third-party-sites",
+      "system-prompt-persona-shifts-generated-code-security"
     ],
     "addedOn": "07-07-2026"
   },
@@ -3656,7 +3710,8 @@
       "agent-coding-gains-stop-at-the-review-queue",
       "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity",
       "web-prompt-injection-scans-measure-what-crawlers-are-served",
-      "agent-benchmarks-cover-little-of-the-work-your-agent-does"
+      "agent-benchmarks-cover-little-of-the-work-your-agent-does",
+      "system-prompt-persona-shifts-generated-code-security"
     ],
     "addedOn": "18-07-2026"
   },

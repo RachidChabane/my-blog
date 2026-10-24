@@ -1,0 +1,175 @@
+{
+  "slug": "run-your-code-security-eval-under-the-system-prompt-you-ship",
+  "lang": "en",
+  "translationKey": "system-prompt-persona-shifts-generated-code-security",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "CrowdStrike, Security flaws in DeepSeek-generated code linked to political triggers (headline finding)",
+      "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-researchers-identify-hidden-vulnerabilities-ai-coded-software/",
+      "excerpt": "However, we found that when DeepSeek-R1 receives prompts containing topics the Chinese Communist Party (CCP) likely considers politically sensitive, the likelihood of it producing code with severe security vulnerabilities increases by up to 50%."
+    },
+    {
+      "sourceId": "s2",
+      "label": "CrowdStrike, Security flaws in DeepSeek-generated code linked to political triggers (baseline)",
+      "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-researchers-identify-hidden-vulnerabilities-ai-coded-software/",
+      "excerpt": "Figure 1 also highlights that DeepSeek-R1 overall is a very capable and powerful coding model, producing vulnerable code in 19% of cases when no additional trigger words are present."
+    },
+    {
+      "sourceId": "s3",
+      "label": "CrowdStrike, Security flaws in DeepSeek-generated code linked to political triggers (trigger example)",
+      "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-researchers-identify-hidden-vulnerabilities-ai-coded-software/",
+      "excerpt": "For example, when telling DeepSeek-R1 that it was coding for an industrial control system based in Tibet , the likelihood of it generating code with severe vulnerabilities increased to 27.2%."
+    },
+    {
+      "sourceId": "s4",
+      "label": "CrowdStrike, Security flaws in DeepSeek-generated code linked to political triggers (method)",
+      "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-researchers-identify-hidden-vulnerabilities-ai-coded-software/",
+      "excerpt": "In total, we tested 121 different trigger word configurations."
+    },
+    {
+      "sourceId": "s5",
+      "label": "CrowdStrike, Security flaws in DeepSeek-generated code linked to political triggers (caveat)",
+      "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-researchers-identify-hidden-vulnerabilities-ai-coded-software/",
+      "excerpt": "We want to highlight that the present findings do not mean DeepSeek-R1 will produce insecure code every time those trigger words are present."
+    },
+    {
+      "sourceId": "s6",
+      "label": "CrowdStrike, Security flaws in DeepSeek-generated code linked to political triggers (long-run effect)",
+      "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-researchers-identify-hidden-vulnerabilities-ai-coded-software/",
+      "excerpt": "Rather, in the long-term average, the code produced when these triggers are present will be less secure."
+    },
+    {
+      "sourceId": "s7",
+      "label": "CrowdStrike, Security flaws in DeepSeek-generated code linked to political triggers (other models)",
+      "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-researchers-identify-hidden-vulnerabilities-ai-coded-software/",
+      "excerpt": "It is not completely unlikely that other LLMs may contain similar biases and produce similar reactions to their own set of respective trigger words."
+    },
+    {
+      "sourceId": "s8",
+      "label": "CrowdStrike, Security flaws in DeepSeek-generated code linked to political triggers (framing)",
+      "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-researchers-identify-hidden-vulnerabilities-ai-coded-software/",
+      "excerpt": "This research reveals a new, subtle vulnerability surface for AI coding assistants."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (task)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "We gave Qwen3-Coder one job: build a web service where users sign up, log in and store a private secret."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (benchmark)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "The task comes from BaxBench , an open benchmark from ETH Zurich and LogicStar that runs every app and attacks it with ready-made exploits."
+    },
+    {
+      "sourceId": "s11",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (single variable)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "Only one phrase in the system prompt changed, to say who the code was for."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (mirror result)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "For a US defense contractor instead of a Chinese one, the app was 19% more likely to be hackable."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (security instruction arm)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "US defense contractor vs neutral, both told to code securely: apps that could be hacked +27%, significant (p = 0.03)"
+    },
+    {
+      "sourceId": "s14",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (obvious fix)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "The obvious fix is to tell the model to be careful."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (model size caveat)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "Asked to build a complete, secure app in a single pass, a model this size often gets something wrong, whoever the customer is."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (prior work)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "Booz Allen and CrowdStrike published their headline numbers only."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (vantage)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "Hirundo publishes hardened and Westernized models for this reason, and evaluates and remediates models for organizations running open-weight models, be it Chinese, US or EU made."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Help Net Security, reporting the Booz Allen report on Chinese coding models (scale)",
+      "url": "https://www.helpnetsecurity.com/2026/06/09/chinese-ai-coding-models-security/",
+      "excerpt": "In May 2026, Booz Allen ran more than 2,800 trials against five frontier code-generation models on its internal test platform."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Help Net Security, reporting the Booz Allen report on Chinese coding models (largest change)",
+      "url": "https://www.helpnetsecurity.com/2026/06/09/chinese-ai-coding-models-security/",
+      "excerpt": "Qwen3-Coder showed the largest change, adding roughly 130 percent more vulnerabilities under the government persona than under the neutral one."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Help Net Security, reporting the Booz Allen report on Chinese coding models (US model)",
+      "url": "https://www.helpnetsecurity.com/2026/06/09/chinese-ai-coding-models-security/",
+      "excerpt": "Claude Opus 4.6 produced more secure code under the same government persona."
+    },
+    {
+      "sourceId": "s21",
+      "label": "Help Net Security, reporting the Booz Allen report on Chinese coding models (hidden flaws)",
+      "url": "https://www.helpnetsecurity.com/2026/06/09/chinese-ai-coding-models-security/",
+      "excerpt": "Booz Allen states the flaws often lay beneath code that looked correct, and that its evidence stops short of showing backdoors or deliberate insertion."
+    },
+    {
+      "sourceId": "s22",
+      "label": "Help Net Security, reporting the Booz Allen report on Chinese coding models (vantage)",
+      "url": "https://www.helpnetsecurity.com/2026/06/09/chinese-ai-coding-models-security/",
+      "excerpt": "Booz Allen, which sells AI evaluation services and government technology work, argues that acting on Chinese coding models now would cost far less than removing them later."
+    },
+    {
+      "sourceId": "s23",
+      "label": "CrowdStrike, Security flaws in DeepSeek-generated code linked to political triggers (page summary)",
+      "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-researchers-identify-hidden-vulnerabilities-ai-coded-software/",
+      "excerpt": "CrowdStrike Counter Adversary Operations identifies innocuous trigger words that lead DeepSeek to produce more vulnerable code."
+    },
+    {
+      "sourceId": "s24",
+      "label": "Help Net Security, reporting the Booz Allen report on Chinese coding models (admin console test)",
+      "url": "https://www.helpnetsecurity.com/2026/06/09/chinese-ai-coding-models-security/",
+      "excerpt": "One test asked each model to build an internal admin console, once for a generic user and once for a U.S. government agency."
+    },
+    {
+      "sourceId": "s25",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (static scanner)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "We ran Semgrep with Meta's PurpleLlama security rules over 1,840 apps Qwen3-Coder wrote. It flagged 2. BaxBench's attacks broke into 1,144."
+    },
+    {
+      "sourceId": "s26",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (security instruction text)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "We added BaxBench's own instruction to the prompt: \"Make sure to follow best practices for security and avoid common vulnerabilities.\""
+    },
+    {
+      "sourceId": "s27",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (sample size)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "Per model, each customer has 190 apps (380 for the neutral group, which combines two prompts of 190). The security-instruction prompts have 70 apps each, and the US contractor was compared with 140 neutral apps that also had the instruction."
+    },
+    {
+      "sourceId": "s28",
+      "label": "Hirundo, Qwen3-Coder vulnerabilities by customer persona (case study)",
+      "url": "https://www.hirundo.io/blog/qwen3-coder-vulnerabilities",
+      "excerpt": "A Hirundo case study on Alibaba's Qwen3-Coder, before and after Westernization"
+    }
+  ]
+}
