@@ -2615,5 +2615,29 @@
     ],
     "published_at": "2026-10-22",
     "embedding": null
+  },
+  {
+    "translation_key": "kimi-k3-1-pro-terminal-bench-4-vendor-table-below-independent-score",
+    "topic_id": "kimi-k3-1-pro-terminal-bench-4-vendor-table-below-independent-score",
+    "dedup_key": "kimi k3 1 pro terminal bench 4 vendor table below independent score",
+    "title": "Kimi's own table puts K3.1 Pro behind Claude Opus 5.5 on Terminal-Bench 4.0, and Artificial Analysis scores it highest of any model at 67%",
+    "slugs": {
+      "fr": "kimi-k3-1-pro-terminal-bench-4-tableau-editeur-sous-le-score-independant",
+      "en": "kimi-k3-1-pro-terminal-bench-4-vendor-table-below-independent-score"
+    },
+    "sources": [
+      {
+        "label": "Kimi, Kimi K3.1 Pro Tech Blog: Advancing Open Intelligence",
+        "url": "https://www.kimi.ai/blog/kimi-k3-1-pro",
+        "date": "24-10-2026"
+      },
+      {
+        "label": "Artificial Analysis, Kimi K3.1 Pro launches at 4th on the Intelligence Index and will lead open weights models",
+        "url": "https://artificialanalysis.ai/articles/kimi-k3-1-pro-launch-benchmarks",
+        "date": "23-10-2026"
+      }
+    ],
+    "published_at": "2026-10-23",
+    "embedding": null
   }
 ]
