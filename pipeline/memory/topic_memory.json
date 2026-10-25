@@ -5999,5 +5999,321 @@
     ],
     "published_at": "2026-10-22",
     "embedding": null
+  },
+  {
+    "translation_key": "ai-rediscovered-vulnerabilities-leak-the-disclosure-window",
+    "topic_id": "ai-rediscovered-vulnerabilities-leak-the-disclosure-window",
+    "dedup_key": "an operator patch clock that starts at the advisory is too late when an ai era embargo leaks through several mundane channels at once as the php2shell embargo leaked through an advance notice chain while two teams found the bugs independently and a honeypot logged an exploitation attempt days before disclosure so operators need default off switches staged before the advisory and log retention that looks back past the disclosure date",
+    "title": "A patch SLA that starts at the advisory cannot measure exposure",
+    "slugs": {
+      "fr": "un-sla-de-correctif-ne-mesure-pas-l-exposition",
+      "en": "a-patch-sla-cannot-measure-exposure"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "OpenAI, Coordinated disclosure of critical vulnerabilities (independent rediscovery by Wiz)",
+        "url": "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "initiative, with Wiz also independently discovering and reporting both vulnerabilities.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s2",
+        "label": "OpenAI, Coordinated disclosure of critical vulnerabilities (defender window claim)",
+        "url": "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "To our knowledge, frontier AI found these vulnerabilities before attackers did",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s3",
+        "label": "OpenAI, Coordinated disclosure of critical vulnerabilities (open question on leaks)",
+        "url": "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "When do staged notifications work better than notifying a wider group at once, and how should we weigh coverage against leak risk?",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s4",
+        "label": "OpenAI, Coordinated disclosure of critical vulnerabilities (sharing risk)",
+        "url": "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Even limited details can reveal a vulnerability, so we weigh the risk of sharing them against the protection they enable.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s5",
+        "label": "OpenAI, Coordinated disclosure of critical vulnerabilities (patch testing)",
+        "url": "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "This process includes adversarial testing with frontier models to look for ways around the patch and related variants of the vulnerability.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s6",
+        "label": "Wiz Research, PHP2Shell technical briefing (scope)",
+        "url": "https://www.wiz.io/blog/php2shell-php-rce",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Wiz Research uncovered multiple critical vulnerabilities in core PHP, a popular general-purpose scripting language that powers 70% of all websites in the world.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s7",
+        "label": "Wiz Research, PHP2Shell technical briefing (age of the flaws)",
+        "url": "https://www.wiz.io/blog/php2shell-php-rce",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "The underlying flaws had been present for decades, but demonstrating their exploitability required an exceptionally complex chain of steps, at the edge of what human researchers could practically achieve.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s8",
+        "label": "Wiz Research, PHP2Shell technical briefing (AI lowered the barrier)",
+        "url": "https://www.wiz.io/blog/php2shell-php-rce",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Frontier AI models substantially reduced that barrier, turning a longstanding flaw into an exploit.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s9",
+        "label": "Wiz Research, PHP2Shell technical briefing (exploit speed)",
+        "url": "https://www.wiz.io/blog/php2shell-php-rce",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Frontier models were critical to making this process practical, enabling us to develop and adapt working exploits across multiple applications in hours.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s10",
+        "label": "Wiz Research, PHP2Shell technical briefing (complexity as a barrier)",
+        "url": "https://www.wiz.io/blog/php2shell-php-rce",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "As the time and expertise required for this work decrease, complexity may no longer provide a meaningful barrier, changing how we define what is vulnerable in practice.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s11",
+        "label": "Wiz Research, PHP2Shell technical briefing (severity)",
+        "url": "https://www.wiz.io/blog/php2shell-php-rce",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "The issues described below all stem from key architecture decisions, some made over a decade ago, and were grouped under two CVEs, with severity reaching CVSS 9.2.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s12",
+        "label": "Wiz Research, PHP2Shell technical briefing (application-agnostic)",
+        "url": "https://www.wiz.io/blog/php2shell-php-rce",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "The attack works even when the application never calls session_start() , making the issue application-agnostic.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s13",
+        "label": "Cloudflare, WAF protections for the PHP vulnerabilities (pre-disclosure rules)",
+        "url": "https://blog.cloudflare.com/php-vulnerabilities-waf-protection/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Cloudflare has developed and deployed web application firewall (WAF) protections since early October 2026, which were deployed about 9 hours ahead of public disclosure.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s14",
+        "label": "Cloudflare, WAF protections for the PHP vulnerabilities (leak and attack traffic)",
+        "url": "https://blog.cloudflare.com/php-vulnerabilities-waf-protection/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Cloudflare successfully deployed multiple mitigations for all its customers while the vulnerability was leaked before the official release date and we observed attack traffic targeting our customers.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s15",
+        "label": "Cloudflare, WAF protections for the PHP vulnerabilities (payload mutation)",
+        "url": "https://blog.cloudflare.com/php-vulnerabilities-waf-protection/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "We observed how attackers were mutating the attack payload to try to bypass our protections by tracking the volume of matches and cross-referencing with the rule logic.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s16",
+        "label": "Cloudflare, WAF protections for the PHP vulnerabilities (request-only limit)",
+        "url": "https://blog.cloudflare.com/php-vulnerabilities-waf-protection/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Request data alone does not always provide enough evidence to distinguish an exploit from legitimate traffic.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s17",
+        "label": "PHP project, Security advisory of 21 Oct 2026 (urgency)",
+        "url": "https://www.php.net/archive/2026.php",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "All PHP users are strongly encouraged to update immediately.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s18",
+        "label": "PHP project, Security advisory of 21 Oct 2026 (pre-application exploit)",
+        "url": "https://www.php.net/archive/2026.php",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "We consider the risk highest for mod_php, with a demonstrated exploit where an unauthenticated request can trigger the attack before any application code runs.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s19",
+        "label": "PHP project, Security advisory of 21 Oct 2026 (interim mitigations)",
+        "url": "https://www.php.net/archive/2026.php",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "If you cannot update immediately: while only an update is a complete solution, the following measures reduce exposure to specific attack paths but do not make an installation safe.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s20",
+        "label": "PHP project, Security advisory of 21 Oct 2026 (upload progress switch)",
+        "url": "https://www.php.net/archive/2026.php",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "RCE via stale global state (CVE-2026-109619): Set session.upload_progress.enabled=0 and restart every worker.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s21",
+        "label": "PHP project, Security advisory of 21 Oct 2026 (advance patches)",
+        "url": "https://www.php.net/archive/2026.php",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Linux distributions and LTS vendors received the patches in advance, so check your vendor for updated packages.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s22",
+        "label": "Hacker News, Tell HN post on incoming PHP RCE CVEs (early public notice)",
+        "url": "https://news.ycombinator.com/item?id=50167754",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "A reliable source has indicated an announcement is scheduled for 22 October 2026 at 18:00 CEST regarding 2x PHP RCEs with a CVSS score of 10.0.",
+        "source_date": "2026-10-20"
+      },
+      {
+        "source_id": "s23",
+        "label": "Hacker News, Tell HN post on incoming PHP RCE CVEs (reserved CVE ids)",
+        "url": "https://news.ycombinator.com/item?id=50167754",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "These are the two reserved CVEs for the reported upcoming announcement: CVE-2026-109618 CVE-2026-109619",
+        "source_date": "2026-10-20"
+      },
+      {
+        "source_id": "s24",
+        "label": "Anthropic, Using Claude to reduce the attack surface of code (scaling argument)",
+        "url": "https://www.anthropic.com/research/attack-surface-reduction",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Securing software by finding and fixing individual vulnerabilities alone scales poorly: fixing even a critical vulnerability tells you nothing about the vulnerabilities that remain."
+      },
+      {
+        "source_id": "s26",
+        "label": "Wiz Research, PHP2Shell technical briefing (credits)",
+        "url": "https://www.wiz.io/blog/php2shell-php-rce",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Wiz Research would like to thank the PHP team, Calif and OpenAI for their work on discovery, coordination and patch verification.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s27",
+        "label": "OpenAI, Coordinated disclosure of critical vulnerabilities (Calif finding)",
+        "url": "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Calif identified a critical flaw",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s25",
+        "label": "Anthropic, Using Claude to reduce the attack surface of code (reachability)",
+        "url": "https://www.anthropic.com/research/attack-surface-reduction",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "By contrast, reducing code reachability can reduce the severity of unknown vulnerabilities, including the ones that might be under active exploitation."
+      },
+      {
+        "source_id": "s28",
+        "label": "Amazon Threat Intelligence, PHP2Shell exploitation prior to public disclosure in MadPot (pre-disclosure attempt)",
+        "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-identifies-php2shell-exploitation-prior-to-public-disclosure-in-madpot/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Amazon Threat Intelligence identified a PHP2Shell exploitation attempt dating to Oct. 17, 2026, in MadPot telemetry, four days before public disclosure of CVE-2026-109618 and CVE-2026-109619. The exploit attempt originated from an IP address associated with a commercial anonymization network.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s29",
+        "label": "Amazon Threat Intelligence, PHP2Shell exploitation prior to public disclosure in MadPot (unknown provenance)",
+        "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-identifies-php2shell-exploitation-prior-to-public-disclosure-in-madpot/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "While the vulnerability was under embargo, the targeting of a honeypot from an anonymized IP address suggests the activity was conducted by a threat actor, though it remains unclear how the actor acquired exploit information prior to disclosure.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s30",
+        "label": "Amazon Threat Intelligence, PHP2Shell exploitation prior to public disclosure in MadPot (exploits before the embargo lift)",
+        "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-identifies-php2shell-exploitation-prior-to-public-disclosure-in-madpot/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "The PHP embargo window was set to be lifted on 2026-10-21 1400 UTC. On the day of the release, Amazon Threat Intelligence identified multiple proof of concept exploits for the vulnerability, with the earliest around 2026-10-21 0200 UTC.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s31",
+        "label": "Amazon Threat Intelligence, PHP2Shell exploitation prior to public disclosure in MadPot (embargo lesson)",
+        "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-identifies-php2shell-exploitation-prior-to-public-disclosure-in-madpot/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "An embargo protects defenders only until someone else finds the same bug. Coordinated disclosure is still the right model. But defenders should not assume the public disclosure date is the earliest date of exploitation.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s32",
+        "label": "Amazon Threat Intelligence, PHP2Shell exploitation prior to public disclosure in MadPot (patch timelines)",
+        "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-identifies-php2shell-exploitation-prior-to-public-disclosure-in-madpot/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "AI-assisted analysis makes it cheaper to turn a patch diff or advisory into a working exploit. As a result, more actors can act within hours or even minutes once technical details of a vulnerability are disclosed. For security leaders, this changes several working assumptions: For critical vulnerabilities in internet-facing systems, measure patch and mitigation timelines in hours. A 7-day or 30-day SLA assumes a delay that no longer exists.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s33",
+        "label": "Amazon Threat Intelligence, PHP2Shell exploitation prior to public disclosure in MadPot (investigation start)",
+        "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-identifies-php2shell-exploitation-prior-to-public-disclosure-in-madpot/",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Start investigations from the earliest known exploitation, not from the disclosure date.",
+        "source_date": "2026-10-21"
+      },
+      {
+        "source_id": "s34",
+        "label": "Hacker News, Tell HN apology for the PHP RCE embargo (no-embargo notice)",
+        "url": "https://news.ycombinator.com/item?id=50193416",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "My contact had told me there was no embargo, and her contact had told her the same thing.",
+        "source_date": "2026-10-22"
+      },
+      {
+        "source_id": "s35",
+        "label": "Hacker News, Tell HN apology for the PHP RCE embargo (schedule impact)",
+        "url": "https://news.ycombinator.com/item?id=50193416",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "I appreciate this has had considerable knock-on effects with the schedule for co-ordinated disclosure, and created additional workload.",
+        "source_date": "2026-10-22"
+      },
+      {
+        "source_id": "s36",
+        "label": "Phoronix, Linux kernel vulnerability reports posted to the public mailing list (duplicate report)",
+        "url": "https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "ZDI-CAN-33367 is a vulneravbility for skbuff skb_zerocopy in the network code that can lead to local privilege escalation. For this one Linux kernel developers received a security report from another source last week over the same issue and a patch is expected to be posted soon.",
+        "source_date": "2026-10-22"
+      },
+      {
+        "source_id": "s37",
+        "label": "Phoronix, Linux kernel vulnerability reports posted to the public mailing list (report volume)",
+        "url": "https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "The bug and security reports keep on coming in the AI fueled world.",
+        "source_date": "2026-10-22"
+      },
+      {
+        "source_id": "s38",
+        "label": "Phoronix, Linux kernel vulnerability reports posted to the public mailing list (public posting)",
+        "url": "https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities",
+        "retrieved_at": "2026-10-25",
+        "excerpt": "Seemingly as an accident, overnight several new Linux kernel vulnerability reports were posted to the public Linux kernel mailing list rather than the private security mailing list.",
+        "source_date": "2026-10-22"
+      }
+    ],
+    "published_at": "2026-10-25",
+    "embedding": null
   }
 ]

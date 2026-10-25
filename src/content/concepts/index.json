@@ -652,6 +652,31 @@
     "addedOn": "10-06-2026"
   },
   {
+    "id": "attack-surface-reduction",
+    "label": {
+      "fr": "Réduction de la surface d'attaque",
+      "en": "Attack surface reduction"
+    },
+    "definition": {
+      "fr": "Pratique qui consiste à retirer ou à désactiver les chemins de code, fonctionnalités et interfaces dont un système n'a pas besoin, afin de réduire ce qu'un attaquant peut atteindre. Comme elle agit avant qu'une faille précise soit connue, elle peut atténuer l'impact de vulnérabilités que personne n'a encore trouvées ; chaque changement ne ferme toutefois que les chemins qu'il retire et ne remplace pas l'application des correctifs.",
+      "en": "Removing or disabling the code paths, features and interfaces a system does not need, so that fewer of them are reachable by an attacker. Because it acts before any particular flaw is known, it can lower the impact of vulnerabilities nobody has found yet, but each change closes only the paths it removes and does not replace patching."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "attack surface minimization",
+      "reachability reduction",
+      "réduction de la surface exposée"
+    ],
+    "related": [
+      "exposure-window",
+      "least-privilege"
+    ],
+    "articles": [
+      "ai-rediscovered-vulnerabilities-leak-the-disclosure-window"
+    ],
+    "addedOn": "25-10-2026"
+  },
+  {
     "id": "attention-ffn-disaggregation",
     "label": {
       "fr": "Désagrégation attention/FFN",
@@ -754,7 +779,8 @@
     "articles": [
       "allowlist-verbe-capacite-2026-08",
       "remediation-throughput-is-the-security-constraint",
-      "attack-agent-harness-state-holds-the-secrets-it-finds"
+      "attack-agent-harness-state-holds-the-secrets-it-finds",
+      "ai-rediscovered-vulnerabilities-leak-the-disclosure-window"
     ],
     "addedOn": "02-08-2026"
   },
@@ -1635,6 +1661,32 @@
     "addedOn": "11-09-2026"
   },
   {
+    "id": "coordinated-vulnerability-disclosure",
+    "label": {
+      "fr": "Divulgation coordonnée des vulnérabilités",
+      "en": "Coordinated vulnerability disclosure"
+    },
+    "definition": {
+      "fr": "Processus dans lequel la personne qui découvre une vulnérabilité la signale en privé aux mainteneurs, qui préparent un correctif et peuvent prévenir certains acteurs à l'avance, sous embargo, avant la publication d'un avis de sécurité à une date convenue. Pour les utilisateurs absents de cette liste anticipée, la protection ne dure que tant que les détails restent confidentiels et que personne d'autre ne trouve la même faille.",
+      "en": "A process in which the finder of a vulnerability reports it privately to the maintainers, who prepare a fix and may notify selected parties in advance under an embargo before a public advisory goes out on an agreed date. For users outside that advance list, the protection lasts only as long as the details stay private and no one else finds the same flaw."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "coordinated disclosure",
+      "security embargo",
+      "divulgation coordonnée",
+      "embargo de sécurité"
+    ],
+    "related": [
+      "remediation-throughput",
+      "automated-exploit-generation"
+    ],
+    "articles": [
+      "ai-rediscovered-vulnerabilities-leak-the-disclosure-window"
+    ],
+    "addedOn": "25-10-2026"
+  },
+  {
     "id": "cost-aware-evaluation",
     "label": {
       "fr": "Évaluation attentive au coût",
@@ -2120,6 +2172,32 @@
       "system-prompt-persona-shifts-generated-code-security"
     ],
     "addedOn": "22-10-2026"
+  },
+  {
+    "id": "exposure-window",
+    "label": {
+      "fr": "Fenêtre d'exposition",
+      "en": "Exposure window"
+    },
+    "definition": {
+      "fr": "Période pendant laquelle un système peut être attaqué via une vulnérabilité donnée, depuis le moment où des attaquants peuvent en avoir connaissance, parfois avant la divulgation publique, jusqu'à la mise en place d'un correctif ou d'une mesure d'atténuation sur ce système. Son début n'est souvent connu qu'après coup, grâce aux journaux ou aux rapports sur les menaces qui datent la première exploitation.",
+      "en": "The period during which a system can be attacked through a given vulnerability, from the moment attackers can know of it, which may precede public disclosure, until a fix or mitigation is in place on that system. Its start is often known only in hindsight, from logs or threat reports that date the earliest exploitation."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "window of exposure",
+      "vulnerability window",
+      "fenêtre de vulnérabilité"
+    ],
+    "related": [
+      "coordinated-vulnerability-disclosure",
+      "automated-exploit-generation",
+      "proxy-metric"
+    ],
+    "articles": [
+      "ai-rediscovered-vulnerabilities-leak-the-disclosure-window"
+    ],
+    "addedOn": "25-10-2026"
   },
   {
     "id": "fact-checking",
@@ -3711,7 +3789,8 @@
       "llm-output-homogeneity-across-models-defeats-model-swapping-for-diversity",
       "web-prompt-injection-scans-measure-what-crawlers-are-served",
       "agent-benchmarks-cover-little-of-the-work-your-agent-does",
-      "system-prompt-persona-shifts-generated-code-security"
+      "system-prompt-persona-shifts-generated-code-security",
+      "ai-rediscovered-vulnerabilities-leak-the-disclosure-window"
     ],
     "addedOn": "18-07-2026"
   },
