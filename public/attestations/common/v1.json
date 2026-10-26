@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rachid-chabane.com/attestations/common/v1",
+  "title": "Definitions shared by the predicate schemas",
+  "$defs": {
+    "sha256Hex": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "digest": {
+      "type": "object",
+      "required": ["sha256"],
+      "properties": {
+        "sha256": { "$ref": "#/$defs/sha256Hex" }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "required": ["value", "class"],
+      "properties": {
+        "class": { "enum": ["executed", "judged"] },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "executor": { "$ref": "#/$defs/executor" },
+        "corroboratedBy": { "$ref": "#/$defs/corroborations" }
+      },
+      "if": {
+        "required": ["class"],
+        "properties": { "class": { "const": "judged" } }
+      },
+      "then": { "required": ["confidence"] },
+      "else": { "not": { "anyOf": [{ "required": ["confidence"] }, { "required": ["executor"] }, { "required": ["corroboratedBy"] }] } }
+    },
+    "executedClaim": {
+      "allOf": [
+        { "$ref": "#/$defs/claim" },
+        { "properties": { "class": { "const": "executed" } } }
+      ]
+    },
+    "judgedClaim": {
+      "allOf": [
+        { "$ref": "#/$defs/claim" },
+        { "properties": { "class": { "const": "judged" } } }
+      ]
+    },
+    "digestOrEmpty": {
+      "type": "string",
+      "pattern": "^([0-9a-f]{64})?$"
+    },
+    "corroboration": {
+      "type": "object",
+      "required": ["kind", "digest"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "example_failed",
+            "other_example_failed",
+            "specific_kill",
+            "f4_witness",
+            "builds",
+            "other_criteria_pass",
+            "no_diff_found",
+            "specific_matrix"
+          ]
+        },
+        "digest": { "$ref": "#/$defs/sha256Hex" }
+      }
+    },
+    "corroborations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/corroboration" },
+      "uniqueItems": true
+    },
+    "executorProfile": {
+      "type": "object",
+      "required": ["channel", "harness", "isolation", "attestation", "model"],
+      "properties": {
+        "channel": { "enum": ["host-subagent", "host-sampled", "host-inline", "systemone-relay", "host-classify"] },
+        "harness": {
+          "type": "object",
+          "required": ["name", "version"],
+          "properties": {
+            "name": { "$ref": "#/$defs/nonEmptyString" },
+            "version": { "type": "string" }
+          }
+        },
+        "isolation": {
+          "enum": ["restricted-attested", "restricted", "restricted-unverified", "unrestricted", "inline"]
+        },
+        "attestation": {
+          "type": "object",
+          "required": ["agentId", "capDigest", "transcriptDigest"],
+          "properties": {
+            "agentId": { "type": "string" },
+            "capDigest": { "$ref": "#/$defs/digestOrEmpty" },
+            "transcriptDigest": { "$ref": "#/$defs/digestOrEmpty" }
+          }
+        },
+        "model": {
+          "type": "object",
+          "required": ["name", "source"],
+          "properties": {
+            "name": { "type": "string" },
+            "source": { "enum": ["resolved", "declared", "unknown"] }
+          },
+          "if": {
+            "required": ["source"],
+            "properties": { "source": { "const": "unknown" } }
+          },
+          "else": { "properties": { "name": { "$ref": "#/$defs/nonEmptyString" } } }
+        }
+      },
+      "if": {
+        "required": ["isolation"],
+        "properties": { "isolation": { "const": "restricted-attested" } }
+      },
+      "then": {
+        "properties": {
+          "attestation": {
+            "properties": {
+              "agentId": { "$ref": "#/$defs/nonEmptyString" },
+              "capDigest": { "$ref": "#/$defs/sha256Hex" },
+              "transcriptDigest": { "$ref": "#/$defs/sha256Hex" }
+            }
+          }
+        }
+      }
+    },
+    "executor": {
+      "allOf": [
+        { "$ref": "#/$defs/executorProfile" },
+        {
+          "type": "object",
+          "required": ["promptDigest", "blind"],
+          "properties": {
+            "promptDigest": { "$ref": "#/$defs/sha256Hex" },
+            "blind": { "type": "boolean" }
+          }
+        }
+      ]
+    },
+    "requirement": {
+      "type": "object",
+      "required": ["id", "revision", "statementCanonicalization"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[^~]+$" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "statementCanonicalization": { "const": "c1" }
+      }
+    },
+    "module": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "$ref": "#/$defs/nonEmptyString" },
+        "version": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": ["role", "name", "digest"],
+      "properties": {
+        "role": {
+          "enum": [
+            "spec",
+            "test_source",
+            "code_tree",
+            "junit_result",
+            "mutant_set",
+            "model_id",
+            "prompt_template",
+            "decision_policy",
+            "example_binding",
+            "host_response",
+            "proof"
+          ]
+        },
+        "name": { "$ref": "#/$defs/nonEmptyString" },
+        "digest": { "$ref": "#/$defs/digest" },
+        "annotations": {
+          "type": "object",
+          "properties": {
+            "criterion": { "$ref": "#/$defs/nonEmptyString" },
+            "globs": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/nonEmptyString" },
+              "uniqueItems": true
+            }
+          }
+        }
+      }
+    },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/input" }
+    },
+    "producedBy": { "enum": ["local", "ci"] },
+    "decision": {
+      "type": "object",
+      "required": ["basis", "deciders", "confidenceSource", "rawConfidence", "threshold"],
+      "properties": {
+        "basis": { "enum": ["construction", "spec_example", "judges", "system_one", "execution"] },
+        "deciders": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/nonEmptyString" },
+          "uniqueItems": true
+        },
+        "confidenceSource": { "type": "string", "pattern": "^(execution|host-votes\\([1-9][0-9]*\\)|host-classify\\([1-9][0-9]*,[a-z][a-z0-9]*\\):.+|system-one:.+)$" },
+        "confidenceMapping": { "$ref": "#/$defs/nonEmptyString" },
+        "rawConfidence": { "$ref": "#/$defs/confidence" },
+        "calibratedConfidence": { "$ref": "#/$defs/confidence" },
+        "threshold": { "$ref": "#/$defs/confidence" },
+        "escalationReason": { "type": "string" },
+        "classify": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/classifyRecord" }
+        }
+      }
+    },
+    "classifyRecord": {
+      "type": "object",
+      "required": ["requestId", "source", "mapping", "cliVersion", "sessionModel", "closedSetDigest", "questions", "calls"],
+      "properties": {
+        "requestId": { "$ref": "#/$defs/sha256Hex" },
+        "source": { "type": "string", "pattern": "^host-classify\\([1-9][0-9]*,[a-z][a-z0-9]*\\):.+$" },
+        "mapping": { "type": "string", "pattern": "^host-classify\\.share-isotonic@[0-9a-f]{64}$" },
+        "cliVersion": { "$ref": "#/$defs/nonEmptyString" },
+        "sessionModel": { "$ref": "#/$defs/nonEmptyString" },
+        "closedSetDigest": { "$ref": "#/$defs/sha256Hex" },
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["question", "seedInput", "seed", "votes", "share", "confidence"],
+            "properties": {
+              "question": { "$ref": "#/$defs/nonEmptyString" },
+              "seedInput": { "$ref": "#/$defs/nonEmptyString" },
+              "seed": { "type": "string", "pattern": "^[0-9a-f]{32}$" },
+              "modal": { "type": "string" },
+              "votes": { "type": "integer", "minimum": 0 },
+              "share": { "$ref": "#/$defs/confidence" },
+              "tied": { "type": "boolean" },
+              "confidence": { "$ref": "#/$defs/confidence" }
+            }
+          }
+        },
+        "calls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["question", "i", "model", "order", "label", "attempts"],
+            "properties": {
+              "question": { "$ref": "#/$defs/nonEmptyString" },
+              "i": { "type": "integer", "minimum": 0 },
+              "model": { "$ref": "#/$defs/nonEmptyString" },
+              "order": { "type": "array", "items": { "$ref": "#/$defs/nonEmptyString" }, "minItems": 2 },
+              "label": { "type": ["string", "null"] },
+              "attempts": { "type": "integer", "minimum": 1 },
+              "rejected": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "properties": {
+        "decision": { "$ref": "#/$defs/decision" },
+        "operatorScreen": {
+          "type": "object",
+          "required": ["flagged", "screenedOut"],
+          "properties": {
+            "flagged": { "type": "integer", "minimum": 0 },
+            "screenedOut": { "type": "integer", "minimum": 0 },
+            "screenFloorEntries": { "type": "integer", "minimum": 0 },
+            "classify": { "type": "array", "items": { "$ref": "#/$defs/classifyRecord" } }
+          }
+        },
+        "hostExclusions": { "type": "integer", "minimum": 0 },
+        "witnesses": {
+          "type": "object",
+          "required": ["universe", "written"],
+          "properties": {
+            "universe": { "$ref": "#/$defs/sha256Hex" },
+            "written": { "type": "integer", "minimum": 0 },
+            "readingConflicts": { "type": "integer", "minimum": 0 },
+            "flaky": { "type": "integer", "minimum": 0 },
+            "unrunnable": { "type": "integer", "minimum": 0 },
+            "refactorDropped": { "type": "integer", "minimum": 0 },
+            "escalateOnly": { "type": "integer", "minimum": 0 },
+            "blockBearing": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "faults": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["key", "sites", "mutants"],
+            "properties": {
+              "key": { "$ref": "#/$defs/sha256Hex" },
+              "sites": { "type": "array", "items": { "type": "string" } },
+              "witnesses": { "type": "array", "items": { "$ref": "#/$defs/sha256Hex" } },
+              "mutants": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/sha256Hex" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}
