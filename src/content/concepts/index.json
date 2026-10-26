@@ -755,6 +755,32 @@
     "addedOn": "11-07-2026"
   },
   {
+    "id": "autoformalization",
+    "label": {
+      "fr": "Auto-formalisation",
+      "en": "Autoformalization"
+    },
+    "definition": {
+      "fr": "Traduction d'un énoncé ou d'une preuve mathématique rédigés en langage naturel dans le langage d'un assistant de preuve, afin que son noyau puisse les vérifier mécaniquement. La vérification ne porte que sur la version formelle : lorsque la traduction modifie l'énoncé, par exemple pour contourner une étape qui ne compile pas, la preuve formelle peut être acceptée alors que l'affirmation informelle qu'elle devait étayer reste non vérifiée.",
+      "en": "Translating a mathematical statement or proof written in natural language into the language of a proof assistant, so that its kernel can check it mechanically. The check covers only the formal version: when the translation alters the statement, for instance to get past a step that does not compile, the formal proof can pass while the informal claim it was meant to back remains unchecked."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "auto-formalization",
+      "autoformalisation",
+      "automatic formalization",
+      "formalisation automatique"
+    ],
+    "related": [
+      "proof-checking-kernel",
+      "reward-hacking"
+    ],
+    "articles": [
+      "bulk-ai-research-release-ships-review-cost-to-readers"
+    ],
+    "addedOn": "26-10-2026"
+  },
+  {
     "id": "automated-exploit-generation",
     "label": {
       "en": "Automated exploit generation",
@@ -3670,7 +3696,8 @@
       "trust-boundary"
     ],
     "articles": [
-      "lean-kernel-cross-checks-only-help-when-kernels-fail-differently"
+      "lean-kernel-cross-checks-only-help-when-kernels-fail-differently",
+      "bulk-ai-research-release-ships-review-cost-to-readers"
     ],
     "addedOn": "18-10-2026"
   },
@@ -4240,6 +4267,31 @@
     "addedOn": "27-09-2026"
   },
   {
+    "id": "retraction-propagation",
+    "label": {
+      "fr": "Propagation des retraits",
+      "en": "Retraction propagation"
+    },
+    "definition": {
+      "fr": "Répercussion d'un résultat retiré ou corrigé sur les travaux qui s'appuient sur lui : chaque résultat qui en dépend doit être retrouvé, revérifié, puis révisé ou retiré à son tour. Lorsque les dépendances ne figurent que sous forme de citations dans la prose, il faut retrouver les résultats dépendants à la main, et le lecteur d'un résultat dépendant n'apprend le problème qu'en revenant vérifier.",
+      "en": "The spread of a withdrawn or corrected result to the work built on it: every result that relies on the flawed one has to be found, rechecked, and revised or withdrawn in turn. When dependencies are recorded only as citations in prose, finding the dependents is manual, and a reader of a dependent result learns of the problem only by going back to check."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "cascading retraction",
+      "dependency invalidation",
+      "withdrawal cascade",
+      "retraits en cascade"
+    ],
+    "related": [
+      "citation-grounding"
+    ],
+    "articles": [
+      "bulk-ai-research-release-ships-review-cost-to-readers"
+    ],
+    "addedOn": "26-10-2026"
+  },
+  {
     "id": "retrieval-evaluation",
     "label": {
       "fr": "Évaluation de la récupération",
@@ -4289,7 +4341,8 @@
       "llm-contribution-policy-premise-decides-the-leak",
       "remediation-throughput-is-the-security-constraint",
       "agent-ci-load-and-the-unearned-green",
-      "agent-coding-gains-stop-at-the-review-queue"
+      "agent-coding-gains-stop-at-the-review-queue",
+      "bulk-ai-research-release-ships-review-cost-to-readers"
     ],
     "addedOn": "08-08-2026"
   },
@@ -4324,7 +4377,8 @@
       "allowlist-verbe-capacite-2026-08",
       "coordinator-title-buys-no-information",
       "the-oracle-decides-repo-scale-migration",
-      "remediation-throughput-is-the-security-constraint"
+      "remediation-throughput-is-the-security-constraint",
+      "bulk-ai-research-release-ships-review-cost-to-readers"
     ],
     "addedOn": "06-07-2026"
   },
@@ -4568,6 +4622,32 @@
       "ai-assistance-impairs-the-unassisted-skill-that-reviews-ai-output"
     ],
     "addedOn": "18-07-2026"
+  },
+  {
+    "id": "selective-reporting",
+    "label": {
+      "fr": "Publication sélective",
+      "en": "Selective reporting"
+    },
+    "definition": {
+      "fr": "Fait de publier les réussites d'une recherche sans les tentatives qui ont échoué, ou sans préciser comment les problèmes tentés ont été choisis. Le lecteur voit un numérateur sans dénominateur : une liste de problèmes résolus ne se convertit pas en taux de réussite, et un système performant comme un grand nombre d'essais non publiés peuvent produire la même liste.",
+      "en": "Publishing the successes of a search without the attempts that failed, or without saying how the attempted problems were chosen. The reader sees a numerator with no denominator, so a list of solved problems cannot be turned into a success rate, and a strong system and a large number of unreported tries can produce the same list."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "file-drawer problem",
+      "unreported attempts",
+      "missing denominator",
+      "effet tiroir"
+    ],
+    "related": [
+      "selection-bias",
+      "benchmark-self-reporting"
+    ],
+    "articles": [
+      "bulk-ai-research-release-ships-review-cost-to-readers"
+    ],
+    "addedOn": "26-10-2026"
   },
   {
     "id": "self-reported-productivity",

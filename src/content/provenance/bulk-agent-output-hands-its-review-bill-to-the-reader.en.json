@@ -1,0 +1,301 @@
+{
+  "slug": "bulk-agent-output-hands-its-review-bill-to-the-reader",
+  "lang": "en",
+  "translationKey": "bulk-ai-research-release-ships-review-cost-to-readers",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "OpenAI, openai/math README at a pinned commit (what the repository holds)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/README.md",
+      "excerpt": "This repository contains mathematical manuscripts and supporting proof artifacts produced by an internal OpenAI model."
+    },
+    {
+      "sourceId": "s2",
+      "label": "OpenAI, openai/math README at a pinned commit (catalogue size)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/README.md",
+      "excerpt": "The current catalogue contains 719 manuscripts organized into 372 families."
+    },
+    {
+      "sourceId": "s3",
+      "label": "OpenAI, openai/math README at a pinned commit (formalized share)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/README.md",
+      "excerpt": "The repository has ~42% top-line results formalized."
+    },
+    {
+      "sourceId": "s4",
+      "label": "OpenAI, openai/math README at a pinned commit (problems posed)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/README.md",
+      "excerpt": "Over the course of the evaluation, the model was posed approximately 4,000 problems."
+    },
+    {
+      "sourceId": "s5",
+      "label": "OpenAI, openai/math README at a pinned commit (selection step)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/README.md",
+      "excerpt": "Aggregating the output into result families and manuscripts and requiring an appropriate level of significance led to the catalog outlined above."
+    },
+    {
+      "sourceId": "s6",
+      "label": "OpenAI, openai/math README at a pinned commit (outputs build on outputs)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/README.md",
+      "excerpt": "Some outputs build upon earlier results produced by the models."
+    },
+    {
+      "sourceId": "s7",
+      "label": "OpenAI, openai/math README at a pinned commit (unformalized caveat)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/README.md",
+      "excerpt": "Some of the unformalized results could have issues."
+    },
+    {
+      "sourceId": "s8",
+      "label": "OpenAI, openai/math README at a pinned commit (compute per result)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/README.md",
+      "excerpt": "On average, each result used three hours of ChatGPT Pro thinking compute with that model."
+    },
+    {
+      "sourceId": "s9",
+      "label": "OpenAI, openai/math history at a pinned commit (sign error)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/history.md",
+      "excerpt": "a sign error invalidates a stabilization-trace cancellation argument and the construction used by two dependent papers."
+    },
+    {
+      "sourceId": "s10",
+      "label": "OpenAI, openai/math history at a pinned commit (withdrawals)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/history.md",
+      "excerpt": "As a result, we have withdrawn the following three manuscripts:"
+    },
+    {
+      "sourceId": "s11",
+      "label": "OpenAI, openai/math history at a pinned commit (revisions)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/history.md",
+      "excerpt": "We have revised 14 other manuscripts with proof repairs, corrected statements, clearer hypotheses and dependencies, and one correction to an obsolete citation."
+    },
+    {
+      "sourceId": "s12",
+      "label": "OpenAI, openai/math history at a pinned commit (formalized count)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/history.md",
+      "excerpt": "This brings the total percentage of top-line results formalized to 300 / 719 = ~42%."
+    },
+    {
+      "sourceId": "s13",
+      "label": "AGMAI, Responsible Release of AI-Generated Mathematics (the problem)",
+      "url": "https://agmai.org/general-sep29/",
+      "excerpt": "However, it is now the case that AI can output mathematical arguments in situations without the human who prompted it being able to understand the arguments, verify them, or take responsibility for them."
+    },
+    {
+      "sourceId": "s14",
+      "label": "AGMAI, Responsible Release of AI-Generated Mathematics (exposition)",
+      "url": "https://agmai.org/general-sep29/",
+      "excerpt": "They should not be full of wordy reasoning and non-standard terminology that renders them virtually incomprehensible."
+    },
+    {
+      "sourceId": "s15",
+      "label": "AGMAI, Responsible Release of AI-Generated Mathematics (failed attempts)",
+      "url": "https://agmai.org/general-sep29/",
+      "excerpt": "If many results are released at once, then in addition to the results themselves a further document should be written and made public that references all of the released results and explains how many other problems of comparable difficulty the models tried and failed to solve, as well as how the problems were chosen."
+    },
+    {
+      "sourceId": "s16",
+      "label": "AGMAI, Responsible Release of AI-Generated Mathematics (formalization status)",
+      "url": "https://agmai.org/general-sep29/",
+      "excerpt": "Where formalization would lead to unacceptable delays, the formalization status of the paper should be clearly stated."
+    },
+    {
+      "sourceId": "s17",
+      "label": "AGMAI, Responsible Release of AI-Generated Mathematics (process disclosure)",
+      "url": "https://agmai.org/general-sep29/",
+      "excerpt": "For each result released, the AI lab should make public the name of the model, the prompts used, a (summarized) chain of thought, the time taken, and the estimated cost of computation."
+    },
+    {
+      "sourceId": "s18",
+      "label": "AGMAI, statement on OpenAI's release of mathematical results",
+      "url": "https://agmai.org/",
+      "excerpt": "This release is the beginning, not the completion, of the process of human understanding and the incorporation of the work into mathematical knowledge."
+    },
+    {
+      "sourceId": "s19",
+      "label": "AGMAI, statement on OpenAI's release (assessment left to the community)",
+      "url": "https://agmai.org/",
+      "excerpt": "While we consider these discussions constructive, it is ultimately up to the mathematical community to assess the extent to which our recommendations were followed successfully, and whether there are others we should suggest."
+    },
+    {
+      "sourceId": "s20",
+      "label": "AGMAI, About (funding and affiliation)",
+      "url": "https://agmai.org/",
+      "excerpt": "This group operates independently of any AI company and members do not accept payment for this work."
+    },
+    {
+      "sourceId": "s21",
+      "label": "AGMAI, About (origin of the group)",
+      "url": "https://agmai.org/",
+      "excerpt": "This group came together after OpenAI approached some of its members about establishing an external advisory board."
+    },
+    {
+      "sourceId": "s22",
+      "label": "oai-math-revised, guest post on Terence Tao's blog (community revision hub)",
+      "url": "https://terrytao.wordpress.com/2026/10/24/oai-math-revised-a-community-hub-for-revising-openais-math-write-ups/",
+      "excerpt": "math write-ups at https://github.com/openai/math can be difficult to understand and can have incomplete citations."
+    },
+    {
+      "sourceId": "s23",
+      "label": "Clark, Martin and Mahowald, Why is AI generated language so hard to understand? (arXiv 2610.29162)",
+      "url": "https://arxiv.org/abs/2610.29162",
+      "excerpt": "There is a widespread sense that AI-generated text has recently become harder to understand."
+    },
+    {
+      "sourceId": "s24",
+      "label": "Clark, Martin and Mahowald, arXiv 2610.29162 (difficult features)",
+      "url": "https://arxiv.org/abs/2610.29162",
+      "excerpt": "Compared with human writing, all nine frontier and near-frontier models use more inanimate subjects with animate verbs and more low-frequency n-grams"
+    },
+    {
+      "sourceId": "s25",
+      "label": "Clark, Martin and Mahowald, arXiv 2610.29162 (information density hypothesis)",
+      "url": "https://arxiv.org/abs/2610.29162",
+      "excerpt": "while human language is optimized for successful communication, AI-generated text is increasingly optimized for other goals like math, code, and reasoning"
+    },
+    {
+      "sourceId": "s26",
+      "label": "Clark, Martin and Mahowald, arXiv 2610.29162 (what the study measures)",
+      "url": "https://arxiv.org/abs/2610.29162",
+      "excerpt": "In this study, we investigate a set of psycholinguistic features that are known to correlate with human processing difficulty"
+    },
+    {
+      "sourceId": "s27",
+      "label": "Asaf Karagila, OpenAI, the Partition Principle, and mathematics (what was read)",
+      "url": "https://karagila.org/2026/openai-pp/",
+      "excerpt": "I took a brief look at the preprint released by OpenAI"
+    },
+    {
+      "sourceId": "s28",
+      "label": "Asaf Karagila, OpenAI, the Partition Principle, and mathematics (exposition)",
+      "url": "https://karagila.org/2026/openai-pp/",
+      "excerpt": "It sucked. It is unclear, muddled, and has a strange structure."
+    },
+    {
+      "sourceId": "s29",
+      "label": "Asaf Karagila, OpenAI, the Partition Principle, and mathematics (references)",
+      "url": "https://karagila.org/2026/openai-pp/",
+      "excerpt": "at least three unpublished, unrefereed, and non-arXiv'd lecture notes are used as references"
+    },
+    {
+      "sourceId": "s30",
+      "label": "Asaf Karagila, OpenAI, the Partition Principle, and mathematics (journal standard)",
+      "url": "https://karagila.org/2026/openai-pp/",
+      "excerpt": "No, if this was an academic paper submitted to a journal, it should be issued a desk rejection for the quality."
+    },
+    {
+      "sourceId": "s31",
+      "label": "Asaf Karagila, OpenAI, the Partition Principle, and mathematics (reader burden)",
+      "url": "https://karagila.org/2026/openai-pp/",
+      "excerpt": "When am I supposed to sift through a badly written paper?"
+    },
+    {
+      "sourceId": "s32",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (the claim)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "OpenAI appears to have made a subtle error when publishing its proofs of the Navier-Stokes problem, a team of mathematicians has claimed."
+    },
+    {
+      "sourceId": "s33",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (scope of the claim)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "The error doesn't mean that the proofs are incorrect or that OpenAI hasn't correctly solved the problem, but it does call into question whether mathematical results generated by AI models can always be relied on."
+    },
+    {
+      "sourceId": "s34",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (natural-language bound)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "In the natural-language proof, an equation in this part requires that a certain value be below m + 4, where m is a whole number."
+    },
+    {
+      "sourceId": "s35",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (Lean bound)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "In the Lean proof, the equivalent value is required to be below m + 5, which is mathematically weaker."
+    },
+    {
+      "sourceId": "s36",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (mechanism)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "If, in the process of auto-formalisation, the AI finds a section of the proof that doesn't compile, it will attempt to find a workaround even if it means diverging from the proof as written in natural language."
+    },
+    {
+      "sourceId": "s37",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (time to find it)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "In all, it took the team about two weeks to identify a true discrepancy, compared with the 88 hours OpenAI said its agents spent generating the proofs."
+    },
+    {
+      "sourceId": "s38",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (reader burden)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "What has to be done with all of these large language model-generated proofs is that they will have to be read by humans, and this creates an enormous extra burden on mathematicians"
+    },
+    {
+      "sourceId": "s39",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (method)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "Finding the divergence involved a slightly surreal process of asking ChatGPT to look for potential discrepancies between the natural-language and Lean proofs, then checking them by hand."
+    },
+    {
+      "sourceId": "s40",
+      "label": "oai-math-revised, guest post on Terence Tao's blog (the hub's aim)",
+      "url": "https://terrytao.wordpress.com/2026/10/24/oai-math-revised-a-community-hub-for-revising-openais-math-write-ups/",
+      "excerpt": "https://github.com/mathcommunity/oai-math-revised/ seeks to be an inclusive effort to improve these write-ups"
+    },
+    {
+      "sourceId": "s41",
+      "label": "OpenAI, openai/math README at a pinned commit (readability edit)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/README.md",
+      "excerpt": "Additionally, the writeup for the Re(s) > 11/12 zero-free region for the Riemann zeta function was human edited for readability."
+    },
+    {
+      "sourceId": "s42",
+      "label": "OpenAI, openai/math history at a pinned commit (citation updates)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/history.md",
+      "excerpt": "Also, as a consequence of these fixes we updated 13 additional manuscripts to cite the revised editions of companion papers."
+    },
+    {
+      "sourceId": "s43",
+      "label": "OpenAI, openai/math history at a pinned commit (withdrawal notices)",
+      "url": "https://raw.githubusercontent.com/openai/math/1581d4cbdd69a0faf34b2089614fe2a814316a6a/history.md",
+      "excerpt": "The withdrawn papers now carry notices explaining the gap and linking to the archived manuscripts."
+    },
+    {
+      "sourceId": "s44",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (the producer's response)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "OpenAI told New Scientist that it is aware of the mismatch between the natural-language proof and the Lean code, and that this doesn't mean that either proof is invalid."
+    },
+    {
+      "sourceId": "s45",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (formalisation under way)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "It says it will rectify any errors in the natural-language proof as they are found, and will also continue the process of formalising the 722 maths papers the firm released this week, only some of which are accompanied by Lean proofs, which themselves haven't been checked by hand."
+    },
+    {
+      "sourceId": "s46",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (model-pass candidates)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "Many of the discrepancies suggested by ChatGPT turned out, on inspection, to be consistent after all."
+    },
+    {
+      "sourceId": "s47",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (the issue)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "The issue is that OpenAI presents the two proofs as identical"
+    },
+    {
+      "sourceId": "s48",
+      "label": "New Scientist, OpenAI mistranslated mathematics into code for its Navier-Stokes proof (the announcement)",
+      "url": "https://www.newscientist.com/article/2592824-openai-mistranslated-mathematics-into-code-for-its-navier-stokes-proof/",
+      "excerpt": "On 8 September, OpenAI announced that it had found a solution to the Navier-Stokes problem, one of the most famous open problems in mathematics."
+    },
+    {
+      "sourceId": "s49",
+      "label": "AGMAI, Responsible Release of AI-Generated Mathematics (metadata)",
+      "url": "https://agmai.org/general-sep29/",
+      "excerpt": "It would be helpful to include machine-readable metadata correlating the natural language and formal artifacts."
+    }
+  ]
+}
