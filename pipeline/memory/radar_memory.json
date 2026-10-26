@@ -2673,5 +2673,54 @@
     ],
     "published_at": "2026-10-25",
     "embedding": null
+  },
+  {
+    "translation_key": "minimax-m3-1-flash-nvfp4-experts-blackwell-tp4-hopper-tp8",
+    "topic_id": "minimax-m3-1-flash-nvfp4-experts-blackwell-tp4-hopper-tp8",
+    "dedup_key": "minimax m3 1 flash nvfp4 experts blackwell tp4 hopper tp8",
+    "title": "MiniMax M3.1 Flash stores its experts in NVFP4, and vLLM and SGLang serve it at TP4 on Blackwell or across a full Hopper node at TP8",
+    "slugs": {
+      "fr": "minimax-m3-1-flash-experts-nvfp4-tp4-sur-blackwell-tp8-sur-hopper",
+      "en": "minimax-m3-1-flash-nvfp4-experts-blackwell-tp4-hopper-tp8"
+    },
+    "sources": [
+      {
+        "label": "Let's Data Science, MiniMax Launches M3.1 Flash",
+        "url": "https://letsdatascience.com/news/minimax-cuts-m31-flash-token-prices-dbc14153",
+        "date": "19-10-2026"
+      },
+      {
+        "label": "MiniMax, MiniMaxAI/MiniMax-M3.1-Flash commit history on Hugging Face",
+        "url": "https://huggingface.co/api/models/MiniMaxAI/MiniMax-M3.1-Flash/commits/main",
+        "date": "23-10-2026"
+      },
+      {
+        "label": "MiniMax, MiniMaxAI/MiniMax-M3.1-Flash model card on Hugging Face",
+        "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash",
+        "date": "23-10-2026"
+      },
+      {
+        "label": "MiniMax, MiniMaxAI/MiniMax-M3.1-Flash config.json at revision 54e4e69",
+        "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash/resolve/54e4e69dfc452b1e94a426c24a4fdeeaa8e3ad5e/config.json",
+        "date": "23-10-2026"
+      },
+      {
+        "label": "vLLM Recipes, MiniMax-M3.1-Flash on vLLM",
+        "url": "https://recipes.vllm.ai/MiniMaxAI/MiniMax-M3.1-Flash",
+        "date": "23-10-2026"
+      },
+      {
+        "label": "SGLang Cookbook, MiniMax-M3.1 deployment config",
+        "url": "https://raw.githubusercontent.com/sgl-project/sglang/f36ee5de93e979e70bdbfbf996cab6ac2b4e0dbf/docs/src/snippets/configs/MiniMaxAI/minimax-m3.1.jsx",
+        "date": "23-10-2026"
+      },
+      {
+        "label": "vLLM Blog, vLLM Delivers Day-0 Support for MiniMax-M3.1-Flash",
+        "url": "https://vllm.ai/blog/2026-10-23-minimax-m31-flash",
+        "date": "23-10-2026"
+      }
+    ],
+    "published_at": "2026-10-26",
+    "embedding": null
   }
 ]
