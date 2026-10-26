@@ -8,13 +8,11 @@ import {
   safetyCheck,
 } from '../scripts/gen-portfolio';
 
-const EXPECTED_PROJECT_COUNT = 9;
-
 describe('generateAll()', () => {
   const files = generateAll();
 
   it('returns 2 files per project', () => {
-    expect(files).toHaveLength(EXPECTED_PROJECT_COUNT * 2);
+    expect(files).toHaveLength(PORTFOLIO_PROJECTS.length * 2);
   });
 
   it('all filenames are unique', () => {

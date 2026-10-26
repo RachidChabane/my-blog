@@ -742,5 +742,125 @@
         ]
       }
     }
+  },
+  "musthold": {
+    "year": "2026",
+    "en": {
+      "highlights": [
+        "Four proofs per requirement: traceability (shallnot), discriminating power, alignment and completeness; a requirement passes only when traceability and every required proof pass",
+        "A mutant counts only if it builds, passes the tests of the other requirements and fails an example of its requirement, or a witness test written from the spec before any mutant existed",
+        "When the tests miss a violation, the gate names the requirement and an input they do not tell apart but never the broken code, so no test can be fitted to that code",
+        "No binary calls a model. A module writes a request, and the harness already in use answers it in a subagent that sees nothing else",
+        "A recorded Claude Code session shows the loop in 9 min 17 s. Blocked on three surviving mutants of one criterion, the agent adds a test at ages 65 and 120, and the gate allows the stop",
+        "The scan needs no spec. On this site's own suite, 3 of 40 sampled tests passed every proven change in the lines they ran",
+        "musthold gates itself, with 907 requirements across 12 Go modules traced to tagged tests in CI"
+      ],
+      "metrics": [
+        {
+          "value": "4",
+          "label": "proofs per requirement"
+        },
+        {
+          "value": "907",
+          "label": "own requirements gated in CI"
+        },
+        {
+          "value": "5",
+          "label": "test runners supported"
+        }
+      ],
+      "architecture": {
+        "caption": "From a spec to a verdict the agent can act on",
+        "layers": [
+          {
+            "label": "Spec",
+            "nodes": ["requirements ID~REVISION", "inline examples"]
+          },
+          {
+            "label": "Proofs",
+            "nodes": [
+              "musthold-dp",
+              "musthold-alignment",
+              "musthold-completeness"
+            ]
+          },
+          {
+            "label": "Harness",
+            "nodes": ["blind subagents", "Claude Code", "Codex", "Copilot CLI"]
+          },
+          {
+            "label": "Publication",
+            "nodes": ["musthold-verify", "local proofs", "signed CI proofs"]
+          },
+          {
+            "label": "Gate",
+            "nodes": ["shallnot gate", "end-of-turn hook", "counterexample"]
+          }
+        ]
+      }
+    },
+    "fr": {
+      "highlights": [
+        "Quatre preuves par exigence : traçabilité (shallnot), pouvoir discriminant, alignement et exhaustivité. Une exigence ne passe que si la traçabilité et chaque preuve requise passent",
+        "Un mutant ne compte que s'il compile, passe les tests des autres exigences et échoue sur un exemple de son exigence, ou sur un test témoin écrit depuis la spec avant qu'aucun mutant n'existe",
+        "Quand les tests ratent une violation, la porte nomme l'exigence et une entrée qu'ils ne distinguent pas, jamais le code fautif, pour qu'aucun test ne soit taillé sur ce code",
+        "Aucun binaire n'appelle de modèle. Un module écrit une requête, et le harnais déjà en place y répond dans un sous-agent qui ne voit rien d'autre",
+        "Une session Claude Code enregistrée montre la boucle en 9 min 17 s. Bloqué par trois mutants survivants d'un critère, l'agent ajoute un test aux âges 65 et 120, et la porte laisse l'agent s'arrêter",
+        "Le scan n'a besoin d'aucune spec. Sur la suite de ce site, 3 des 40 tests tirés au sort passaient sur chaque changement prouvé des lignes qu'ils exécutent",
+        "musthold passe sa propre porte : 907 exigences réparties sur 12 modules Go sont tracées jusqu'à des tests étiquetés en CI"
+      ],
+      "metrics": [
+        {
+          "value": "4",
+          "label": "preuves par exigence"
+        },
+        {
+          "value": "907",
+          "label": "exigences propres tracées en CI"
+        },
+        {
+          "value": "5",
+          "label": "runners de test pris en charge"
+        }
+      ],
+      "architecture": {
+        "caption": "D'une spec à un verdict sur lequel l'agent peut agir",
+        "layers": [
+          {
+            "label": "Spec",
+            "nodes": ["exigences ID~RÉVISION", "exemples en ligne"]
+          },
+          {
+            "label": "Preuves",
+            "nodes": [
+              "musthold-dp",
+              "musthold-alignment",
+              "musthold-completeness"
+            ]
+          },
+          {
+            "label": "Harnais",
+            "nodes": [
+              "sous-agents aveugles",
+              "Claude Code",
+              "Codex",
+              "Copilot CLI"
+            ]
+          },
+          {
+            "label": "Publication",
+            "nodes": [
+              "musthold-verify",
+              "preuves locales",
+              "preuves CI signées"
+            ]
+          },
+          {
+            "label": "Porte",
+            "nodes": ["shallnot gate", "hook de fin de tour", "contre-exemple"]
+          }
+        ]
+      }
+    }
   }
 }

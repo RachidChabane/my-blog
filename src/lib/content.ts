@@ -683,6 +683,7 @@ export const PROJECT_ORDER = [
   'sterna-ai-platform',
   'claude-plan-execute',
   'shallnot',
+  'musthold',
   'cca-f-exam-trainer',
   'ijtihad-engine',
   'bayan-rag-platform',

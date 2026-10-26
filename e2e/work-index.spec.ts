@@ -1,3 +1,5 @@
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { test, expect } from '@playwright/test';
 
 // S6 — Portfolio index. Selectors use CLASSES (language-robust). Detail links
@@ -7,9 +9,15 @@ import { test, expect } from '@playwright/test';
 // exist. Which cards are "live" and hover-accent behaviour are visual nuances
 // (unit-tested via isLiveStatus, Playwright-MCP for hover) — NOT pinned here.
 
-// One card per published project (src/content/projects, both locales). Bump with
-// PROJECT_ORDER and EXPECTED_PROJECT_COUNT when a project is added or removed.
-const PROJECT_COUNT = 9;
+// One card per published project: counted from the FR project files, so adding
+// or removing a project needs no edit here.
+const PROJECTS_DIR = join(process.cwd(), 'src', 'content', 'projects');
+const PUBLISHED_STATE_LINE = /^publishState:\s*'?published'?\s*$/m;
+const PROJECT_COUNT = readdirSync(PROJECTS_DIR).filter(
+  (file) =>
+    file.endsWith('.fr.md') &&
+    PUBLISHED_STATE_LINE.test(readFileSync(join(PROJECTS_DIR, file), 'utf-8'))
+).length;
 
 test.describe('S6 portfolio renders', () => {
   test(`FR: ${PROJECT_COUNT} cards, title-link → detail href, per-card status/chips/desc`, async ({

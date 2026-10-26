@@ -776,6 +776,81 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
         'la porte.',
     },
   },
+
+  // ── 9. musthold ───────────────────────────────────────────────────────────
+  // Public repository; the GitHub link and the shallnot link are part of the entry.
+  {
+    translationKey: 'musthold',
+    stack: [
+      'Go',
+      'Mutation testing',
+      'Claude Code',
+      'Codex',
+      'Copilot CLI',
+      'Sigstore',
+    ],
+    status: { en: 'active', fr: 'actif' },
+    links: [
+      { label: 'GitHub', url: 'https://github.com/RachidChabane/musthold' },
+      { label: 'shallnot', url: 'https://github.com/RachidChabane/shallnot' },
+    ],
+    publishState: 'published',
+    en: {
+      slug: 'musthold',
+      name: "musthold: Per-Requirement Proofs That an Agent's Tests Check the Spec",
+      summary:
+        'Proof modules behind the shallnot gate that check, requirement by requirement, that ' +
+        "a coding agent's tests would fail on code that breaks the spec, and send the agent a " +
+        'counterexample when they would not.',
+      body:
+        'musthold extends shallnot from "a test cites this requirement and passed" to "the ' +
+        'tests of this requirement would fail on code that breaks it". It reads a spec ' +
+        'written in plain language and, for each requirement, draws mutants of the code the ' +
+        'requirement governs. A mutant counts only if it builds, passes the tests of every ' +
+        'other requirement and fails an example of its own requirement, or a witness test ' +
+        'written from the spec before any mutant existed. If every test of the requirement ' +
+        'still passes on such a mutant, the requirement is blocked. The gate then names the ' +
+        "requirement and an input the tests do not tell apart, but never the mutant's code, " +
+        'and the agent strengthens its tests. Alignment escalates a test that checks ' +
+        'something other than what its requirement states, and completeness reports what the ' +
+        'spec leaves unstated about a change. No binary calls a model. When a proof needs ' +
+        'judgment, the module writes a request, and the harness already in use (Claude Code, ' +
+        "Codex or Copilot CLI) answers it in a blind subagent. A model's judgment alone never " +
+        'blocks and never clears a survivor. The scan runs the same machinery on any pytest, ' +
+        'Go, Jest or Vitest suite without a spec. It lists the tests that still pass when the ' +
+        'code they run is broken, along with a script that replays each change. A green run ' +
+        'proves that the tests catch the mutants drawn, not that they catch every possible ' +
+        'bug, and that bound is stated.',
+    },
+    fr: {
+      slug: 'musthold-fr',
+      name: "musthold : des preuves, exigence par exigence, que les tests d'un agent vérifient la spec",
+      summary:
+        'Des modules de preuve derrière la porte shallnot, qui vérifient exigence par ' +
+        "exigence que les tests d'un agent de code échoueraient sur un code qui enfreint la " +
+        "spec, et qui renvoient un contre-exemple à l'agent quand ce n'est pas le cas.",
+      body:
+        'musthold fait passer shallnot de « un test cite cette exigence et il a passé » à « ' +
+        "les tests de cette exigence échoueraient sur un code qui l'enfreint ». Il lit une " +
+        'spec écrite en langage courant et, pour chaque exigence, tire des mutants du code ' +
+        "qu'elle régit. Un mutant ne compte que s'il compile, passe les tests de toutes les " +
+        'autres exigences et échoue sur un exemple de sa propre exigence, ou sur un test ' +
+        "témoin écrit depuis la spec avant qu'aucun mutant n'existe. Si tous les tests de " +
+        "l'exigence passent encore sur un tel mutant, l'exigence est bloquée. La porte nomme " +
+        "alors l'exigence et une entrée que les tests ne distinguent pas, jamais le code du " +
+        "mutant, et l'agent renforce ses tests. L'alignement fait remonter un test qui " +
+        "vérifie autre chose que ce que dit son exigence, et l'exhaustivité signale ce que la " +
+        "spec laisse non dit sur un changement. Aucun binaire n'appelle de modèle. Quand une " +
+        'preuve demande un jugement, le module écrit une requête, et le harnais déjà en place ' +
+        '(Claude Code, Codex ou Copilot CLI) y répond dans un sous-agent aveugle. Le jugement ' +
+        "d'un modèle seul ne bloque jamais et ne blanchit jamais un survivant. Le scan " +
+        "applique la même mécanique à n'importe quelle suite pytest, Go, Jest ou Vitest, sans " +
+        "spec. Il liste les tests qui passent encore quand le code qu'ils exécutent est " +
+        'cassé, avec un script qui rejoue chaque changement. Un run vert prouve que les tests ' +
+        "attrapent les mutants tirés, pas qu'ils attrapent tous les bugs possibles, et cette " +
+        'limite est écrite.',
+    },
+  },
 ];
 
 // Authoritative override layer (scripts/_enrichment-data.json, keyed by translationKey).

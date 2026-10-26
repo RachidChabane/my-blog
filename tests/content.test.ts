@@ -828,7 +828,7 @@ describe('isLiveStatus', () => {
   });
 
   it('matches the real seed statuses in both langs (guards silent misclassification)', () => {
-    // Live (6): atelier/athletic-tracker/claude-plan-execute/shallnot
+    // Live (7): atelier/athletic-tracker/claude-plan-execute/shallnot/musthold
     // (active/actif), cca-f-exam-trainer (in production/en production),
     // mcp-secrets-vault (shipped/publié). Not live (3): sterna-ai-platform
     // (open source), ijtihad-engine (active (paused) — exact-match excludes
@@ -843,6 +843,7 @@ describe('isLiveStatus', () => {
       'mcp-secrets-vault': true,
       'athletic-tracker': true,
       shallnot: true,
+      musthold: true,
     };
     for (const p of PORTFOLIO_PROJECTS) {
       const want = expectedLive[p.translationKey];
@@ -966,9 +967,9 @@ describe('countLiveProjects', () => {
     expect(countLiveProjects([], 'fr')).toBe(0);
   });
 
-  it('matches the real seed data: 6 live projects per locale', () => {
+  it('matches the real seed data: 7 live projects per locale', () => {
     // Mirrors the isLiveStatus seed-status assertion above: atelier,
-    // athletic-tracker, claude-plan-execute, shallnot (active/actif),
+    // athletic-tracker, claude-plan-execute, shallnot, musthold (active/actif),
     // cca-f-exam-trainer (in production/en production), and mcp-secrets-vault
     // (shipped/publié) are production-live; bayan-rag-platform, ijtihad-engine
     // and sterna-ai-platform are not.
@@ -988,8 +989,8 @@ describe('countLiveProjects', () => {
         status: p.status.en,
       })
     );
-    expect(countLiveProjects([...fr, ...en], 'fr')).toBe(6);
-    expect(countLiveProjects([...fr, ...en], 'en')).toBe(6);
+    expect(countLiveProjects([...fr, ...en], 'fr')).toBe(7);
+    expect(countLiveProjects([...fr, ...en], 'en')).toBe(7);
   });
 });
 

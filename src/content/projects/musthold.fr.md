@@ -6,12 +6,12 @@ name: 'musthold : des preuves, exigence par exigence, que les tests d''un agent 
 summary: 'Des modules de preuve derrière la porte shallnot, qui vérifient exigence par exigence que les tests d''un agent de code échoueraient sur un code qui enfreint la spec, et qui renvoient un contre-exemple à l''agent quand ce n''est pas le cas.'
 stack:
   - 'Go'
-  - 'Test par mutation'
+  - 'Mutation testing'
   - 'Claude Code'
   - 'Codex'
   - 'Copilot CLI'
   - 'Sigstore'
-status: 'active'
+status: 'actif'
 links:
   - label: 'GitHub'
     url: 'https://github.com/RachidChabane/musthold'
