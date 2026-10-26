@@ -176,6 +176,8 @@ const { strings } = Astro.props;
 </style>
 
 <script>
+  import { isRelevantExcerpt } from '@/lib/search-relevance';
+
   // Minimal local Pagefind types (the runtime bundle is untyped at build time).
   interface PagefindDoc {
     url: string;
@@ -316,7 +318,9 @@ const { strings } = Astro.props;
       }
       const mine = ++seq;
       const found = (await api.search(q)).results.slice(0, MAX_RESULTS);
-      const docs = await Promise.all(found.map((r) => r.data()));
+      const docs = (await Promise.all(found.map((r) => r.data()))).filter((d) =>
+        isRelevantExcerpt(q, d.excerpt)
+      );
       if (mine !== seq) return; // drop a stale response
       setUrl(q);
       if (docs.length === 0) {
