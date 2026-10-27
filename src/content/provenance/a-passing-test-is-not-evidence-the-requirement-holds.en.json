@@ -1,0 +1,49 @@
+{
+  "slug": "a-passing-test-is-not-evidence-the-requirement-holds",
+  "lang": "en",
+  "translationKey": "musthold-proof-in-the-loop",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Musthold, recorded agent loop transcript (BOX-4 session)",
+      "url": "https://github.com/RachidChabane/musthold/blob/main/demo/loop/recording/transcript.md",
+      "excerpt": "Cost reported by the CLI | 2.3848 USD"
+    },
+    {
+      "sourceId": "s2",
+      "label": "Musthold README",
+      "url": "https://github.com/RachidChabane/musthold/blob/main/README.md",
+      "excerpt": "musthold reads a spec written in plain language and proves, for each requirement, that its tests would fail on code that breaks it. It runs inside the agent's loop, behind Shallnot's end-of-turn gate."
+    },
+    {
+      "sourceId": "s3",
+      "label": "musthold-demo scans README",
+      "url": "https://github.com/RachidChabane/musthold-demo/blob/main/scans/README.md",
+      "excerpt": "A full scan samples 40 of the green tests with the seed the report names. A test the report lists under \"verify nothing\" passes on every proven change in the lines it ran."
+    },
+    {
+      "sourceId": "s4",
+      "label": "musthold scan report, my-blog @ d20d7a9",
+      "url": "https://github.com/RachidChabane/musthold-demo/blob/main/scans/my-blog-d20d7a9-full.md",
+      "excerpt": "| verify nothing | 3/40 |"
+    },
+    {
+      "sourceId": "s5",
+      "label": "musthold scan report, shallnot @ 397e092",
+      "url": "https://github.com/RachidChabane/musthold-demo/blob/main/scans/shallnot-397e092-full.md",
+      "excerpt": "| verify nothing | 1/40 |"
+    },
+    {
+      "sourceId": "s6",
+      "label": "musthold scan report, musthold module format @ ca1b54f",
+      "url": "https://github.com/RachidChabane/musthold-demo/blob/main/scans/musthold-format-ca1b54f-full.md",
+      "excerpt": "| verify nothing | 1/40 |"
+    },
+    {
+      "sourceId": "s7",
+      "label": "loop-1 pre-registration",
+      "url": "https://github.com/RachidChabane/musthold/blob/main/experiments/loop-1/PREREG.md",
+      "excerpt": "a gate that requires discriminating power and alignment ships fewer oracle-defective changes than a gate that requires traceability alone"
+    }
+  ]
+}
