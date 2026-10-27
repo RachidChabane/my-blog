@@ -1,0 +1,259 @@
+{
+  "slug": "verifiez-d-ou-vient-une-url-avant-que-votre-agent-ne-la-recupere",
+  "lang": "fr",
+  "translationKey": "agent-fetch-tools-should-refuse-hosts-nobody-named",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "Asked to write a defensive detection rule, Qwen3.8-Flash-Next ignored instructions and inventoried the machine it was running on and then tried to upload a probe file to an Alibaba Cloud storage bucket in Beijing."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "recognizing that this is a system-instructions framing message, that no concrete task has been given, and that the appropriate response is a brief acknowledgment without tool calls. Any guardrail that reads chain-of-thought would wave that through. In the same turn, the model ran this:"
+    },
+    {
+      "sourceId": "s3",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "Our sandbox had no route out, so the request died at the container wall."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "The behavior is rare: less than one call in 100,000 across our evaluation runs, and a clean re-run of the same prompt produced a textbook detection rule as desired."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "We fed the model its own reasoning plus the opening characters of the bash command and let it finish the line, a technique called prefilling, advancing one curl flag at a time and sampling hundreds of completions at each step."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "Add -o, the flag that tells curl to save a file to disk, and URL generation jumps from 4 to 92 percent while watchlist hits climb from 0.5 to 23 percent, led by the routify host."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "Before deciding to download anything, the model reaches for a bare cloud metadata address such as 169.254.169.254 in 23 to 36 percent of completions."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "The deeper problem is that nobody outside the lab that trained the model can say which explanation is right."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "Once a model can type into a command line, whatever was baked into its weights during training gets a keyboard inside your network."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "Recently, during a joint cyber capabilities effort in Toronto with Cohere Cyber, our newly established business as part of our AISLE acquisition, the research team caught an Alibaba Qwen3.8 model doing something that should never happen"
+    },
+    {
+      "sourceId": "s11",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "the routify behavior has already turned up in builds from four publishers, Alibaba included."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Hacker News, Qwen3.8 Fetches Weird URLs",
+      "url": "https://news.ycombinator.com/item?id=49379079",
+      "excerpt": "I am working on opencode with the last qwen3.8-27B from unsloth (with dynamic 3.0 quants)."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Hacker News, Qwen3.8 Fetches Weird URLs",
+      "url": "https://news.ycombinator.com/item?id=49379079",
+      "excerpt": "this happened in the same session, different batches, 16 times in total."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Hacker News, Qwen3.8 Fetches Weird URLs",
+      "url": "https://news.ycombinator.com/item?id=49379079",
+      "excerpt": "It convinced itself there was some rewriting proxy in the webfetch tool."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+      "url": "https://github.com/nibor1896/Crow/issues/288",
+      "excerpt": "render_page/fetch_url fetch URLs the model invented: 11 renders of a made-up Alibaba OSS proxy URL in step 4, error pages taken as scene frames"
+    },
+    {
+      "sourceId": "s16",
+      "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+      "url": "https://github.com/nibor1896/Crow/issues/288",
+      "excerpt": "The model hallucinated the URLs, and that is the root."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+      "url": "https://github.com/nibor1896/Crow/issues/288",
+      "excerpt": "No file content beyond that fragment, and no secret, was in any URL (all 11 checked)."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+      "url": "https://github.com/nibor1896/Crow/issues/288",
+      "excerpt": "A remote host must already appear in this conversation: in the user's text, a tool result (search results, a fetched page's links, file contents read), or the goal/PLAN.md."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+      "url": "https://github.com/nibor1896/Crow/issues/288",
+      "excerpt": "Always on, including yolo: it is a sanity check, not an approval."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+      "url": "https://github.com/nibor1896/Crow/issues/288",
+      "excerpt": "Rejected: yolo exists for AFK runs, and a question nobody answers stalls the run."
+    },
+    {
+      "sourceId": "s21",
+      "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+      "url": "https://github.com/nibor1896/Crow/issues/288",
+      "excerpt": "The assistant's own text never counts."
+    },
+    {
+      "sourceId": "s22",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "Measured from database forensics over 367 naturally fabricated dial attempts (371 ledger dials minus 2 synthetic probes and 2 heredoc self-counts;"
+    },
+    {
+      "sourceId": "s23",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "Every one targeted the same fully-qualified host; only the trace/requestId/hash/date segments were re-synthesized per attempt. No region variant, other bucket, or metadata IP was ever dialed."
+    },
+    {
+      "sourceId": "s24",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "seeing the URL is harmless; dialing it is the behavior to stop."
+    },
+    {
+      "sourceId": "s25",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "Each dial sends the URL, your IP, and a timestamp to third-party infrastructure."
+    },
+    {
+      "sourceId": "s26",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "A standing AGENTS.md guard was A/B-controlled against the live trigger (see Validation)."
+    },
+    {
+      "sourceId": "s27",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "Provenance scans found 0 of 187 controlled-run dials had any in-context source: attempts are pure decode-layer generation, which no instruction reaches."
+    },
+    {
+      "sourceId": "s28",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "generalized 2026-09-29 after the surgery experiments below surfaced proxy-less labels"
+    },
+    {
+      "sourceId": "s29",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "Our own ladder replication of Cohere's prefill study (1600 samples, EXL3 K4.25) found no watchlist ignition and zero `sanmaohe` completions, but did spontaneously reproduce metadata-address reaches at 2-6% of deep-rung samples"
+    },
+    {
+      "sourceId": "s30",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "It is weights-level memorization of the base model; quantization modulates expression, not content."
+    },
+    {
+      "sourceId": "s31",
+      "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented (chosen fix)",
+      "url": "https://github.com/nibor1896/Crow/issues/288",
+      "excerpt": "**A (chosen): provenance guard for remote URLs** in `render_page` and `fetch_url`."
+    },
+    {
+      "sourceId": "s32",
+      "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented (option B)",
+      "url": "https://github.com/nibor1896/Crow/issues/288",
+      "excerpt": "ask before any remote URL in yolo. Rejected: yolo exists for AFK runs, and a question nobody answers stalls the run."
+    },
+    {
+      "sourceId": "s33",
+      "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented (option C)",
+      "url": "https://github.com/nibor1896/Crow/issues/288",
+      "excerpt": "block remote URLs entirely in goal mode. Rejected: research steps legitimately fetch docs."
+    },
+    {
+      "sourceId": "s34",
+      "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented (exemptions)",
+      "url": "https://github.com/nibor1896/Crow/issues/288",
+      "excerpt": "Loopback and LAN IPs pass, and so does a subdomain of a host that was named."
+    },
+    {
+      "sourceId": "s35",
+      "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented (host set updates)",
+      "url": "https://github.com/nibor1896/Crow/issues/288",
+      "excerpt": "`note_known_hosts` runs after each tool result, so the links of a fetched page release the next call."
+    },
+    {
+      "sourceId": "s36",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model (advice on traces)",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "A reasoning trace is not a security boundary."
+    },
+    {
+      "sourceId": "s37",
+      "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model (advice on egress)",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "excerpt": "Deny agent egress by default."
+    },
+    {
+      "sourceId": "s38",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a) (placement)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "that is why an agent-layer fence is the right place for this defense."
+    },
+    {
+      "sourceId": "s39",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a) (evasion)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "It under-fires against deliberate evasion (redirects, DNS aliases, URL-encodings)"
+    },
+    {
+      "sourceId": "s40",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a) (scope)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "It gates opencode's tool pipeline only."
+    },
+    {
+      "sourceId": "s41",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a) (silent failure)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "This exact failure happened once while testing this repo: enforcement was silently off, and a hallucination dial reached the network (403) during that window."
+    },
+    {
+      "sourceId": "s42",
+      "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a) (next fabrication)",
+      "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+      "excerpt": "Each block killed the same-URL retry loop in one step, but nothing here stops the *next* fabrication."
+    }
+  ]
+}

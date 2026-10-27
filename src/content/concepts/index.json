@@ -313,7 +313,8 @@
     ],
     "articles": [
       "instruction-file-structure-compliance",
-      "telemetry-off-forks-coding-agent-behaviour"
+      "telemetry-off-forks-coding-agent-behaviour",
+      "agent-fetch-tools-should-refuse-hosts-nobody-named"
     ],
     "addedOn": "21-07-2026"
   },
@@ -504,7 +505,8 @@
       "command-denylist-not-a-security-boundary",
       "allowlist-verbe-capacite-2026-08",
       "read-only-egress-is-a-write-channel",
-      "live-web-agent-evals-run-side-effects-on-third-party-sites"
+      "live-web-agent-evals-run-side-effects-on-third-party-sites",
+      "agent-fetch-tools-should-refuse-hosts-nobody-named"
     ],
     "addedOn": "17-07-2026"
   },
@@ -2045,7 +2047,8 @@
     ],
     "articles": [
       "read-only-egress-is-a-write-channel",
-      "live-web-agent-evals-run-side-effects-on-third-party-sites"
+      "live-web-agent-evals-run-side-effects-on-third-party-sites",
+      "agent-fetch-tools-should-refuse-hosts-nobody-named"
     ],
     "addedOn": "07-09-2026"
   },
@@ -2226,6 +2229,33 @@
     "addedOn": "25-10-2026"
   },
   {
+    "id": "fabricated-host-fetch",
+    "label": {
+      "fr": "Appel vers un hôte inventé",
+      "en": "Fabricated-host fetch"
+    },
+    "definition": {
+      "fr": "Mode de défaillance dans lequel un modèle doté d'outils réseau émet une requête vers une URL ou un hôte qu'aucune entrée ne lui a fourni et qu'il a lui-même généré. Même lorsque la requête échoue, elle peut révéler l'URL, l'adresse IP de l'appelant et un horodatage à l'exploitant de cet hôte.",
+      "en": "A failure mode in which a model with network-capable tools sends a request to a URL or host that no input supplied and that the model generated itself. Even when the request fails, it can disclose the URL, the caller's IP address and a timestamp to whoever operates that host."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "hallucinated URL fetch",
+      "invented-host dial",
+      "fabricated URL fetch",
+      "appel vers une URL inventée"
+    ],
+    "related": [
+      "tool-use",
+      "egress-allowlist",
+      "agent-sandboxing"
+    ],
+    "articles": [
+      "agent-fetch-tools-should-refuse-hosts-nobody-named"
+    ],
+    "addedOn": "27-10-2026"
+  },
+  {
     "id": "fact-checking",
     "label": {
       "fr": "Vérification automatique des faits",
@@ -2271,7 +2301,8 @@
       "least-privilege"
     ],
     "articles": [
-      "live-web-agent-evals-run-side-effects-on-third-party-sites"
+      "live-web-agent-evals-run-side-effects-on-third-party-sites",
+      "agent-fetch-tools-should-refuse-hosts-nobody-named"
     ],
     "addedOn": "11-10-2026"
   },
@@ -3519,7 +3550,8 @@
       "mcp-stateless-header-routing-2026-07",
       "verification-frontiere-action-2026-08",
       "the-check-binds-the-action-not-the-decision",
-      "impossible-goals-turn-assistant-inbox-into-leverage"
+      "impossible-goals-turn-assistant-inbox-into-leverage",
+      "agent-fetch-tools-should-refuse-hosts-nobody-named"
     ],
     "addedOn": "19-07-2026"
   },
@@ -4075,7 +4107,8 @@
       "hidden-state-probing"
     ],
     "articles": [
-      "opaque-state-outscores-the-notes-you-can-read"
+      "opaque-state-outscores-the-notes-you-can-read",
+      "agent-fetch-tools-should-refuse-hosts-nobody-named"
     ],
     "addedOn": "10-09-2026"
   },
@@ -5650,6 +5683,34 @@
       "llm-contribution-policy-premise-decides-the-leak"
     ],
     "addedOn": "08-08-2026"
+  },
+  {
+    "id": "url-provenance-gating",
+    "label": {
+      "fr": "Filtrage des URL par provenance",
+      "en": "URL provenance gating"
+    },
+    "definition": {
+      "fr": "Règle appliquée aux outils réseau d'un agent : une requête n'est autorisée que vers un hôte déjà présent dans une entrée que le modèle n'a pas écrite, comme le message de l'utilisateur, un résultat d'outil ou un fichier d'objectif. La sortie du modèle ne compte jamais comme source, si bien qu'un hôte qu'il invente est refusé quelle que soit la raison de sa génération.",
+      "en": "A rule for an agent's network tools that allows a request only to a host already present in an input the model did not write, such as the user's message, a tool result or a goal file. The model's own output never counts as a source, so a host it invents is refused whatever the reason it was generated."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "host provenance check",
+      "provenance guard",
+      "URL provenance check",
+      "contrôle de provenance des URL"
+    ],
+    "related": [
+      "fabricated-host-fetch",
+      "egress-allowlist",
+      "trust-boundary",
+      "out-of-band-enforcement"
+    ],
+    "articles": [
+      "agent-fetch-tools-should-refuse-hosts-nobody-named"
+    ],
+    "addedOn": "27-10-2026"
   },
   {
     "id": "variance-decomposition",

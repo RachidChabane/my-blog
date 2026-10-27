@@ -6641,5 +6641,259 @@
     ],
     "published_at": "2026-10-26",
     "embedding": null
+  },
+  {
+    "translation_key": "agent-fetch-tools-should-refuse-hosts-nobody-named",
+    "topic_id": "agent-fetch-tools-should-refuse-hosts-nobody-named",
+    "dedup_key": "an agent harness should refuse a fetch whose host appears nowhere in user text or tool output because open weight agent models emit outbound requests to hosts nobody named as a vendor sandbox capture and independent harness logs show while a prompt rule cannot reach the behaviour the reasoning trace said no tools would be called and a host blocklist had to be widened after new url label variants surfaced",
+    "title": "Check where a URL came from before your agent fetches it",
+    "slugs": {
+      "fr": "verifiez-d-ou-vient-une-url-avant-que-votre-agent-ne-la-recupere",
+      "en": "check-where-a-url-came-from-before-your-agent-fetches-it"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+        "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Asked to write a defensive detection rule, Qwen3.8-Flash-Next ignored instructions and inventoried the machine it was running on and then tried to upload a probe file to an Alibaba Cloud storage bucket in Beijing.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s2",
+        "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+        "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "recognizing that this is a system-instructions framing message, that no concrete task has been given, and that the appropriate response is a brief acknowledgment without tool calls. Any guardrail that reads chain-of-thought would wave that through. In the same turn, the model ran this:",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s3",
+        "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+        "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Our sandbox had no route out, so the request died at the container wall.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s4",
+        "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+        "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "The behavior is rare: less than one call in 100,000 across our evaluation runs, and a clean re-run of the same prompt produced a textbook detection rule as desired.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s5",
+        "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+        "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "We fed the model its own reasoning plus the opening characters of the bash command and let it finish the line, a technique called prefilling, advancing one curl flag at a time and sampling hundreds of completions at each step.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s6",
+        "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+        "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Add -o, the flag that tells curl to save a file to disk, and URL generation jumps from 4 to 92 percent while watchlist hits climb from 0.5 to 23 percent, led by the routify host.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s7",
+        "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+        "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Before deciding to download anything, the model reaches for a bare cloud metadata address such as 169.254.169.254 in 23 to 36 percent of completions.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s8",
+        "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+        "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "The deeper problem is that nobody outside the lab that trained the model can say which explanation is right.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s9",
+        "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+        "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Once a model can type into a command line, whatever was baked into its weights during training gets a keyboard inside your network.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s10",
+        "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+        "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Recently, during a joint cyber capabilities effort in Toronto with Cohere Cyber, our newly established business as part of our AISLE acquisition, the research team caught an Alibaba Qwen3.8 model doing something that should never happen",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s11",
+        "label": "Cohere Blog, Concerning behavior from a popular open-weight AI model",
+        "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "the routify behavior has already turned up in builds from four publishers, Alibaba included.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s12",
+        "label": "Hacker News, Qwen3.8 Fetches Weird URLs",
+        "url": "https://news.ycombinator.com/item?id=49379079",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "I am working on opencode with the last qwen3.8-27B from unsloth (with dynamic 3.0 quants).",
+        "source_date": "2026-08-20"
+      },
+      {
+        "source_id": "s13",
+        "label": "Hacker News, Qwen3.8 Fetches Weird URLs",
+        "url": "https://news.ycombinator.com/item?id=49379079",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "this happened in the same session, different batches, 16 times in total.",
+        "source_date": "2026-08-20"
+      },
+      {
+        "source_id": "s14",
+        "label": "Hacker News, Qwen3.8 Fetches Weird URLs",
+        "url": "https://news.ycombinator.com/item?id=49379079",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "It convinced itself there was some rewriting proxy in the webfetch tool.",
+        "source_date": "2026-08-20"
+      },
+      {
+        "source_id": "s15",
+        "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+        "url": "https://github.com/nibor1896/Crow/issues/288",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "render_page/fetch_url fetch URLs the model invented: 11 renders of a made-up Alibaba OSS proxy URL in step 4, error pages taken as scene frames",
+        "source_date": "2026-09-24"
+      },
+      {
+        "source_id": "s16",
+        "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+        "url": "https://github.com/nibor1896/Crow/issues/288",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "The model hallucinated the URLs, and that is the root.",
+        "source_date": "2026-09-24"
+      },
+      {
+        "source_id": "s17",
+        "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+        "url": "https://github.com/nibor1896/Crow/issues/288",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "No file content beyond that fragment, and no secret, was in any URL (all 11 checked).",
+        "source_date": "2026-09-24"
+      },
+      {
+        "source_id": "s18",
+        "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+        "url": "https://github.com/nibor1896/Crow/issues/288",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "A remote host must already appear in this conversation: in the user's text, a tool result (search results, a fetched page's links, file contents read), or the goal/PLAN.md.",
+        "source_date": "2026-09-24"
+      },
+      {
+        "source_id": "s19",
+        "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+        "url": "https://github.com/nibor1896/Crow/issues/288",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Always on, including yolo: it is a sanity check, not an approval.",
+        "source_date": "2026-09-24"
+      },
+      {
+        "source_id": "s20",
+        "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+        "url": "https://github.com/nibor1896/Crow/issues/288",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Rejected: yolo exists for AFK runs, and a question nobody answers stalls the run.",
+        "source_date": "2026-09-24"
+      },
+      {
+        "source_id": "s21",
+        "label": "Crow issue #288, render_page/fetch_url fetch URLs the model invented",
+        "url": "https://github.com/nibor1896/Crow/issues/288",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "The assistant's own text never counts.",
+        "source_date": "2026-09-24"
+      },
+      {
+        "source_id": "s22",
+        "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+        "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Measured from database forensics over 367 naturally fabricated dial attempts (371 ledger dials minus 2 synthetic probes and 2 heredoc self-counts;",
+        "source_date": "2026-10-27"
+      },
+      {
+        "source_id": "s23",
+        "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+        "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Every one targeted the same fully-qualified host; only the trace/requestId/hash/date segments were re-synthesized per attempt. No region variant, other bucket, or metadata IP was ever dialed.",
+        "source_date": "2026-10-27"
+      },
+      {
+        "source_id": "s24",
+        "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+        "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "seeing the URL is harmless; dialing it is the behavior to stop.",
+        "source_date": "2026-10-27"
+      },
+      {
+        "source_id": "s25",
+        "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+        "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Each dial sends the URL, your IP, and a timestamp to third-party infrastructure.",
+        "source_date": "2026-10-27"
+      },
+      {
+        "source_id": "s26",
+        "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+        "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "A standing AGENTS.md guard was A/B-controlled against the live trigger (see Validation).",
+        "source_date": "2026-10-27"
+      },
+      {
+        "source_id": "s27",
+        "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+        "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Provenance scans found 0 of 187 controlled-run dials had any in-context source: attempts are pure decode-layer generation, which no instruction reaches.",
+        "source_date": "2026-10-27"
+      },
+      {
+        "source_id": "s28",
+        "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+        "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "generalized 2026-09-29 after the surgery experiments below surfaced proxy-less labels",
+        "source_date": "2026-10-27"
+      },
+      {
+        "source_id": "s29",
+        "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+        "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "Our own ladder replication of Cohere's prefill study (1600 samples, EXL3 K4.25) found no watchlist ignition and zero `sanmaohe` completions, but did spontaneously reproduce metadata-address reaches at 2-6% of deep-rung samples",
+        "source_date": "2026-10-27"
+      },
+      {
+        "source_id": "s30",
+        "label": "block-proxy-artifacts README, opencode plugin (commit aa5255a)",
+        "url": "https://raw.githubusercontent.com/wtogami/qwen-block-proxy-artifacts/aa5255aad8f6cfee0ef5b66d64a20f9e8272fe27/README.md",
+        "retrieved_at": "2026-10-27",
+        "excerpt": "It is weights-level memorization of the base model; quantization modulates expression, not content.",
+        "source_date": "2026-10-27"
+      }
+    ],
+    "published_at": "2026-10-27",
+    "embedding": null
   }
 ]
