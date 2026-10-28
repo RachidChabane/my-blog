@@ -32,7 +32,7 @@ sources:
 - label: "loop-1 pre-registration"
   url: https://github.com/RachidChabane/musthold/blob/main/experiments/loop-1/PREREG.md
   date: 27-10-2026
-contentHash: sha256:877d8bace9df67fb
+contentHash: sha256:dbf6744f8543f908
 publishState: published
 ---
 
@@ -101,6 +101,9 @@ Je trouve ces chiffres assez petits pour être crédibles et assez grands pour c
 Musthold n'a pas encore montré que les agents livrent moins de défauts avec lui. La session ci-dessus montre la boucle fonctionner une fois, sur une fixture que j'ai construite et avec une faiblesse que j'y ai plantée, si bien qu'elle sert d'illustration et non de mesure.
 
 La mesure passe par une étude appelée `loop-1`, préenregistrée et figée avec son kit de réplication. Un oracle en aveugle, que l'agent ne voit jamais, comptera les changements défectueux dans deux bras : une porte qui exige la seule traçabilité et une porte qui exige aussi le pouvoir discriminant et l'alignement [s7]. Je publierai le résultat quel qu'il soit, y compris un résultat nul.
+
+> [!NOTE]
+> Mise à jour du 28 octobre 2026 : `loop-1` a tourné, et son résultat n'est pas concluant. L'agent n'a livré aucun changement défectueux, ni dans un bras ni dans l'autre, 0 sur 18 chacun : la porte n'avait rien à arrêter. L'étude a aussi montré que la porte qui exige les preuves a rejeté 4 changements corrects sur 18, dont la session n'avait jamais publié les preuves. Le rapport est [`experiments/loop-1/results/REPORT.md`](https://github.com/RachidChabane/musthold/blob/main/experiments/loop-1/results/REPORT.md).
 
 ## L'essayer
 

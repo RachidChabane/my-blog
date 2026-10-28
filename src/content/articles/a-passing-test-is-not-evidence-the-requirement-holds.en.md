@@ -32,7 +32,7 @@ sources:
 - label: "loop-1 pre-registration"
   url: https://github.com/RachidChabane/musthold/blob/main/experiments/loop-1/PREREG.md
   date: 27-10-2026
-contentHash: sha256:5be502254ca83d0c
+contentHash: sha256:a0a3b70e319564d2
 publishState: published
 ---
 
@@ -101,6 +101,9 @@ I think the numbers are small enough to be believable and large enough to matter
 Musthold has not yet shown that agents ship fewer defects with it. The session above shows the loop working once, on a fixture I built, with a weakness I planted, which makes it an illustration rather than a measurement.
 
 The measurement is a study called `loop-1`, pre-registered and frozen with its replication kit. A blind oracle that the agent never sees will count defective changes in two arms: a gate that requires traceability alone, and a gate that requires discriminating power and alignment as well [s7]. I will publish the result whatever it is, including a null one.
+
+> [!NOTE]
+> Update, 28 October 2026: `loop-1` ran, and its result is inconclusive. The agent shipped no defective change in either arm, 0 of 18 each, so the gate had nothing to stop. The study also found that the gate requiring the proofs rejected 4 of 18 correct changes whose proofs the session never published. The report is [`experiments/loop-1/results/REPORT.md`](https://github.com/RachidChabane/musthold/blob/main/experiments/loop-1/results/REPORT.md).
 
 ## Try it
 
