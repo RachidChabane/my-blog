@@ -1,0 +1,223 @@
+{
+  "slug": "your-compaction-summary-should-carry-no-authority",
+  "lang": "en",
+  "translationKey": "compaction-summaries-carry-no-authority",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "arXiv 2610.29869, Compaction Laundering: Provenance Destruction in Context-Compacting Coding Agents",
+      "url": "https://arxiv.org/abs/2610.29869",
+      "excerpt": "We show that in popular open-source coding agents this step is an exploitable trust boundary."
+    },
+    {
+      "sourceId": "s2",
+      "label": "arXiv 2610.29869, Compaction Laundering: Provenance Destruction in Context-Compacting Coding Agents",
+      "url": "https://arxiv.org/abs/2610.29869",
+      "excerpt": "Harnesses that flatten the typed conversation into a single plain string, marking each message with a text label such as [User]:, destroy message provenance in code, before the summarizer runs."
+    },
+    {
+      "sourceId": "s3",
+      "label": "arXiv 2610.29869, Compaction Laundering: Provenance Destruction in Context-Compacting Coding Agents",
+      "url": "https://arxiv.org/abs/2610.29869",
+      "excerpt": "An attacker who controls anything the agent reads can forge a user turn that survives compaction as a genuine instruction."
+    },
+    {
+      "sourceId": "s4",
+      "label": "arXiv 2610.29869, Compaction Laundering: Provenance Destruction in Context-Compacting Coding Agents",
+      "url": "https://arxiv.org/abs/2610.29869",
+      "excerpt": "Across five flattening harnesses (pi, opencode, Cline, Aider, OpenHands) the forged approval launders into the agent&#39;s memory 87-100% of the time, up to a ~908,000-token context window; across four role-typed harnesses (Codex, Gemini CLI, Qwen Code, Continue) the identical attack succeeds 0% of the time."
+    },
+    {
+      "sourceId": "s5",
+      "label": "arXiv 2610.29869, Compaction Laundering: Provenance Destruction in Context-Compacting Coding Agents",
+      "url": "https://arxiv.org/abs/2610.29869",
+      "excerpt": "Because the provenance is destroyed deterministically in harness code, no prompt-level defense can restore it; we measure a code-level provenance check that catches 77% of laundering while demoting 2% of legitimate summary content."
+    },
+    {
+      "sourceId": "s6",
+      "label": "arXiv 2610.29869, Compaction Laundering: Provenance Destruction in Context-Compacting Coding Agents",
+      "url": "https://arxiv.org/abs/2610.29869",
+      "excerpt": "The defect also has a straightforward fix at the serializer, escaping the role labels before flattening; the role-typed harnesses avoid it entirely by keeping messages role-typed."
+    },
+    {
+      "sourceId": "s7",
+      "label": "arXiv 2610.31778, Benchmarks Are Surprisingly Compaction-Friendly",
+      "url": "https://arxiv.org/html/2610.31778v1",
+      "excerpt": "Compaction is generally lossy by design: agents can silently lose task constraints, instructions, or their reasoning behind earlier decisions."
+    },
+    {
+      "sourceId": "s8",
+      "label": "arXiv 2610.31778, Benchmarks Are Surprisingly Compaction-Friendly",
+      "url": "https://arxiv.org/html/2610.31778v1",
+      "excerpt": "For the two 1M context models, the compaction threshold does not measurably affect the task performance"
+    },
+    {
+      "sourceId": "s9",
+      "label": "arXiv 2610.31778, Benchmarks Are Surprisingly Compaction-Friendly",
+      "url": "https://arxiv.org/html/2610.31778v1",
+      "excerpt": "No compaction method outperforms default self-summarization, and methods that discard more content cost some models up to 20 points while leaving other models the same."
+    },
+    {
+      "sourceId": "s10",
+      "label": "arXiv 2610.31778, Benchmarks Are Surprisingly Compaction-Friendly",
+      "url": "https://arxiv.org/html/2610.31778v1",
+      "excerpt": "On ProgramBench, the first compaction summary already drops on average about one of the task’s three anti-cheating rules, and the loss grows with the number of compactions."
+    },
+    {
+      "sourceId": "s11",
+      "label": "arXiv 2610.31778, Benchmarks Are Surprisingly Compaction-Friendly",
+      "url": "https://arxiv.org/html/2610.31778v1",
+      "excerpt": "In real user-agent sessions, compaction keeps around 81% of user constraints, but instructions about how to work and what not to do are dropped about 6 times more often than specifications of what to build."
+    },
+    {
+      "sourceId": "s12",
+      "label": "arXiv 2610.31778, Benchmarks Are Surprisingly Compaction-Friendly",
+      "url": "https://arxiv.org/html/2610.31778v1",
+      "excerpt": "Constraints that describe the deliverable can be recovered from the agent’s own artifacts, however constraints that describe how the agent should behave cannot."
+    },
+    {
+      "sourceId": "s13",
+      "label": "hermes-agent issue #144835, forged role labels launder through compaction",
+      "url": "https://github.com/NousResearch/hermes-agent/issues/144835",
+      "excerpt": "compaction: escape turn-label sequences in summary-transcript serialization (forged role labels launder through compaction)"
+    },
+    {
+      "sourceId": "s14",
+      "label": "hermes-agent issue #144835, forged role labels launder through compaction",
+      "url": "https://github.com/NousResearch/hermes-agent/issues/144835",
+      "excerpt": "Feed the serializer a tool record whose content contains a forged label; the label survives"
+    },
+    {
+      "sourceId": "s15",
+      "label": "hermes-agent issue #144835, forged role labels launder through compaction",
+      "url": "https://github.com/NousResearch/hermes-agent/issues/144835",
+      "excerpt": "Structural alternative: pass role-typed messages to the summarizer instead of a joined"
+    },
+    {
+      "sourceId": "s16",
+      "label": "Claude Code issue #96422, custom instructions lost across context compaction",
+      "url": "https://github.com/anthropics/claude-code/issues/96422",
+      "excerpt": "The model continues from a lossy summary and silently stops honouring rules that exist only in those files."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Claude Code issue #96422, custom instructions lost across context compaction",
+      "url": "https://github.com/anthropics/claude-code/issues/96422",
+      "excerpt": "It then violated rules present in the instruction files but absent from the summary - read the whole thread, zero autonomy, no unauthorised writes - while believing it was operating normally."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Claude Code issue #96422, custom instructions lost across context compaction",
+      "url": "https://github.com/anthropics/claude-code/issues/96422",
+      "excerpt": "Compaction is invisible to the user."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Claude Code issue #96422, custom instructions lost across context compaction",
+      "url": "https://github.com/anthropics/claude-code/issues/96422",
+      "excerpt": "Treat a compaction boundary as a session boundary for instruction loading: re-read project instruction and memory files rather than inheriting them through a summary."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Copilot CLI issue #4687, instruction files not preserved across compaction",
+      "url": "https://github.com/github/copilot-cli/issues/4687",
+      "excerpt": "Mid-session, context compaction occurred. After compaction, the agent committed directly to"
+    },
+    {
+      "sourceId": "s21",
+      "label": "Copilot CLI issue #4687, instruction files not preserved across compaction",
+      "url": "https://github.com/github/copilot-cli/issues/4687",
+      "excerpt": "it had no indication the rule still applied and never re-read AGENTS.md after compaction."
+    },
+    {
+      "sourceId": "s22",
+      "label": "arXiv 2610.29869, Compaction Laundering (abstract, opening sentence)",
+      "url": "https://arxiv.org/abs/2610.29869",
+      "excerpt": "Coding agents that run long enough must compact their context, summarizing the conversation, discarding the original, and carrying the summary forward as memory."
+    },
+    {
+      "sourceId": "s23",
+      "label": "arXiv 2610.29869, Compaction Laundering (executed consequences)",
+      "url": "https://arxiv.org/abs/2610.29869",
+      "excerpt": "A laundered standing approval drives real tool-running agents to execute attacker-controlled curl | sh in a sandbox, and end to end in the live pi TUI at ~50% against a 0% paired clean arm."
+    },
+    {
+      "sourceId": "s24",
+      "label": "arXiv 2610.29869, Compaction Laundering (plan steering)",
+      "url": "https://arxiv.org/abs/2610.29869",
+      "excerpt": "The same channel reliably steers an agent&#39;s plan away from a file an attacker designates off-limits, which can blind a code review to a planted backdoor."
+    },
+    {
+      "sourceId": "s25",
+      "label": "arXiv 2610.31778, Benchmarks Are Surprisingly Compaction-Friendly (why constraints are dropped)",
+      "url": "https://arxiv.org/html/2610.31778v1",
+      "excerpt": "Our summarization prompt explicitly asks for constraints that should persist (Appendix 6.4 ), and they are dropped anyway."
+    },
+    {
+      "sourceId": "s26",
+      "label": "arXiv 2610.31778, Benchmarks Are Surprisingly Compaction-Friendly (interactive sessions)",
+      "url": "https://arxiv.org/html/2610.31778v1",
+      "excerpt": "The user can add or change instructions as the session grows, and most of this is never persistent anywhere, so a summary that removes an instruction is not able to restate it after."
+    },
+    {
+      "sourceId": "s27",
+      "label": "arXiv 2610.31778, Benchmarks Are Surprisingly Compaction-Friendly (abstract, benchmark argument)",
+      "url": "https://arxiv.org/html/2610.31778v1",
+      "excerpt": "We argue that current benchmarks are compaction-friendly : i.e., the objective is fixed and the agent’s progress stays on disk, so most of what compaction discards can be recovered, except constraints that don’t exist anywhere else."
+    },
+    {
+      "sourceId": "s28",
+      "label": "hermes-agent issue #144835, summarizer template",
+      "url": "https://github.com/NousResearch/hermes-agent/issues/144835",
+      "excerpt": "the summarizer's template explicitly asks it to record \"corrections the USER gave\""
+    },
+    {
+      "sourceId": "s29",
+      "label": "hermes-agent issue #144835, summary re-entry",
+      "url": "https://github.com/NousResearch/hermes-agent/issues/144835",
+      "excerpt": "the committed summary re-enters history as a role-typed user/assistant handoff ( _assemble_compressed )"
+    },
+    {
+      "sourceId": "s30",
+      "label": "hermes-agent issue #144835, existing provenance guard",
+      "url": "https://github.com/NousResearch/hermes-agent/issues/144835",
+      "excerpt": "The only provenance guard, _validate_summary_user_provenance , early-returns whenever the transcript contains ANY real user turn ( :4269 ), so it does not cover this vector."
+    },
+    {
+      "sourceId": "s31",
+      "label": "hermes-agent issue #144835, escape versus structural change",
+      "url": "https://github.com/NousResearch/hermes-agent/issues/144835",
+      "excerpt": "The escape is the minimal hardening; the structural change would supersede it."
+    },
+    {
+      "sourceId": "s32",
+      "label": "hermes-agent issue #144835, path not covered",
+      "url": "https://github.com/NousResearch/hermes-agent/issues/144835",
+      "excerpt": "codex_runtime_history_seed.py:39-42 renders labels differently and was not modified."
+    },
+    {
+      "sourceId": "s33",
+      "label": "hermes-agent issue #144835, attribution",
+      "url": "https://github.com/NousResearch/hermes-agent/issues/144835",
+      "excerpt": "Threat model from arXiv:2610.29869 (Compaction Laundering: Provenance Destruction in Context-Compacting Coding Agents)."
+    },
+    {
+      "sourceId": "s34",
+      "label": "Claude Code issue #96422, comment on reload semantics",
+      "url": "https://github.com/anthropics/claude-code/issues/96422",
+      "excerpt": "Open question for expected semantics: should compaction reload current files , or restore the session-start snapshot ?"
+    },
+    {
+      "sourceId": "s35",
+      "label": "Copilot CLI issue #4687, suggested fix",
+      "url": "https://github.com/github/copilot-cli/issues/4687",
+      "excerpt": "Suggested fix: on compaction, either (a) re-inject the current contents of any active instruction files (AGENTS.md, CLAUDE.md, copilot-instructions.md, etc.) into the fresh context, or (b) explicitly prompt/require the agent to re-read them before resuming file-editing/git work post-compaction."
+    },
+    {
+      "sourceId": "s36",
+      "label": "Copilot CLI issue #4687, commits after compaction",
+      "url": "https://github.com/github/copilot-cli/issues/4687",
+      "excerpt": "After compaction, the agent committed directly to main twice, violating the rule it had followed earlier"
+    }
+  ]
+}

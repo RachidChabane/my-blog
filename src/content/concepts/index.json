@@ -314,7 +314,8 @@
     "articles": [
       "instruction-file-structure-compliance",
       "telemetry-off-forks-coding-agent-behaviour",
-      "agent-fetch-tools-should-refuse-hosts-nobody-named"
+      "agent-fetch-tools-should-refuse-hosts-nobody-named",
+      "compaction-summaries-carry-no-authority"
     ],
     "addedOn": "21-07-2026"
   },
@@ -543,7 +544,8 @@
       "failure-record-in-context-drives-the-repeat",
       "opaque-state-outscores-the-notes-you-can-read",
       "edit-unit-size-beside-edit-format",
-      "attack-agent-harness-state-holds-the-secrets-it-finds"
+      "attack-agent-harness-state-holds-the-secrets-it-finds",
+      "compaction-summaries-carry-no-authority"
     ],
     "addedOn": "17-06-2026"
   },
@@ -1560,7 +1562,8 @@
       "coding-agent-scaffold-confound",
       "active-context-compression-prune-history",
       "opaque-state-outscores-the-notes-you-can-read",
-      "the-check-binds-the-action-not-the-decision"
+      "the-check-binds-the-action-not-the-decision",
+      "compaction-summaries-carry-no-authority"
     ],
     "addedOn": "18-06-2026"
   },
@@ -2688,7 +2691,8 @@
       "command-denylist-not-a-security-boundary",
       "prompt-injection-defense-layer-split",
       "the-check-binds-the-action-not-the-decision",
-      "web-prompt-injection-scans-measure-what-crawlers-are-served"
+      "web-prompt-injection-scans-measure-what-crawlers-are-served",
+      "compaction-summaries-carry-no-authority"
     ],
     "addedOn": "01-07-2026"
   },
@@ -2743,7 +2747,8 @@
       "out-of-band-enforcement"
     ],
     "articles": [
-      "instruction-file-structure-compliance"
+      "instruction-file-structure-compliance",
+      "compaction-summaries-carry-no-authority"
     ],
     "addedOn": "21-07-2026"
   },
@@ -3251,6 +3256,33 @@
       "agent-memory-benchmark-recall-not-trust"
     ],
     "addedOn": "05-07-2026"
+  },
+  {
+    "id": "message-provenance",
+    "label": {
+      "fr": "Provenance des messages",
+      "en": "Message provenance"
+    },
+    "definition": {
+      "fr": "Information qui indique quelle partie a rédigé chaque message du contexte d'un agent (l'utilisateur, le modèle ou un résultat d'outil), portée par un rôle typé attaché à chaque message. Aplatir la conversation en une seule chaîne de texte balisée par des étiquettes de rôle la détruit : un contenu qui reproduit la même étiquette devient indiscernable d'un vrai tour de parole.",
+      "en": "The record of which party authored each message in an agent's context (the user, the model or a tool result), carried as a typed role attached to each message. Flattening the conversation into one plain string marked with textual role labels destroys it, because content that reproduces the same label becomes indistinguishable from a real turn."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "role provenance",
+      "turn provenance",
+      "role-typed messages",
+      "provenance des tours de parole"
+    ],
+    "related": [
+      "trust-boundary",
+      "context-compaction",
+      "data-instruction-separation"
+    ],
+    "articles": [
+      "compaction-summaries-carry-no-authority"
+    ],
+    "addedOn": "28-10-2026"
   },
   {
     "id": "migration-completeness-check",
@@ -4441,6 +4473,34 @@
     "addedOn": "14-07-2026"
   },
   {
+    "id": "role-label-laundering",
+    "label": {
+      "fr": "Blanchiment d'étiquettes de rôle",
+      "en": "Role-label laundering"
+    },
+    "definition": {
+      "fr": "Attaque dans laquelle un texte lu par l'agent, par exemple un fichier ou un résultat d'outil, contient une étiquette de rôle forgée qu'un sérialiseur qui aplatit la conversation transmet sans échappement au modèle chargé du résumé. Le résumé de compaction enregistre alors ce faux tour comme une instruction ou une approbation authentique de l'utilisateur, et l'agent la reporte dans sa mémoire.",
+      "en": "An attack in which text the agent reads, such as a file or a tool result, contains a forged role label that a flattening serializer passes unescaped to the model writing the summary. The compaction summary then records the forged turn as a genuine user instruction or approval, and the agent carries it forward as memory."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "forged role label",
+      "turn forgery",
+      "compaction laundering",
+      "falsification de tour de parole"
+    ],
+    "related": [
+      "message-provenance",
+      "indirect-prompt-injection",
+      "context-compaction",
+      "trust-boundary"
+    ],
+    "articles": [
+      "compaction-summaries-carry-no-authority"
+    ],
+    "addedOn": "28-10-2026"
+  },
+  {
     "id": "rubber-stamp-review",
     "label": {
       "fr": "Revue de pure forme",
@@ -5599,7 +5659,8 @@
       "allowlist-verbe-capacite-2026-08",
       "read-only-egress-is-a-write-channel",
       "the-check-binds-the-action-not-the-decision",
-      "lean-kernel-cross-checks-only-help-when-kernels-fail-differently"
+      "lean-kernel-cross-checks-only-help-when-kernels-fail-differently",
+      "compaction-summaries-carry-no-authority"
     ],
     "addedOn": "01-07-2026"
   },
