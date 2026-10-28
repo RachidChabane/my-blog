@@ -2751,5 +2751,29 @@
     ],
     "published_at": "2026-10-27",
     "embedding": null
+  },
+  {
+    "translation_key": "gpt-6-1-terra-omniscience-guess-rate-and-accuracy",
+    "topic_id": "gpt-6-1-terra-omniscience-guess-rate-and-accuracy",
+    "dedup_key": "gpt 6 1 terra omniscience guess rate and accuracy",
+    "title": "GPT-6.1 Terra launches at $1/$5 per million tokens, and Artificial Analysis measures it guessing on 38% of the questions it does not know, down from GPT-5.6 Terra's 88%",
+    "slugs": {
+      "fr": "gpt-6-1-terra-omniscience-taux-de-devinette-et-precision",
+      "en": "gpt-6-1-terra-omniscience-guess-rate-and-accuracy"
+    },
+    "sources": [
+      {
+        "label": "OpenAI, Introducing GPT-6.1 Terra",
+        "url": "https://openai.com/index/introducing-gpt-6-1-terra/",
+        "date": "26-10-2026"
+      },
+      {
+        "label": "Artificial Analysis, GPT-6.1 Terra pushes the cost efficiency frontier",
+        "url": "https://artificialanalysis.ai/articles/gpt-6-1-terra-pushes-the-cost-efficiency-frontier",
+        "date": "26-10-2026"
+      }
+    ],
+    "published_at": "2026-10-28",
+    "embedding": null
   }
 ]
