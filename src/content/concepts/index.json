@@ -3099,7 +3099,8 @@
       "kimi-k3-ranked-endpoint-not-weights",
       "afd-throughput-does-not-transfer-without-the-fabric",
       "arret-anticipe-sondes-2026-08",
-      "lossless-decoding-precision-property"
+      "lossless-decoding-precision-property",
+      "strict-tool-decoding-is-a-per-model-serving-decision"
     ],
     "addedOn": "04-05-2026"
   },
@@ -3881,7 +3882,8 @@
       "web-prompt-injection-scans-measure-what-crawlers-are-served",
       "agent-benchmarks-cover-little-of-the-work-your-agent-does",
       "system-prompt-persona-shifts-generated-code-security",
-      "ai-rediscovered-vulnerabilities-leak-the-disclosure-window"
+      "ai-rediscovered-vulnerabilities-leak-the-disclosure-window",
+      "strict-tool-decoding-is-a-per-model-serving-decision"
     ],
     "addedOn": "18-07-2026"
   },
@@ -4659,7 +4661,8 @@
     ],
     "articles": [
       "tool-calling-readout-not-descriptions",
-      "watermark-entropy-budget"
+      "watermark-entropy-budget",
+      "strict-tool-decoding-is-a-per-model-serving-decision"
     ],
     "addedOn": "22-07-2026"
   },
@@ -4791,7 +4794,8 @@
       "mixture-of-experts"
     ],
     "articles": [
-      "kimi-k3-ranked-endpoint-not-weights"
+      "kimi-k3-ranked-endpoint-not-weights",
+      "strict-tool-decoding-is-a-per-model-serving-decision"
     ],
     "addedOn": "23-07-2026"
   },
@@ -5604,7 +5608,8 @@
       "prompt-injection-defense-layer-split",
       "tool-calling-readout-not-descriptions",
       "irreversible-actions-before-abstention",
-      "failure-record-in-context-drives-the-repeat"
+      "failure-record-in-context-drives-the-repeat",
+      "strict-tool-decoding-is-a-per-model-serving-decision"
     ],
     "addedOn": "12-05-2026"
   },
@@ -5997,7 +6002,8 @@
     ],
     "articles": [
       "serving-oss-llm-production-cost",
-      "afd-throughput-does-not-transfer-without-the-fabric"
+      "afd-throughput-does-not-transfer-without-the-fabric",
+      "strict-tool-decoding-is-a-per-model-serving-decision"
     ],
     "addedOn": "04-05-2026"
   },
