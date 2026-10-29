@@ -2775,5 +2775,29 @@
     ],
     "published_at": "2026-10-28",
     "embedding": null
+  },
+  {
+    "translation_key": "github-copilot-fusion-model-policy-pool-and-per-model-billing",
+    "topic_id": "github-copilot-fusion-model-policy-pool-and-per-model-billing",
+    "dedup_key": "github copilot fusion model policy pool and per model billing",
+    "title": "GitHub Copilot Fusion is generally available and picks the models for each prompt from the pool your model policies enable, and Artificial Analysis says token costs follow the underlying models",
+    "slugs": {
+      "fr": "github-copilot-fusion-politiques-de-modeles-et-facturation-par-modele",
+      "en": "github-copilot-fusion-model-policy-pool-and-per-model-billing"
+    },
+    "sources": [
+      {
+        "label": "GitHub Changelog, Route and orchestrate models with GitHub Copilot Fusion",
+        "url": "https://github.blog/changelog/2026-10-28-route-and-orchestrate-models-with-github-copilot-fusion/",
+        "date": "28-10-2026"
+      },
+      {
+        "label": "Artificial Analysis, GitHub Copilot Fusion orchestrates Anthropic and OpenAI models to balance performance and cost",
+        "url": "https://artificialanalysis.ai/articles/github-copilot-fusion-orchestrates-anthropic-and-openai-models-to-balance-performance-and-cost",
+        "date": "28-10-2026"
+      }
+    ],
+    "published_at": "2026-10-29",
+    "embedding": null
   }
 ]
