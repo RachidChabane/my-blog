@@ -1486,6 +1486,31 @@
     "addedOn": "07-10-2026"
   },
   {
+    "id": "constrained-decoding-distortion",
+    "label": {
+      "fr": "Distorsion du décodage contraint",
+      "en": "Constrained-decoding distortion"
+    },
+    "definition": {
+      "fr": "Déformation de la distribution de sortie d'un modèle lorsque l'on masque, à chaque étape, tous les jetons que la grammaire interdit avant d'échantillonner parmi ceux qui restent. La sortie est garantie analysable mais peut être grammaticale et pourtant de faible qualité, car ce masquage glouton ne préserve pas la probabilité que le modèle non contraint attribue à chaque sortie valide.",
+      "en": "The shift in a model's output distribution caused by masking, at each step, every token the grammar forbids and then sampling from what remains. The output is guaranteed to parse yet can be grammatical and still low in quality, because greedy per-step masking does not preserve the probability the unconstrained model assigns to each valid output."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "grammar-induced distortion",
+      "masking distortion",
+      "distorsion par masquage"
+    ],
+    "related": [
+      "schema-constrained-tool-calling",
+      "sampling-entropy"
+    ],
+    "articles": [
+      "strict-tool-decoding-is-a-per-model-serving-decision"
+    ],
+    "addedOn": "29-10-2026"
+  },
+  {
     "id": "context-ablation",
     "label": {
       "fr": "Ablation du contexte",
@@ -2363,6 +2388,32 @@
       "verification-frontiere-action-2026-08"
     ],
     "addedOn": "03-08-2026"
+  },
+  {
+    "id": "finish-reason-accounting",
+    "label": {
+      "fr": "Ventilation par motif d'arrêt",
+      "en": "Finish-reason accounting"
+    },
+    "definition": {
+      "fr": "Compter chaque réponse d'un modèle selon la raison pour laquelle sa génération s'est arrêtée (arrêt normal, appel d'outil, limite de jetons ou autre cause) plutôt que de ne noter que les réponses terminées comme prévu. Une métrique calculée sur un seul motif d'arrêt ne peut pas enregistrer un échec qui se termine sous un autre, comme une boucle de décodage qui va jusqu'à la limite de jetons.",
+      "en": "Tallying every model response by the reason its generation stopped (a normal stop, a tool call, the token limit, or another cause) instead of scoring only the responses that ended as expected. A metric computed over one finish reason cannot register a failure that ends under another, such as a decoding loop that runs to the token limit."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "finish reason breakdown",
+      "stop reason accounting",
+      "décompte par motif d'arrêt"
+    ],
+    "related": [
+      "proxy-metric",
+      "agent-evaluation",
+      "schema-constrained-tool-calling"
+    ],
+    "articles": [
+      "strict-tool-decoding-is-a-per-model-serving-decision"
+    ],
+    "addedOn": "29-10-2026"
   },
   {
     "id": "finite-precision-divergence",
