@@ -7077,5 +7077,297 @@
     ],
     "published_at": "2026-10-28",
     "embedding": null
+  },
+  {
+    "translation_key": "strict-tool-decoding-is-a-per-model-serving-decision",
+    "topic_id": "strict-tool-decoding-is-a-per-model-serving-decision",
+    "dedup_key": "constrained decoding for tool calls is a per model serving decision because strict grammar enforcement fixes schema accuracy on one model while sending others into loops and unenforced schemas that the schema accuracy metric cannot see",
+    "title": "A perfect schema score cannot certify strict tool decoding",
+    "slugs": {
+      "fr": "un-score-de-schema-parfait-ne-certifie-pas-le-decodage-strict",
+      "en": "a-perfect-schema-score-cannot-certify-strict-decoding"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Ubicloud, Fixing Tool-Call Accuracy in vLLM (baseline)",
+        "url": "https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "For example, when we served Kimi K2.6 with vLLM version 0.28, we got the expected tool call schema only 92% of the time.",
+        "source_date": "2026-10-20"
+      },
+      {
+        "source_id": "s2",
+        "label": "Ubicloud, Fixing Tool-Call Accuracy in vLLM (result)",
+        "url": "https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "This helped improve our tool-call accuracy in the K2VV ToolCall benchmark from 92% to 100%.",
+        "source_date": "2026-10-20"
+      },
+      {
+        "source_id": "s3",
+        "label": "Ubicloud, Fixing Tool-Call Accuracy in vLLM (mechanism)",
+        "url": "https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "When using constrained decoding, instead of letting the model sampling tokens freely and validating the result afterward, the inference engine guides generation step by step.",
+        "source_date": "2026-10-20"
+      },
+      {
+        "source_id": "s4",
+        "label": "Ubicloud, Fixing Tool-Call Accuracy in vLLM (default change)",
+        "url": "https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Instead, we found that vLLM changed its default behavior for requests that do not explicitly turn constrained decoding on.",
+        "source_date": "2026-10-20"
+      },
+      {
+        "source_id": "s5",
+        "label": "Ubicloud, Fixing Tool-Call Accuracy in vLLM (per-model task)",
+        "url": "https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "This is primarily because vLLM is designed to support a wide range of models. Supporting constrained decoding is a per-model task and problems fall into three camps",
+        "source_date": "2026-10-20"
+      },
+      {
+        "source_id": "s6",
+        "label": "Ubicloud, Fixing Tool-Call Accuracy in vLLM (reported models)",
+        "url": "https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "For example, gpt-oss-20b, Qwen 3.6, and GLM 5.1 users reported issues after having this feature enabled by default.",
+        "source_date": "2026-10-20"
+      },
+      {
+        "source_id": "s7",
+        "label": "Ubicloud, Fixing Tool-Call Accuracy in vLLM (safer default)",
+        "url": "https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "This made disabling constrained decoding by default the safer option for a model-agnostic serving engine such as vLLM.",
+        "source_date": "2026-10-20"
+      },
+      {
+        "source_id": "s8",
+        "label": "Ubicloud, Fixing Tool-Call Accuracy in vLLM (verification before deploy)",
+        "url": "https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Once we verified 100% tool-call schema accuracy across all served model versions, we deployed the change to production.",
+        "source_date": "2026-10-20"
+      },
+      {
+        "source_id": "s9",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (vendor differences)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "We have observed significant differences in the toolcall performance of various open-source solutions and vendors.",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s10",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (no built-in schema)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Large language models generate text token-by-token according to probability; they have no built-in mechanism to enforce a hard JSON schema.",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s11",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (recommendation)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "So please add guided encoding to ensure the correct schema.",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s12",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (schema accuracy definition)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Proportion of triggered tool calls whose JSON payload satisfies the schema.",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s13",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (false negative definition)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Model `finish_reason == \"stop\"` or `\"others\"` while official is `\"tool_calls\"`.",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s14",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (comparison baseline)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Each provider's responses are collected and compared against the official Moonshot AI API.",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s15",
+        "label": "vLLM pull request #45600, skip structural tags for auto tool_choice without strict mode",
+        "url": "https://github.com/vllm-project/vllm/pull/45600",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "This prevents structural tags from over-constraining model generation when the caller hasn't explicitly requested strict function calling",
+        "source_date": "2026-06-14"
+      },
+      {
+        "source_id": "s16",
+        "label": "vLLM issue #50989, Qwen doom loop with strict mode on argument-free tools (report)",
+        "url": "https://github.com/vllm-project/vllm/issues/50989",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "When using Qwen models with tool calls, if the tool has no arguments and uses strict mode, then Qwen often enters a doom loop, constantly generating token 197.",
+        "source_date": "2026-08-04"
+      },
+      {
+        "source_id": "s17",
+        "label": "vLLM issue #50989, Qwen doom loop with strict mode on argument-free tools (fix in progress)",
+        "url": "https://github.com/vllm-project/vllm/issues/50989",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "mlc-ai/xgrammar#1004 makes the template close legal while keeping strict schemas.",
+        "source_date": "2026-08-04"
+      },
+      {
+        "source_id": "s18",
+        "label": "vLLM issue #55541, GLM-5.3-Flash forced tool_choice runs to max_tokens (report)",
+        "url": "https://github.com/vllm-project/vllm/issues/55541",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "a fraction of requests never converge: generation runs all the way to `max_tokens`",
+        "source_date": "2026-09-06"
+      },
+      {
+        "source_id": "s19",
+        "label": "vLLM issue #55541, GLM-5.3-Flash forced tool_choice runs to max_tokens (diagnosis comment)",
+        "url": "https://github.com/vllm-project/vllm/issues/55541",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "I think this is a grammar-side whitespace loop rather than a parser or spec-decode problem, and it is reproducible at the token level without a GPU.",
+        "source_date": "2026-09-06"
+      },
+      {
+        "source_id": "s20",
+        "label": "vLLM issue #58930, schema feature checks skipped inside structural tags",
+        "url": "https://github.com/vllm-project/vllm/issues/58930",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "`validate_xgrammar_grammar()` does not check JSON schemas nested inside a structural tag for features xgrammar does not support, so those constraints are silently dropped.",
+        "source_date": "2026-09-27"
+      },
+      {
+        "source_id": "s21",
+        "label": "Park et al., Grammar-Aligned Decoding, NeurIPS 2024 (distortion)",
+        "url": "https://papers.nips.cc/paper_files/paper/2024/hash/2bdc2267c3d7d01523e2e17ac0a754f3-Abstract-Conference.html",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "In this paper we demonstrate that GCD techniques (and in general constrained decoding techniques) can distort the LLM's distribution, leading to outputs that are grammatical but appear with likelihoods that are not proportional to the ones given by the LLM, and so ultimately are low-quality."
+      },
+      {
+        "source_id": "s22",
+        "label": "Park et al., Grammar-Aligned Decoding, NeurIPS 2024 (constrained decoding defined)",
+        "url": "https://papers.nips.cc/paper_files/paper/2024/hash/2bdc2267c3d7d01523e2e17ac0a754f3-Abstract-Conference.html",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Constrained decoding approaches mitigate this problem by greedily restricting what tokens an LLM can output at each step to guarantee that the output matches a given constraint."
+      },
+      {
+        "source_id": "s23",
+        "label": "vLLM issue #55541, GLM-5.3-Flash forced tool_choice runs to max_tokens (title)",
+        "url": "https://github.com/vllm-project/vllm/issues/55541",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "GLM-5.3-Flash with forced tool_choice (named function) fails to converge",
+        "source_date": "2026-09-06"
+      },
+      {
+        "source_id": "s24",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (tool-call finish count definition)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Number of responses with `finish_reason == \"tool_calls\"`.",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s25",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (recall definition)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Proportion of tool calls that should have been triggered and were.",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s26",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (trigger F1 decides the deployment check)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "We use `tool_call_f1` to determine whether the model deployment is correct.",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s27",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (primary deployment metric)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Harmonic mean of precision and recall (primary metric for deployment check).",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s28",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (schema accuracy purpose)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "We use `schema_accuracy` to measure the robustness of the engineering.",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s29",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (F1 fluctuation runs)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "We ran the official API multiple times to test the fluctuation of `tool_call_f1`.",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s30",
+        "label": "vLLM issue #55541, GLM-5.3-Flash forced tool_choice runs to max_tokens (finish reason)",
+        "url": "https://github.com/vllm-project/vllm/issues/55541",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "and the response comes back with  finish_reason: \"length\"  and",
+        "source_date": "2026-09-06"
+      },
+      {
+        "source_id": "s31",
+        "label": "vLLM issue #55541, GLM-5.3-Flash forced tool_choice runs to max_tokens (auto tool_choice passes)",
+        "url": "https://github.com/vllm-project/vllm/issues/55541",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Switching  tool_choice  to  \"auto\"  makes it pass every time.",
+        "source_date": "2026-09-06"
+      },
+      {
+        "source_id": "s32",
+        "label": "Ubicloud, Fixing Tool-Call Accuracy in vLLM (strictness flag)",
+        "url": "https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Later,  vLLM added  the  --tool-strict-level  flag so that users can enable tool-call strictness for their deployments.",
+        "source_date": "2026-10-20"
+      },
+      {
+        "source_id": "s33",
+        "label": "Ubicloud, Fixing Tool-Call Accuracy in vLLM (provider focus)",
+        "url": "https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Ubicloud’s focus is different from that of vLLM however.",
+        "source_date": "2026-10-20"
+      },
+      {
+        "source_id": "s34",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (schema accuracy formula)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "**`schema_accuracy`** | **`count_successful_tool_call / count_finish_reason_tool_calls`** | **Proportion of triggered tool calls whose JSON payload satisfies the schema.**",
+        "source_date": "2026-02-14"
+      },
+      {
+        "source_id": "s35",
+        "label": "Moonshot AI, K2 Vendor Verifier README at a pinned commit (successful tool call count)",
+        "url": "https://raw.githubusercontent.com/MoonshotAI/K2-Vendor-Verifier/0bc5061be1a7b5667c2ec71a546a6b1c9ff5af9a/README.md",
+        "retrieved_at": "2026-10-29",
+        "excerpt": "Number of **tool_calls** responses that passed schema validation.",
+        "source_date": "2026-02-14"
+      }
+    ],
+    "published_at": "2026-10-29",
+    "embedding": null
   }
 ]
