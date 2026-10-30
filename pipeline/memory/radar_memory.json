@@ -2799,5 +2799,39 @@
     ],
     "published_at": "2026-10-29",
     "embedding": null
+  },
+  {
+    "translation_key": "mistral-large-4-open-weights-high-default-verbosity-scope",
+    "topic_id": "mistral-large-4-open-weights-high-default-verbosity-scope",
+    "dedup_key": "mistral large 4 open weights high default verbosity scope",
+    "title": "Mistral Large 4's open weights are out, and Artificial Analysis measures its High setting at 110M tokens on the Intelligence Index, somewhat verbose, where Mistral cites 47% fewer tokens than GLM-5.3 on the Coding Agent Index",
+    "slugs": {
+      "fr": "mistral-large-4-poids-ouverts-reglage-high-par-defaut-et-verbosite",
+      "en": "mistral-large-4-open-weights-high-default-verbosity-scope"
+    },
+    "sources": [
+      {
+        "label": "Mistral, Mistral Large 4 (Le Chonk) is now open weight",
+        "url": "https://mistral.ai/news/mistral-large-4-oss/",
+        "date": "29-10-2026"
+      },
+      {
+        "label": "Artificial Analysis, Mistral Large 4 (High) model page",
+        "url": "https://artificialanalysis.ai/models/mistral-large-4",
+        "date": "29-10-2026"
+      },
+      {
+        "label": "Hugging Face, mistralai/Mistral-Large-4-1T-A52B model card",
+        "url": "https://huggingface.co/mistralai/Mistral-Large-4-1T-A52B",
+        "date": "29-10-2026"
+      },
+      {
+        "label": "Artificial Analysis, Mistral Large 4 (Medium) model page",
+        "url": "https://artificialanalysis.ai/models/mistral-large-4-medium",
+        "date": "29-10-2026"
+      }
+    ],
+    "published_at": "2026-10-30",
+    "embedding": null
   }
 ]
