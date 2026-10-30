@@ -28,6 +28,34 @@
     "addedOn": "12-07-2026"
   },
   {
+    "id": "abstention-aware-scoring",
+    "label": {
+      "fr": "Notation qui distingue l'abstention de l'erreur",
+      "en": "Abstention-aware scoring"
+    },
+    "definition": {
+      "fr": "Règle de notation qui accorde des points aux bonnes réponses, en retire aux mauvaises et compte une abstention pour zéro, si bien que deviner dans le doute cesse d'être gratuit. L'ampleur de la pénalité fixe le prix d'une réponse fausse par rapport à une abstention, et ce choix revient à celui qui définit le score.",
+      "en": "A grading rule that awards points for correct answers, subtracts points for wrong ones and scores an abstention as zero, so guessing under uncertainty stops being free. The size of the penalty sets the price of a wrong answer relative to an abstention, and whoever defines the score makes that choice."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "penalized scoring",
+      "negative marking",
+      "abstention-neutral scoring",
+      "notation avec points négatifs"
+    ],
+    "related": [
+      "hallucination",
+      "confidence-calibration",
+      "agent-abstention",
+      "proxy-metric"
+    ],
+    "articles": [
+      "frontier-model-factuality-depends-on-what-a-wrong-answer-costs"
+    ],
+    "addedOn": "30-10-2026"
+  },
+  {
     "id": "action-boundary-precondition",
     "label": {
       "fr": "Précondition à la frontière d'action",
@@ -920,7 +948,8 @@
       "swe-bench-private-holdout-trust",
       "afd-throughput-does-not-transfer-without-the-fabric",
       "patch-quality-rate-needs-a-consistent-grader",
-      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language",
+      "frontier-model-factuality-depends-on-what-a-wrong-answer-costs"
     ],
     "addedOn": "18-06-2026"
   },
@@ -2498,6 +2527,32 @@
     "addedOn": "18-09-2026"
   },
   {
+    "id": "hallucination",
+    "label": {
+      "fr": "Hallucination",
+      "en": "Hallucination"
+    },
+    "definition": {
+      "fr": "Sortie d'un modèle qui présente comme un fait une information fausse ou non étayée par ses entrées, formulée avec la même assurance qu'une réponse correcte. Chaque benchmark définit à sa manière le taux d'hallucination qu'il publie ; deux taux ne se comparent donc qu'à définition identique.",
+      "en": "A model output that states as fact something false or unsupported by its inputs, phrased with the same confidence as a correct answer. Each benchmark defines the hallucination rate it reports in its own way, so two rates compare only when their definitions match."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "hallucination rate",
+      "confabulation",
+      "taux d'hallucination"
+    ],
+    "related": [
+      "confidence-calibration",
+      "fact-checking",
+      "fabricated-host-fetch"
+    ],
+    "articles": [
+      "frontier-model-factuality-depends-on-what-a-wrong-answer-costs"
+    ],
+    "addedOn": "30-10-2026"
+  },
+  {
     "id": "hardware-flops-utilization",
     "label": {
       "fr": "Taux d'utilisation des FLOPS matériels",
@@ -3517,7 +3572,8 @@
     "articles": [
       "observability-is-not-evaluation",
       "live-web-agent-evals-run-side-effects-on-third-party-sites",
-      "system-prompt-persona-shifts-generated-code-security"
+      "system-prompt-persona-shifts-generated-code-security",
+      "frontier-model-factuality-depends-on-what-a-wrong-answer-costs"
     ],
     "addedOn": "07-07-2026"
   },
@@ -3934,7 +3990,8 @@
       "agent-benchmarks-cover-little-of-the-work-your-agent-does",
       "system-prompt-persona-shifts-generated-code-security",
       "ai-rediscovered-vulnerabilities-leak-the-disclosure-window",
-      "strict-tool-decoding-is-a-per-model-serving-decision"
+      "strict-tool-decoding-is-a-per-model-serving-decision",
+      "frontier-model-factuality-depends-on-what-a-wrong-answer-costs"
     ],
     "addedOn": "18-07-2026"
   },
