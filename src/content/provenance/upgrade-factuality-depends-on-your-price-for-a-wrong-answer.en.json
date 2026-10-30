@@ -1,0 +1,121 @@
+{
+  "slug": "upgrade-factuality-depends-on-your-price-for-a-wrong-answer",
+  "lang": "en",
+  "translationKey": "frontier-model-factuality-depends-on-what-a-wrong-answer-costs",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Google, Gemini 4 Carbon: our next frontier model",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/",
+      "excerpt": "Gemini 4 Carbon is our strongest model with state-of-the-art cybersecurity and long horizon capabilities."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Google, Gemini 4 Carbon: our next frontier model",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/",
+      "excerpt": "On internal benchmarks, Carbon drives a strong uplift in generating secure code, and in live coding environments with our own teams it shows reduced misalignment and fabrication rates."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Google, Gemini 4 Carbon: our next frontier model",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/",
+      "excerpt": "continuing to gather feedback and iterate on guardrails before making Carbon available to developers, businesses, and consumers via our product surfaces as soon as possible."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Artificial Analysis, Gemini 4 Carbon is the new #1 on the Intelligence Index v5",
+      "url": "https://artificialanalysis.ai/articles/gemini-4-carbon-new-number-1",
+      "excerpt": "Gemini 4 Carbon scores 59 on Intelligence Index v5, driven by leading performance in complex reasoning, knowledge, and scientific tasks."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Artificial Analysis, Gemini 4 Carbon is the new #1 on the Intelligence Index v5",
+      "url": "https://artificialanalysis.ai/articles/gemini-4-carbon-new-number-1",
+      "excerpt": "Accuracy (% correct) rises 10 points over Argon to 58%, while its hallucination rate rises from 4% to 11%."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Artificial Analysis, Gemini 4 Carbon is the new #1 on the Intelligence Index v5",
+      "url": "https://artificialanalysis.ai/articles/gemini-4-carbon-new-number-1",
+      "excerpt": "while its hallucination rate rises from 4% to 11%. This is still the second lowest of any model, behind only Argon, compared with 50% for both Claude Opus 5.5 (max) and GPT-6 Astra (max)"
+    },
+    {
+      "sourceId": "s7",
+      "label": "Artificial Analysis, Gemini 4 Carbon is the new #1 on the Intelligence Index v5",
+      "url": "https://artificialanalysis.ai/articles/gemini-4-carbon-new-number-1",
+      "excerpt": "Gemini 4 Carbon scores 54 on our recently updated AA-Omniscience v1.1, 6 points ahead of Claude Opus 5.5 (max, 48) and 8 points ahead of Gemini 4 Argon (46)."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Artificial Analysis, Gemini 4 Carbon is the new #1 on the Intelligence Index v5",
+      "url": "https://artificialanalysis.ai/articles/gemini-4-carbon-new-number-1",
+      "excerpt": "As with launch of Gemini 4 Argon, Gemini 4 Carbon is being rolled out to selected users and is not yet publicly available."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Artificial Analysis, Intelligence Index v5 methodology",
+      "url": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "excerpt": "which assigns points for correct answers, subtracts points for hallucinated responses, and keeps abstentions neutral, rewarding abstentions over incorrect guesses"
+    },
+    {
+      "sourceId": "s10",
+      "label": "Artificial Analysis, Intelligence Index v5 methodology",
+      "url": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "excerpt": "Accuracy (10%) and 1 - Hallucination Rate (5%) as separate components"
+    },
+    {
+      "sourceId": "s11",
+      "label": "Kalai et al., Why Language Models Hallucinate (arXiv 2509.04664)",
+      "url": "https://arxiv.org/abs/2509.04664",
+      "excerpt": "We then argue that hallucinations persist due to the way most evaluations are graded -- language models are optimized to be good test-takers, and guessing when uncertain improves test performance."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Kalai et al., Why Language Models Hallucinate (arXiv 2509.04664)",
+      "url": "https://arxiv.org/abs/2509.04664",
+      "excerpt": "modifying the scoring of existing benchmarks that are misaligned but dominate leaderboards, rather than introducing additional hallucination evaluations."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Google, Gemini 4 Carbon: our next frontier model (unsupported claims)",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/",
+      "excerpt": "In our internal testing, Carbon cuts unsupported claims by approximately 2x over Argon."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Google, Gemini 4 Carbon: our next frontier model (guessing)",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/",
+      "excerpt": "Rather than guessing or forcing a path forward, Carbon retrieves the relevant sources and surfaces discrepancies to the user before acting"
+    },
+    {
+      "sourceId": "s15",
+      "label": "Google, Gemini 4 Carbon: our next frontier model (byline)",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/",
+      "excerpt": "SVP, Google DeepMind and Chief AI Architect, Google"
+    },
+    {
+      "sourceId": "s16",
+      "label": "Artificial Analysis, Gemini 4 Carbon is the new #1 on the Intelligence Index v5 (opening)",
+      "url": "https://artificialanalysis.ai/articles/gemini-4-carbon-new-number-1",
+      "excerpt": "Google’s Gemini 4 Carbon is the new #1 on the Artificial Analysis Intelligence Index v5"
+    },
+    {
+      "sourceId": "s17",
+      "label": "Kalai et al., Why Language Models Hallucinate (arXiv 2509.04664) (authors)",
+      "url": "https://arxiv.org/abs/2509.04664",
+      "excerpt": "View a PDF of the paper titled Why Language Models Hallucinate, by Adam Tauman Kalai and Ofir Nachum and Santosh S. Vempala and Edwin Zhang"
+    },
+    {
+      "sourceId": "s18",
+      "label": "Artificial Analysis, Intelligence Index v5 methodology (Intelligence Index weighting)",
+      "url": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "excerpt": "AA-Omniscience contributes two components to the Intelligence Index: (1)  Accuracy  - the proportion of correct answers, weighted at 10% of the overall Index, and (2)  Non-Hallucination Rate  - calculated as 1 minus the hallucination rate, weighted at 5% of the overall Index"
+    },
+    {
+      "sourceId": "s19",
+      "label": "Artificial Analysis, Intelligence Index v5 methodology (Index scoring rule)",
+      "url": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "excerpt": "Models are scored using the  AA-Omniscience Index , which assigns points for correct answers, subtracts points for hallucinated responses, and keeps abstentions neutral, rewarding abstentions over incorrect guesses"
+    }
+  ]
+}
