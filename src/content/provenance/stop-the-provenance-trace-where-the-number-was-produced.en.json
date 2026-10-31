@@ -1,0 +1,193 @@
+{
+  "slug": "stop-the-provenance-trace-where-the-number-was-produced",
+  "lang": "en",
+  "translationKey": "fabricated-statistics-site-keeps-feeding-live-llm-retrieval",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Peec AI, Publish stats, get cited (vantage)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "At Peec AI and in the industry, we talk about GEO and SEO every day, and we keep looking for new tactics."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Peec AI, Publish stats, get cited (setup)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "About 7 months ago, I launched a website with 50,000 statistics."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Peec AI, Publish stats, get cited (fabrication)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "Every one of them was fake."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Peec AI, Publish stats, get cited (generation)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "I bought a brand-new domain, stateglobe.com, and generated 50,000 statistics pages in a single day with GPT-4.1."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Peec AI, Publish stats, get cited (unchecked)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "Except every number was totally invented."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Peec AI, Publish stats, get cited (search engine)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "Then two Google updates came out right after launch, and my Google visibility collapsed."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Peec AI, Publish stats, get cited (bot load)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "In the last 30 days alone, the site got more than 600,000 requests from bots."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Peec AI, Publish stats, get cited (live fetches)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "Around 72,000 of them came from ChatGPT-User."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Peec AI, Publish stats, get cited (fetch meaning)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "That is the agent ChatGPT uses to open a page in real time while answering someone."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Peec AI, Publish stats, get cited (not training)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "Each one is ChatGPT fetching a fake statistics page to answer a real question."
+    },
+    {
+      "sourceId": "s11",
+      "label": "Aggarwal et al., GEO: Generative Engine Optimization, arXiv 2311.09735 (method definition)",
+      "url": "https://arxiv.org/abs/2311.09735",
+      "excerpt": "Statistics Addition: Modifies content to include quantitative statistics instead of qualitative discussion, wherever possible,"
+    },
+    {
+      "sourceId": "s12",
+      "label": "Aggarwal et al., GEO: Generative Engine Optimization, arXiv 2311.09735 (top methods)",
+      "url": "https://arxiv.org/abs/2311.09735",
+      "excerpt": "Specifically, our top-performing methods, Cite Sources, Quotation Addition, and Statistics Addition, achieved a relative improvement of 30-40% on the Position-Adjusted Word Count metric and 15-30% on the Subjective Impression metric."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Aggarwal et al., GEO: Generative Engine Optimization, arXiv 2311.09735 (low effort)",
+      "url": "https://arxiv.org/abs/2311.09735",
+      "excerpt": "These methods, involving adding relevant statistics (Statistics Addition), incorporating credible quotes (Quotation Addition), and including citations from reliable sources (Cite Sources) in the website content, require minimal changes but significantly improve visibility in GE responses, enhancing both the credibility and richness of the content."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Trakkr Research, Zombie Stats: where the numbers AI quotes come from (method)",
+      "url": "https://trakkr.ai/trakkr-research/zombie-stats",
+      "excerpt": "We took a random sample of the statistics each assistant cited, 1,285 in all, and walked every trail the same way"
+    },
+    {
+      "sourceId": "s15",
+      "label": "Trakkr Research, Zombie Stats: where the numbers AI quotes come from (trail outcomes)",
+      "url": "https://trakkr.ai/trakkr-research/zombie-stats",
+      "excerpt": "40% reached a study that says the same thing. Another 8% reached the study, but the number or its context had changed on the way."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Trakkr Research, Zombie Stats: where the numbers AI quotes come from (cited page match)",
+      "url": "https://trakkr.ai/trakkr-research/zombie-stats",
+      "excerpt": "The page an assistant cited contained the figure 82% of the time."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Trakkr Research, Zombie Stats: where the numbers AI quotes come from (original research share)",
+      "url": "https://trakkr.ai/trakkr-research/zombie-stats",
+      "excerpt": "But only 21% of the pages cited for a number were the original research."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Trakkr Research, Zombie Stats: where the numbers AI quotes come from (citation meaning)",
+      "url": "https://trakkr.ai/trakkr-research/zombie-stats",
+      "excerpt": "A citation tells you where the AI found a number, not where the number came from."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Trakkr Research, Zombie Stats: where the numbers AI quotes come from (model judge)",
+      "url": "https://trakkr.ai/trakkr-research/zombie-stats",
+      "excerpt": "People found originals the model missed: by the model alone, 23% were sourced."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Trakkr Research, Zombie Stats: where the numbers AI quotes come from (panel)",
+      "url": "https://trakkr.ai/trakkr-research/zombie-stats",
+      "excerpt": "Panel of 200 statistics questions asked to five AI assistants with web search on"
+    },
+    {
+      "sourceId": "s21",
+      "label": "Trakkr Research, Zombie Stats: where the numbers AI quotes come from (figure caption)",
+      "url": "https://trakkr.ai/trakkr-research/zombie-stats",
+      "excerpt": "Trakkr Research, five AI assistants asked 200 questions that call for a number, October 2026."
+    },
+    {
+      "sourceId": "s22",
+      "label": "Trakkr Research, Zombie Stats: where the numbers AI quotes come from (upstream)",
+      "url": "https://trakkr.ai/trakkr-research/zombie-stats",
+      "excerpt": "The bigger problem is upstream: the pages AI cites are mostly blogs and roundups repeating a number."
+    },
+    {
+      "sourceId": "s23",
+      "label": "Trakkr Research, Zombie Stats: where the numbers AI quotes come from (copied pages)",
+      "url": "https://trakkr.ai/trakkr-research/zombie-stats",
+      "excerpt": "See which page AI cites for your numbers.  It is often a roundup or a blog that copied you, sometimes with an older figure."
+    },
+    {
+      "sourceId": "s24",
+      "label": "Peec AI, Publish stats, get cited (laundering chain)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "On day one, a fake number on StateGlobe had zero authority. It was a random stat on a brand-new domain.  Then an academic paper cited it. Then a bank. Now the next person, or the next model, that finds this number sees a stat with a source."
+    },
+    {
+      "sourceId": "s25",
+      "label": "Peec AI, Publish stats, get cited (trust)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "The fake data certainly didn't become true, but every citation made it look more trustworthy."
+    },
+    {
+      "sourceId": "s26",
+      "label": "Peec AI, Publish stats, get cited (grounding pipeline)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "A search-grounded piece of LLM-written content has a tight budget for latency and cost. The system fetches a few pages, pulls the relevant passages, and starts to write."
+    },
+    {
+      "sourceId": "s27",
+      "label": "Peec AI, Publish stats, get cited (rerankers)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "To get around this, LLMs use rerankers that score relevance, but not truth. That means if a passage matches the query and looks authoritative, it gets used."
+    },
+    {
+      "sourceId": "s28",
+      "label": "Peec AI, Publish stats, get cited (verification cost)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "Across billions of prompts by millions of users, the costs in both time and money would add up, making verification too slow and too expensive for practical purposes."
+    },
+    {
+      "sourceId": "s29",
+      "label": "Aggarwal et al., GEO: Generative Engine Optimization, arXiv 2311.09735 (authors)",
+      "url": "https://arxiv.org/abs/2311.09735",
+      "excerpt": "View a PDF of the paper titled GEO: Generative Engine Optimization, by Pranjal Aggarwal and Vishvak Murahari and Tanmay Rajpurohit and Ashwin Kalyan and Karthik Narasimhan and Ameet Deshpande"
+    },
+    {
+      "sourceId": "s30",
+      "label": "Peec AI, Publish stats, get cited (named pattern)",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "excerpt": "The uncomfortable implication: citation laundering"
+    },
+    {
+      "sourceId": "s31",
+      "label": "Trakkr Research, Zombie Stats: where the numbers AI quotes come from (product)",
+      "url": "https://trakkr.ai/trakkr-research/zombie-stats",
+      "excerpt": "Visibility  Your score in 8 AI models, daily"
+    }
+  ]
+}
