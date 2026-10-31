@@ -1203,6 +1203,32 @@
     "addedOn": "23-05-2026"
   },
   {
+    "id": "citation-laundering",
+    "label": {
+      "fr": "Blanchiment de citations",
+      "en": "Citation laundering"
+    },
+    "definition": {
+      "fr": "Processus par lequel un chiffre infondé ou inventé gagne une autorité apparente à mesure que des pages crédibles le reprennent, chacune citant la précédente plutôt que la mesure d'origine. Un lecteur ou un système de recherche qui juge un chiffre d'après les pages qui le citent finit par tenir la copie pour sourcée.",
+      "en": "The process by which an unsupported or invented figure gains apparent authority as successive credible pages repeat it, each citing a predecessor rather than the original measurement. A reader or a retrieval system that judges a figure by the pages citing it ends up treating the copy as sourced."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "statistic laundering",
+      "source laundering",
+      "blanchiment de statistiques"
+    ],
+    "related": [
+      "citation-grounding",
+      "fact-checking",
+      "rag"
+    ],
+    "articles": [
+      "fabricated-statistics-site-keeps-feeding-live-llm-retrieval"
+    ],
+    "addedOn": "31-10-2026"
+  },
+  {
     "id": "clarification-seeking",
     "label": {
       "fr": "Demande de clarification",
@@ -2498,6 +2524,31 @@
       "refusal-behavior-is-not-a-security-control"
     ],
     "addedOn": "26-07-2026"
+  },
+  {
+    "id": "generative-engine-optimization",
+    "label": {
+      "fr": "Optimisation pour les moteurs génératifs",
+      "en": "Generative engine optimization"
+    },
+    "definition": {
+      "fr": "Retouche de contenus web pour que les moteurs génératifs, qui répondent à une requête en récupérant des pages puis en synthétisant une réponse, les citent ou les reprennent plus en évidence. Les méthodes courantes ajoutent au texte des statistiques chiffrées, des citations ou des références à des sources.",
+      "en": "Editing web content so that generative engines, which answer a query by retrieving pages and synthesizing a response, cite or quote it more prominently. Common methods add quantitative statistics, quotations or source citations to the text."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "GEO",
+      "statistics addition",
+      "optimisation GEO"
+    ],
+    "related": [
+      "rag",
+      "citation-laundering"
+    ],
+    "articles": [
+      "fabricated-statistics-site-keeps-feeding-live-llm-retrieval"
+    ],
+    "addedOn": "31-10-2026"
   },
   {
     "id": "grader-agreement",
