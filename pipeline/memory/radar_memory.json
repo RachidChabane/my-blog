@@ -2833,5 +2833,44 @@
     ],
     "published_at": "2026-10-30",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-code-cursor-extension-comment-grep-versus-fingerprint-hunt",
+    "topic_id": "claude-code-cursor-extension-comment-grep-versus-fingerprint-hunt",
+    "dedup_key": "claude code cursor extension comment grep versus fingerprint hunt",
+    "title": "The tampered Claude Code extension on Cursor's marketplace labels its SSH key svc-telemetry, and Microsoft and Phorion say to confirm it by the key fingerprint",
+    "slugs": {
+      "fr": "extension-claude-code-piegee-cursor-confirmer-la-cle-ssh-par-empreinte",
+      "en": "claude-code-cursor-extension-comment-grep-versus-fingerprint-hunt"
+    },
+    "sources": [
+      {
+        "label": "Cursor, security notice on malicious Anthropic.claude-code 2.1.312 and 2.1.313 in the Cursor VS Code Extension Marketplace",
+        "url": "https://cursor.com/blog/claude-code-extension-security-notice",
+        "date": "29-10-2026"
+      },
+      {
+        "label": "Microsoft Security, Inside a malicious Claude Code-branded extension and its persistent SSH backdoor",
+        "url": "https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/",
+        "date": "30-10-2026"
+      },
+      {
+        "label": "Phorion, Official Claude Code Extension Compromise: Security Advisory",
+        "url": "https://phorion.io/blog/offical-claude-code-vsx-compromise/",
+        "date": "30-10-2026"
+      },
+      {
+        "label": "StepSecurity, Trojanized Claude Code Extension Delivered Persistent SSH Backdoor to Developer Machines",
+        "url": "https://www.stepsecurity.io/blog/claude-code-extension-trojanized",
+        "date": "30-10-2026"
+      },
+      {
+        "label": "ThreatDefence, Malicious Claude Code Extension in the Cursor Marketplace: Check Developer Machines",
+        "url": "https://threatdefence.com/article/claude-code-openvsx-extension-backdoor-advisory",
+        "date": "30-10-2026"
+      }
+    ],
+    "published_at": "2026-10-31",
+    "embedding": null
   }
 ]
