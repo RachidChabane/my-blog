@@ -1197,7 +1197,8 @@
       "rag"
     ],
     "articles": [
-      "publication-guardrails-factcheck"
+      "publication-guardrails-factcheck",
+      "fabricated-statistics-site-keeps-feeding-live-llm-retrieval"
     ],
     "addedOn": "23-05-2026"
   },
@@ -2331,7 +2332,8 @@
       "citation-grounding"
     ],
     "articles": [
-      "publication-guardrails-factcheck"
+      "publication-guardrails-factcheck",
+      "fabricated-statistics-site-keeps-feeding-live-llm-retrieval"
     ],
     "addedOn": "23-05-2026"
   },
@@ -4168,7 +4170,8 @@
     "articles": [
       "hybrid-rag-rrf",
       "ast-code-chunking",
-      "agentic-coding-thins-the-public-record"
+      "agentic-coding-thins-the-public-record",
+      "fabricated-statistics-site-keeps-feeding-live-llm-retrieval"
     ],
     "addedOn": "27-05-2026"
   },
