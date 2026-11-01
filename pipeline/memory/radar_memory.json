@@ -2872,5 +2872,39 @@
     ],
     "published_at": "2026-10-31",
     "embedding": null
+  },
+  {
+    "translation_key": "nemotron-3-5-transcribe-headline-wer-versus-deepinfra-row",
+    "topic_id": "nemotron-3-5-transcribe-headline-wer-versus-deepinfra-row",
+    "dedup_key": "nemotron 3 5 transcribe headline wer versus deepinfra row",
+    "title": "Artificial Analysis puts Nemotron 3.5 Transcribe at 2.8% AA-WER, and lists its DeepInfra deployment at 3.4%",
+    "slugs": {
+      "fr": "nemotron-3-5-transcribe-wer-du-classement-contre-ligne-deepinfra",
+      "en": "nemotron-3-5-transcribe-headline-wer-versus-deepinfra-row"
+    },
+    "sources": [
+      {
+        "label": "NVIDIA Research, NVIDIA Nemotron 3.5 Transcribe: Intelligent Transcription with a Speech LLM",
+        "url": "https://research.nvidia.com/labs/nemotron/NVIDIA-Nemotron-3.5-Transcribe/",
+        "date": "28-10-2026"
+      },
+      {
+        "label": "NVIDIA on Hugging Face, NVIDIA Nemotron 3.5 Transcribe and Granary v2: Intelligent Multilingual Transcription You Can Prompt and Adapt",
+        "url": "https://huggingface.co/blog/nvidia/nemotron-transcribe-granary",
+        "date": "28-10-2026"
+      },
+      {
+        "label": "Artificial Analysis, Speech to Text leaderboard",
+        "url": "https://artificialanalysis.ai/speech-to-text",
+        "date": "28-10-2026"
+      },
+      {
+        "label": "Cekura, Nemotron 3.5 Transcribe: Specs, Accuracy, Languages, Setup",
+        "url": "https://www.cekura.ai/blogs/nemotron-3-5-transcribe",
+        "date": "29-10-2026"
+      }
+    ],
+    "published_at": "2026-11-01",
+    "embedding": null
   }
 ]
