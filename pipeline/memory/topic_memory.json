@@ -7793,5 +7793,347 @@
     ],
     "published_at": "2026-10-31",
     "embedding": null
+  },
+  {
+    "translation_key": "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache",
+    "topic_id": "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache",
+    "dedup_key": "agent harness features such as mid session reasoning effort switches tool list insertion and history pruning invalidate the provider prefix cache with a cost that grows with session depth so adaptive effort escalation and context hygiene carry a hidden prefill and energy cost that only append only harness designs avoid",
+    "title": "Reasoning effort sits in the wrong place for escalation",
+    "slugs": {
+      "fr": "l-effort-de-raisonnement-est-mal-place-pour-l-escalade",
+      "en": "reasoning-effort-sits-in-the-wrong-place-for-escalation"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (cause of breaks)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Every cache break in our lab tests came from a harness editing what it had already sent, forcing a re-read from the first difference onward.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s2",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (effort in the template)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Both templates write the effort level in the first few tokens of the prompt: Reasoning Effort: Max on GLM-5.3, a number from 1 to 100 on DeepSeek V4.1.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s3",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (first difference)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "The first difference was at token 8 on both models, so a switch re-reads everything.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s4",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (production effect)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Changing the tool list or effort level makes a cache break more than 20 times as likely and costs, on average, about 40% of the previous prompt.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s5",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (tool-list share)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Tool-list changes happen on about 0.5% of turns, yet account for 19% of all re-read tokens on these models.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s6",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (tool insertion order)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "OpenCode 1.x and Kilo Code insert new tools in alphabetical order, in the middle of the tool list.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s7",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (append fix)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "OpenCode 2.x leaves the tool list alone and appends a note, so both connecting and disconnecting were pure appends.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s8",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (pruning)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "omp also prunes \"uneventful\" tool results, and after 90 minutes idle it prunes at any depth. Setting compaction.supersedeReads: false and compaction.dropUseless: false keeps the cache.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s9",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (deep re-reads)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Past 128k tokens of context, about 3 turns in every 1,000 re-read more than half of the prompt from scratch.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s10",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (cost of one deep re-read)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "A normal turn at that depth adds a median of about 370 new tokens, so a single one of these costs as much prefill as roughly 600 ordinary turns.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s11",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (energy)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "A mostly uncached request takes roughly twice the energy of a cached one of the same size.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s12",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (lab versus production)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "2.x fixes most of the 1.x cache breaks we found in the lab. That difference doesn't show up in production, and we don't yet know why.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s13",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (server-side limit)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "We can't always tell from the server side whether a harness edited the prompt or the cache was evicted under memory pressure.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s14",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (vantage point)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "At Neuralwatt, we can see how the agent harness calling a model affects the energy it uses.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s15",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (publish date)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Published October 16, 2026",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s16",
+        "label": "OpenCodex issue 6895, keep the Anthropic prompt cache across reasoning effort changes (goal)",
+        "url": "https://github.com/lidge-jun/opencodex/issues/6895",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "The goal is to change effort mid-conversation without paying a cache write for the whole conversation history again.",
+        "source_date": "2026-10-10"
+      },
+      {
+        "source_id": "s17",
+        "label": "OpenCodex issue 6895, keep the Anthropic prompt cache across reasoning effort changes (upstream rule)",
+        "url": "https://github.com/lidge-jun/opencodex/issues/6895",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "So OpenCodex does not change the prefix itself. The miss comes from the upstream rule that a change of the top-level effort invalidates the messages cache.",
+        "source_date": "2026-10-10"
+      },
+      {
+        "source_id": "s18",
+        "label": "OpenCodex issue 6895, keep the Anthropic prompt cache across reasoning effort changes (measured miss)",
+        "url": "https://github.com/lidge-jun/opencodex/issues/6895",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Cache reads stop at the first user message (about 11.6k tokens); everything after it is written again on each effort change",
+        "source_date": "2026-10-10"
+      },
+      {
+        "source_id": "s19",
+        "label": "OpenCodex issue 6895, keep the Anthropic prompt cache across reasoning effort changes (workarounds)",
+        "url": "https://github.com/lidge-jun/opencodex/issues/6895",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Keep effort fixed for the whole conversation (what we do for now)",
+        "source_date": "2026-10-10"
+      },
+      {
+        "source_id": "s20",
+        "label": "OpenCodex issue 6895, keep the Anthropic prompt cache across reasoning effort changes (stripping reasoning)",
+        "url": "https://github.com/lidge-jun/opencodex/issues/6895",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Strip replayed reasoning (keeps the cache but drops thinking continuity)",
+        "source_date": "2026-10-10"
+      },
+      {
+        "source_id": "s21",
+        "label": "OpenCodex issue 6895, keep the Anthropic prompt cache across reasoning effort changes (caveat)",
+        "url": "https://github.com/lidge-jun/opencodex/issues/6895",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "The wire bodies were not retained, so the exact upstream cause was not proven by byte comparison.",
+        "source_date": "2026-10-10"
+      },
+      {
+        "source_id": "s22",
+        "label": "Manus, Context Engineering for AI Agents: Lessons from Building Manus (single-token difference)",
+        "url": "https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Due to the autoregressive nature of LLMs, even a single-token difference can invalidate the cache from that token onward.",
+        "source_date": "2025-07-18"
+      },
+      {
+        "source_id": "s23",
+        "label": "Manus, Context Engineering for AI Agents: Lessons from Building Manus (tool rule)",
+        "url": "https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "But our experiments suggest a clear rule: unless absolutely necessary, avoid dynamically adding or removing tools mid-iteration .",
+        "source_date": "2025-07-18"
+      },
+      {
+        "source_id": "s24",
+        "label": "Manus, Context Engineering for AI Agents: Lessons from Building Manus (tools sit early)",
+        "url": "https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "In most LLMs, tool definitions live near the front of the context after serialization, typically before or after the system prompt. So any change will invalidate the KV-cache for all subsequent actions and observations.",
+        "source_date": "2025-07-18"
+      },
+      {
+        "source_id": "s25",
+        "label": "Manus, Context Engineering for AI Agents: Lessons from Building Manus (masking)",
+        "url": "https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Manus uses a context-aware state machine to manage tool availability. Rather than removing tools, it masks the token logits during decoding to prevent (or enforce) the selection of certain actions based on the current context.",
+        "source_date": "2025-07-18"
+      },
+      {
+        "source_id": "s26",
+        "label": "OpenCodex issue 6895, keep the Anthropic prompt cache across reasoning effort changes (escalation pattern)",
+        "url": "https://github.com/lidge-jun/opencodex/issues/6895",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "A Codex conversation routed to an adaptive-thinking Claude model (Haiku 5.5, Sonnet 5.5, Opus 5.5, Fable 5.1) through the Anthropic adapter changes its reasoning effort between turns, for example to raise effort after a failed attempt.",
+        "source_date": "2026-10-10"
+      },
+      {
+        "source_id": "s27",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (concentration caveat)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "That share is concentrated: three accounts make up about two thirds of it. The per-turn effect holds across everyone else.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s28",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (switching back)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Switching effort back hit 10.6k to 27.5k cached tokens in our runs. A toggle costs one full re-read the first time each new state is used, not on every flip.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s29",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (per-session advice)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Pick a reasoning effort per session rather than switching mid-session.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s30",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (settle early)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Settle settings like effort, MCP servers and skills before the session gets long. That is when a cache break hurts most.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s31",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (server-side reuse)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "We also want to research ways for the server to reuse cached work after a small edit near the beginning of the prompt, such as the effort line or the date.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s32",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (deepseek-harness appends)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "In our lab capture, every one of deepseek-harness's follow-up requests was a pure append to the previous one, even after the process was restarted and the session resumed.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s33",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (other causes)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "The remaining three quarters of re-read tokens come on turns where neither the effort nor the tool count changed.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s34",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (depth matters)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Changing the beginning of the prompt once, early on, costs little. Do it at turn 200 of a long session and you get a large, visible pause and a large energy cost.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s35",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (one value)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Only that one value changes; its length and everything after it stay identical.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s36",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (energy billing)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "We bill on measured energy, so we can see the cost directly.",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s37",
+        "label": "Neuralwatt, Why harnesses matter for energy efficiency (dashboard)",
+        "url": "https://neuralwatt.com/news/why-harnesses-matter-for-energy-efficiency",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Session Insights in the Neuralwatt dashboard shows each agent session turn by turn",
+        "source_date": "2026-10-16"
+      },
+      {
+        "source_id": "s38",
+        "label": "OpenCodex issue 6895, keep the Anthropic prompt cache across reasoning effort changes (per-message effort)",
+        "url": "https://github.com/lidge-jun/opencodex/issues/6895",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Keep the cached prefix across mid-conversation effort changes on models that support Anthropic's per-message effort",
+        "source_date": "2026-10-10"
+      },
+      {
+        "source_id": "s39",
+        "label": "OpenCodex issue 6895, keep the Anthropic prompt cache across reasoning effort changes (change points)",
+        "url": "https://github.com/lidge-jun/opencodex/issues/6895",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Re-insert every earlier change point at the same position on later requests so the prefix stays byte-identical (Codex history carries no per-turn effort, so OpenCodex needs a per-conversation list of change points).",
+        "source_date": "2026-10-10"
+      },
+      {
+        "source_id": "s40",
+        "label": "OpenCodex issue 6895, keep the Anthropic prompt cache across reasoning effort changes (new thread)",
+        "url": "https://github.com/lidge-jun/opencodex/issues/6895",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Start a new thread on escalation (loses context and writes the whole prompt again).",
+        "source_date": "2026-10-10"
+      },
+      {
+        "source_id": "s41",
+        "label": "OpenCodex issue 6895, keep the Anthropic prompt cache across reasoning effort changes (not yet measured)",
+        "url": "https://github.com/lidge-jun/opencodex/issues/6895",
+        "retrieved_at": "2026-11-01",
+        "excerpt": "Not yet measured: when the cache grows again after one effort change with constant effort afterwards, tool-use loops, and whether the tools/system blocks stay cached on the effort-changing turn (the experiment had no tools).",
+        "source_date": "2026-10-10"
+      }
+    ],
+    "published_at": "2026-11-01",
+    "embedding": null
   }
 ]
