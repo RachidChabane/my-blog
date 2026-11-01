@@ -573,7 +573,8 @@
       "opaque-state-outscores-the-notes-you-can-read",
       "edit-unit-size-beside-edit-format",
       "attack-agent-harness-state-holds-the-secrets-it-finds",
-      "compaction-summaries-carry-no-authority"
+      "compaction-summaries-carry-no-authority",
+      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache"
     ],
     "addedOn": "17-06-2026"
   },
@@ -1076,7 +1077,8 @@
       "kv-cache"
     ],
     "articles": [
-      "prompt-caching-prefix-stability"
+      "prompt-caching-prefix-stability",
+      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache"
     ],
     "addedOn": "30-06-2026"
   },
@@ -1644,7 +1646,8 @@
       "active-context-compression-prune-history",
       "opaque-state-outscores-the-notes-you-can-read",
       "the-check-binds-the-action-not-the-decision",
-      "compaction-summaries-carry-no-authority"
+      "compaction-summaries-carry-no-authority",
+      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache"
     ],
     "addedOn": "18-06-2026"
   },
@@ -3062,7 +3065,8 @@
     "articles": [
       "serving-oss-llm-production-cost",
       "active-context-compression-prune-history",
-      "prompt-caching-prefix-stability"
+      "prompt-caching-prefix-stability",
+      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache"
     ],
     "addedOn": "04-05-2026"
   },
@@ -3895,7 +3899,8 @@
     ],
     "articles": [
       "context-budget",
-      "prompt-caching-prefix-stability"
+      "prompt-caching-prefix-stability",
+      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache"
     ],
     "addedOn": "10-06-2026"
   },
@@ -4276,7 +4281,8 @@
       "cost-aware-evaluation"
     ],
     "articles": [
-      "opaque-state-outscores-the-notes-you-can-read"
+      "opaque-state-outscores-the-notes-you-can-read",
+      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache"
     ],
     "addedOn": "10-09-2026"
   },
