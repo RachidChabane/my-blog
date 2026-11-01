@@ -1159,6 +1159,33 @@
     "addedOn": "26-09-2026"
   },
   {
+    "id": "chat-template",
+    "label": {
+      "fr": "Template de chat",
+      "en": "Chat template"
+    },
+    "definition": {
+      "fr": "Règle propre à chaque modèle qui transforme une conversation (prompt système, messages, définitions d'outils et, pour certains modèles, réglages de génération) en un texte de prompt, ensuite découpé en tokens et fourni au modèle. La position où elle écrit chaque champ détermine quelle partie de la séquence de tokens obtenue change quand ce champ change, et donc ce qu'un cache de préfixe peut encore réutiliser.",
+      "en": "The model-specific rule that renders a conversation (system prompt, messages, tool definitions and, on some models, generation settings) into the prompt text that is then tokenized and fed to the model. Where it writes each field decides which part of the resulting token sequence changes when the field changes, and so what a prefix cache can still reuse."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "chat format",
+      "conversation template",
+      "format de conversation"
+    ],
+    "related": [
+      "reasoning-effort",
+      "prompt-caching",
+      "cache-block-control",
+      "tool-use"
+    ],
+    "articles": [
+      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache"
+    ],
+    "addedOn": "01-11-2026"
+  },
+  {
     "id": "chunking",
     "label": {
       "fr": "Découpage en chunks",
