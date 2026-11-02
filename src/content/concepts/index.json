@@ -426,7 +426,8 @@
     "articles": [
       "observability-is-not-evaluation",
       "arret-anticipe-sondes-2026-08",
-      "watermark-entropy-budget"
+      "watermark-entropy-budget",
+      "claude-code-agent-summary-side-calls-escape-transcript-cost-accounting"
     ],
     "addedOn": "07-07-2026"
   },
@@ -574,7 +575,8 @@
       "edit-unit-size-beside-edit-format",
       "attack-agent-harness-state-holds-the-secrets-it-finds",
       "compaction-summaries-carry-no-authority",
-      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache"
+      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache",
+      "claude-code-agent-summary-side-calls-escape-transcript-cost-accounting"
     ],
     "addedOn": "17-06-2026"
   },
@@ -2695,6 +2697,33 @@
     "addedOn": "15-07-2026"
   },
   {
+    "id": "harness-side-call",
+    "label": {
+      "fr": "Appel annexe de l'environnement d'agent",
+      "en": "Harness side call"
+    },
+    "definition": {
+      "fr": "Requête facturée qu'un environnement d'agent envoie au modèle pour son propre compte, et non comme un tour de la conversation de l'utilisateur : résumé d'état, compaction du contexte, titre de session ou passe d'un classifieur. Comme ces requêtes se situent hors de la conversation, un relevé de coût ou d'usage construit à partir des seuls transcripts peut les omettre si l'environnement ne les consigne pas à part.",
+      "en": "A billed model request that an agent harness makes on its own behalf rather than as a turn of the user's conversation, such as a status summary, a context compaction, a session title, or a classifier pass. Because these requests sit outside the conversation, a cost or usage record built only from conversation transcripts can miss them unless the harness logs them separately."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "side query",
+      "harness side query",
+      "background model call",
+      "requête annexe"
+    ],
+    "related": [
+      "agent-scaffold",
+      "context-compaction",
+      "agent-observability"
+    ],
+    "articles": [
+      "claude-code-agent-summary-side-calls-escape-transcript-cost-accounting"
+    ],
+    "addedOn": "02-11-2026"
+  },
+  {
     "id": "header-based-routing",
     "label": {
       "fr": "Routage par en-têtes",
@@ -3605,7 +3634,8 @@
     "articles": [
       "multi-agent-gains-compute-artifact",
       "coordinator-title-buys-no-information",
-      "agent-write-volume-breaks-git-design-assumptions"
+      "agent-write-volume-breaks-git-design-assumptions",
+      "claude-code-agent-summary-side-calls-escape-transcript-cost-accounting"
     ],
     "addedOn": "13-07-2026"
   },
@@ -3927,7 +3957,8 @@
     "articles": [
       "context-budget",
       "prompt-caching-prefix-stability",
-      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache"
+      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache",
+      "claude-code-agent-summary-side-calls-escape-transcript-cost-accounting"
     ],
     "addedOn": "10-06-2026"
   },
@@ -4203,6 +4234,33 @@
       "quantizing-open-models"
     ],
     "addedOn": "19-05-2026"
+  },
+  {
+    "id": "query-source-cost-attribution",
+    "label": {
+      "fr": "Ventilation des coûts par source de requête",
+      "en": "Per-query-source cost attribution"
+    },
+    "definition": {
+      "fr": "Regrouper chaque requête facturée selon le composant qui l'a émise (conversation principale, sous-agent, résumeur, compacteur) et additionner le coût de chaque groupe, à partir de la télémétrie par requête ou des relevés de facturation plutôt que des journaux de conversation enregistrés. Cette ventilation montre quels composants pèsent sur la dépense, y compris des requêtes qui n'apparaissent dans aucun transcript.",
+      "en": "Grouping every billed model request by the component that issued it (the main conversation, a subagent, a summarizer, a compactor) and summing the cost of each group, from request-level telemetry or billing records rather than from saved conversation logs. It shows which components drive spend, including requests that never appear in a transcript."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "query source attribution",
+      "cost by query source",
+      "per-request cost attribution",
+      "attribution des coûts par source de requête"
+    ],
+    "related": [
+      "agent-observability",
+      "harness-side-call",
+      "finish-reason-accounting"
+    ],
+    "articles": [
+      "claude-code-agent-summary-side-calls-escape-transcript-cost-accounting"
+    ],
+    "addedOn": "02-11-2026"
   },
   {
     "id": "queue-saturation",
