@@ -8135,5 +8135,379 @@
     ],
     "published_at": "2026-11-01",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-code-agent-summary-side-calls-escape-transcript-cost-accounting",
+    "topic_id": "claude-code-agent-summary-side-calls-escape-transcript-cost-accounting",
+    "dedup_key": "coding agent harness side queries such as background agent status summaries are billed per request but never written to the session transcript so transcript based cost accounting undercounts agent spend and the vendor fleet average hides a workload tail that scales with subagent fan out wall clock time and context size while only per query source telemetry shows it",
+    "title": "Claude Code's status-summary fix leaves the cost record on disk incomplete",
+    "slugs": {
+      "fr": "le-correctif-des-resumes-d-etat-laisse-le-registre-de-cout-incomplet",
+      "en": "claude-code-status-summary-fix-leaves-the-cost-record-incomplete"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Flamerix AI gist, Claude Code agent_summary timer (what the call is for)",
+        "url": "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "The answer only updates the agent's status line in the agents panel; it\nnever reaches the model or your conversation.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s2",
+        "label": "Flamerix AI gist, Claude Code agent_summary timer (default on)",
+        "url": "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "There is no setting that turns it off, and since\n2.1.232 (August 2026) it has been on by default.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s3",
+        "label": "Flamerix AI gist, Claude Code agent_summary timer (found in OpenTelemetry)",
+        "url": "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "The anomaly was detected by  DRIM  in Claude Code's OpenTelemetry export:\ngrouping  claude_code.api_request  events by  query_source  showed  agent_summary  costing  more than the main conversation itself .",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s4",
+        "label": "Hacker News, the gist authors post their weekly measurement (share of spend)",
+        "url": "https://news.ycombinator.com/item?id=50284255",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "agent_summary accounted for: 16.4% of total estimated spend (versus 15.7% for the main conversation), and 19.7% of all API requests with approximately 9,000 input tokens per output token.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s5",
+        "label": "Flamerix AI gist, Claude Code agent_summary timer (estimate, not invoice)",
+        "url": "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Spend here means Claude Code's own per-request estimate ( cost_usd ), not an invoice: on a\nsubscription, what you lose is rate-limit headroom.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s6",
+        "label": "Flamerix AI gist, Claude Code agent_summary timer (cache hit share)",
+        "url": "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "About 98 % of these calls re-read the\ntranscript from cache; the ~2 % that hit a cold cache carry over a third of its cost.",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s7",
+        "label": "Flamerix AI gist, Claude Code agent_summary timer (missing from session logs)",
+        "url": "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "These requests are not written to the\nsession logs on disk",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s8",
+        "label": "claude-code issue 86879, opening measurement from captured raw payloads (method)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Measured over one 4-hour session (27 subagents, 1,496 requests mapped from raw payloads captured with",
+        "source_date": "2026-08-15"
+      },
+      {
+        "source_id": "s9",
+        "label": "claude-code issue 86879, opening measurement from captured raw payloads (request share)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "22.7% of all API requests in the session",
+        "source_date": "2026-08-15"
+      },
+      {
+        "source_id": "s10",
+        "label": "claude-code issue 86879, opening measurement from captured raw payloads (scaling)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Cost therefore scales with fan-out and wall-clock duration, not with useful work: a session with three concurrent long-running subagents pays six of these per minute.",
+        "source_date": "2026-08-15"
+      },
+      {
+        "source_id": "s11",
+        "label": "claude-code issue 86879, second measurement in the thread on 2.1.276 (cache-read share)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "That is **26 % of the session's cache-read tokens** for ~20 output tokens per call",
+        "source_date": "2026-09-18"
+      },
+      {
+        "source_id": "s12",
+        "label": "claude-code issue 86879, second measurement in the thread on 2.1.276 (cost per tick)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "the cost per tick is the agent's current context size: a 380k-context agent pays ~45 M cache-read tokens per hour just for its spinner line.",
+        "source_date": "2026-09-18"
+      },
+      {
+        "source_id": "s13",
+        "label": "claude-code issue 86879, macOS report that the fork variable stops summaries",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "`CLAUDE_CODE_FORK_SUBAGENT=0` still stops summaries for us on macOS 2.1.312, unlike #105981 on Linux.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s14",
+        "label": "claude-code issue 86879, macOS report (cause unknown)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "The difference may come from the platform or from server-side flags; we haven't found the cause.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s15",
+        "label": "claude-code issue 86879, Linux report that the fork variable does not stop summaries",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "`CLAUDE_CODE_FORK_SUBAGENT=0` does not stop `agent_summary` on 2.1.312.",
+        "source_date": "2026-10-30"
+      },
+      {
+        "source_id": "s16",
+        "label": "claude-code issue 86879, Linux report (debug-file counts)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "stock produced 5 summary calls about 32 s apart, `FORK_SUBAGENT=0` also produced 5, and the Bun preload produced 0. Full numbers are in #105981.",
+        "source_date": "2026-10-30"
+      },
+      {
+        "source_id": "s17",
+        "label": "claude-code issue 86879, workflow agents are not summarized",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Only Agent-tool subagents get the timer. In one of our sessions, 1,802 workflow-agent requests came with no summary timers for those agents.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s18",
+        "label": "claude-code issue 104358, per-request usage missing from disk (problem)",
+        "url": "https://github.com/anthropics/claude-code/issues/104358",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Nothing Claude Code writes to disk lets a tool reconstruct what a session cost.",
+        "source_date": "2026-10-22"
+      },
+      {
+        "source_id": "s19",
+        "label": "claude-code issue 104358, per-request usage missing from disk (billed side queries)",
+        "url": "https://github.com/anthropics/claude-code/issues/104358",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Requests with `querySource` `agent_summary`, `auto_mode` (both classifier stages), `compact`, `away_summary`, `generate_session_title`, `extract_memories`, `prompt_suggestion` and others are billed, but appear neither as `assistant` rows nor as `api-request` rows.",
+        "source_date": "2026-10-22"
+      },
+      {
+        "source_id": "s20",
+        "label": "Hacker News, reply from a Claude Code team member (fleet share)",
+        "url": "https://news.ycombinator.com/item?id=50284699",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Last week, across Claude Code users who send us telemetry, agent_summary was about 2% of cost at API list prices and just under 4% of requests. In the terminal, where nearly all of these calls happen, it was about 6% of cost.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s21",
+        "label": "Hacker News, reply from a Claude Code team member (scope)",
+        "url": "https://news.ycombinator.com/item?id=50284699",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "this only applies to background agents that are actively working. They get a summary call about every 30 seconds",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s22",
+        "label": "Hacker News, reply from a Claude Code team member (fix and cheaper mode)",
+        "url": "https://news.ycombinator.com/item?id=50284699",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "We just rolled out a fix for the most expensive case, summaries that miss the prompt cache (2.1.311+)",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s23",
+        "label": "Hacker News discussion, a reader test with workflows (lower share)",
+        "url": "https://news.ycombinator.com/item?id=50284255",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "It is just for subagents; workflows do not seem affected.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s24",
+        "label": "Hacker News discussion, a reader test (upper bound in their sessions)",
+        "url": "https://news.ycombinator.com/item?id=50284255",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "In my Claude Code sessions, it looks more like ~8% at most.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s25",
+        "label": "Hacker News discussion, a second reader share",
+        "url": "https://news.ycombinator.com/item?id=50284255",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "In my sessions it is ~16%, not using workflows",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s26",
+        "label": "claude-code issue 86879, opening measurement from captured raw payloads (what each call sends)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Each call re-sends the subagent's entire conversation history plus the full tool schema, on `claude-opus-5`, every 30 seconds per *active* subagent.",
+        "source_date": "2026-08-15"
+      },
+      {
+        "source_id": "s27",
+        "label": "Flamerix AI gist, Claude Code agent_summary timer (full transcript to the same model)",
+        "url": "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Claude Code sends that agent's  entire\ntranscript  to the agent's own model (usually Opus)",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s28",
+        "label": "Hacker News, reply from a Claude Code team member (cheaper mode in progress)",
+        "url": "https://news.ycombinator.com/item?id=50284699",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "working on a much cheaper mode that sends short notes to a smaller model instead of the full transcript.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s29",
+        "label": "claude-code issue 104358, per-request usage missing from disk (measured gap)",
+        "url": "https://github.com/anthropics/claude-code/issues/104358",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "In sub-agent-heavy sessions a transcript-based sum lands **×1.35–2.13 below** Claude Code's own `cost-state`",
+        "source_date": "2026-10-22"
+      },
+      {
+        "source_id": "s30",
+        "label": "claude-code issue 104358, per-request usage missing from disk (internal accounting)",
+        "url": "https://github.com/anthropics/claude-code/issues/104358",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Claude Code's internal accounting is correct: list prices applied to `cost-state`'s own token counts reproduce its `costUSD` exactly.",
+        "source_date": "2026-10-22"
+      },
+      {
+        "source_id": "s31",
+        "label": "claude-code issue 86879, opening measurement from captured raw payloads (no transcript)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "These calls carry `skipTranscript: true`, so they appear in **no** transcript.",
+        "source_date": "2026-08-15"
+      },
+      {
+        "source_id": "s32",
+        "label": "claude-code issue 86879, a commenter's 30-day numbers (shares)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Our numbers over 30 days (129 sessions with background agents): `agent_summary` was about 14% of requests and about 10% of estimated spend, up to 24% in a 40-agent session.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s33",
+        "label": "claude-code issue 86879, a commenter's 30-day numbers (Opus share)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Opus subagents accounted for about 90% of it.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s34",
+        "label": "claude-code issue 86879, a commenter's 30-day numbers (workflows)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Moving big scripted fan-outs into workflows avoids the cost and keeps forks.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s35",
+        "label": "claude-code issue 86879, a commenter who read the bundles (interactive-only gate)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "So the fork switch stops summaries only in an interactive session where nothing has set the flag.",
+        "source_date": "2026-10-30"
+      },
+      {
+        "source_id": "s36",
+        "label": "claude-code issue 86879, a commenter who read the bundles (settings entry)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "A settings entry for the variable, in any scope, is the most likely cause of #105981.",
+        "source_date": "2026-10-30"
+      },
+      {
+        "source_id": "s37",
+        "label": "claude-code issue 86879, a commenter's 2.1.314 debug log (skipped ticks)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "The timer skips ticks while the transcript is static.",
+        "source_date": "2026-10-31"
+      },
+      {
+        "source_id": "s38",
+        "label": "claude-code issue 86879, a commenter's 2.1.314 debug log (what the cost tracks)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "So the cost tracks how often the agent's transcript changes, not wall-clock time.",
+        "source_date": "2026-10-31"
+      },
+      {
+        "source_id": "s39",
+        "label": "Hacker News, reply from a Claude Code team member (role)",
+        "url": "https://news.ycombinator.com/item?id=50284699",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "I work on Claude Code.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s40",
+        "label": "Hacker News, reply from a Claude Code team member (what the summaries are for)",
+        "url": "https://news.ycombinator.com/item?id=50284699",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "These summaries are used for both you and Claude Code to track what each background agent is working on, without reading transcripts.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s41",
+        "label": "Hacker News, the gist authors post their weekly measurement (full sentence)",
+        "url": "https://news.ycombinator.com/item?id=50284255",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Grouping requests by query_source showed that over one measured week agent_summary accounted for: 16.4% of total estimated spend (versus 15.7% for the main conversation), and 19.7% of all API requests with approximately 9,000 input tokens per output token.",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s42",
+        "label": "Hacker News, the gist authors post their weekly measurement (DRIM)",
+        "url": "https://news.ycombinator.com/item?id=50284255",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Our DRIM system flagged the anomaly in CC",
+        "source_date": "2026-10-29"
+      },
+      {
+        "source_id": "s43",
+        "label": "Flamerix AI gist, Claude Code agent_summary timer (authorship)",
+        "url": "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Flamerix AI is not liable for any damage, data loss or account",
+        "source_date": "2026-10-26"
+      },
+      {
+        "source_id": "s44",
+        "label": "claude-code issue 86879, opening measurement from captured raw payloads (title)",
+        "url": "https://github.com/anthropics/claude-code/issues/86879",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "Feature request: a supported way to disable the agent_summary spinner (22.7% of requests, ~18% of weighted tokens in a subagent-heavy session)",
+        "source_date": "2026-08-15"
+      },
+      {
+        "source_id": "s45",
+        "label": "Hacker News discussion, a reader test with workflows (new users)",
+        "url": "https://news.ycombinator.com/item?id=50284255",
+        "retrieved_at": "2026-11-02",
+        "excerpt": "I guess many new users prefer workflows (ultracode), so the impact is less than the report suggested.",
+        "source_date": "2026-10-29"
+      }
+    ],
+    "published_at": "2026-11-02",
+    "embedding": null
   }
 ]
