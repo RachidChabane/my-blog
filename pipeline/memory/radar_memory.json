@@ -2906,5 +2906,44 @@
     ],
     "published_at": "2026-11-01",
     "embedding": null
+  },
+  {
+    "translation_key": "lfm3-256k-window-versus-ruler-128k-recall",
+    "topic_id": "lfm3-256k-window-versus-ruler-128k-recall",
+    "dedup_key": "lfm3 256k window versus ruler 128k recall",
+    "title": "In Liquid AI's own table, LFM3-1.7B is level with Qwen3.5 4B on AA-LCR (52.83 against 52.67) and trails it on RULER 128K (65.56 against 84.63); Local AI Zone says Qwen's full-attention models retrieve better at 128K",
+    "slugs": {
+      "fr": "lfm3-fenetre-256k-contre-rappel-ruler-128k",
+      "en": "lfm3-256k-window-versus-ruler-128k-recall"
+    },
+    "sources": [
+      {
+        "label": "Liquid AI on Hugging Face, Build specialized multimodal models with LFM3",
+        "url": "https://huggingface.co/blog/LiquidAI/lfm3",
+        "date": "27-10-2026"
+      },
+      {
+        "label": "Liquid AI, Introducing LFM3: Every Modality for Specialized Intelligence",
+        "url": "https://www.liquid.ai/blog/lfm3",
+        "date": "27-10-2026"
+      },
+      {
+        "label": "Ollama, Release v0.40.12",
+        "url": "https://github.com/ollama/ollama/releases/tag/v0.40.12",
+        "date": "27-10-2026"
+      },
+      {
+        "label": "Ollama, Release v0.40.13",
+        "url": "https://github.com/ollama/ollama/releases/tag/v0.40.13",
+        "date": "28-10-2026"
+      },
+      {
+        "label": "Local AI Zone, LFM3: A Technical Deep Dive into Liquid AI's Tri-Hybrid 2B Multimodal Family",
+        "url": "https://local-ai-zone.github.io/blog/lfm3-deep-dive.html",
+        "date": "28-10-2026"
+      }
+    ],
+    "published_at": "2026-11-02",
+    "embedding": null
   }
 ]
