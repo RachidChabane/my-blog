@@ -2945,5 +2945,34 @@
     ],
     "published_at": "2026-11-02",
     "embedding": null
+  },
+  {
+    "translation_key": "weight-space-edit-removes-thinking-loops-adds-no-math-ability",
+    "topic_id": "weight-space-edit-removes-thinking-loops-adds-no-math-ability",
+    "dedup_key": "weight space edit removes thinking loops adds no math ability",
+    "title": "GPT-6 Astra's weight edit lifted Qwen3.5-0.8B on MATH-500 by removing thinking loops, its MIT CSAIL authors and Sean Goedecke agree, and on Gemma 3 270M, which rarely loops, the authors report that no edit moved MATH-500 by more than about a point",
+    "slugs": {
+      "fr": "modification-poids-supprime-boucles-reflexion-sans-gain-maths",
+      "en": "weight-space-edit-removes-thinking-loops-adds-no-math-ability"
+    },
+    "sources": [
+      {
+        "label": "Takehi, Teoh, Zhang and Khattab (MIT CSAIL), Sparks of Weight-Space Programming: LLMs can natively read and write neural network weights",
+        "url": "https://rikiyat.github.io/blog/weight-space-programming/",
+        "date": "02-11-2026"
+      },
+      {
+        "label": "Hugging Face model card, RikiyaT/Qwen3.5-0.8B-weight-space-programming",
+        "url": "https://huggingface.co/RikiyaT/Qwen3.5-0.8B-weight-space-programming",
+        "date": "02-11-2026"
+      },
+      {
+        "label": "Sean Goedecke, LLMs are not superhuman at reading and writing neural network weights",
+        "url": "https://www.seangoedecke.com/llms-are-not-superhuman-at-reading-and-writing-neural-network-weights/",
+        "date": "03-11-2026"
+      }
+    ],
+    "published_at": "2026-11-03",
+    "embedding": null
   }
 ]
