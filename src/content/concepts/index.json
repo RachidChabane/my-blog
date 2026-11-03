@@ -2887,6 +2887,31 @@
     "addedOn": "27-05-2026"
   },
   {
+    "id": "hyperparameter",
+    "label": {
+      "fr": "Hyperparamètre",
+      "en": "Hyperparameter"
+    },
+    "definition": {
+      "fr": "Réglage qui influe sur l'entraînement ou sur le modèle sans être mis à jour par la boucle d'entraînement, comme le taux d'apprentissage, la taille de mini-lot ou le degré d'un modèle polynomial. Il est fixé par une personne ou par une recherche de réglage distincte, avant ou entre deux entraînements.",
+      "en": "A setting that shapes training or the model but is not updated by the training loop, such as the learning rate, the minibatch size, or the degree of a polynomial model. It is set by a person or by a separate tuning search, before or between training runs."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "hyperparameters",
+      "hyper-parameter",
+      "hyperparamètres"
+    ],
+    "related": [
+      "model-parameters",
+      "learning-algorithm"
+    ],
+    "articles": [
+      "what-is-a-model"
+    ],
+    "addedOn": "03-11-2026"
+  },
+  {
     "id": "indirect-prompt-injection",
     "label": {
       "fr": "Injection de prompt indirecte",
@@ -2941,6 +2966,31 @@
       "lossless-decoding-precision-property"
     ],
     "addedOn": "22-06-2026"
+  },
+  {
+    "id": "input-feature",
+    "label": {
+      "fr": "Variable d'entrée",
+      "en": "Input feature"
+    },
+    "definition": {
+      "fr": "Grandeur qu'un modèle lit en entrée pour produire sa prédiction, par exemple une colonne d'un tableau de données ou une transformation d'une autre variable comme son carré. Le choix des variables se fait avant l'entraînement et, avec la forme du modèle, détermine les relations que le modèle est capable de représenter.",
+      "en": "An input value that a model reads to make its prediction, such as a column of a data table or a transformation of another input like its square. The set of features is chosen before training and, together with the model's form, determines which relationships the model is able to represent."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "input variable",
+      "predictor variable",
+      "explanatory variable",
+      "variable explicative"
+    ],
+    "related": [
+      "model-parameters"
+    ],
+    "articles": [
+      "what-is-a-model"
+    ],
+    "addedOn": "03-11-2026"
   },
   {
     "id": "instruction-adherence",
@@ -3154,6 +3204,31 @@
     "addedOn": "06-08-2026"
   },
   {
+    "id": "learning-algorithm",
+    "label": {
+      "fr": "Algorithme d'apprentissage",
+      "en": "Learning algorithm"
+    },
+    "definition": {
+      "fr": "Procédure qui s'appuie sur un jeu de données pour choisir les valeurs des paramètres d'un modèle, en général en les ajustant de façon itérative pour faire baisser une fonction de perte. Elle se distingue du modèle qu'elle produit, lequel se contente de calculer des prédictions avec des paramètres fixés.",
+      "en": "The procedure that uses a dataset to choose the values of a model's parameters, typically by adjusting them iteratively to lower a loss function. It is distinct from the model it produces, which only computes predictions with its parameters held fixed."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "training algorithm",
+      "training procedure",
+      "algorithme d'entraînement"
+    ],
+    "related": [
+      "model-parameters",
+      "loss-function"
+    ],
+    "articles": [
+      "what-is-a-model"
+    ],
+    "addedOn": "03-11-2026"
+  },
+  {
     "id": "least-privilege",
     "label": {
       "fr": "Moindre privilège",
@@ -3207,6 +3282,32 @@
       "llm-contribution-policy-premise-decides-the-leak"
     ],
     "addedOn": "08-08-2026"
+  },
+  {
+    "id": "linear-regression",
+    "label": {
+      "fr": "Régression linéaire",
+      "en": "Linear regression"
+    },
+    "definition": {
+      "fr": "Modèle de régression qui prédit une valeur numérique comme une somme pondérée des variables d'entrée augmentée d'un biais, en général ajusté en minimisant l'erreur quadratique. L'ajout de variables transformées, comme le carré d'une entrée, lui permet de suivre des courbes tout en restant linéaire par rapport à ses paramètres.",
+      "en": "A regression model that predicts a numeric value as a weighted sum of its input features plus a bias, usually fitted by minimizing squared error. Adding transformed features, such as the square of an input, lets it fit curves while staying linear in its parameters."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "least-squares regression",
+      "linear least squares",
+      "régression par moindres carrés"
+    ],
+    "related": [
+      "model-parameters",
+      "input-feature",
+      "loss-function"
+    ],
+    "articles": [
+      "what-is-a-model"
+    ],
+    "addedOn": "03-11-2026"
   },
   {
     "id": "live-web-evaluation",
@@ -3376,6 +3477,30 @@
       "instruction-file-structure-compliance"
     ],
     "addedOn": "19-06-2026"
+  },
+  {
+    "id": "loss-function",
+    "label": {
+      "fr": "Fonction de perte",
+      "en": "Loss function"
+    },
+    "definition": {
+      "fr": "Fonction qui mesure l'écart entre les prédictions d'un modèle et les valeurs attendues sur un ensemble d'exemples, et le résume en un seul nombre que l'entraînement cherche à minimiser. Le choix de la perte définit ce que l'entraînement considère comme un meilleur ajustement, l'erreur quadratique étant le choix habituel en régression.",
+      "en": "A function that measures how far a model's predictions are from the target values on a set of examples and summarizes it as a single number that training tries to minimize. The choice of loss defines what training treats as a better fit, with squared error the usual choice for regression."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "cost function",
+      "training objective",
+      "fonction de coût"
+    ],
+    "related": [
+      "model-parameters"
+    ],
+    "articles": [
+      "what-is-a-model"
+    ],
+    "addedOn": "03-11-2026"
   },
   {
     "id": "low-resource-programming-language",
@@ -3610,6 +3735,29 @@
       "mcp-stateless-header-routing-2026-07"
     ],
     "addedOn": "01-07-2026"
+  },
+  {
+    "id": "model-parameters",
+    "label": {
+      "fr": "Paramètres d'un modèle",
+      "en": "Model parameters"
+    },
+    "definition": {
+      "fr": "Valeurs numériques internes d'un modèle, comme les poids et les biais, que l'algorithme d'apprentissage règle pendant l'entraînement et qui restent fixes lorsque le modèle produit ses prédictions. Leur nombre et leur rôle découlent de la forme du modèle, fixée avant l'entraînement.",
+      "en": "The numeric values inside a model, such as weights and biases, that a learning algorithm sets during training and that stay fixed while the model makes predictions. Their number and role follow from the model's form, which is chosen before training begins."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "learned parameters",
+      "model weights",
+      "trainable parameters",
+      "paramètres appris"
+    ],
+    "related": [],
+    "articles": [
+      "what-is-a-model"
+    ],
+    "addedOn": "03-11-2026"
   },
   {
     "id": "multi-agent-orchestration",

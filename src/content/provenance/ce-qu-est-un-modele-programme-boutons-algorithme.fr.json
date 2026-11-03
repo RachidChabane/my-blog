@@ -1,0 +1,109 @@
+{
+  "slug": "ce-qu-est-un-modele-programme-boutons-algorithme",
+  "lang": "fr",
+  "translationKey": "what-is-a-model",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Dive into Deep Learning (d2l.ai), chapter 1 Introduction (parameters define the program)",
+      "url": "https://d2l.ai/chapter_introduction/index.html",
+      "excerpt": "Instead, we define a flexible program whose behavior is determined by a\nnumber of  parameters"
+    },
+    {
+      "sourceId": "s2",
+      "label": "Dive into Deep Learning (d2l.ai), chapter 1 Introduction (parameters as knobs)",
+      "url": "https://d2l.ai/chapter_introduction/index.html",
+      "excerpt": "You can think of the parameters as knobs that we can turn, manipulating\nthe behavior of the program."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Dive into Deep Learning (d2l.ai), chapter 1 Introduction (a fixed setting is a model)",
+      "url": "https://d2l.ai/chapter_introduction/index.html",
+      "excerpt": "Once the parameters are fixed, we call the\nprogram a  model"
+    },
+    {
+      "sourceId": "s4",
+      "label": "Dive into Deep Learning (d2l.ai), chapter 1 Introduction (learning algorithm chooses parameters)",
+      "url": "https://d2l.ai/chapter_introduction/index.html",
+      "excerpt": "the “meta-program” that uses our\ndataset to choose the parameters is called a  learning algorithm"
+    },
+    {
+      "sourceId": "s5",
+      "label": "Dive into Deep Learning (d2l.ai), chapter 1 Introduction (learning as finding the setting)",
+      "url": "https://d2l.ai/chapter_introduction/index.html",
+      "excerpt": "In machine learning, the  learning  is the process by\nwhich we discover the right setting of the knobs for coercing the\ndesired behavior from our model."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Dive into Deep Learning (d2l.ai), chapter 1 Introduction (performance improves with experience)",
+      "url": "https://d2l.ai/chapter_introduction/index.html",
+      "excerpt": "As a machine learning algorithm accumulates more experience,\ntypically in the form of observational data or interactions with an\nenvironment, its performance improves."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Wikipedia, Machine learning (supervised model of inputs and outputs)",
+      "url": "https://en.wikipedia.org/wiki/Machine_learning",
+      "excerpt": "Supervised learning algorithms build a mathematical model of a set of data that contains both the inputs and the desired outputs."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Wikipedia, Machine learning (learning a predictive function)",
+      "url": "https://en.wikipedia.org/wiki/Machine_learning",
+      "excerpt": "supervised learning algorithms learn a function that can be used to predict the output associated with new inputs."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Wikipedia, Machine learning (learning as loss minimisation)",
+      "url": "https://en.wikipedia.org/wiki/Machine_learning",
+      "excerpt": "Many learning problems are formulated as minimisation of some  loss function  on a training set of examples."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Wikipedia, Machine learning (what a loss function expresses)",
+      "url": "https://en.wikipedia.org/wiki/Machine_learning",
+      "excerpt": "Loss functions express the discrepancy between the predictions of the model being trained and the actual problem instances"
+    },
+    {
+      "sourceId": "s11",
+      "label": "Google Machine Learning Crash Course, Linear regression module (what linear regression finds)",
+      "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+      "excerpt": "In an ML\ncontext, linear regression finds the relationship between\n  features   and a\n  label"
+    },
+    {
+      "sourceId": "s12",
+      "label": "Google Machine Learning Crash Course, Linear regression module (training adjusts weights and bias)",
+      "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+      "excerpt": "During training, the model adjusts its bias (b) and weights (w) to minimize the difference between predicted and actual values."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Dive into Deep Learning (d2l.ai), section 3.1 Linear Regression (simplest standard tool)",
+      "url": "https://d2l.ai/chapter_linear-regression/linear-regression.html",
+      "excerpt": "Linear regression  is both the simplest and most popular among the\nstandard tools for tackling regression problems."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Dive into Deep Learning (d2l.ai), section 3.1 Linear Regression (what the weights do)",
+      "url": "https://d2l.ai/chapter_linear-regression/linear-regression.html",
+      "excerpt": "The weights determine the influence of each feature on our\nprediction."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Dive into Deep Learning (d2l.ai), section 3.1 Linear Regression (squared error loss)",
+      "url": "https://d2l.ai/chapter_linear-regression/linear-regression.html",
+      "excerpt": "For regression problems, the most common loss function is the squared\nerror."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Dive into Deep Learning (d2l.ai), section 3.1 Linear Regression (iterative error reduction)",
+      "url": "https://d2l.ai/chapter_linear-regression/linear-regression.html",
+      "excerpt": "The key technique for optimizing nearly every deep learning model, and\nwhich we will call upon throughout this book, consists of iteratively\nreducing the error by updating the parameters in the direction that\nincrementally lowers the loss function."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Dive into Deep Learning (d2l.ai), section 3.1 Linear Regression (hyperparameters are not learned)",
+      "url": "https://d2l.ai/chapter_linear-regression/linear-regression.html",
+      "excerpt": "Frequently minibatch size and learning\nrate are user-defined. Such tunable parameters that are not updated in\nthe training loop are called  hyperparameters"
+    }
+  ]
+}

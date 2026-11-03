@@ -8509,5 +8509,138 @@
     ],
     "published_at": "2026-11-02",
     "embedding": null
+  },
+  {
+    "translation_key": "what-is-a-model",
+    "topic_id": "lesson-what-is-a-model",
+    "dedup_key": "what-is-a-model",
+    "title": "What a model is: a program, its knobs, and the algorithm that sets them",
+    "slugs": {
+      "fr": "ce-qu-est-un-modele-programme-boutons-algorithme",
+      "en": "what-a-model-is-program-knobs-learning-algorithm"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Dive into Deep Learning (d2l.ai), chapter 1 Introduction (parameters define the program)",
+        "url": "https://d2l.ai/chapter_introduction/index.html",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "Instead, we define a flexible program whose behavior is determined by a\nnumber of  parameters"
+      },
+      {
+        "source_id": "s2",
+        "label": "Dive into Deep Learning (d2l.ai), chapter 1 Introduction (parameters as knobs)",
+        "url": "https://d2l.ai/chapter_introduction/index.html",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "You can think of the parameters as knobs that we can turn, manipulating\nthe behavior of the program."
+      },
+      {
+        "source_id": "s3",
+        "label": "Dive into Deep Learning (d2l.ai), chapter 1 Introduction (a fixed setting is a model)",
+        "url": "https://d2l.ai/chapter_introduction/index.html",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "Once the parameters are fixed, we call the\nprogram a  model"
+      },
+      {
+        "source_id": "s4",
+        "label": "Dive into Deep Learning (d2l.ai), chapter 1 Introduction (learning algorithm chooses parameters)",
+        "url": "https://d2l.ai/chapter_introduction/index.html",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "uses our\ndataset to choose the parameters is called a  learning algorithm"
+      },
+      {
+        "source_id": "s5",
+        "label": "Dive into Deep Learning (d2l.ai), chapter 1 Introduction (learning as finding the setting)",
+        "url": "https://d2l.ai/chapter_introduction/index.html",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "In machine learning, the  learning  is the process by\nwhich we discover the right setting of the knobs for coercing the\ndesired behavior from our model."
+      },
+      {
+        "source_id": "s6",
+        "label": "Dive into Deep Learning (d2l.ai), chapter 1 Introduction (performance improves with experience)",
+        "url": "https://d2l.ai/chapter_introduction/index.html",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "As a machine learning algorithm accumulates more experience,\ntypically in the form of observational data or interactions with an\nenvironment, its performance improves."
+      },
+      {
+        "source_id": "s7",
+        "label": "Wikipedia, Machine learning (supervised model of inputs and outputs)",
+        "url": "https://en.wikipedia.org/wiki/Machine_learning",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "Supervised learning algorithms build a mathematical model of a set of data that contains both the inputs and the desired outputs."
+      },
+      {
+        "source_id": "s8",
+        "label": "Wikipedia, Machine learning (learning a predictive function)",
+        "url": "https://en.wikipedia.org/wiki/Machine_learning",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "supervised learning algorithms learn a function that can be used to predict the output associated with new inputs."
+      },
+      {
+        "source_id": "s9",
+        "label": "Wikipedia, Machine learning (learning as loss minimisation)",
+        "url": "https://en.wikipedia.org/wiki/Machine_learning",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "Many learning problems are formulated as minimisation of some  loss function  on a training set of examples."
+      },
+      {
+        "source_id": "s10",
+        "label": "Wikipedia, Machine learning (what a loss function expresses)",
+        "url": "https://en.wikipedia.org/wiki/Machine_learning",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "Loss functions express the discrepancy between the predictions of the model being trained and the actual problem instances"
+      },
+      {
+        "source_id": "s11",
+        "label": "Google Machine Learning Crash Course, Linear regression module (what linear regression finds)",
+        "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "In an ML\ncontext, linear regression finds the relationship between\n  features   and a\n  label"
+      },
+      {
+        "source_id": "s12",
+        "label": "Google Machine Learning Crash Course, Linear regression module (training adjusts weights and bias)",
+        "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "During training, the model adjusts its bias (b) and weights (w) to minimize the difference between predicted and actual values."
+      },
+      {
+        "source_id": "s13",
+        "label": "Dive into Deep Learning (d2l.ai), section 3.1 Linear Regression (simplest standard tool)",
+        "url": "https://d2l.ai/chapter_linear-regression/linear-regression.html",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "Linear regression  is both the simplest and most popular among the\nstandard tools for tackling regression problems."
+      },
+      {
+        "source_id": "s14",
+        "label": "Dive into Deep Learning (d2l.ai), section 3.1 Linear Regression (what the weights do)",
+        "url": "https://d2l.ai/chapter_linear-regression/linear-regression.html",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "The weights determine the influence of each feature on our\nprediction."
+      },
+      {
+        "source_id": "s15",
+        "label": "Dive into Deep Learning (d2l.ai), section 3.1 Linear Regression (squared error loss)",
+        "url": "https://d2l.ai/chapter_linear-regression/linear-regression.html",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "For regression problems, the most common loss function is the squared\nerror."
+      },
+      {
+        "source_id": "s16",
+        "label": "Dive into Deep Learning (d2l.ai), section 3.1 Linear Regression (iterative error reduction)",
+        "url": "https://d2l.ai/chapter_linear-regression/linear-regression.html",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "consists of iteratively\nreducing the error by updating the parameters in the direction that\nincrementally lowers the loss function."
+      },
+      {
+        "source_id": "s17",
+        "label": "Dive into Deep Learning (d2l.ai), section 3.1 Linear Regression (hyperparameters are not learned)",
+        "url": "https://d2l.ai/chapter_linear-regression/linear-regression.html",
+        "retrieved_at": "2026-11-03",
+        "excerpt": "Such tunable parameters that are not updated in\nthe training loop are called  hyperparameters"
+      }
+    ],
+    "published_at": "2026-11-03",
+    "embedding": null
   }
 ]
