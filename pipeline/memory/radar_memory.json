@@ -2974,5 +2974,59 @@
     ],
     "published_at": "2026-11-03",
     "embedding": null
+  },
+  {
+    "translation_key": "postman-desktop-installs-agent-plugins-installer-mints-codex-trust-record",
+    "topic_id": "postman-desktop-installs-agent-plugins-installer-mints-codex-trust-record",
+    "dedup_key": "postman desktop installs agent plugins installer mints codex trust record",
+    "title": "Postman desktop installed its plugins into Claude Code and Codex for two users; the postman-plugin 0.6.0 installer source writes Codex hook trust",
+    "slugs": {
+      "fr": "postman-desktop-installe-plugins-agents-installeur-approuve-hook-codex",
+      "en": "postman-desktop-installs-agent-plugins-installer-mints-codex-trust-record"
+    },
+    "sources": [
+      {
+        "label": "indicava, postmanlabs/postman-app-support issue 14370: [SEVERE] Desktop auto-installs Codex/Claude plugins; installer attempts to trust its own startup hook",
+        "url": "https://github.com/postmanlabs/postman-app-support/issues/14370",
+        "date": "25-10-2026"
+      },
+      {
+        "label": "ronthedrummer, comment on postmanlabs/postman-app-support issue 14370",
+        "url": "https://github.com/postmanlabs/postman-app-support/issues/14370#issuecomment-6618575621",
+        "date": "03-11-2026"
+      },
+      {
+        "label": "Postman, postman-plugin installer source at the 0.6.0 release commit 9d5544f: installer/src/hosts/codex-hooks.ts",
+        "url": "https://raw.githubusercontent.com/postmanlabs/postman-plugin/9d5544f815a1d636dbd0126c609e827bf06fc0d7/installer/src/hosts/codex-hooks.ts",
+        "date": "03-11-2026"
+      },
+      {
+        "label": "Postman, postman-plugin release @postman/postman-plugin@0.6.0",
+        "url": "https://github.com/postmanlabs/postman-plugin/releases/tag/%40postman/postman-plugin%400.6.0",
+        "date": "03-11-2026"
+      },
+      {
+        "label": "Postman, postman-plugin commit 6975d3e: feat(installer): auto-approve Postman's Codex hook",
+        "url": "https://github.com/postmanlabs/postman-plugin/commit/6975d3e163fd5c6d91c6d0440a11146b3053035b.patch",
+        "date": "21-10-2026"
+      },
+      {
+        "label": "The New Stack (Amanda Caswell), A developer opened Postman. Then two AI coding agents changed without their permission.",
+        "url": "https://thenewstack.io/postman-plugin-coding-agents/",
+        "date": "03-11-2026"
+      },
+      {
+        "label": "Postman Docs, Install the Postman plugin",
+        "url": "https://learning.postman.com/docs/postman-plugin/install/overview",
+        "date": "21-10-2026"
+      },
+      {
+        "label": "Postman, postman-plugin hooks/session-start-context.md at the 0.6.0 release commit 9d5544f",
+        "url": "https://raw.githubusercontent.com/postmanlabs/postman-plugin/9d5544f815a1d636dbd0126c609e827bf06fc0d7/hooks/session-start-context.md",
+        "date": "03-11-2026"
+      }
+    ],
+    "published_at": "2026-11-04",
+    "embedding": null
   }
 ]
