@@ -1,0 +1,139 @@
+{
+  "slug": "a-router-can-swap-your-model-a-proof-covers-only-what-it-proves",
+  "lang": "en",
+  "translationKey": "provable-inference-proves-greedy-integer-replay-not-sampled-traffic",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (users cannot check which model answered)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "A user querying a model today cannot check that the responses came from the specific model that a developer claims is responding, as opposed to one secretly substituted in by a routing service for cost reasons, or even by an attacker who has tampered with the token stream."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (routing-service clients want assurance)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "Clients who use a model through a third-party routing service want assurance that the tokens came from the model they paid for."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (FlashProve throughput and proof size on Llama 4 Maverick)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "For a large model (Llama 4 Maverick, 400B-parameter mixture of experts), a single H100 GPU generates proofs at around 110 tokens/second, with a proof size of ~19 MB per 1,024-token request, when in 4-bit quantized weights, using integer arithmetic in prefill."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (prover cost relative to vLLM)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "This is ~70-95x the GPU time of running the model itself on vLLM, a common open-source library."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (limitation: integer model under greedy decoding)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "The proof is about an integer model under greedy decoding."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (limitation: floating-point or sampled replies can depart)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "A reply from a floating-point implementation, or sampled decoding, could depart at some position and no longer exactly match the computation proved."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (limitation: integer-to-float error excludes adversarial prompts)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "The integer version is generally expected and empirically tested to be within some small error rate of true floating-point inference generically (even taking into account non-determinism of floating-point computations), though this does not cover adversarially designed prompts."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (limitation: 1,024-token contexts)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "The system currently proves inference over contexts of up to 1,024 tokens."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (trusted hardware and cryptography are complementary)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "Trusted hardware and cryptography are complementary approaches with different guarantees and tradeoffs."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (the production prototype signs traffic and recomputes on a trusted server)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "we met that goal through a separate but related project, which signs our inference traffic and recomputes inference on a trusted server"
+    },
+    {
+      "sourceId": "s11",
+      "label": "Cai, Shi, Zhao and Song (UC Berkeley), Are You Getting What You Pay For? Auditing Model Substitution in LLM APIs (arXiv 2504.04715) (providers may substitute quantized or smaller models)",
+      "url": "https://arxiv.org/abs/2504.04715",
+      "excerpt": "Providers may covertly substitute cheaper alternatives (e.g., quantized versions, smaller models) to reduce costs while maintaining advertised pricing."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Cai, Shi, Zhao and Song (UC Berkeley), Are You Getting What You Pay For? Auditing Model Substitution in LLM APIs (arXiv 2504.04715) (output-based and logprob detection are unreliable)",
+      "url": "https://arxiv.org/abs/2504.04715",
+      "excerpt": "Our empirical analysis reveals that software-only methods are fundamentally unreliable: statistical tests on text outputs are query-intensive and fail against subtle substitutions, while methods using log probabilities are defeated by inherent inference nondeterminism in production environments."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Cai, Shi, Zhao and Song (UC Berkeley), Are You Getting What You Pay For? Auditing Model Substitution in LLM APIs (arXiv 2504.04715) (TEEs give integrity guarantees at modest overhead)",
+      "url": "https://arxiv.org/abs/2504.04715",
+      "excerpt": "Our findings demonstrate that TEEs can provide provable cryptographic guarantees of model integrity with only a modest performance overhead"
+    },
+    {
+      "sourceId": "s14",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (output alone is unreliable)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "Judging from the model’s output alone is unreliable, even if it produces high-quality responses."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (a zkSNARK appended along with each response)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "The provider can append, along with each response, a zkSNARK proving that the output was produced by the claimed model on the given input."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (post-hoc proving for a subset of tokens)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "post-hoc proving (i.e. proving after-the-fact, for a subset of tokens). Our system follows the latter."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (post-hoc limitations: delay and non-determinism)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "On the other hand, post-hoc proving has limitations: added complexity of recomputation, the delay in getting guarantees about your traffic, and inherent “non-determinism”."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (TEEs rely on the manufacturer's tamper-resistant hardware)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "Prior work often focuses on  trusted execution environments  to achieve PI. These are hardware-based solutions that provide privacy and attestation that rely on the manufacturer producing tamper-resistant hardware."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (byline: date, team and author affiliations)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "Published   Nov 2, 2026     Team   Frontier Red Team          Roy Rinberg (Anthropic), Alex Allain (Anthropic); Alessandro Chiesa (EPFL, StarkWare), Miranda Christ (MIT, RESI), Rahul Dalal (Anthropic STEM Fellows Program, Succinct), Giacomo Fenzi (EPFL), Ben Mayer (Anthropic Fellows Program, MIT), Guy Weissenberg (EPFL)"
+    },
+    {
+      "sourceId": "s20",
+      "label": "Anthropic Frontier Red Team with EPFL, StarkWare, MIT and Succinct co-authors, Progress on provable inference for large language models (FlashProve release)",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "excerpt": "Today, we release FlashProve: an  open-source performant prototype for provable inference"
+    },
+    {
+      "sourceId": "s21",
+      "label": "Cai, Shi, Zhao and Song (UC Berkeley), Are You Getting What You Pay For? Auditing Model Substitution in LLM APIs (arXiv 2504.04715) (author list)",
+      "url": "https://arxiv.org/abs/2504.04715",
+      "excerpt": "Authors:  Will Cai ,  Tianneng Shi ,  Xuandong Zhao ,  Dawn Song"
+    },
+    {
+      "sourceId": "s22",
+      "label": "Cai, Shi, Zhao and Song (UC Berkeley), Are You Getting What You Pay For? Auditing Model Substitution in LLM APIs (arXiv 2504.04715) (author affiliation)",
+      "url": "https://arxiv.org/abs/2504.04715",
+      "excerpt": "University of California, Berkeley"
+    }
+  ]
+}

@@ -2612,6 +2612,32 @@
     "addedOn": "18-09-2026"
   },
   {
+    "id": "greedy-decoding",
+    "label": {
+      "fr": "Décodage glouton",
+      "en": "Greedy decoding"
+    },
+    "definition": {
+      "fr": "Règle de décodage qui émet à chaque étape le token auquel le modèle attribue le score le plus élevé, sans aucun tirage aléatoire. Les méthodes de rejeu exact et de vérification la supposent le plus souvent, alors que le décodage par échantillonnage tire le token suivant dans la distribution, si bien que deux exécutions sur la même invite peuvent légitimement diverger.",
+      "en": "A decoding rule that emits, at every step, the token the model scores highest, with no random draw. Exact-replay and verification methods usually assume it, whereas sampled decoding draws the next token from the distribution, so two runs on the same prompt can legitimately diverge."
+    },
+    "theme": "ml-fundamentals",
+    "aliases": [
+      "argmax decoding",
+      "greedy search",
+      "décodage glouton"
+    ],
+    "related": [
+      "inference-determinism",
+      "sampling-entropy",
+      "token-trajectory-equivalence"
+    ],
+    "articles": [
+      "provable-inference-proves-greedy-integer-replay-not-sampled-traffic"
+    ],
+    "addedOn": "04-11-2026"
+  },
+  {
     "id": "hallucination",
     "label": {
       "fr": "Hallucination",
@@ -2963,7 +2989,8 @@
     "articles": [
       "llm-temp0-nondeterminism-batch-invariant",
       "watermark-entropy-budget",
-      "lossless-decoding-precision-property"
+      "lossless-decoding-precision-property",
+      "provable-inference-proves-greedy-integer-replay-not-sampled-traffic"
     ],
     "addedOn": "22-06-2026"
   },
@@ -3760,6 +3787,31 @@
     "addedOn": "03-11-2026"
   },
   {
+    "id": "model-substitution",
+    "label": {
+      "fr": "Substitution de modèle",
+      "en": "Model substitution"
+    },
+    "definition": {
+      "fr": "Pratique d'un fournisseur qui sert un modèle moins coûteux que celui que le client paie, par exemple une version quantifiée ou un modèle plus petit, tout en conservant le nom et le prix affichés. Elle se détecte mal à partir des seules sorties : un substitut proche produit des réponses plausibles, et l'inférence en production n'est pas reproductible bit à bit.",
+      "en": "A provider serving a cheaper model than the one a client pays for, such as a quantized version or a smaller model, while keeping the advertised name and price. It is hard to detect from outputs alone, because a close substitute produces plausible answers and production inference is not bit-reproducible."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "model swapping",
+      "silent model substitution",
+      "substitution de modèle"
+    ],
+    "related": [
+      "quantization",
+      "inference-determinism"
+    ],
+    "articles": [
+      "provable-inference-proves-greedy-integer-replay-not-sampled-traffic"
+    ],
+    "addedOn": "04-11-2026"
+  },
+  {
     "id": "multi-agent-orchestration",
     "label": {
       "fr": "Orchestration multi-agent",
@@ -4138,6 +4190,33 @@
     "addedOn": "18-10-2026"
   },
   {
+    "id": "provable-inference",
+    "label": {
+      "fr": "Inférence prouvable",
+      "en": "Provable inference"
+    },
+    "definition": {
+      "fr": "Joindre à la réponse d'un modèle une preuve cryptographique, en général un argument succinct à divulgation nulle de connaissance (zkSNARK), établissant que la sortie provient de l'exécution d'un modèle annoncé sur l'entrée donnée. N'importe qui peut vérifier la preuve sans faire confiance au fournisseur ni à son matériel, mais elle ne certifie que le calcul exact qui a été prouvé, et la produire coûte bien plus de calcul que servir la réponse.",
+      "en": "Attaching to a model response a cryptographic proof, typically a zero-knowledge succinct argument (zkSNARK), that the output came from running a stated model on the given input. Anyone can check the proof without trusting the provider or its hardware, but it certifies only the exact computation that was proved, and producing it costs far more compute than serving the response."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "proof of inference",
+      "verifiable inference",
+      "inférence prouvable"
+    ],
+    "related": [
+      "model-substitution",
+      "trusted-execution-environment",
+      "greedy-decoding",
+      "inference-determinism"
+    ],
+    "articles": [
+      "provable-inference-proves-greedy-integer-replay-not-sampled-traffic"
+    ],
+    "addedOn": "04-11-2026"
+  },
+  {
     "id": "provider-held-reasoning-state",
     "label": {
       "fr": "État de raisonnement détenu par le fournisseur",
@@ -4354,7 +4433,8 @@
     ],
     "articles": [
       "quantizing-open-models",
-      "kimi-k3-ranked-endpoint-not-weights"
+      "kimi-k3-ranked-endpoint-not-weights",
+      "provable-inference-proves-greedy-integer-replay-not-sampled-traffic"
     ],
     "addedOn": "19-05-2026"
   },
@@ -6069,6 +6149,30 @@
       "compaction-summaries-carry-no-authority"
     ],
     "addedOn": "01-07-2026"
+  },
+  {
+    "id": "trusted-execution-environment",
+    "label": {
+      "fr": "Environnement d'exécution de confiance",
+      "en": "Trusted execution environment"
+    },
+    "definition": {
+      "fr": "Zone isolée par le matériel, au sein d'un processeur ou d'un accélérateur, qui exécute du code et des données à l'abri du système d'exploitation hôte et peut produire une attestation signée de ce qu'elle exécute. Ses garanties reposent sur la confiance accordée au fabricant, qui doit produire des puces inviolables et gérer les clés d'attestation.",
+      "en": "A hardware-isolated area of a processor or accelerator that runs code and data shielded from the host operating system and can produce a signed attestation of what it is running. Its guarantees rest on trusting the manufacturer to build tamper-resistant chips and to manage the attestation keys."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "TEE",
+      "secure enclave",
+      "environnement d'exécution de confiance"
+    ],
+    "related": [
+      "model-substitution"
+    ],
+    "articles": [
+      "provable-inference-proves-greedy-integer-replay-not-sampled-traffic"
+    ],
+    "addedOn": "04-11-2026"
   },
   {
     "id": "unassisted-performance-gap",
