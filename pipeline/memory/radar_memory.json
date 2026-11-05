@@ -3028,5 +3028,39 @@
     ],
     "published_at": "2026-11-04",
     "embedding": null
+  },
+  {
+    "translation_key": "ripple-65b-terminal-bench-lead-and-in-house-terminus-2-rerun",
+    "topic_id": "ripple-65b-terminal-bench-lead-and-in-house-terminus-2-rerun",
+    "dedup_key": "ripple 65b terminal bench lead and in house terminus 2 rerun",
+    "title": "Ripple-65B Preview's Terminal-Bench 2.1 lead over Reflection Beam is self-reported; in Ricursive's own Terminus 2 run of its rivals, Beam sits at 70.8",
+    "slugs": {
+      "fr": "ripple-65b-avance-terminal-bench-autodeclaree-execution-terminus-2-interne",
+      "en": "ripple-65b-terminal-bench-lead-and-in-house-terminus-2-rerun"
+    },
+    "sources": [
+      {
+        "label": "Ricursive Intelligence, launch post: Introducing Ripple-65B Preview, a Frontier Open-Weight Model Achieving U.S. Open-Weight SOTA on Agentic Coding",
+        "url": "https://www.ricursive.com/ripple",
+        "date": "04-11-2026"
+      },
+      {
+        "label": "Ricursive Intelligence, Hugging Face model card ricursiveAI/Ripple-65B-Preview",
+        "url": "https://huggingface.co/ricursiveAI/Ripple-65B-Preview/raw/e27e171792f303d74c048184e8259ba663cfa0d5/README.md",
+        "date": "04-11-2026"
+      },
+      {
+        "label": "Orca (Elias Hawthorne), Ripple-65B Preview: Apache 2.0 Weights, a 1M-Token Claim and a 16K API",
+        "url": "https://www.orcarouter.ai/blog/ripple-65b-preview-launch-review",
+        "date": "04-11-2026"
+      },
+      {
+        "label": "OpenRouter, endpoint listing API for ricursiveai/ripple-65b-preview-20261104",
+        "url": "https://openrouter.ai/api/v1/models/ricursiveai/ripple-65b-preview-20261104/endpoints",
+        "date": "04-11-2026"
+      }
+    ],
+    "published_at": "2026-11-05",
+    "embedding": null
   }
 ]
