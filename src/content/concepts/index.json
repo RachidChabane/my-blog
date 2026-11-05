@@ -2479,6 +2479,59 @@
     "addedOn": "03-08-2026"
   },
   {
+    "id": "finding-expiration",
+    "label": {
+      "fr": "Expiration d'un résultat",
+      "en": "Finding expiration"
+    },
+    "definition": {
+      "fr": "Fait qu'une affirmation empirique publiée sur le comportement des LLM cesse de se vérifier quand on rejoue le test d'origine sur des modèles plus récents. Un résultat décrit des modèles précis à une date précise : publié sans le modèle, la version et la date, il ne peut plus être confronté à sa propre expiration.",
+      "en": "A published empirical claim about LLM behaviour ceasing to hold when the original test is re-run on newer models. A finding describes particular models at a particular time, so a result reported without the model, version and date cannot be checked against its own expiry."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "claim expiration",
+      "finding shelf life",
+      "expired finding",
+      "expiration d'un résultat"
+    ],
+    "related": [
+      "offline-evaluation",
+      "version-pinning"
+    ],
+    "articles": [
+      "llm-findings-expire-across-model-generations"
+    ],
+    "addedOn": "05-11-2026"
+  },
+  {
+    "id": "fine-tuned-judge",
+    "label": {
+      "fr": "Juge affiné",
+      "en": "Fine-tuned judge"
+    },
+    "definition": {
+      "fr": "Modèle de langage affiné sur des données de jugement pour noter des sorties, à la place d'un modèle de pointe interrogé comme juge par une simple consigne. Entraîné sur les réponses d'un ensemble figé de générateurs, il doit être revérifié sur les sorties de générateurs plus récents avant de les noter.",
+      "en": "A language model fine-tuned on judgment data to grade outputs, used instead of prompting a frontier model as the judge. It is trained on responses from a fixed set of generators, so it has to be re-checked on outputs from newer generators before it grades them."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "fine-tuned LLM judge",
+      "trained judge",
+      "fine-tuned evaluator",
+      "juge LLM affiné"
+    ],
+    "related": [
+      "llm-as-a-judge",
+      "grader-agreement",
+      "self-preference-bias"
+    ],
+    "articles": [
+      "llm-findings-expire-across-model-generations"
+    ],
+    "addedOn": "05-11-2026"
+  },
+  {
     "id": "finish-reason-accounting",
     "label": {
       "fr": "Ventilation par motif d'arrêt",
@@ -2607,7 +2660,8 @@
     ],
     "articles": [
       "patch-quality-rate-needs-a-consistent-grader",
-      "agent-benchmarks-cover-little-of-the-work-your-agent-does"
+      "agent-benchmarks-cover-little-of-the-work-your-agent-does",
+      "llm-findings-expire-across-model-generations"
     ],
     "addedOn": "18-09-2026"
   },
@@ -3311,6 +3365,31 @@
     "addedOn": "08-08-2026"
   },
   {
+    "id": "length-bias",
+    "label": {
+      "fr": "Biais de longueur",
+      "en": "Length bias"
+    },
+    "definition": {
+      "fr": "Préférence d'un juge LLM pour les réponses plus longues, indépendamment de leur qualité. Sa force varie d'un modèle juge à l'autre : changer de juge peut modifier les réponses gagnantes sans que les réponses elles-mêmes aient changé.",
+      "en": "An LLM judge's preference for longer answers regardless of their quality. Its strength varies from one judge model to another, so replacing the judge can change which answers win while the answers themselves stay the same."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "verbosity bias",
+      "length preference",
+      "biais de longueur"
+    ],
+    "related": [
+      "llm-as-a-judge",
+      "self-preference-bias"
+    ],
+    "articles": [
+      "llm-findings-expire-across-model-generations"
+    ],
+    "addedOn": "05-11-2026"
+  },
+  {
     "id": "linear-regression",
     "label": {
       "fr": "Régression linéaire",
@@ -3389,7 +3468,8 @@
       "verification-frontiere-action-2026-08",
       "patch-quality-rate-needs-a-consistent-grader",
       "kolibri-tokenizer-is-the-sovereign-model-cost-lever",
-      "agent-benchmarks-cover-little-of-the-work-your-agent-does"
+      "agent-benchmarks-cover-little-of-the-work-your-agent-does",
+      "llm-findings-expire-across-model-generations"
     ],
     "addedOn": "03-08-2026"
   },
@@ -5225,6 +5305,32 @@
       "bulk-ai-research-release-ships-review-cost-to-readers"
     ],
     "addedOn": "26-10-2026"
+  },
+  {
+    "id": "self-preference-bias",
+    "label": {
+      "fr": "Biais d'auto-préférence",
+      "en": "Self-preference bias"
+    },
+    "definition": {
+      "fr": "Tendance d'un juge LLM à mieux noter ses propres sorties, ou celles de sa famille de modèles, que des sorties comparables produites par d'autres modèles. Son ampleur dépend du modèle qui juge : quand le même modèle génère et note, ce biais tend à gonfler le score du changement même que ce modèle est censé contrôler.",
+      "en": "The tendency of an LLM judge to score its own outputs, or those of its model family, higher than comparable outputs from other models. Its size depends on which model judges, so when one model both generates and grades, the bias tends to inflate the score of the very change that model is meant to check."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "self-preference",
+      "self-enhancement bias",
+      "own-output preference",
+      "biais d'auto-préférence"
+    ],
+    "related": [
+      "llm-as-a-judge",
+      "option-order-bias"
+    ],
+    "articles": [
+      "llm-findings-expire-across-model-generations"
+    ],
+    "addedOn": "05-11-2026"
   },
   {
     "id": "self-reported-productivity",

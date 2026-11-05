@@ -1,0 +1,223 @@
+{
+  "slug": "votre-juge-llm-change-avec-son-modele-revalidez-le-avant-qu-il-note-une-mise-a-niveau",
+  "lang": "fr",
+  "translationKey": "llm-findings-expire-across-model-generations",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (scope: 50 claims)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "We test a broad range of 50 LLM claims, from sycophancy and jailbreaks to long-context capabilities and cultural biases."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (most claims no longer hold within 15 months)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Within 15 months of publication, most of the LLM claims we tested either no longer held or showed substantially diminished effects."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (expiry rate after one and two years)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Across the claims we tested, 16% had expired within a year of publication and 39% within two years."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (what expired: capability failures)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Mostly capability failures that newer models no longer make: counting letters, arithmetic in other bases, finding facts in the middle of long contexts, fabricating citations, and abandoning correct answers when challenged."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (what weakened: structural limits and residual biases)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Weaker but still existent: structural limits such as the reversal curse, two-hop questions and multi-turn instructions, plus residual social biases"
+    },
+    {
+      "sourceId": "s6",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (judge, reviewer and rater claims persist)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Three of ten claims about models as judges, reviewers, and raters persist or strengthen."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (reproduction check on the original models)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Of the 48 claims in the reproduction check below, 43 reproduce within our magnitude or uncertainty tolerance and 5 show stronger effects."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (limitation: wide confidence intervals)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "These aggregate persistence estimates have wide confidence intervals because the study includes only 50 claims."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (recommendation: ship prompts and analysis code)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Further, papers should include their exact provenance for reproducibility, including prompts and analysis code, in order to repeat these claims on future LLMs."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (coding agents made the re-test feasible)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "This allowed us to test many more claims in a much shorter period of time than would have been possible before coding agents."
+    },
+    {
+      "sourceId": "s11",
+      "label": "Singh, Xu, Zhou, Zhou, Hakkani-Tur and Joty, On the Shelf Life of Fine-Tuned LLM-Judges (arXiv 2509.23542) (future-proofing is hard, backward compatibility is easy)",
+      "url": "https://arxiv.org/abs/2509.23542",
+      "excerpt": "Experiments suggest that future-proofing is challenging for most models, while backward-compatibility is relatively easy, with DPO-trained models consistently improving performance."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Singh, Xu, Zhou, Zhou, Hakkani-Tur and Joty, On the Shelf Life of Fine-Tuned LLM-Judges (arXiv 2509.23542) (judges degrade on unseen questions)",
+      "url": "https://arxiv.org/abs/2509.23542",
+      "excerpt": "Moreover, all models exhibit some degree of performance degradation when moving from questions seen during training to unseen ones, showing that current judges do not fully generalize to unseen questions."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Trisovic, The Shrinking Lifespan of LLMs in Science (arXiv 2604.07530) (lifespan shrinks with each release year)",
+      "url": "https://arxiv.org/abs/2604.07530",
+      "excerpt": "Each successive release year is associated with a 27% shorter time-to-peak and a 23% shorter lifespan"
+    },
+    {
+      "sourceId": "s14",
+      "label": "Trisovic, The Shrinking Lifespan of LLMs in Science (arXiv 2604.07530) (single-model specialization depreciates)",
+      "url": "https://arxiv.org/abs/2604.07530",
+      "excerpt": "suggest that specialization on any single model may be a depreciating investment, with costs falling on reproducibility and migration."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Stephen Turner, Paired Ends, The Shelf Life of LLM findings (commentary) (OpenScholar claims benchmarked against GPT-4o)",
+      "url": "https://blog.stephenturner.us/p/llm-claims-shelf-life",
+      "excerpt": "I wrote about this earlier with OpenScholar  , where the claims about a model doing better with citation hallucinations than a frontier model were benchmarking against the long-dead GPT-4o."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (byline: authors, affiliation and date)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "The shelf life of LLM findings   Owen Queen ,  James Zou   Stanford University  November 2, 2026"
+    },
+    {
+      "sourceId": "s17",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (what persists or strengthened: preferences and judgment)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Persists or strengthened  8 persist · 3 strengthened   Mostly preferences and judgment rather than capability: flattering and agreeing with users, judges that favor their own answers, near-identical answers to open prompts, a left political lean, and answering when they should abstain."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (strengthened findings include judge self-preference)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "At the other end, the three strengthened findings are self-preference in LLM judges ( C28 ), praise that follows the user’s stated preference ( C17 ), and nonuniform random-number generation ( C29 ). Their fitted effects are about 2.36, 1.85, and 1.70 times their reference magnitudes, respectively."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (self-preference differs by judge model)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Claude Sonnet 5.5’s self-preference effect ( C28 ) is close to the paper’s magnitude ( e  = 1.09), whereas GPT-6.1 Sol’s is larger ( e  = 2.88)."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (length preference reverses between judge models)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "The pattern reverses for preference for longer answers ( C27 ): Sonnet retains that effect ( e  = 1.12), while Sol’s point estimate is near the expiration value ( e  = 0.09)."
+    },
+    {
+      "sourceId": "s21",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (panel verdict can differ from one model)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "A claim’s panel-wide verdict can therefore differ from what you see on one model."
+    },
+    {
+      "sourceId": "s22",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (per-model exception: citation fabrication)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Citation fabrication ( C11 ) is classified as expired overall, yet Qwen3.7-Flash fabricated 69% of references in this test, compared with about 1% for Sonnet 5.5 and 0% for Sol."
+    },
+    {
+      "sourceId": "s23",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (release date alone does not determine the pattern)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Release date alone does not determine the pattern. Among models released in July–September 2026, the expired count ranges from 11 for DeepSeek V4 Pro to 30 for GPT-6.1 Sol."
+    },
+    {
+      "sourceId": "s24",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (panel run at default API configuration)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "We evaluate panel models under each provider’s default API configuration."
+    },
+    {
+      "sourceId": "s25",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (a finding is dated; report model, version and date)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "A finding is an observation about particular models at a particular time, not a fixed property of language models. Because of this, papers should report the model, version and date with each result."
+    },
+    {
+      "sourceId": "s26",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (preference claims are harder to notice and train away)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "These are tendencies rather than errors on a test with one right answer, so they may be harder to notice and to train away by model developers."
+    },
+    {
+      "sourceId": "s27",
+      "label": "Singh, Xu, Zhou, Zhou, Hakkani-Tur and Joty, On the Shelf Life of Fine-Tuned LLM-Judges (arXiv 2509.23542) (fine-tuned judges preferred for robustness to common biases)",
+      "url": "https://arxiv.org/abs/2509.23542",
+      "excerpt": "Recently, fine-tuning judges with judge-specific data has emerged as an often preferred choice over directly prompting frontier models as judges, as the former achieves better performance with smaller model sizes while being more robust to common biases."
+    },
+    {
+      "sourceId": "s28",
+      "label": "Singh, Xu, Zhou, Zhou, Hakkani-Tur and Joty, On the Shelf Life of Fine-Tuned LLM-Judges (arXiv 2509.23542) (future-proofing defined over responses by future models)",
+      "url": "https://arxiv.org/abs/2509.23542",
+      "excerpt": "perform on responses by future models or past models, as well as question generalization -- how well judges generalize to unseen questions at test time."
+    },
+    {
+      "sourceId": "s29",
+      "label": "Singh, Xu, Zhou, Zhou, Hakkani-Tur and Joty, On the Shelf Life of Fine-Tuned LLM-Judges (arXiv 2509.23542) (judges deployed against ever-changing generators)",
+      "url": "https://arxiv.org/abs/2509.23542",
+      "excerpt": "These findings provide insights into practical considerations for developing and deploying judge models in the face of ever-changing generators."
+    },
+    {
+      "sourceId": "s30",
+      "label": "Singh, Xu, Zhou, Zhou, Hakkani-Tur and Joty, On the Shelf Life of Fine-Tuned LLM-Judges (arXiv 2509.23542) (continual learning adapts better)",
+      "url": "https://arxiv.org/abs/2509.23542",
+      "excerpt": "We further find that continual learning provides a more balanced adaptation to shifts between older and newer response distributions than training solely on stronger or weaker responses."
+    },
+    {
+      "sourceId": "s31",
+      "label": "Singh, Xu, Zhou, Zhou, Hakkani-Tur and Joty, On the Shelf Life of Fine-Tuned LLM-Judges (arXiv 2509.23542) (author list)",
+      "url": "https://arxiv.org/abs/2509.23542",
+      "excerpt": "Authors:  Janvijay Singh ,  Austin Xu ,  Yilun Zhou ,  Yefan Zhou ,  Dilek Hakkani-Tur ,  Shafiq Joty"
+    },
+    {
+      "sourceId": "s32",
+      "label": "Trisovic, The Shrinking Lifespan of LLMs in Science (arXiv 2604.07530) (release year predicts lifespan more than model traits)",
+      "url": "https://arxiv.org/abs/2604.07530",
+      "excerpt": "release year predicts time-to-peak and lifespan more strongly than architecture, openness, or scale."
+    },
+    {
+      "sourceId": "s33",
+      "label": "Trisovic, The Shrinking Lifespan of LLMs in Science (arXiv 2604.07530) (submitter)",
+      "url": "https://arxiv.org/abs/2604.07530",
+      "excerpt": "From: Ana Trisovic"
+    },
+    {
+      "sourceId": "s34",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (preference claims have lasted longer)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Claims about what models prefer have lasted longer."
+    },
+    {
+      "sourceId": "s35",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (self-preference reference is a small base)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "For self-preference, the reference is a small 4.6-percentage-point difference between GPT-4’s preference for its own summaries and GPT-3.5’s preference for those same summaries."
+    },
+    {
+      "sourceId": "s36",
+      "label": "Queen and Zou (Stanford University), The shelf life of LLM findings (each plotted fitted effect is a release-date trend, not one model)",
+      "url": "https://zou-group.github.io/llm-claims-shelf-life/",
+      "excerpt": "Each dot is the fitted release-date trend evaluated at September 30, 2026, using 9–20 eligible panel models per claim across release dates. It is not a measurement on a single recent model or an average of only the newest models."
+    }
+  ]
+}
