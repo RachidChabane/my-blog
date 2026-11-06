@@ -480,7 +480,8 @@
       "coding-agents"
     ],
     "articles": [
-      "telemetry-off-forks-coding-agent-behaviour"
+      "telemetry-off-forks-coding-agent-behaviour",
+      "low-similarity-score-does-not-clear-an-agent-rewrite"
     ],
     "addedOn": "27-09-2026"
   },
@@ -536,7 +537,8 @@
       "allowlist-verbe-capacite-2026-08",
       "read-only-egress-is-a-write-channel",
       "live-web-agent-evals-run-side-effects-on-third-party-sites",
-      "agent-fetch-tools-should-refuse-hosts-nobody-named"
+      "agent-fetch-tools-should-refuse-hosts-nobody-named",
+      "low-similarity-score-does-not-clear-an-agent-rewrite"
     ],
     "addedOn": "17-07-2026"
   },
@@ -1285,6 +1287,33 @@
       "ask-when-unsure-is-gated-on-detection"
     ],
     "addedOn": "14-09-2026"
+  },
+  {
+    "id": "clean-room-rewrite",
+    "label": {
+      "fr": "Réécriture en clean room",
+      "en": "Clean-room rewrite"
+    },
+    "definition": {
+      "fr": "Réimplémentation d'un logiciel conçue pour que le résultat ne dérive pas de l'original : une partie lit l'original et rédige une spécification, une autre, sans accès à ce code, construit à partir de cette spécification. Avec un agent de code, la partie sans accès est la session : la séparation s'étend donc jusqu'à ce que la session peut atteindre, et elle ne couvre pas ce que le modèle a appris à l'entraînement.",
+      "en": "Reimplementing software so that the result does not derive from the original: one party reads the original and writes a specification, and a separate party with no access to it builds from that specification. With a coding agent the party without access is the session, so the separation extends as far as what the session can reach and does not cover what the model learned in training."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "clean room",
+      "clean room implementation",
+      "clean-room reimplementation",
+      "salle blanche"
+    ],
+    "related": [
+      "coding-agents",
+      "origin-attestation",
+      "training-data-lineage"
+    ],
+    "articles": [
+      "low-similarity-score-does-not-clear-an-agent-rewrite"
+    ],
+    "addedOn": "06-11-2026"
   },
   {
     "id": "code-elision",
@@ -3839,7 +3868,8 @@
     "articles": [
       "mcp-tool-poisoning-client-trust",
       "tool-calling-readout-not-descriptions",
-      "mcp-stateless-header-routing-2026-07"
+      "mcp-stateless-header-routing-2026-07",
+      "low-similarity-score-does-not-clear-an-agent-rewrite"
     ],
     "addedOn": "01-07-2026"
   },
@@ -4217,6 +4247,34 @@
       "swe-bench-private-holdout-trust"
     ],
     "addedOn": "24-07-2026"
+  },
+  {
+    "id": "process-evidence",
+    "label": {
+      "fr": "Preuve sur le processus",
+      "en": "Process evidence"
+    },
+    "definition": {
+      "fr": "Éléments montrant comment un artefact a été produit, comme les prompts, les journaux de session et le contenu de l'espace de travail, par opposition aux preuves tirées du résultat fini. Ils peuvent établir ce à quoi le producteur avait accès, y compris quand les résultats semblent sans rapport, ce qu'une comparaison des résultats ne permet pas d'exclure, mais ils ne couvrent que ce qui a été enregistré et conservé.",
+      "en": "Evidence about how an artifact was produced, such as prompts, session logs and the contents of the workspace, as opposed to evidence read off the finished output. It can show what a producer had access to even when the outputs look unrelated, which a comparison of outputs cannot rule out, but it covers only what was recorded and kept."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "evidence about the process",
+      "session record",
+      "process record",
+      "preuves sur le processus"
+    ],
+    "related": [
+      "agent-observability",
+      "origin-attestation",
+      "clean-room-rewrite",
+      "token-similarity-score"
+    ],
+    "articles": [
+      "low-similarity-score-does-not-clear-an-agent-rewrite"
+    ],
+    "addedOn": "06-11-2026"
   },
   {
     "id": "prompt-caching",
@@ -5302,7 +5360,8 @@
       "benchmark-self-reporting"
     ],
     "articles": [
-      "bulk-ai-research-release-ships-review-cost-to-readers"
+      "bulk-ai-research-release-ships-review-cost-to-readers",
+      "low-similarity-score-does-not-clear-an-agent-rewrite"
     ],
     "addedOn": "26-10-2026"
   },
@@ -6065,6 +6124,33 @@
     "addedOn": "30-06-2026"
   },
   {
+    "id": "token-similarity-score",
+    "label": {
+      "fr": "Score de similarité de jetons",
+      "en": "Token-similarity score"
+    },
+    "definition": {
+      "fr": "Mesure du recouvrement entre deux bases de code comparées sous forme de séquences de jetons plutôt que de texte brut, souvent après normalisation des identifiants et de la mise en forme. Un score élevé indique une copie, tandis qu'un score bas montre seulement que les deux arbres diffèrent en surface : il peut venir d'une implémentation indépendante comme d'une réécriture faite avec l'original sous la main.",
+      "en": "A measure of how much two codebases overlap when compared as token sequences rather than raw text, often after normalizing identifiers and formatting. A high score is evidence of copying, while a low one shows only that two trees differ on the surface: it can come from an independent implementation or from a rewrite made with the original at hand."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "token similarity",
+      "code similarity score",
+      "token-based code similarity",
+      "similarité de jetons"
+    ],
+    "related": [
+      "clean-room-rewrite",
+      "proxy-metric",
+      "variance-decomposition"
+    ],
+    "articles": [
+      "low-similarity-score-does-not-clear-an-agent-rewrite"
+    ],
+    "addedOn": "06-11-2026"
+  },
+  {
     "id": "token-trajectory-equivalence",
     "label": {
       "fr": "Équivalence de trajectoire de tokens",
@@ -6411,7 +6497,8 @@
     ],
     "articles": [
       "harness-over-model-has-no-global-ordering",
-      "cli-agent-productivity-proxy-choice"
+      "cli-agent-productivity-proxy-choice",
+      "low-similarity-score-does-not-clear-an-agent-rewrite"
     ],
     "addedOn": "15-07-2026"
   },

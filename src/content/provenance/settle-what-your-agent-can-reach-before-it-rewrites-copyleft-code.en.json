@@ -1,0 +1,343 @@
+{
+  "slug": "settle-what-your-agent-can-reach-before-it-rewrites-copyleft-code",
+  "lang": "en",
+  "translationKey": "low-similarity-score-does-not-clear-an-agent-rewrite",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887)",
+      "url": "https://arxiv.org/abs/2611.07887",
+      "excerpt": "Maintainers sometimes cite a low token-similarity score as evidence that an LLM-assisted rewrite of a copyleft project is independent of the original."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887)",
+      "url": "https://arxiv.org/abs/2611.07887",
+      "excerpt": "Every controlled rewrite passes the harness after repair, usually within half an hour for the initial rewrite."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887)",
+      "url": "https://arxiv.org/abs/2611.07887",
+      "excerpt": "On 69 rewrites of six copyleft Python projects we find that:"
+    },
+    {
+      "sourceId": "s4",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887)",
+      "url": "https://arxiv.org/abs/2611.07887",
+      "excerpt": "run-to-run variation dominates project and agent effects, and in more than a third of configurations the three repeats straddle the threshold."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887)",
+      "url": "https://arxiv.org/abs/2611.07887",
+      "excerpt": "Thus a low score on one rewrite is weak evidence of independence: another run of the same agent may score high."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887)",
+      "url": "https://arxiv.org/abs/2611.07887",
+      "excerpt": "Claims based on similarity should report repeated generations, and candidate provenance signals should be checked against same task independent implementations, not only against unrelated projects."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "Rewrites of different projects score up to 10.5% against each other, and 22 of our 54 rewrites score no higher than that against their own original."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "The 1.29% cited in the  chardet  case lies in this range, so the score is compatible with both an independent implementation and a rewrite made with the original at hand."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "Results may differ for projects whose value lies in their own algorithms, of which  chardet  is an example."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Blanchard, account of the chardet v7 rewrite (JPlag maximum against the previous release)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "1.30% max. JPlag strips variable names and formatting, so it would catch renamed copies."
+    },
+    {
+      "sourceId": "s11",
+      "label": "Blanchard, account of the chardet v7 rewrite",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "My instructions to Claude were explicit: do not use LGPL or GPL source code, do not look at the existing chardet code, start from an empty repository."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Willison, coding agents and clean room relicensing",
+      "url": "https://simonwillison.net/2026/Mar/5/chardet/",
+      "excerpt": "showing that the new 7.0.0 release has a max similarity of 1.29% with the previous release and 0.64% with the 1.1 version. Other release versions had similarities more in the 80-93% range."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "the original author objected that a rewrite by people exposed to the LGPL code remains bound by that licence"
+    },
+    {
+      "sourceId": "s14",
+      "label": "Meeker, The Chardet Controversy",
+      "url": "https://heathermeeker.com/2026/04/09/the-chardet-controversy-open-source-and-the-ai-clean-room/",
+      "excerpt": "Richard Fontana, an expert on open source licensing,  commented  that he saw no current basis for concluding that Chardet 7.0.0 was required to be released under the LGPL, noting that no one had identified copyrightable material from earlier versions in the new code."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Meeker, The Chardet Controversy",
+      "url": "https://heathermeeker.com/2026/04/09/the-chardet-controversy-open-source-and-the-ai-clean-room/",
+      "excerpt": "Still, the controversy raged on, probably because it was only partly about copyright and also about open source community expectations."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Blanchard, account of the chardet v7 rewrite",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "The roles were separated, but the spec writer and implementer both had at least some latent knowledge of the original code."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Meeker, The Chardet Controversy",
+      "url": "https://heathermeeker.com/2026/04/09/the-chardet-controversy-open-source-and-the-ai-clean-room/",
+      "excerpt": "there is no way to completely insulate any developer of exposure to public code. In this case, the issue applied in spades."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "whereas the  chardet  maintainer cited a score close to 1% as evidence of independence."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (what token similarity and retention did not reveal)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "In our study, neither token similarity nor retention revealed that the agent had the original."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (the session record)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "Only the record of the session does, that is, the prompts, the logs and the content of the workspace."
+    },
+    {
+      "sourceId": "s21",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (separation on the workspace)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "With agents, the separation has to be enforced on the workspace and recorded."
+    },
+    {
+      "sourceId": "s22",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (training data limit)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "It cannot be enforced on the training data of the model, which is a limit that a clean-room claim based on an agent should state."
+    },
+    {
+      "sourceId": "s23",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (a published score as a selected draw)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "A published score may thus be the minimum of several draws, and a reader has no means to know it."
+    },
+    {
+      "sourceId": "s24",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (what to request with a score)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "When one is offered, the number of runs and the rule used to select the published one should be requested with it."
+    },
+    {
+      "sourceId": "s25",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (reading of high and low scores)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "A high score is evidence of copying, and a low score is evidence of neither copying nor independence."
+    },
+    {
+      "sourceId": "s26",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (no runs from a specification)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "We have no runs from a specification alone, so we cannot say what an agent without the original would score."
+    },
+    {
+      "sourceId": "s27",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (scope of the paper)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "Whether the result is a derived work is a legal question that this paper does not address."
+    },
+    {
+      "sourceId": "s28",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (three runs across configurations)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "In all 18 configurations at least one of the three runs scores below 25%, and the lowest score of a configuration never exceeds 17.2%."
+    },
+    {
+      "sourceId": "s29",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (agents and prompt constraints)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "Both show, however, that the agent did not always follow the constraints of the prompts, and that our check on archived trees did not catch every case."
+    },
+    {
+      "sourceId": "s30",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (what a coding agent removes)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "A coding agent removes the separation on which the practice rests, since the same loop that writes the new code can read the original whenever it is public, named in the prompt or present in the workspace."
+    },
+    {
+      "sourceId": "s31",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (first author)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "Micheline Bénédicte Moumoula"
+    },
+    {
+      "sourceId": "s32",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (share of variance)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "Repeating an identical configuration accounts for 61% of the variance, against 14% for the project and under 1% for the agent, and in 7 of the 18 project-agent configurations three identical runs fall on both sides of the 25% threshold."
+    },
+    {
+      "sourceId": "s33",
+      "label": "Blanchard, account of the chardet v7 rewrite (summary of exposure)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "Claude has chardet in its training data, and despite my instructions, its subagents read old source code in three sessions."
+    },
+    {
+      "sourceId": "s34",
+      "label": "Blanchard, account of the chardet v7 rewrite (kind of exposure)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "Every direct exposure was either API surface or files primarily authored by me, and is documented here with transcript evidence."
+    },
+    {
+      "sourceId": "s35",
+      "label": "Blanchard, account of the chardet v7 rewrite (basis of the post)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "This post replaces those assumptions with evidence from the raw conversation transcripts."
+    },
+    {
+      "sourceId": "s36",
+      "label": "Blanchard, account of the chardet v7 rewrite (day-one blocking)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "I blocked every attempt to look at the old code on day one, and I found that after I moved the blank repository to a different folder that did not share a parent with my locally checked out copy of the chardet code, Claude stopped trying to search for it that way."
+    },
+    {
+      "sourceId": "s37",
+      "label": "Blanchard, account of the chardet v7 rewrite (timing of the largest exposure)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "The universaldetector.py read (session c9716c23, Feb 27) This is the biggest exposure event. The entire detection engine was already written and committed"
+    },
+    {
+      "sourceId": "s38",
+      "label": "Blanchard, account of the chardet v7 rewrite (unprompted read)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "I didn’t tell Claude to read the old source for this. Its subagents decided on their own that they needed to check how the parameters behaved."
+    },
+    {
+      "sourceId": "s39",
+      "label": "Blanchard, account of the chardet v7 rewrite (route of the read)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "The subagents read universaldetector.py and __init__.py at the 6.0.0 tag in full via the GitHub MCP tool."
+    },
+    {
+      "sourceId": "s40",
+      "label": "Blanchard, account of the chardet v7 rewrite (core detection code)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "None of the core detection code entered Claude’s active context during the rewrite."
+    },
+    {
+      "sourceId": "s41",
+      "label": "Blanchard, account of the chardet v7 rewrite (caveat on guardrails)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "The process wasn’t pristine. I should have set up stricter guardrails to prevent Claude’s subagents from reaching for the old code on their own."
+    },
+    {
+      "sourceId": "s42",
+      "label": "Willison, coding agents and clean room relicensing (maintainer reply quoted, the claim)",
+      "url": "https://simonwillison.net/2026/Mar/5/chardet/",
+      "excerpt": "the new code is structurally independent of the old code"
+    },
+    {
+      "sourceId": "s43",
+      "label": "Willison, coding agents and clean room relicensing (maintainer reply quoted, the method)",
+      "url": "https://simonwillison.net/2026/Mar/5/chardet/",
+      "excerpt": "through direct measurement rather than process guarantees alone"
+    },
+    {
+      "sourceId": "s44",
+      "label": "Willison, coding agents and clean room relicensing (the maintainer)",
+      "url": "https://simonwillison.net/2026/Mar/5/chardet/",
+      "excerpt": "Dan Blanchard who has been responsible for every release since  1.1 in July 2012"
+    },
+    {
+      "sourceId": "s45",
+      "label": "Willison, coding agents and clean room relicensing (the site)",
+      "url": "https://simonwillison.net/2026/Mar/5/chardet/",
+      "excerpt": "Simon Willison’s Weblog"
+    },
+    {
+      "sourceId": "s46",
+      "label": "Meeker, The Chardet Controversy (release date)",
+      "url": "https://heathermeeker.com/2026/04/09/the-chardet-controversy-open-source-and-the-ai-clean-room/",
+      "excerpt": "On March 2, 2026, Blanchard released Chardet 7.0.0"
+    },
+    {
+      "sourceId": "s47",
+      "label": "Meeker, The Chardet Controversy (reading of the similarity result)",
+      "url": "https://heathermeeker.com/2026/04/09/the-chardet-controversy-open-source-and-the-ai-clean-room/",
+      "excerpt": "To show that he had not copied the code, Blanchard provided the results of a plagiarism-detection analysis showing that version 7.0.0 shared less than 1.3% structural similarity with any prior release, suggesting that nothing protectable from the old codebase had been retained."
+    },
+    {
+      "sourceId": "s48",
+      "label": "Meeker, The Chardet Controversy (the AI as an intermediary)",
+      "url": "https://heathermeeker.com/2026/04/09/the-chardet-controversy-open-source-and-the-ai-clean-room/",
+      "excerpt": "Nevertheless, using AI to perform clean room development can help manage this issue by interposing a neutral actor–the AI–between the reimplementation developer and the specification developer."
+    },
+    {
+      "sourceId": "s49",
+      "label": "Meeker, The Chardet Controversy (author role)",
+      "url": "https://heathermeeker.com/2026/04/09/the-chardet-controversy-open-source-and-the-ai-clean-room/",
+      "excerpt": "Technology licensing lawyer"
+    },
+    {
+      "sourceId": "s50",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (position on the dispute)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "Without taking a position on that dispute, we observe that token-similarity scores have become the evidence offered when an agent-assisted rewrite is claimed to be independent of the original"
+    },
+    {
+      "sourceId": "s51",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (what a low score shows)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "A low token score shows that two trees differ on the surface."
+    },
+    {
+      "sourceId": "s52",
+      "label": "Moumoula et al., source-conditioned rewriting (arXiv 2611.07887) (process and output evidence)",
+      "url": "https://arxiv.org/html/2611.07887v1",
+      "excerpt": "Evidence about the process is therefore worth more than evidence about the output."
+    },
+    {
+      "sourceId": "s53",
+      "label": "Blanchard, account of the chardet v7 rewrite (restrictive permissions)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "I set up Claude Code with restrictive permissions in the rewrite repo. Only git commands were pre-approved"
+    },
+    {
+      "sourceId": "s54",
+      "label": "Blanchard, account of the chardet v7 rewrite (file in the context window)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "the full contents of universaldetector.py (~567 lines) were in Claude’s context window while it generated code"
+    },
+    {
+      "sourceId": "s55",
+      "label": "Blanchard, account of the chardet v7 rewrite (exposure he meant to avoid)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "That’s exactly the kind of exposure I was trying to avoid"
+    },
+    {
+      "sourceId": "s56",
+      "label": "Blanchard, account of the chardet v7 rewrite (day-one denial at a prompt)",
+      "url": "http://dan-blanchard.github.io/blog/chardet-rewrite-controversy/",
+      "excerpt": "I denied the permission request and interrupted Claude entirely"
+    }
+  ]
+}
