@@ -538,7 +538,8 @@
       "read-only-egress-is-a-write-channel",
       "live-web-agent-evals-run-side-effects-on-third-party-sites",
       "agent-fetch-tools-should-refuse-hosts-nobody-named",
-      "low-similarity-score-does-not-clear-an-agent-rewrite"
+      "low-similarity-score-does-not-clear-an-agent-rewrite",
+      "agent-sandbox-strength-is-host-kernel-patch-lag"
     ],
     "addedOn": "17-07-2026"
   },
@@ -843,7 +844,8 @@
       "allowlist-verbe-capacite-2026-08",
       "remediation-throughput-is-the-security-constraint",
       "attack-agent-harness-state-holds-the-secrets-it-finds",
-      "ai-rediscovered-vulnerabilities-leak-the-disclosure-window"
+      "ai-rediscovered-vulnerabilities-leak-the-disclosure-window",
+      "agent-sandbox-strength-is-host-kernel-patch-lag"
     ],
     "addedOn": "02-08-2026"
   },
@@ -2369,7 +2371,8 @@
       "proxy-metric"
     ],
     "articles": [
-      "ai-rediscovered-vulnerabilities-leak-the-disclosure-window"
+      "ai-rediscovered-vulnerabilities-leak-the-disclosure-window",
+      "agent-sandbox-strength-is-host-kernel-patch-lag"
     ],
     "addedOn": "25-10-2026"
   },
@@ -2719,6 +2722,33 @@
       "provable-inference-proves-greedy-integer-replay-not-sampled-traffic"
     ],
     "addedOn": "04-11-2026"
+  },
+  {
+    "id": "guest-to-host-escape",
+    "label": {
+      "fr": "Évasion de l'invité vers l'hôte",
+      "en": "Guest-to-host escape"
+    },
+    "definition": {
+      "fr": "Attaque par laquelle du code exécuté dans une machine virtuelle obtient un accès à la mémoire ou une exécution de code sur l'hôte qui la fait tourner. Le point d'entrée peut être l'hyperviseur, le moniteur de machine virtuelle ou du code du noyau de l'hôte qui analyse des données fournies par l'invité ; dans ce dernier cas, mettre à jour les invités ne suffit pas, et la faille ne se ferme qu'une fois l'hôte passé sur un noyau corrigé.",
+      "en": "An attack in which code running inside a virtual machine gains memory access or code execution on the host that runs it. The entry point can be the hypervisor, the virtual machine monitor, or host kernel code that parses data supplied by the guest; in that last case updating the guests does not help, and the hole closes only once the host runs a patched kernel."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "VM escape",
+      "virtual machine escape",
+      "hypervisor escape",
+      "évasion de VM"
+    ],
+    "related": [
+      "microvm-isolation",
+      "trust-boundary",
+      "exposure-window"
+    ],
+    "articles": [
+      "agent-sandbox-strength-is-host-kernel-patch-lag"
+    ],
+    "addedOn": "07-11-2026"
   },
   {
     "id": "hallucination",
@@ -3561,6 +3591,33 @@
     "addedOn": "04-05-2026"
   },
   {
+    "id": "local-privilege-escalation",
+    "label": {
+      "fr": "Élévation locale de privilèges",
+      "en": "Local privilege escalation"
+    },
+    "definition": {
+      "fr": "Passage d'une exécution de code en tant qu'utilisateur local non privilégié à des privilèges plus élevés sur la même machine, en général ceux de root, par l'exploitation d'un défaut du noyau ou d'un programme privilégié. L'attaquant doit déjà exécuter du code sur place, ce qui est la condition normale dans un bac à sable ou sur un hôte partagé ; un défaut connu reste donc exploitable sur ce système tant qu'il n'y est pas corrigé.",
+      "en": "Turning code execution as an unprivileged local user into higher privileges on the same machine, usually root, by exploiting a flaw in the kernel or in a privileged program. The attacker must already run code locally, which is the normal condition inside a sandbox or on a shared host, so a known flaw stays exploitable on that system until it is patched there."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "LPE",
+      "privilege escalation",
+      "local root exploit",
+      "élévation de privilèges"
+    ],
+    "related": [
+      "least-privilege",
+      "automated-exploit-generation",
+      "exposure-window"
+    ],
+    "articles": [
+      "agent-sandbox-strength-is-host-kernel-patch-lag"
+    ],
+    "addedOn": "07-11-2026"
+  },
+  {
     "id": "long-context-degradation",
     "label": {
       "fr": "Dégradation en contexte long",
@@ -3764,6 +3821,33 @@
       "compaction-summaries-carry-no-authority"
     ],
     "addedOn": "28-10-2026"
+  },
+  {
+    "id": "microvm-isolation",
+    "label": {
+      "fr": "Isolation par microVM",
+      "en": "MicroVM isolation"
+    },
+    "definition": {
+      "fr": "Exécution de chaque charge de travail dans une machine virtuelle légère, dotée de son propre noyau invité et lancée par un moniteur de machine virtuelle minimal, de sorte que ses appels système atteignent le noyau invité plutôt que celui de l'hôte. Le noyau de l'hôte reste pourtant sur le chemin : il traite toujours le trafic réseau et les entrées-sorties de l'invité, si bien qu'un défaut dans ce code peut franchir la frontière et ne se corrige qu'en mettant à jour l'hôte.",
+      "en": "Running each workload in a lightweight virtual machine with its own guest kernel, started by a minimal virtual machine monitor, so that the workload's system calls reach the guest kernel rather than the host's. The host kernel stays on the path all the same: it still handles the guest's network and device traffic, so a flaw in that code can cross the boundary and is fixed only by updating the host."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "microVM",
+      "microVM sandbox",
+      "lightweight virtual machine",
+      "machine virtuelle légère"
+    ],
+    "related": [
+      "agent-sandboxing",
+      "trust-boundary",
+      "attack-surface-reduction"
+    ],
+    "articles": [
+      "agent-sandbox-strength-is-host-kernel-patch-lag"
+    ],
+    "addedOn": "07-11-2026"
   },
   {
     "id": "migration-completeness-check",
@@ -6338,7 +6422,8 @@
       "read-only-egress-is-a-write-channel",
       "the-check-binds-the-action-not-the-decision",
       "lean-kernel-cross-checks-only-help-when-kernels-fail-differently",
-      "compaction-summaries-carry-no-authority"
+      "compaction-summaries-carry-no-authority",
+      "agent-sandbox-strength-is-host-kernel-patch-lag"
     ],
     "addedOn": "01-07-2026"
   },
@@ -6677,7 +6762,8 @@
       "supply-chain-attack"
     ],
     "articles": [
-      "lean-kernel-cross-checks-only-help-when-kernels-fail-differently"
+      "lean-kernel-cross-checks-only-help-when-kernels-fail-differently",
+      "agent-sandbox-strength-is-host-kernel-patch-lag"
     ],
     "addedOn": "18-10-2026"
   },

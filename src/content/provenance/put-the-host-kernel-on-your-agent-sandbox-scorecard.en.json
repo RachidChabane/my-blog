@@ -1,0 +1,253 @@
+{
+  "slug": "put-the-host-kernel-on-your-agent-sandbox-scorecard",
+  "lang": "en",
+  "translationKey": "agent-sandbox-strength-is-host-kernel-patch-lag",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "OpenAI, A thousand fewer paths to root",
+      "url": "https://openai.com/index/a-thousand-fewer-paths-to-root/",
+      "excerpt": "Our prototype identified and analyzed 2,308 candidate Linux kernel findings, dynamically reproduced 1,724 vulnerabilities, and produced 948 local privilege escalation (LPE) exploits that could allow an unprivileged local user to gain root access."
+    },
+    {
+      "sourceId": "s2",
+      "label": "OpenAI, A thousand fewer paths to root",
+      "url": "https://openai.com/index/a-thousand-fewer-paths-to-root/",
+      "excerpt": "For the near and medium term, having access to a low-privileged account on an operating system, that isn’t up-to-date on its latest available patches should be considered functionally equivalent to root access for a well-resourced threat actor."
+    },
+    {
+      "sourceId": "s3",
+      "label": "OpenAI, A thousand fewer paths to root",
+      "url": "https://openai.com/index/a-thousand-fewer-paths-to-root/",
+      "excerpt": "Defense in depth, using sandboxes and isolation approaches like Firecracker and gVisor are important for limiting the blast radius of exploited vulnerabilities."
+    },
+    {
+      "sourceId": "s4",
+      "label": "OpenAI, A thousand fewer paths to root",
+      "url": "https://openai.com/index/a-thousand-fewer-paths-to-root/",
+      "excerpt": "Within 10 days while the scan was running, we observed over 100 Linux LPEs had been patched or had staging patches from other contributors, with ~300 more being publicly discussed."
+    },
+    {
+      "sourceId": "s5",
+      "label": "pwn.ai, Firecracker VM Escape: PwnEscape Part 2",
+      "url": "https://pwn.ai/blog/firecracker-escape",
+      "excerpt": "Firecracker is supposed to keep untrusted code inside a microVM. We escaped it and achieved code execution as root on the host."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Vercel, findings from the $1M Vercel Sandbox challenge",
+      "url": "https://vercel.com/blog/findings-from-the-1-million-dollar-vercel-sandbox-challenge",
+      "excerpt": "Almost every major cloud provider isolates customer workloads on this same layer of the Linux kernel, so any defect is shared-infrastructure risk."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Vercel, findings from the $1M Vercel Sandbox challenge",
+      "url": "https://vercel.com/blog/findings-from-the-1-million-dollar-vercel-sandbox-challenge",
+      "excerpt": "Each sandbox runs on its own Firecracker microVM with a dedicated guest kernel, and the device model is deliberately tiny."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Vercel, findings from the $1M Vercel Sandbox challenge",
+      "url": "https://vercel.com/blog/findings-from-the-1-million-dollar-vercel-sandbox-challenge",
+      "excerpt": "No reports showed anyone accessing customer data in Vercel Sandbox."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Vercel, findings from the $1M Vercel Sandbox challenge",
+      "url": "https://vercel.com/blog/findings-from-the-1-million-dollar-vercel-sandbox-challenge",
+      "excerpt": "Keep host and guest kernels up to date, reduce the kernel attack surface via build and runtime configs, disable nested virtualization"
+    },
+    {
+      "sourceId": "s10",
+      "label": "Vercel, findings from the $1M Vercel Sandbox challenge",
+      "url": "https://vercel.com/blog/findings-from-the-1-million-dollar-vercel-sandbox-challenge",
+      "excerpt": "Some clearly know Linux namespaces and steered their agents straight at the kernel boundary."
+    },
+    {
+      "sourceId": "s11",
+      "label": "CSO Online, KVM escape exposes broader attack surface in Linux networking",
+      "url": "https://www.csoonline.com/article/4237999/kvm-escape-exposes-broader-attack-surface-in-linux-networking.html",
+      "excerpt": "Rather than exploiting a bug in the KVM hypervisor itself, the attack targets the Linux networking code that handles traffic from inside virtual machines."
+    },
+    {
+      "sourceId": "s12",
+      "label": "CSO Online, KVM escape exposes broader attack surface in Linux networking",
+      "url": "https://www.csoonline.com/article/4237999/kvm-escape-exposes-broader-attack-surface-in-linux-networking.html",
+      "excerpt": "Administrators need to deploy those kernel updates on host systems because updating only guest VMs does not fix the vulnerability."
+    },
+    {
+      "sourceId": "s13",
+      "label": "CSO Online, KVM escape exposes broader attack surface in Linux networking",
+      "url": "https://www.csoonline.com/article/4237999/kvm-escape-exposes-broader-attack-surface-in-linux-networking.html",
+      "excerpt": "KVM and other kernel-based virtualization components have had multiple critical vulnerabilities this year, some of them found with the help of LLMs, including PwnEscape."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Andronchik and Lokhmakov, AI Code Sandboxes: A Comparative Security Study, Part 1 (arXiv 2606.08433)",
+      "url": "https://arxiv.org/abs/2606.08433",
+      "excerpt": "(1) engine classes (microVM, userspace kernel, OCI container) separate cleanly on every architectural axis, but products within a class do not"
+    },
+    {
+      "sourceId": "s15",
+      "label": "Andronchik and Lokhmakov, AI Code Sandboxes: A Comparative Security Study, Part 1 (arXiv 2606.08433)",
+      "url": "https://arxiv.org/abs/2606.08433",
+      "excerpt": "(2) product pin policy is the dominant operator-facing variable -- engine-side patch latency aggregates to ~0 days for coordinated disclosures, while downstream lag spans 0 days to 471+ days"
+    },
+    {
+      "sourceId": "s16",
+      "label": "OpenAI, A thousand fewer paths to root",
+      "url": "https://openai.com/index/a-thousand-fewer-paths-to-root/",
+      "excerpt": "In a run in mid-October 2026, our pipeline using an upcoming cyber model dynamically reproduced 1,724 vulnerabilities and generated PoCs for  291 information leak  vulnerabilities and  948 working local privilege escalation  (LPE) exploits for a commonly used Linux distribution."
+    },
+    {
+      "sourceId": "s17",
+      "label": "Andronchik and Lokhmakov, AI Code Sandboxes: A Comparative Security Study, Part 1 (arXiv 2606.08433) (kernel CVE impact, container row)",
+      "url": "https://arxiv.org/abs/2606.08433",
+      "excerpt": "Container (runc) Full surface. Every host-kernel CVE reachable from unprivileged userspace applies."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Andronchik and Lokhmakov, AI Code Sandboxes: A Comparative Security Study, Part 1 (arXiv 2606.08433) (kernel CVE impact, microVM row)",
+      "url": "https://arxiv.org/abs/2606.08433",
+      "excerpt": "microVM (Firecracker, Cloud Hypervisor, libkrun) Partial via guest kernel only. Host kernel CVE → escape only if the VMM has its own surface bug."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Andronchik and Lokhmakov, AI Code Sandboxes: A Comparative Security Study, Part 1 (arXiv 2606.08433) (kernel CVE impact, microVM row)",
+      "url": "https://arxiv.org/abs/2606.08433",
+      "excerpt": "Guest kernel pin shifts the risk profile (operators choose the guest kernel independently of the host kernel)."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Andronchik and Lokhmakov, AI Code Sandboxes: A Comparative Security Study, Part 1 (arXiv 2606.08433) (kernel CVE impact, userspace kernel row)",
+      "url": "https://arxiv.org/abs/2606.08433",
+      "excerpt": "Userspace kernel (gVisor) Minimal. Sentry intercepts most syscalls; host-kernel CVE generally not reachable via the syscall path."
+    },
+    {
+      "sourceId": "s21",
+      "label": "Andronchik and Lokhmakov, AI Code Sandboxes: A Comparative Security Study, Part 1 (arXiv 2606.08433) (patch cadence, structural finding)",
+      "url": "https://arxiv.org/abs/2606.08433",
+      "excerpt": "Class-level isolation does not predict downstream lag; the two must be combined."
+    },
+    {
+      "sourceId": "s22",
+      "label": "Andronchik and Lokhmakov, AI Code Sandboxes: A Comparative Security Study, Part 1 (arXiv 2606.08433) (e2b portrait)",
+      "url": "https://arxiv.org/abs/2606.08433",
+      "excerpt": "The cloud-hosted product is opaque on the pin question."
+    },
+    {
+      "sourceId": "s23",
+      "label": "Andronchik and Lokhmakov, AI Code Sandboxes: A Comparative Security Study, Part 1 (arXiv 2606.08433) (shared-kernel exposure)",
+      "url": "https://arxiv.org/abs/2606.08433",
+      "excerpt": "Engine-level CVE counts do not include the shared-kernel exposure; per the methodology, per-CVE attribution against the kernel’s set is infeasible at this scale and is reported as an aggregate baseline."
+    },
+    {
+      "sourceId": "s24",
+      "label": "Andronchik and Lokhmakov, AI Code Sandboxes: A Comparative Security Study, Part 1 (arXiv 2606.08433) (arrakis engine pin)",
+      "url": "https://arxiv.org/abs/2606.08433",
+      "excerpt": "arrakis pinned Cloud Hypervisor at v44.0 in commit 024f74a (2025-02-04) and has not bumped since."
+    },
+    {
+      "sourceId": "s25",
+      "label": "pwn.ai, Firecracker VM Escape: PwnEscape Part 2 (test configuration)",
+      "url": "https://pwn.ai/blog/firecracker-escape",
+      "excerpt": "The configuration used here had no jailer."
+    },
+    {
+      "sourceId": "s26",
+      "label": "pwn.ai, Firecracker VM Escape: PwnEscape Part 2 (production containment caveat)",
+      "url": "https://pwn.ai/blog/firecracker-escape",
+      "excerpt": "production containment  includes dropping privileges and restricting the process through namespaces and seccomp. A deployment using those controls requires a separate assessment of the privileges and resources available after compromising its VMM."
+    },
+    {
+      "sourceId": "s27",
+      "label": "pwn.ai, Firecracker VM Escape: PwnEscape Part 2 (test configuration)",
+      "url": "https://pwn.ai/blog/firecracker-escape",
+      "excerpt": "We launched Firecracker directly as root under  systemd-run  and pinned it with  taskset . Consequently, the controlled call executed as root on the host."
+    },
+    {
+      "sourceId": "s28",
+      "label": "pwn.ai, Firecracker VM Escape: PwnEscape Part 2 (chain overview)",
+      "url": "https://pwn.ai/blog/firecracker-escape",
+      "excerpt": "PwnEscape Part 1  introduced the host memory primitive behind this work."
+    },
+    {
+      "sourceId": "s29",
+      "label": "Vercel, findings from the $1M Vercel Sandbox challenge (host memory leak)",
+      "url": "https://vercel.com/blog/findings-from-the-1-million-dollar-vercel-sandbox-challenge",
+      "excerpt": "In the first attack, memory from the host, the machine your sandbox shares with other tenants, shows up in packets the guest sends over the internet. This can happen continuously, for as long as the guest keeps sending.  This attack was demonstrated against Vercel production sandboxes."
+    },
+    {
+      "sourceId": "s30",
+      "label": "Vercel, findings from the $1M Vercel Sandbox challenge (crash and code execution scope)",
+      "url": "https://vercel.com/blog/findings-from-the-1-million-dollar-vercel-sandbox-challenge",
+      "excerpt": "The packet-related crash and code execution attacks were demonstrated on the researcher’s own KVM and Firecracker machines matching Vercel Sandbox configuration."
+    },
+    {
+      "sourceId": "s31",
+      "label": "Vercel, findings from the $1M Vercel Sandbox challenge (architecture review)",
+      "url": "https://vercel.com/blog/findings-from-the-1-million-dollar-vercel-sandbox-challenge",
+      "excerpt": "No guest shares a running kernel with the host, or with another tenant."
+    },
+    {
+      "sourceId": "s32",
+      "label": "Vercel, findings from the $1M Vercel Sandbox challenge (the kernel zero day)",
+      "url": "https://vercel.com/blog/findings-from-the-1-million-dollar-vercel-sandbox-challenge",
+      "excerpt": "a HackerOne researcher working from a standard sandbox with no special access, found a defect in the Linux kernel's networking stack."
+    },
+    {
+      "sourceId": "s33",
+      "label": "Vercel, findings from the $1M Vercel Sandbox challenge (report volume)",
+      "url": "https://vercel.com/blog/findings-from-the-1-million-dollar-vercel-sandbox-challenge",
+      "excerpt": "We received 1,285 reports in two weeks. This volume is only possible because researchers now hunt at AI speed."
+    },
+    {
+      "sourceId": "s34",
+      "label": "CSO Online, KVM escape exposes broader attack surface in Linux networking (attack precondition)",
+      "url": "https://www.csoonline.com/article/4237999/kvm-escape-exposes-broader-attack-surface-in-linux-networking.html",
+      "excerpt": "The guest-to-host attack requires an attacker-controlled workload capable of supplying the malformed traffic through the virtual network."
+    },
+    {
+      "sourceId": "s35",
+      "label": "CSO Online, KVM escape exposes broader attack surface in Linux networking (quoting the pwn.ai researchers)",
+      "url": "https://www.csoonline.com/article/4237999/kvm-escape-exposes-broader-attack-surface-in-linux-networking.html",
+      "excerpt": "Although we suspect the security industry will use this post to figure out the other affected hypervisors and we expect exploits in weaker configurations to arrive in weeks, and exploits working in default hypervisor configurations to arrive in under a month."
+    },
+    {
+      "sourceId": "s36",
+      "label": "CSO Online, KVM escape exposes broader attack surface in Linux networking (fix status)",
+      "url": "https://www.csoonline.com/article/4237999/kvm-escape-exposes-broader-attack-surface-in-linux-networking.html",
+      "excerpt": "A fix was merged into the mainline Linux kernel with patched kernel versions now available for multiple distributions."
+    },
+    {
+      "sourceId": "s37",
+      "label": "CSO Online, KVM escape exposes broader attack surface in Linux networking (bug class)",
+      "url": "https://www.csoonline.com/article/4237999/kvm-escape-exposes-broader-attack-surface-in-linux-networking.html",
+      "excerpt": "The researchers warn that similar bugs could exist elsewhere in the networking stack, wherever guest-controlled metadata can modify packet fields after those fields have already passed validation."
+    },
+    {
+      "sourceId": "s38",
+      "label": "OpenAI, A thousand fewer paths to root (run cost)",
+      "url": "https://openai.com/index/a-thousand-fewer-paths-to-root/",
+      "excerpt": "The total run cost $1,213,430 in API credits, or  $1,279 per LPE exploit."
+    },
+    {
+      "sourceId": "s39",
+      "label": "OpenAI, A thousand fewer paths to root (outlook)",
+      "url": "https://openai.com/index/a-thousand-fewer-paths-to-root/",
+      "excerpt": "Within the next few years, we believe that if there are vulnerabilities in a given software project, frontier models will likely be able to discover them and even less capable models may be able to develop exploits once disclosed."
+    },
+    {
+      "sourceId": "s40",
+      "label": "OpenAI, A thousand fewer paths to root (page title)",
+      "url": "https://openai.com/index/a-thousand-fewer-paths-to-root/",
+      "excerpt": "A thousand fewer paths to root | OpenAI"
+    },
+    {
+      "sourceId": "s41",
+      "label": "CSO Online, KVM escape exposes broader attack surface in Linux networking (page title)",
+      "url": "https://www.csoonline.com/article/4237999/kvm-escape-exposes-broader-attack-surface-in-linux-networking.html",
+      "excerpt": "KVM escape exposes broader attack surface in Linux networking | CSO Online"
+    }
+  ]
+}
