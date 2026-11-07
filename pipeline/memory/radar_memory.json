@@ -3126,5 +3126,39 @@
     ],
     "published_at": "2026-11-06",
     "embedding": null
+  },
+  {
+    "translation_key": "inkling-2-small-terminal-bench-4-row-and-tinker-context-rows",
+    "topic_id": "inkling-2-small-terminal-bench-4-row-and-tinker-context-rows",
+    "dedup_key": "inkling 2 small terminal bench 4 row and tinker context rows",
+    "title": "Inkling 2 Small launches on Tinker with closed weights, and Artificial Analysis measures it at 13% on Terminal-Bench 4.0 against 30% for Claude Sonnet 5.5 (medium)",
+    "slugs": {
+      "fr": "inkling-2-small-terminal-bench-4-ligne-et-lignes-de-contexte-tinker",
+      "en": "inkling-2-small-terminal-bench-4-row-and-tinker-context-rows"
+    },
+    "sources": [
+      {
+        "label": "Thinking Machines Lab, Inkling 2 Small announcement",
+        "url": "https://thinkingmachines.ai/news/inkling-2-small/",
+        "date": "05-11-2026"
+      },
+      {
+        "label": "Thinking Machines Lab, Inkling 2 Small model card",
+        "url": "https://thinkingmachines.ai/model-card/inkling-2-small/",
+        "date": "05-11-2026"
+      },
+      {
+        "label": "Artificial Analysis, Inkling 2 Small article",
+        "url": "https://artificialanalysis.ai/articles/thinking-machines-releases-inkling-2-small-highest-scoring-open-weights-model-outside-of-chinia-upon-weights-release-it",
+        "date": "05-11-2026"
+      },
+      {
+        "label": "Thinking Machines Lab, Tinker docs, Models and pricing",
+        "url": "https://tinker-docs.thinkingmachines.ai/tinker/models/models_and_pricing/",
+        "date": "07-11-2026"
+      }
+    ],
+    "published_at": "2026-11-07",
+    "embedding": null
   }
 ]
