@@ -3160,5 +3160,49 @@
     ],
     "published_at": "2026-11-07",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-message-threads-continue-history-lost-behind-gateway-that-drops-the-field",
+    "topic_id": "claude-message-threads-continue-history-lost-behind-gateway-that-drops-the-field",
+    "dedup_key": "claude message threads continue history lost behind gateway that drops the field",
+    "title": "Claude message threads send only the new messages, and on a plain turn a gateway that drops the thread field answers 200 with the history gone",
+    "slugs": {
+      "fr": "claude-message-threads-historique-perdu-derriere-passerelle-qui-retire-le-champ",
+      "en": "claude-message-threads-continue-history-lost-behind-gateway-that-drops-the-field"
+    },
+    "sources": [
+      {
+        "label": "Anthropic, Make long-running agents faster with message threads",
+        "url": "https://claude.com/blog/message-threads",
+        "date": "02-11-2026"
+      },
+      {
+        "label": "Anthropic docs, Message threads",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/message-threads.md",
+        "date": "02-11-2026"
+      },
+      {
+        "label": "vercel/ai issue 24425, AI Gateway report",
+        "url": "https://github.com/vercel/ai/issues/24425",
+        "date": "03-11-2026"
+      },
+      {
+        "label": "LiteLLM pull request 49755",
+        "url": "https://github.com/BerriAI/litellm/pull/49755",
+        "date": "03-11-2026"
+      },
+      {
+        "label": "LiteLLM pull request 49048",
+        "url": "https://github.com/BerriAI/litellm/pull/49048",
+        "date": "29-10-2026"
+      },
+      {
+        "label": "Pi pull request 11545, earendil-works/pi",
+        "url": "https://github.com/earendil-works/pi/pull/11545",
+        "date": "28-10-2026"
+      }
+    ],
+    "published_at": "2026-11-09",
+    "embedding": null
   }
 ]
