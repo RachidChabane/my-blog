@@ -286,7 +286,8 @@
       "ask-when-unsure-is-gated-on-detection",
       "live-web-agent-evals-run-side-effects-on-third-party-sites",
       "agent-benchmarks-cover-little-of-the-work-your-agent-does",
-      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language",
+      "terminal-bench-score-is-conditional-on-runtime-budget"
     ],
     "addedOn": "12-05-2026"
   },
@@ -579,7 +580,8 @@
       "attack-agent-harness-state-holds-the-secrets-it-finds",
       "compaction-summaries-carry-no-authority",
       "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache",
-      "claude-code-agent-summary-side-calls-escape-transcript-cost-accounting"
+      "claude-code-agent-summary-side-calls-escape-transcript-cost-accounting",
+      "terminal-bench-score-is-conditional-on-runtime-budget"
     ],
     "addedOn": "17-06-2026"
   },
@@ -2298,6 +2300,33 @@
     "addedOn": "07-07-2026"
   },
   {
+    "id": "evaluation-resource-budget",
+    "label": {
+      "fr": "Budget de ressources d'une évaluation",
+      "en": "Evaluation resource budget"
+    },
+    "definition": {
+      "fr": "Temps réel, CPU et mémoire qu'un benchmark d'agents accorde à chaque exécution d'une tâche. Ce budget fait partie de la mesure : deux agents notés sous des budgets différents n'ont pas passé la même épreuve, et modifier le budget peut changer leur ordre, si bien qu'un score ne se compare qu'au budget sous lequel il a été mesuré.",
+      "en": "The wall-clock time, CPU and memory an agent benchmark grants each task run. The budget is part of the measurement: two agents scored under different budgets have not taken the same test, and changing the budget can reorder them, so a score is comparable only at the budget it was measured under."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "benchmark resource budget",
+      "evaluation runtime budget",
+      "benchmark time limit",
+      "budget de ressources d'un benchmark"
+    ],
+    "related": [
+      "agent-evaluation",
+      "harness-component-signal",
+      "cost-aware-evaluation"
+    ],
+    "articles": [
+      "terminal-bench-score-is-conditional-on-runtime-budget"
+    ],
+    "addedOn": "09-11-2026"
+  },
+  {
     "id": "expert-parallelism",
     "label": {
       "fr": "Parallélisme d'experts",
@@ -2831,7 +2860,8 @@
       "opaque-state-outscores-the-notes-you-can-read",
       "edit-unit-size-beside-edit-format",
       "patch-quality-rate-needs-a-consistent-grader",
-      "low-resource-language-scores-do-not-transfer-to-an-unseen-language"
+      "low-resource-language-scores-do-not-transfer-to-an-unseen-language",
+      "terminal-bench-score-is-conditional-on-runtime-budget"
     ],
     "addedOn": "15-07-2026"
   },
@@ -3106,6 +3136,33 @@
       "provable-inference-proves-greedy-integer-replay-not-sampled-traffic"
     ],
     "addedOn": "22-06-2026"
+  },
+  {
+    "id": "infrastructure-noise",
+    "label": {
+      "fr": "Bruit d'infrastructure",
+      "en": "Infrastructure noise"
+    },
+    "definition": {
+      "fr": "Variation du score d'une évaluation d'agents due à l'environnement d'exécution (allocation des ressources, fermeté d'application des limites, fournisseur de bac à sable), à modèle et tâches constants. Elle peut dépasser les marges qui séparent les lignes d'un classement : une courte avance ne dit donc pas grand-chose tant que les configurations ne sont pas documentées et alignées.",
+      "en": "Score variation in an agent evaluation caused by the execution environment (resource allocation, how strictly limits are enforced, the sandbox provider) while the model and the tasks stay constant. It can exceed the margins separating leaderboard rows, so a small lead says little until the configurations are documented and matched."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "infra noise",
+      "evaluation infrastructure noise",
+      "environment-induced score variance",
+      "bruit de l'infrastructure"
+    ],
+    "related": [
+      "agent-evaluation",
+      "evaluation-resource-budget",
+      "variance-decomposition"
+    ],
+    "articles": [
+      "terminal-bench-score-is-conditional-on-runtime-budget"
+    ],
+    "addedOn": "09-11-2026"
   },
   {
     "id": "input-feature",
@@ -5945,6 +6002,32 @@
       "mcp-stateless-header-routing-2026-07"
     ],
     "addedOn": "29-07-2026"
+  },
+  {
+    "id": "strict-resource-enforcement",
+    "label": {
+      "fr": "Application stricte des limites de ressources",
+      "en": "Strict resource enforcement"
+    },
+    "definition": {
+      "fr": "Configuration où l'allocation de ressources garantie à un conteneur est égale à sa limite stricte, sans aucune marge au-delà de ce qui est réservé. Un processus qui dépasse la limite de mémoire est tué aussitôt : lors de l'exécution d'un agent, un pic passager, comme l'installation d'une grosse dépendance, peut interrompre la tentative avant toute solution et compter comme un échec.",
+      "en": "Setting a container's guaranteed resource allocation equal to its hard limit, which leaves no headroom above what is reserved. A process that exceeds the memory limit is killed at once, so in an agent run a momentary peak, such as a large dependency install, can end the attempt before any solution exists and count as a failure."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "floor-equals-ceiling",
+      "requests equal limits",
+      "hard resource ceiling",
+      "plancher-égal-plafond"
+    ],
+    "related": [
+      "evaluation-resource-budget",
+      "infrastructure-noise"
+    ],
+    "articles": [
+      "terminal-bench-score-is-conditional-on-runtime-budget"
+    ],
+    "addedOn": "09-11-2026"
   },
   {
     "id": "supply-chain-attack",

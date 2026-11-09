@@ -9933,5 +9933,339 @@
     ],
     "published_at": "2026-11-07",
     "embedding": null
+  },
+  {
+    "translation_key": "terminal-bench-score-is-conditional-on-runtime-budget",
+    "topic_id": "terminal-bench-score-is-conditional-on-runtime-budget",
+    "dedup_key": "a terminal bench score is conditional on its runtime budget of wall clock time cpu and memory because the authors of the terminal bench 2.1 audit call resource budgets part of the measurement specification and anthropic measured infrastructure configuration moving terminal bench 2.0 by more than leaderboard margins so the score must be quoted with the time and resource limits it ran under",
+    "title": "Price a Terminal-Bench harness gap at your own time limit",
+    "slugs": {
+      "fr": "jugez-un-ecart-de-harnais-terminal-bench-a-l-aune-de-votre-limite-de-temps",
+      "en": "price-a-terminal-bench-harness-gap-at-your-own-time-limit"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "We show that fixed wall-clock can materially change agent performance: For example, extending the time limit closes a 20pp harness gap on GPT 5.4 and shrinks a 30 pp gap on GPT 5.4 mini to 5 pp.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s2",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Benchmark maintenance is therefore not only about repairing task artifacts: resource budgets are part of the measurement specification and must be validated alongside the tasks themselves.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s3",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Our audit identifies issues in roughly 30% of the benchmark, and we release the resulting repairs as Terminal-Bench 2.1.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s4",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "These repairs change evaluation results: accuracy increased by over 10 percentage points and leaderboard positions move by up to three ranks, even as the overall ranking remains highly correlated (Spearman rho = 0.958).",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s5",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417)",
+        "url": "https://arxiv.org/html/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "However, most of the harness gap is recovered when we give the tasks a longer budget, suggesting speed rather than capability gains.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s6",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417)",
+        "url": "https://arxiv.org/html/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "The results here show that a fixed resource budget is an arbitrary operating point and that the choice is not innocuous: it can change efficiency conclusions for individual models.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s7",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417)",
+        "url": "https://arxiv.org/html/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "most remaining failures are not timeout artifacts: these tasks stayed unsolved under the tested configurations.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s8",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "In internal experiments, the gap between the most- and least-resourced setups on Terminal-Bench 2.0 was 6 percentage points",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s9",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "From 1x through 3x, success scores fluctuate within the margins of noise",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s10",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Between 3x to uncapped, infra errors drop an additional 1.6 percentage points, while success jumps almost 4 percentage points.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s11",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "The extra resources enable the agent to try approaches that only work with generous allocations, such as pulling in large dependencies, spawning expensive subprocesses, and running memory-intensive test suites.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s12",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "In certain configurations, time limits too start playing a role.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s13",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "a 2-point lead on a leaderboard might reflect a genuine capability difference, or it might reflect that one eval ran on beefier hardware, or even at a luckier time of day, or both.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s14",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "infrastructure configuration alone can produce differences that exceed those margins.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s15",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Two agents with different resource budgets and time limits aren't taking the same test.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s16",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "leaderboard differences below 3 percentage points deserve skepticism until the eval configuration is documented and matched.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s17",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417)",
+        "url": "https://arxiv.org/html/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "This supports setting a principled floor and testing sensitivity to the budget, rather than calibrating to any one choice of agents and models.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s18",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417) (harness swap at the default time)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "At the default time, Codex gives much higher scores than Terminus-2 for OpenAI models.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s19",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417) (where the budgets came from)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "In TB2.0, task contributors set CPU, memory, and time budgets for each task based on their own resource use.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s20",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417) (scalar leaderboards)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Scalar leaderboards hide these distinctions because they collapse benchmark version, harness, and resource budget into one number.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s21",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417) (largest budget)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Few timeouts remain at the largest budget, except for the small models included (Qwen 3.5), so most remaining failures are not timeout artifacts: these tasks stayed unsolved under the tested configurations.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s22",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417) (timeouts at the default budget)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Figure 3 b shows that over 50% of failed trials ended due to timeout, ranging from 68% under claude-code to 18% under gemini-cli",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s23",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417) (related work on harnesses)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Merrill et al. (2026) found that, on average, the choice of harness matters less than the choice of model.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s24",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417) (related work on environments)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Anthropic (2026c) shows that infrastructure configuration alone can shift agentic coding scores.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s25",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417) (budget sweep)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "This larger budget is an upper bound: agents can exit once they finish, so they do not need to consume the full allocation.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s26",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals (what limits reward)",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Tight limits inadvertently reward very efficient strategies, while generous limits are more forgiving and reward agents that can better exploit all available resources.  An agent that writes lean, efficient code very fast will do well under tight constraints. An agent that brute-forces solutions with heavyweight tools will do well under generous ones. Both are legitimate things to test, but collapsing them into a single score without specifying the resource configuration",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s27",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals (leaderboard sandbox)",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Terminal-Bench’s leaderboard uses a different sandboxing provider, whose implementation is more lenient, allowing temporary overallocation without terminating the container in order to favor infrastructural stability.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s28",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals (implication for labs)",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "For labs like Anthropic, the implication is that resource configuration for agentic evals should be treated as a first-class experimental variable, documented and controlled with the same rigor as prompt format or sampling temperature.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s29",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals (up to 3x)",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Up to roughly 3x Terminal-Bench specs, the additional resources fix infrastructure reliability problems, namely transient resource spikes.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s30",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals (default approaches)",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Different models have different default approaches, and the resource configuration determines which of those approaches happen to succeed.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s31",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals (bn-fit-modify)",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "On  bn-fit-modify , a Terminal-Bench task requiring Bayesian network fitting, some models’ first move is to install the standard Python data science stack:  pandas ,  networkx ,  scikit-learn,  and all their toolchain. Under generous limits, this works. Under tight ones, the pod runs out of memory during installation, before the agent writes a single line of solution code.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s32",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals (multiplier)",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "The exact multiplier will vary by benchmark and task distribution, and should thus be reported",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s33",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals (floor and ceiling)",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Our Kubernetes implementation treated the per-task resource specs as both a floor and a hard ceiling: each container was guaranteed the specified resources but killed the moment it exceeded them.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s34",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals (replication)",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "We replicated the core finding across different Anthropic models. The direction of the effect was consistent, while the magnitude varied.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s35",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals (experimental control)",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Everything else stayed constant: same Claude model, same harness, same task set.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s36",
+        "label": "Anthropic Engineering, Quantifying infrastructure noise in agentic coding evals (moderate range)",
+        "url": "https://www.anthropic.com/engineering/infrastructure-noise",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "The observed spread across the moderate range of resource configurations in Terminal-Bench is just below 2 percentage points.",
+        "source_date": "2026-02-05"
+      },
+      {
+        "source_id": "s37",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417) (Figure 3 caption)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "Prevalence of timeouts among failed Terminal Bench 2.1 trials at the default time budget, by harness",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s38",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417) (budget sweep measure)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "the original task timeout and measure how many tasks are solved as the budget increases.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s39",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417) (resource convention)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "the resource sets the task difficulty, and here we leave those as close to what the original task contributors intended.",
+        "source_date": "2026-11-05"
+      },
+      {
+        "source_id": "s40",
+        "label": "Buchanan, Zhou, Linderman and Re, Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks (arXiv 2611.08417) (Figure 6 caption)",
+        "url": "https://arxiv.org/abs/2611.08417",
+        "retrieved_at": "2026-11-09",
+        "excerpt": "The harness gap is mostly a time-budget effect. TB2.1 accuracy for Codex and Terminus-2 at the standard allocated time",
+        "source_date": "2026-11-05"
+      }
+    ],
+    "published_at": "2026-11-09",
+    "embedding": null
   }
 ]
