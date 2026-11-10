@@ -3204,5 +3204,44 @@
     ],
     "published_at": "2026-11-09",
     "embedding": null
+  },
+  {
+    "translation_key": "claude-fable-5-2-harness-history-edit-400-prefix-check",
+    "topic_id": "claude-fable-5-2-harness-history-edit-400-prefix-check",
+    "dedup_key": "claude fable 5 2 harness history edit 400 prefix check",
+    "title": "Claude Fable 5.2 returns a 400 when a harness edits what precedes a thinking block, and Anthropic's release notes apply the check to every account",
+    "slugs": {
+      "fr": "claude-fable-5-2-harness-modifie-historique-400-controle-prefixe",
+      "en": "claude-fable-5-2-harness-history-edit-400-prefix-check"
+    },
+    "sources": [
+      {
+        "label": "Anthropic, Claude Platform release notes, November 9, 2026",
+        "url": "https://platform.claude.com/docs/en/release-notes/overview.md",
+        "date": "09-11-2026"
+      },
+      {
+        "label": "vercel-labs/fx issue 1798, Claude Fable 5.2 sessions die with a thinking signature 400",
+        "url": "https://github.com/vercel-labs/fx/issues/1798",
+        "date": "09-11-2026"
+      },
+      {
+        "label": "taigrr/fantasy pull request 7, drop thinking blocks on prefix mismatch",
+        "url": "https://github.com/taigrr/fantasy/pull/7",
+        "date": "10-11-2026"
+      },
+      {
+        "label": "OpenClaw pull request 196459, new Claude models lose reasoning and hit 400s",
+        "url": "https://github.com/openclaw/openclaw/pull/196459",
+        "date": "10-11-2026"
+      },
+      {
+        "label": "taigrr/crush pull request 91, drop stale thinking blocks when tools change",
+        "url": "https://github.com/taigrr/crush/pull/91",
+        "date": "10-11-2026"
+      }
+    ],
+    "published_at": "2026-11-10",
+    "embedding": null
   }
 ]
