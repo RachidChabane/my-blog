@@ -3243,5 +3243,29 @@
     ],
     "published_at": "2026-11-10",
     "embedding": null
+  },
+  {
+    "translation_key": "fireworks-notifies-impacted-customers-notion-insights-transcripts-zdr-scope",
+    "topic_id": "fireworks-notifies-impacted-customers-notion-insights-transcripts-zdr-scope",
+    "dedup_key": "fireworks notifies impacted customers notion insights transcripts zdr scope",
+    "title": "Fireworks is notifying customers whose data was impacted, and Notion says the dataset Fireworks gave it held Notion AI chat transcripts used for Insights",
+    "slugs": {
+      "fr": "fireworks-previent-clients-touches-notion-transcriptions-insights-perimetre-zdr",
+      "en": "fireworks-notifies-impacted-customers-notion-insights-transcripts-zdr-scope"
+    },
+    "sources": [
+      {
+        "label": "Fireworks AI, Update on October 2026 security incident, last updated November 9, 2026",
+        "url": "https://fireworks.ai/security/bulletins/october-2026-security-incident-update",
+        "date": "09-11-2026"
+      },
+      {
+        "label": "Notion, Fireworks AI incident security advisory, updated November 11, 2026",
+        "url": "https://www.notion.com/security/advisories/security-incident-involving-a-third-party-ai-vendor",
+        "date": "11-11-2026"
+      }
+    ],
+    "published_at": "2026-11-11",
+    "embedding": null
   }
 ]
