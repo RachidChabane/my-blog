@@ -1320,6 +1320,30 @@
     "addedOn": "06-11-2026"
   },
   {
+    "id": "clopper-pearson-interval",
+    "label": {
+      "fr": "Intervalle de Clopper-Pearson",
+      "en": "Clopper-Pearson interval"
+    },
+    "definition": {
+      "fr": "Intervalle de confiance exact pour une proportion binomiale, obtenu en inversant deux tests binomiaux unilatéraux plutôt qu'en recourant à l'approximation normale. Il reste valide avec très peu d'événements observés, voire aucun, au prix d'une certaine largeur, car sa couverture atteint au moins le niveau annoncé : il convient aux estimations d'événements rares, comme un audit qui s'attend à peu de manques.",
+      "en": "An exact confidence interval for a binomial proportion, built by inverting two one-sided binomial tests instead of relying on the normal approximation. It stays valid with very few observed events, or none, at the price of some width, because its coverage is at least the stated level, which suits rare-event estimates such as an audit that expects few misses."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "exact binomial interval",
+      "exact binomial confidence interval",
+      "intervalle binomial exact"
+    ],
+    "related": [
+      "lost-evidence"
+    ],
+    "articles": [
+      "llm-screen-recall-needs-a-sample-of-what-it-rejected"
+    ],
+    "addedOn": "11-11-2026"
+  },
+  {
     "id": "code-elision",
     "label": {
       "fr": "Élision de code",
@@ -2202,6 +2226,34 @@
     "addedOn": "07-09-2026"
   },
   {
+    "id": "elusion-test",
+    "label": {
+      "fr": "Test d'élusion",
+      "en": "Elusion test"
+    },
+    "definition": {
+      "fr": "Jugement d'un échantillon aléatoire uniforme des éléments qu'un tri a rejetés, afin d'estimer combien d'éléments pertinents il a manqués. Lorsque seuls les éléments retenus sont examinés, c'est ce jugement qui borne le rappel sans hypothèse sur le tri, et la taille d'échantillon nécessaire dépend de l'exactitude visée, non du nombre de filtres qui ont voté.",
+      "en": "Judging a uniform random sample of the items a screen rejected, to estimate how many relevant items it missed. When only passed items are reviewed, this judgment is what bounds recall without assumptions about the screen, and the sample it needs depends on the accuracy wanted, not on how many filters voted."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "elusion sample",
+      "audit of rejected items",
+      "audit des rejets",
+      "échantillon des rejets"
+    ],
+    "related": [
+      "llm-screening",
+      "lost-evidence",
+      "clopper-pearson-interval",
+      "false-consensus"
+    ],
+    "articles": [
+      "llm-screen-recall-needs-a-sample-of-what-it-rejected"
+    ],
+    "addedOn": "11-11-2026"
+  },
+  {
     "id": "embeddings",
     "label": {
       "fr": "Embeddings",
@@ -2506,7 +2558,8 @@
       "multi-agent-orchestration"
     ],
     "articles": [
-      "coordinator-title-buys-no-information"
+      "coordinator-title-buys-no-information",
+      "llm-screen-recall-needs-a-sample-of-what-it-rejected"
     ],
     "addedOn": "20-08-2026"
   },
@@ -3616,6 +3669,32 @@
     "addedOn": "08-08-2026"
   },
   {
+    "id": "llm-screening",
+    "label": {
+      "fr": "Préfiltrage par LLM",
+      "en": "LLM screening"
+    },
+    "definition": {
+      "fr": "Recours à un modèle de langage pour écarter des éléments avant qu'un évaluateur humain coûteux n'examine le reste, par exemple pour trier des articles scientifiques, des documents juridiques ou des modifications de code. Seuls les éléments retenus sont jugés : le travail courant révèle la précision du tri mais ne donne qu'une borne inférieure de son rappel.",
+      "en": "Using a language model to discard items before a costly human assessor reviews the rest, for example when screening research papers, legal documents or code changes. Only the items it passes get judged, so routine work reveals the screen's precision but gives only a lower bound on its recall."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "LLM pre-filter",
+      "LLM screening filter",
+      "préfiltre LLM",
+      "tri par modèle de langage"
+    ],
+    "related": [
+      "false-consensus",
+      "retrieval-evaluation"
+    ],
+    "articles": [
+      "llm-screen-recall-needs-a-sample-of-what-it-rejected"
+    ],
+    "addedOn": "11-11-2026"
+  },
+  {
     "id": "llm-serving",
     "label": {
       "fr": "Service de LLM",
@@ -3751,6 +3830,31 @@
       "what-is-a-model"
     ],
     "addedOn": "03-11-2026"
+  },
+  {
+    "id": "lost-evidence",
+    "label": {
+      "fr": "Lost Evidence (preuves perdues)",
+      "en": "Lost Evidence"
+    },
+    "definition": {
+      "fr": "Part des éléments pertinents qu'une étape de tri écarte, soit un moins son rappel. La rapporter directement, face à un seuil fixé à l'avance, rend visible le coût des faux négatifs, que l'exactitude peut masquer sur une collection déséquilibrée.",
+      "en": "The share of relevant items a screening step discards, equal to one minus its recall. Reporting it directly, against a threshold fixed in advance, makes the cost of false negatives visible where accuracy on an imbalanced collection can hide it."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "lost relevant share",
+      "preuves perdues",
+      "part de pertinents perdus"
+    ],
+    "related": [
+      "llm-screening",
+      "retrieval-evaluation"
+    ],
+    "articles": [
+      "llm-screen-recall-needs-a-sample-of-what-it-rejected"
+    ],
+    "addedOn": "11-11-2026"
   },
   {
     "id": "low-resource-programming-language",

@@ -1,0 +1,265 @@
+{
+  "slug": "dimensionnez-l-audit-de-votre-filtre-llm-selon-la-perte-toleree",
+  "lang": "fr",
+  "translationKey": "llm-screen-recall-needs-a-sample-of-what-it-rejected",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Chang and Zhang, Multi-Agent Screening, screening setting",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "When AI agents screen items for a costly human assessor, as in agentic search, e-discovery and AI reviewing of papers, only what they pass gets judged."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Chang and Zhang, Multi-Agent Screening, agreement",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "Agreement shows that agents concur, not that they are right, however many there are."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Chang and Zhang, Multi-Agent Screening, acceptance",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "Acceptance by the assessor gives precision but only a lower bound on recall."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Chang and Zhang, Multi-Agent Screening, random sample of rejected items",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "Without assumptions about the agents, recall can be pinned down only by judging items they did not pass: a random sample of these estimates how many relevant items were missed, to any chosen accuracy, and the sample needed does not grow with the number of agents."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Madeyski, Kitchenham and Shepperd, LLM4SCREENLIT, reporting survey",
+      "url": "https://arxiv.org/abs/2511.12635",
+      "excerpt": "Across the 29 papers, only 10% reported MCC, only 24% reported full confusion matrices, and none of the five papers claiming workload savings priced false-negative cost."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Madeyski, Kitchenham and Shepperd, LLM4SCREENLIT, lost evidence",
+      "url": "https://arxiv.org/abs/2511.12635",
+      "excerpt": "in the most striking 9,695-article SE study, the Accuracy-best LLM loses 63.3% of relevant evidence (Lost Evidence), the MCC-best 43.9%, but the WMCC-best only 5.8%."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Madeyski, Kitchenham and Shepperd, LLM4SCREENLIT, recommendation",
+      "url": "https://arxiv.org/abs/2511.12635",
+      "excerpt": "SR-screening evaluations should prioritize Lost Evidence and use cost-sensitive WMCC alongside MCC for ranking."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, exclusion sample design",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "10% random sample of 207 records from the 2,067 model-excluded records."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, what the sample estimates",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "Screening all retained records catches every false positive; the exclusion sample estimates how often the model wrongly discards relevant work."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, recall on verification set",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "the model achieved 99.1% recall on the verification set, agreeing with all but one consensus-retained record."
+    },
+    {
+      "sourceId": "s11",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, exclusion-sample false-omission rate",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "If this rate held across the 1,860 model-excluded records not individually re-screened, it would imply roughly nine missed relevant records"
+    },
+    {
+      "sourceId": "s12",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, interval carried as validity threat",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "Because the CI around a single observed omission is wide, this residual risk is carried as a threat to validity"
+    },
+    {
+      "sourceId": "s13",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, verification set composition",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "Pre-filter confusion matrix over the 385-record verification set: all 178 model-retained records together with a reason-stratified 10% sample of 207 of the 2,067 model-excluded records."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Chang and Zhang, Multi-Agent Screening, author line",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "Authors: Benjamin Chang , Dell Zhang"
+    },
+    {
+      "sourceId": "s15",
+      "label": "Madeyski, Kitchenham and Shepperd, LLM4SCREENLIT, author line",
+      "url": "https://arxiv.org/abs/2511.12635",
+      "excerpt": "Authors: Lech Madeyski , Barbara Kitchenham , Martin Shepperd"
+    },
+    {
+      "sourceId": "s16",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles, author line",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "Authors: Ali Hassaan Mughal , Muhammad Bilal"
+    },
+    {
+      "sourceId": "s17",
+      "label": "Chang and Zhang, Multi-Agent Screening, what the unknown is",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "the proportion of the collection that is relevant but unjudged."
+    },
+    {
+      "sourceId": "s18",
+      "label": "Chang and Zhang, Multi-Agent Screening, audit defined",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "judgments on a random sample from outside the pool (an elusion test in e-discovery)."
+    },
+    {
+      "sourceId": "s19",
+      "label": "Chang and Zhang, Multi-Agent Screening, uniform draw",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "items drawn uniformly without replacement outside the pool."
+    },
+    {
+      "sourceId": "s20",
+      "label": "Chang and Zhang, Multi-Agent Screening, audit accuracy in the example",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "An audit of 192 of the other 800 submissions estimates H H to ± 0.05"
+    },
+    {
+      "sourceId": "s21",
+      "label": "Chang and Zhang, Multi-Agent Screening, general bound against exact",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "it asks for 473 audits, where an exact hypergeometric calculation needs 192."
+    },
+    {
+      "sourceId": "s22",
+      "label": "Chang and Zhang, Multi-Agent Screening, hypothetical venue",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "At a hypothetical venue, three reviewers nominate 200 of 1000 submissions"
+    },
+    {
+      "sourceId": "s23",
+      "label": "Chang and Zhang, Multi-Agent Screening, spending advice",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "Compare the next agent with an audit before buying either, and budget audits by the accuracy wanted, not the number of agents"
+    },
+    {
+      "sourceId": "s24",
+      "label": "Chang and Zhang, Multi-Agent Screening, interval advice",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "Report precision, and recall as an interval: a single number claims too much."
+    },
+    {
+      "sourceId": "s25",
+      "label": "Chang and Zhang, Multi-Agent Screening, audit against the next reviewer",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "It finds more and alone certifies the misses but uses nearly all the budget; the 4th reviewer needs reviews only for its new nominations, which could be far fewer."
+    },
+    {
+      "sourceId": "s26",
+      "label": "Chang and Zhang, Multi-Agent Screening, next agent limit",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "An agent of a new kind is not covered."
+    },
+    {
+      "sourceId": "s27",
+      "label": "Chang and Zhang, Multi-Agent Screening, items screened",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "processes a fixed collection of items, such as documents, code changes or papers."
+    },
+    {
+      "sourceId": "s28",
+      "label": "Madeyski, Kitchenham and Shepperd, LLM4SCREENLIT, screening conditions",
+      "url": "https://arxiv.org/abs/2511.12635",
+      "excerpt": "the standard confusion-matrix metrics used to evaluate them can mislead under the imbalanced, cost-asymmetric conditions of screening."
+    },
+    {
+      "sourceId": "s29",
+      "label": "Madeyski, Kitchenham and Shepperd, LLM4SCREENLIT, Lost Evidence defined",
+      "url": "https://arxiv.org/abs/2511.12635",
+      "excerpt": "Recall, also referred to as Sensitivity (the proportion of relevant studies identified), and Lost Evidence (1-Recall) are therefore fundamental performance metrics."
+    },
+    {
+      "sourceId": "s30",
+      "label": "Madeyski, Kitchenham and Shepperd, LLM4SCREENLIT, retrospective labels",
+      "url": "https://arxiv.org/abs/2511.12635",
+      "excerpt": "the population of abstracts for a specific SR have all been classified"
+    },
+    {
+      "sourceId": "s31",
+      "label": "Madeyski, Kitchenham and Shepperd, LLM4SCREENLIT, deployment studies",
+      "url": "https://arxiv.org/abs/2511.12635",
+      "excerpt": "Because they lead to an operational decision, they need a pre-specified Lost Evidence threshold, confidence intervals from the sample, and an escalation rule if the threshold is not met."
+    },
+    {
+      "sourceId": "s32",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, corpus size",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "This left 2,245 unique records."
+    },
+    {
+      "sourceId": "s33",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, human consensus",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "Reconciliation yielded a consensus of 115 retained records (87 include, 28 maybe) and 270 excluded over the verification set."
+    },
+    {
+      "sourceId": "s34",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, interval on unaudited exclusions",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "0–50) missed records across the 1,860 unaudited exclusions."
+    },
+    {
+      "sourceId": "s35",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, the single miss",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "That single miss was itself a borderline case reconciled to include only after full-text discussion."
+    },
+    {
+      "sourceId": "s36",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, bounded consequence",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "so the nine projected omissions correspond to roughly four further included studies."
+    },
+    {
+      "sourceId": "s37",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, rankings",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "Distributed like the rest of the corpus, they would leave every source ranking unchanged."
+    },
+    {
+      "sourceId": "s38",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, worst case",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "the narrow majority that reaches a verdict without a specification (42 of 83): a worst case in which all four additions were specification-derived would turn that majority into a narrow minority, though the substantive point, that a large share of these oracles need no specification at all, holds either way"
+    },
+    {
+      "sourceId": "s39",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, interval method",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "exact binomial, or Clopper–Pearson"
+    },
+    {
+      "sourceId": "s40",
+      "label": "Mughal and Bilal, LLM-Based Test Oracles review, false-omission rate",
+      "url": "https://arxiv.org/abs/2607.05031",
+      "excerpt": "On the stratified sample of its own exclusions, the model’s observed false-omission rate was"
+    },
+    {
+      "sourceId": "s41",
+      "label": "Chang and Zhang, Multi-Agent Screening, recall identity",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "So recall is r = a ​ p / ( a ​ p + H ) r=ap/(ap+H)"
+    },
+    {
+      "sourceId": "s42",
+      "label": "Madeyski, Kitchenham and Shepperd, LLM4SCREENLIT, deployment study design",
+      "url": "https://arxiv.org/abs/2511.12635",
+      "excerpt": "Typically, they test LLMs on a random sample of candidate primary studies from an SR that is currently being conducted, in order to decide whether to deploy the LLM on the remaining (unscreened) abstracts."
+    },
+    {
+      "sourceId": "s43",
+      "label": "Chang and Zhang, Multi-Agent Screening, audit estimate",
+      "url": "https://arxiv.org/abs/2611.12705",
+      "excerpt": "be 1 − a 1-a times the relevant share of n 0 n_{0} items drawn uniformly without replacement outside the pool."
+    }
+  ]
+}
