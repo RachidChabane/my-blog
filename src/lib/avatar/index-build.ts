@@ -251,24 +251,34 @@ export function loadPublishedSources(opts: LoadOptions = {}): SourceDoc[] {
 /** Room for the overview's text: it must stay one chunk so every project is read together. */
 const OVERVIEW_MAX_CHARS = 1100;
 
-/** One line per project: its name and as much of its summary as the room allows. */
-function overviewBody(projects: SourceDoc[]): string {
+const OVERVIEW_LEAD: Record<Locale, (names: string) => string> = {
+  fr: (names) =>
+    `Les projets que Rachid Chabane a construits et publiés sont : ${names}.`,
+  en: (names) =>
+    `The projects Rachid Chabane has built and published are: ${names}.`,
+};
+
+/**
+ * A sentence that names every project, worded like the question it answers, then
+ * one line per project with as much of its summary as the room allows.
+ */
+function overviewBody(projects: SourceDoc[], lang: Locale): string {
   const names = projects.map((p) => p.title.split(':')[0].trim());
-  const fixed = names.reduce((n, name) => n + name.length + 3, 0);
+  const lead = OVERVIEW_LEAD[lang](names.join(', '));
+  const fixed = lead.length + names.reduce((n, name) => n + name.length + 3, 0);
   const each = Math.max(
     0,
     Math.floor((OVERVIEW_MAX_CHARS - fixed) / projects.length)
   );
-  return projects
-    .map((p, i) => {
-      const flat = p.summary.replace(/\s+/g, ' ').trim();
-      const clipped =
-        flat.length <= each
-          ? flat
-          : `${flat.slice(0, each).replace(/\s\S*$/, '')}…`;
-      return `${names[i]}: ${clipped}`;
-    })
-    .join('\n');
+  const lines = projects.map((p, i) => {
+    const flat = p.summary.replace(/\s+/g, ' ').trim();
+    const clipped =
+      flat.length <= each
+        ? flat
+        : `${flat.slice(0, each).replace(/\s\S*$/, '')}…`;
+    return `${names[i]}: ${clipped}`;
+  });
+  return [lead, ...lines].join('\n');
 }
 
 const OVERVIEW_TITLE: Record<Locale, string> = {
@@ -297,7 +307,7 @@ export function projectOverviews(
         lang,
         title: OVERVIEW_TITLE[lang],
         summary: '',
-        body: overviewBody(projects),
+        body: overviewBody(projects, lang),
         pageUrl: new URL(localePath(lang, 'work'), siteUrl).href,
       },
     ];

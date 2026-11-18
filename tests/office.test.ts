@@ -243,6 +243,7 @@ describe('what the agent reads', () => {
       'projects-overview-fr',
       'projects-overview-en',
     ]);
+    expect(out[0].body.split('\n')[0]).toContain('Alpha, Beta');
     expect(out[0].body).toContain('Alpha: about Alpha');
     expect(out[0].body).toContain('Beta: about Beta');
     expect(out[0].body).not.toContain('Gamma');
