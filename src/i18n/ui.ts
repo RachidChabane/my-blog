@@ -14,6 +14,7 @@ export interface ChromeStrings {
   navAria: string; // primary <nav> aria-label
   navArticles: string; // → /[lang]/blog/
   navRadar: string; // → /[lang]/radar/
+  navJournal: string; // → /[lang]/journal/
   navWork: string; // → /[lang]/work/
   navGraph: string; // → /[lang]/graph/ (the knowledge map)
   navAbout: string; // → /[lang]/about/
@@ -37,6 +38,7 @@ export const CHROME: Record<Locale, ChromeStrings> = {
     navAria: 'Navigation principale',
     navArticles: 'Articles',
     navRadar: 'Radar',
+    navJournal: 'Journal',
     navWork: 'Projets',
     navGraph: 'Graphe',
     navAbout: 'À propos',
@@ -58,6 +60,7 @@ export const CHROME: Record<Locale, ChromeStrings> = {
     navAria: 'Main navigation',
     navArticles: 'Articles',
     navRadar: 'Radar',
+    navJournal: 'Journal',
     navWork: 'Projects',
     navGraph: 'Graph',
     navAbout: 'About',
@@ -87,6 +90,7 @@ export function chrome(lang: Locale): ChromeStrings {
 export const NAV_ITEMS = [
   { key: 'navArticles', path: 'blog' },
   { key: 'navRadar', path: 'radar' },
+  { key: 'navJournal', path: 'journal' },
   { key: 'navWork', path: 'work' },
   { key: 'navGraph', path: 'graph' },
   { key: 'navAbout', path: 'about' },
@@ -965,4 +969,70 @@ export const RADAR_KIND_LABEL: Record<Locale, Record<RadarKind, string>> = {
 
 export function radarKindLabel(kind: RadarKind, lang: Locale): string {
   return RADAR_KIND_LABEL[lang][kind];
+}
+
+/**
+ * Journal (the /[lang]/journal/ surface) copy. The title is the same word in both
+ * languages. Interface text states what is there; the only prose is the intro line.
+ * FR apostrophes use U+2019 ’ (file convention).
+ */
+export interface JournalIndexStrings {
+  title: string; // <h1> — "Journal"
+  intro: string; // one-sentence line under the title
+  empty: string; // empty-state line
+}
+
+export const JOURNAL_INDEX: Record<Locale, JournalIndexStrings> = {
+  fr: {
+    title: 'Journal',
+    intro: 'Ce que je pense, au jour où je le pense.',
+    empty: 'Rien pour l’instant.',
+  },
+  en: {
+    title: 'Journal',
+    intro: 'What I think, on the day I think it.',
+    empty: 'Nothing yet.',
+  },
+};
+
+export function journalIndexStrings(lang: Locale): JournalIndexStrings {
+  return JOURNAL_INDEX[lang];
+}
+
+export interface JournalDetailStrings {
+  back: string; // index back-link text
+  sourcesH: string; // "Sources"
+  prevDir: string; // "Previous" / "Précédent"
+  nextDir: string; // "Next" / "Suivant"
+  prevNextAria: string; // neighbour-nav aria-label
+  copyLink: string; // per-heading copy-permalink button aria-label
+  copyCode: string; // copy-code-block button aria-label/text
+  copied: string; // transient "copied" confirmation
+}
+
+export const JOURNAL_DETAIL: Record<Locale, JournalDetailStrings> = {
+  fr: {
+    back: 'Journal',
+    sourcesH: ARTICLE_DETAIL.fr.sourcesH,
+    prevDir: ARTICLE_DETAIL.fr.prevDir,
+    nextDir: ARTICLE_DETAIL.fr.nextDir,
+    prevNextAria: 'Autres pièces du journal',
+    copyLink: ARTICLE_DETAIL.fr.copyLink,
+    copyCode: ARTICLE_DETAIL.fr.copyCode,
+    copied: ARTICLE_DETAIL.fr.copied,
+  },
+  en: {
+    back: 'Journal',
+    sourcesH: ARTICLE_DETAIL.en.sourcesH,
+    prevDir: ARTICLE_DETAIL.en.prevDir,
+    nextDir: ARTICLE_DETAIL.en.nextDir,
+    prevNextAria: 'Other journal entries',
+    copyLink: ARTICLE_DETAIL.en.copyLink,
+    copyCode: ARTICLE_DETAIL.en.copyCode,
+    copied: ARTICLE_DETAIL.en.copied,
+  },
+};
+
+export function journalDetailStrings(lang: Locale): JournalDetailStrings {
+  return JOURNAL_DETAIL[lang];
 }

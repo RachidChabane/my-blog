@@ -607,6 +607,32 @@ function radarMd(o: {
   ].join('\n');
 }
 
+function journalMd(o: {
+  slug: string;
+  lang: 'fr' | 'en';
+  translationKey: string;
+  title: string;
+  summary: string;
+  publishState: 'published' | 'draft';
+  body: string;
+}): string {
+  return [
+    '---',
+    `translationKey: ${o.translationKey}`,
+    `lang: ${o.lang}`,
+    `slug: ${o.slug}`,
+    `title: ${JSON.stringify(o.title)}`,
+    `publishDate: '18-11-2026'`,
+    `summary: ${JSON.stringify(o.summary)}`,
+    `contentHash: 'hash-${o.slug}'`,
+    `publishState: ${o.publishState}`,
+    '---',
+    '',
+    o.body,
+    '',
+  ].join('\n');
+}
+
 describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures)', () => {
   let contentRoot: string;
   let tmpRoot: string;
@@ -618,10 +644,12 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
     const projectsDir = join(contentRoot, 'projects');
     const knowledgeDir = join(contentRoot, 'knowledge');
     const radarDir = join(contentRoot, 'radar');
+    const journalDir = join(contentRoot, 'journal');
     mkdirSync(articlesDir, { recursive: true });
     mkdirSync(projectsDir, { recursive: true });
     mkdirSync(knowledgeDir, { recursive: true });
     mkdirSync(radarDir, { recursive: true });
+    mkdirSync(journalDir, { recursive: true });
 
     writeFileSync(
       join(articlesDir, 'a-pub.en.md'),
@@ -719,6 +747,31 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
         body: 'This radar draft body must never be indexed.',
       })
     );
+    // Journal pieces (own collection + own /journal/ page; tags and sources omitted).
+    writeFileSync(
+      join(journalDir, 'j-pub.en.md'),
+      journalMd({
+        slug: 'j-pub-en',
+        lang: 'en',
+        translationKey: 'j-pub',
+        title: 'Why I Distrust Leaderboards',
+        summary: 'A leaderboard measures the benchmark, not the work.',
+        publishState: 'published',
+        body: 'I stopped trusting a single score the day it stopped predicting my own results.',
+      })
+    );
+    writeFileSync(
+      join(journalDir, 'j-draft.en.md'),
+      journalMd({
+        slug: 'j-draft-en',
+        lang: 'en',
+        translationKey: 'j-draft',
+        title: 'Draft Journal Piece',
+        summary: 'This journal draft must never enter the public artifact.',
+        publishState: 'draft',
+        body: 'This journal draft body must never be indexed.',
+      })
+    );
   });
 
   afterAll(() => {
@@ -731,6 +784,7 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
     expect(sources.map((s) => s.slug).sort()).toEqual([
       'a-pub-en',
       'a-pub-fr',
+      'j-pub-en',
       'k-pub-en',
       'p-pub-en',
       'r-pub-en',
@@ -828,6 +882,40 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
     expect(lead?.text).toContain('2026-07-28 MCP revision');
     expect(lead?.sourceUrl).toBe(`${SITE}/en/radar/r-pub-en/`);
     expect(lead?.headingAnchor).toBe('');
+  });
+
+  // -- Group 4c — journal pieces (own collection + /journal/ page, dek-as-lead) --
+  it('loads published journal pieces as kind "journal" citing /journal/<slug>; draft excluded', () => {
+    const sources = loadPublishedSources({ contentRoot, siteUrl: SITE });
+    const j = sources.find((s) => s.slug === 'j-pub-en');
+    expect(j?.kind).toBe('journal');
+    expect(j?.title).toBe('Why I Distrust Leaderboards');
+    expect(j?.summary).toContain('measures the benchmark');
+    expect(j?.pageUrl).toBe(`${SITE}/en/journal/j-pub-en/`);
+    expect(sources.map((s) => s.slug)).not.toContain('j-draft-en');
+  });
+
+  it('journal pieces are chunked into the index and cite their own page', async () => {
+    const { artifact } = await buildIndex({
+      sources: loadPublishedSources({ contentRoot, siteUrl: SITE }),
+      embedder: new FakeEmbedder(),
+      prior: null,
+      generatedAt: GEN,
+    });
+    const jChunks = artifact.chunks.filter((c) => c.slug === 'j-pub-en');
+    expect(jChunks.length).toBeGreaterThan(0);
+    const lead = jChunks.find((c) => c.id.endsWith('#0'));
+    expect(lead?.text).toContain('measures the benchmark');
+    expect(lead?.sourceUrl).toBe(`${SITE}/en/journal/j-pub-en/`);
+    expect(artifact.chunks.map((c) => c.slug)).not.toContain('j-draft-en');
+  });
+
+  it('an absent journal directory is an empty source, not an error', () => {
+    const emptyRoot = join(tmpRoot, 'no-journal');
+    mkdirSync(join(emptyRoot, 'articles'), { recursive: true });
+    expect(
+      loadPublishedSources({ contentRoot: emptyRoot, siteUrl: SITE })
+    ).toEqual([]);
   });
 
   // -- Group 3 — DRAFT-EXCLUSION SAFETY (non-negotiable) -------------------

@@ -99,6 +99,24 @@ export const radarFrontmatterSchema = z.object({
   publishState: z.enum(['published', 'draft']),
 });
 
+// JOURNAL — the owner's personal, dated idea pieces ("how I think about X"), written on
+// demand. The date is part of the content: it records the day the idea was held.
+// Lighter than radar: no `kind`, `tags` may be empty (ids from the closed tag
+// vocabulary) and `sources` may be empty (a piece may cite nothing). Same
+// `<slug>.<lang>.md` bilingual layout, joined by `translationKey`.
+export const journalFrontmatterSchema = z.object({
+  translationKey: z.string().min(1),
+  lang: z.enum(['fr', 'en']),
+  slug: z.string().min(1),
+  title: z.string().min(1),
+  publishDate: z.string().regex(/^\d{2}-\d{2}-\d{4}$/),
+  summary: z.string().min(1),
+  tags: z.array(z.string().min(1)).default([]),
+  sources: z.array(sourceSchema).default([]),
+  contentHash: z.string().min(1),
+  publishState: z.enum(['published', 'draft']),
+});
+
 export const projectFrontmatterSchema = z.object({
   translationKey: z.string().min(1),
   lang: z.enum(['fr', 'en']),
@@ -209,6 +227,7 @@ export const conceptSchema = z.object({
 });
 
 export type ArticleFrontmatter = z.infer<typeof articleFrontmatterSchema>;
+export type JournalFrontmatter = z.infer<typeof journalFrontmatterSchema>;
 export type RadarFrontmatter = z.infer<typeof radarFrontmatterSchema>;
 export type RadarKind = (typeof RADAR_KINDS)[number];
 export type ProjectFrontmatter = z.infer<typeof projectFrontmatterSchema>;

@@ -1,0 +1,108 @@
+---
+/**
+ * SectionIndex — the shared frame of a section index page (/[lang]/radar/,
+ * /[lang]/journal/): the centered 824px column, the page header (optional mono
+ * eyebrow, <h1>, intro line, optional meta line), then the rows (slot) or, when
+ * `count` is 0, the empty note. `data-pagefind-ignore` keeps the listing out of the search index.
+ * Tokens only.
+ */
+interface Props {
+  title: string;
+  intro: string;
+  eyebrow?: string;
+  meta?: string;
+  count: number; // number of rows in the slot
+  emptyNote: string; // shown instead of the rows when count is 0
+}
+
+const { title, intro, eyebrow, meta, count, emptyNote } = Astro.props;
+---
+
+<div class="rc-index rc-enter" data-pagefind-ignore>
+  <header class="rc-pagehd">
+    {eyebrow && <span class="t-eyebrow">{eyebrow}</span>}
+    <h1 class="rc-pagehd__title">{title}</h1>
+    <p class="rc-pagehd__intro">{intro}</p>
+    {meta && <span class="rc-pagehd__meta">{meta}</span>}
+  </header>
+  {
+    count > 0 ? (
+      <div class="rc-arows">
+        <slot />
+      </div>
+    ) : (
+      <p class="rc-empty-note">{emptyNote}</p>
+    )
+  }
+</div>
+
+<style>
+  /* Same centered column as the article index (824px, tokens only). */
+  .rc-index {
+    width: 100%;
+    max-width: 824px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+  }
+  @media (max-width: 720px) {
+    .rc-index {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+  }
+  .rc-pagehd {
+    padding-top: 52px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 22px;
+  }
+  .rc-pagehd__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-head);
+    font-size: var(--text-h1);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
+    color: var(--fg);
+  }
+  .rc-pagehd__intro {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--fg-muted);
+    max-width: 60ch;
+  }
+  .rc-pagehd__meta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--fg-subtle);
+  }
+  .rc-arows {
+    display: flex;
+    flex-direction: column;
+  }
+  .rc-empty-note {
+    margin: 0;
+    padding: 48px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>

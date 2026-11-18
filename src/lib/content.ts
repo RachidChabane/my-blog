@@ -17,6 +17,7 @@ import { localePath } from '@/i18n/index';
 import type { Locale } from '@/i18n/index';
 import type {
   ArticleFrontmatter,
+  JournalFrontmatter,
   RadarFrontmatter,
   ProjectFrontmatter,
   Tag,
@@ -77,15 +78,26 @@ export function parsePublishDate(s: string): number {
   return Number.isNaN(n) ? 0 : n;
 }
 
+/** The frontmatter subset every dated, bilingual collection shares. */
+interface DatedEntryLike {
+  data: {
+    translationKey: string;
+    lang: Locale;
+    slug: string;
+    publishDate: string;
+    publishState: 'published' | 'draft';
+  };
+}
+
 /**
- * Published articles for `lang`, newest-first, with a stable slug tiebreak so
- * equal-date posts never reorder across builds (deterministic pagination/e2e).
- * Does not mutate the input (filter → new array → sort).
+ * Published entries of any dated collection for `lang`, newest-first, with a stable
+ * slug tiebreak so equal-date entries never reorder across builds (deterministic
+ * pagination/e2e). Does not mutate the input (filter → new array → sort).
  */
-export function getPublishedArticles(
-  entries: ArticleEntryLike[],
+function publishedNewestFirst<E extends DatedEntryLike>(
+  entries: E[],
   lang: Locale
-): ArticleEntryLike[] {
+): E[] {
   return entries
     .filter((e) => e.data.publishState === 'published' && e.data.lang === lang)
     .sort((a, b) => {
@@ -95,6 +107,14 @@ export function getPublishedArticles(
       if (byDate !== 0) return byDate;
       return a.data.slug < b.data.slug ? -1 : a.data.slug > b.data.slug ? 1 : 0;
     });
+}
+
+/** Published articles for `lang`, newest-first (see publishedNewestFirst). */
+export function getPublishedArticles(
+  entries: ArticleEntryLike[],
+  lang: Locale
+): ArticleEntryLike[] {
+  return publishedNewestFirst(entries, lang);
 }
 
 /** Drop fenced code blocks (``` … ```) — they shouldn't inflate word/excerpt logic. */
@@ -316,6 +336,14 @@ export function toSourceViews(
  */
 export function buildSlugMap(
   entries: ArticleEntryLike[],
+  translationKey: string
+): Partial<Record<Locale, string>> {
+  return translationSlugMap(entries, translationKey);
+}
+
+/** The one translation pairing rule, shared by every bilingual collection. */
+function translationSlugMap(
+  entries: DatedEntryLike[],
   translationKey: string
 ): Partial<Record<Locale, string>> {
   const map: Partial<Record<Locale, string>> = {};
@@ -559,36 +587,37 @@ export interface RadarEntryLike {
   data: RadarFrontmatter;
 }
 
-/** View-model the radar list row renders — built once, decoupled from collection internals. */
-export interface RadarCard {
+/**
+ * View-model of one row in a dated feed (radar, journal) — rendered by
+ * DatedListItem.astro. `kindLabel` is set only where the collection has a kind.
+ */
+export interface DatedCard {
   slug: string;
   lang: Locale;
-  href: string; // /<lang>/radar/<slug>/
+  href: string; // /<lang>/<section>/<slug>/
   title: string;
   dek: string; // the `summary` field verbatim
-  dateDisplay: string; // DD-MM-YYYY (as stored)
+  dateDisplay: string; // as shown on the row (radar: DD-MM-YYYY, journal: long form)
+  dateTime: string; // ISO YYYY-MM-DD for the row's <time datetime>
+  kindLabel?: string;
+  tags: string[]; // plain labels
+}
+
+/** View-model the radar list row renders — built once, decoupled from collection internals. */
+export interface RadarCard extends DatedCard {
   kind: RadarFrontmatter['kind'];
   kindLabel: string; // localized kind label (resolved at the route)
-  tags: string[]; // plain labels (radar tags are not linked to the article tag pages)
 }
 
 /**
  * Published radar briefs for `lang`, newest-first with a stable slug tiebreak
- * (same discipline as getPublishedArticles → deterministic builds). No mutation.
+ * (see publishedNewestFirst → deterministic builds). No mutation.
  */
 export function getPublishedRadar(
   entries: RadarEntryLike[],
   lang: Locale
 ): RadarEntryLike[] {
-  return entries
-    .filter((e) => e.data.publishState === 'published' && e.data.lang === lang)
-    .sort((a, b) => {
-      const byDate =
-        parsePublishDate(b.data.publishDate) -
-        parsePublishDate(a.data.publishDate);
-      if (byDate !== 0) return byDate;
-      return a.data.slug < b.data.slug ? -1 : a.data.slug > b.data.slug ? 1 : 0;
-    });
+  return publishedNewestFirst(entries, lang);
 }
 
 /** Assemble the radar list-row view-model for one entry (kindLabel localized by the route). */
@@ -605,6 +634,7 @@ export function toRadarCard(
     title,
     dek: summary,
     dateDisplay: publishDate,
+    dateTime: toIsoDate(publishDate),
     kind,
     kindLabel,
     tags: [...tags],
@@ -621,16 +651,104 @@ export function buildRadarSlugMap(
   entries: RadarEntryLike[],
   translationKey: string
 ): Partial<Record<Locale, string>> {
-  const map: Partial<Record<Locale, string>> = {};
-  for (const e of entries) {
-    if (
-      e.data.translationKey === translationKey &&
-      e.data.publishState === 'published'
-    ) {
-      map[e.data.lang] = e.data.slug;
-    }
-  }
-  return map;
+  return translationSlugMap(entries, translationKey);
+}
+
+/* ================================================================ Journal */
+/**
+ * Pure journal query + view-model helpers. A journal piece is the owner's personal,
+ * dated idea note (src/content/journal): `summary` is a real dek field, tags and
+ * sources may be empty, and the publish date is part of the content (it records the
+ * day the idea was held), so it is shown in the page language's long form.
+ */
+
+/** Structural shape of a glob-loaded journal markdown entry (the subset we use). */
+export interface JournalEntryLike {
+  id: string;
+  body?: string;
+  data: JournalFrontmatter;
+}
+
+const LONG_DATE_LOCALE: Record<Locale, string> = {
+  fr: 'fr-FR',
+  en: 'en-GB',
+};
+
+/** "DD-MM-YYYY" → "18 novembre 2026" / "18 November 2026". Malformed → input as is. */
+export function formatLongDate(publishDate: string, lang: Locale): string {
+  if (parsePublishDate(publishDate) === 0) return publishDate;
+  return new Intl.DateTimeFormat(LONG_DATE_LOCALE[lang], {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(parsePublishDateToDate(publishDate));
+}
+
+/** "DD-MM-YYYY" → "YYYY-MM-DD" for a <time datetime>. Malformed → input as is. */
+export function toIsoDate(publishDate: string): string {
+  if (parsePublishDate(publishDate) === 0) return publishDate;
+  const [dd, mm, yyyy] = publishDate.split('-');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+/** Published journal pieces for `lang`, newest-first (see publishedNewestFirst). */
+export function getPublishedJournal(
+  entries: JournalEntryLike[],
+  lang: Locale
+): JournalEntryLike[] {
+  return publishedNewestFirst(entries, lang);
+}
+
+/** Assemble the journal list-row view-model for one entry. */
+export function toJournalCard(
+  entry: JournalEntryLike,
+  lang: Locale,
+  tags: Tag[]
+): DatedCard {
+  const { slug, title, summary, publishDate } = entry.data;
+  return {
+    slug,
+    lang,
+    href: localePath(lang, `journal/${slug}`),
+    title,
+    dek: summary,
+    dateDisplay: formatLongDate(publishDate, lang),
+    dateTime: toIsoDate(publishDate),
+    tags: entry.data.tags.map((t) => tagLabel(t, lang, tags)),
+  };
+}
+
+/** locale → published slug for a journal translationKey (published counterparts only). */
+export function buildJournalSlugMap(
+  entries: JournalEntryLike[],
+  translationKey: string
+): Partial<Record<Locale, string>> {
+  return translationSlugMap(entries, translationKey);
+}
+
+/**
+ * Neighbours of `current` in the newest-first journal list of its language:
+ * prev = the nearest OLDER piece, next = the nearest NEWER one. The card `topic`
+ * line carries the neighbour's long date.
+ */
+export function getJournalPrevNext(
+  entries: JournalEntryLike[],
+  current: JournalEntryLike,
+  lang: Locale
+): PrevNextNav {
+  const ordered = getPublishedJournal(entries, lang);
+  const at = ordered.findIndex((e) => e.data.slug === current.data.slug);
+  const toCard = (e: JournalEntryLike | undefined): PrevNextCard | null =>
+    e
+      ? {
+          href: localePath(lang, `journal/${e.data.slug}`),
+          title: e.data.title,
+          topic: formatLongDate(e.data.publishDate, lang),
+        }
+      : null;
+  if (at === -1) return { prev: null, next: null };
+  return { prev: toCard(ordered[at + 1]), next: toCard(ordered[at - 1]) };
 }
 
 /* ============================================================ Portfolio (S6) */

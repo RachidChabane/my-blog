@@ -18,6 +18,9 @@ test.describe('masthead — landmarks, wordmark, nav', () => {
     await expect(wordmark).toHaveAttribute('href', '/fr/');
 
     await expect(page.locator('header nav a[href="/fr/blog/"]')).toBeVisible();
+    await expect(
+      page.locator('header nav a[href="/fr/journal/"]')
+    ).toBeVisible();
     await expect(page.locator('header nav a[href="/fr/work/"]')).toBeVisible();
     await expect(page.locator('header nav a[href="/fr/graph/"]')).toBeVisible();
     await expect(page.locator('header nav a[href="/fr/about/"]')).toBeVisible();
@@ -32,10 +35,27 @@ test.describe('masthead — landmarks, wordmark, nav', () => {
       '/en/'
     );
     await expect(page.locator('header nav a[href="/en/blog/"]')).toBeVisible();
+    await expect(
+      page.locator('header nav a[href="/en/journal/"]')
+    ).toBeVisible();
     await expect(page.locator('header nav a[href="/en/work/"]')).toBeVisible();
     await expect(page.locator('header nav a[href="/en/graph/"]')).toBeVisible();
     await expect(page.locator('header nav a[href="/en/about/"]')).toBeVisible();
   });
+});
+
+test.describe('journal index — empty collection', () => {
+  const EMPTY_STATE = { fr: 'Rien pour l’instant.', en: 'Nothing yet.' };
+
+  for (const lang of ['fr', 'en'] as const) {
+    test(`${lang.toUpperCase()}: renders the title and the empty line`, async ({
+      page,
+    }) => {
+      await page.goto(`/${lang}/journal/`);
+      await expect(page.locator('h1')).toHaveText('Journal');
+      await expect(page.getByText(EMPTY_STATE[lang])).toBeVisible();
+    });
+  }
 });
 
 test.describe('masthead — mobile nav (hamburger disclosure)', () => {
@@ -58,7 +78,7 @@ test.describe('masthead — mobile nav (hamburger disclosure)', () => {
 
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-    // all five links, with Radar + Graph (the reported gap) now reachable
+    // all six links, with Radar + Graph (the reported gap) now reachable
     await expect(page.locator('header nav a[href="/en/blog/"]')).toBeVisible();
     await expect(radar).toBeVisible();
     await expect(page.locator('header nav a[href="/en/work/"]')).toBeVisible();

@@ -36,8 +36,9 @@ playwright/.cache/
 .playwright-mcp/
 coverage/
 
-# Claude Code session data (auto-generated, not source)
-.claude/
+# Claude Code session data (auto-generated, not source); project skills are source
+.claude/*
+!.claude/skills/
 
 # Content-engine per-run working dirs (assembled slate + cpe state + artifacts)
 pipeline/runs/
@@ -68,3 +69,6 @@ __pycache__/
 
 # Voice reference posts (third-party writing, fetched by pipeline.voice.references)
 pipeline/voice/cache/
+
+# Journal drafts and interview notes (pipeline.journal)
+drafts/

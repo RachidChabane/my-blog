@@ -17,6 +17,7 @@ import type { Locale } from '../../i18n/index';
 import {
   articleFrontmatterSchema,
   radarFrontmatterSchema,
+  journalFrontmatterSchema,
   projectFrontmatterSchema,
   knowledgeFrontmatterSchema,
 } from '../../content/schemas';
@@ -27,16 +28,21 @@ import type { Embedder, IndexArtifact, IndexChunk } from './contracts';
 /** Mirrors astro.config.mjs `site` default so baked citation origins never drift. */
 const DEFAULT_SITE_URL = 'https://rachid-chabane.com';
 
-export type SourceKind = 'article' | 'radar' | 'project' | 'knowledge';
+export type SourceKind =
+  | 'article'
+  | 'radar'
+  | 'journal'
+  | 'project'
+  | 'knowledge';
 
 /** One published source variant, normalized to the chunker's inputs. */
 export interface SourceDoc {
   kind: SourceKind;
   slug: string;
   lang: Locale;
-  /** article.title | radar.title | project.name */
+  /** article.title | radar.title | journal.title | project.name */
   title: string;
-  /** project.summary | radar.summary (dek) | '' for articles */
+  /** project.summary | radar.summary (dek) | journal.summary (dek) | '' for articles */
   summary: string;
   /** frontmatter-stripped markdown */
   body: string;
@@ -87,12 +93,142 @@ function readMarkdownDir(dir: string): { path: string; raw: string }[] {
     });
 }
 
+/** Frontmatter fields every indexed collection carries. */
+interface IndexedFrontmatter {
+  slug: string;
+  lang: Locale;
+  publishState: 'published' | 'draft';
+}
+
+/** Structural subset of a Zod schema the loader needs (parse, never throw). */
+interface FrontmatterSchema<T> {
+  safeParse(
+    data: unknown
+  ):
+    | { success: true; data: T }
+    | { success: false; error: { message: string } };
+}
+
+/** Loads one content directory's published entries as SourceDocs. */
+type ContentSource = (contentRoot: string, siteUrl: string) => SourceDoc[];
+
 /**
- * Load every PUBLISHED article + radar brief + project + knowledge doc as a
- * SourceDoc. Scoped to `articles/`, `radar/`, `projects/`, and `knowledge/` only —
- * never the whole content tree (which holds test fixtures + tags). A radar brief
- * carries its `summary` dek into the lead chunk (like a project summary) so the
- * one-liner is retrievable even when the body is all schema/code. `knowledge/` is
+ * One content directory: validate every file with its PINNED schema (an invalid
+ * file throws, mirroring Astro's build-time fail-loud), drop drafts (the
+ * public-safety filter), and map the rest through `toDoc`.
+ */
+function contentSource<T extends IndexedFrontmatter>(
+  dir: string,
+  label: string,
+  schema: FrontmatterSchema<T>,
+  toDoc: (fm: T, body: string, siteUrl: string) => SourceDoc
+): ContentSource {
+  return (contentRoot, siteUrl) => {
+    const docs: SourceDoc[] = [];
+    for (const { path, raw } of readMarkdownDir(join(contentRoot, dir))) {
+      const { data, content } = matter(raw);
+      const parsed = schema.safeParse(data);
+      if (!parsed.success) {
+        throw new Error(
+          `Invalid ${label} frontmatter in ${path}: ${parsed.error.message}`
+        );
+      }
+      if (parsed.data.publishState !== 'published') continue;
+      docs.push(toDoc(parsed.data, content, siteUrl));
+    }
+    return docs;
+  };
+}
+
+/** Absolute canonical page URL of `<lang>/<section>/<slug>/`. */
+function pageUrlOf(
+  siteUrl: string,
+  fm: IndexedFrontmatter,
+  section: string
+): string {
+  return new URL(localePath(fm.lang, `${section}/${fm.slug}`), siteUrl).href;
+}
+
+const CONTENT_SOURCES: ContentSource[] = [
+  contentSource(
+    'articles',
+    'article',
+    articleFrontmatterSchema,
+    (fm, body, site) => ({
+      kind: 'article',
+      slug: fm.slug,
+      lang: fm.lang,
+      title: fm.title,
+      summary: '',
+      body,
+      pageUrl: pageUrlOf(site, fm, 'blog'),
+    })
+  ),
+  // The dek is a real frontmatter field on radar and journal (unlike articles);
+  // it rides as the SourceDoc summary, prepended to the lead chunk so the piece's
+  // one-liner is retrievable even when the body is all schema/code.
+  contentSource('radar', 'radar', radarFrontmatterSchema, (fm, body, site) => ({
+    kind: 'radar',
+    slug: fm.slug,
+    lang: fm.lang,
+    title: fm.title,
+    summary: fm.summary,
+    body,
+    pageUrl: pageUrlOf(site, fm, 'radar'),
+  })),
+  contentSource(
+    'journal',
+    'journal',
+    journalFrontmatterSchema,
+    (fm, body, site) => ({
+      kind: 'journal',
+      slug: fm.slug,
+      lang: fm.lang,
+      title: fm.title,
+      summary: fm.summary,
+      body,
+      pageUrl: pageUrlOf(site, fm, 'journal'),
+    })
+  ),
+  contentSource(
+    'projects',
+    'project',
+    projectFrontmatterSchema,
+    (fm, body, site) => ({
+      kind: 'project',
+      slug: fm.slug,
+      lang: fm.lang,
+      title: fm.name,
+      summary: fm.summary,
+      body,
+      pageUrl: pageUrlOf(site, fm, 'work'),
+    })
+  ),
+  // `knowledge/` has no own page: the citation points at an existing page (e.g.
+  // About) that genuinely carries this material, resolved through the SAME
+  // localePath the article/project citations use.
+  contentSource(
+    'knowledge',
+    'knowledge',
+    knowledgeFrontmatterSchema,
+    (fm, body, site) => ({
+      kind: 'knowledge',
+      slug: fm.slug,
+      lang: fm.lang,
+      title: fm.title,
+      summary: '',
+      body,
+      pageUrl: new URL(localePath(fm.lang, fm.sourcePath), site).href,
+    })
+  ),
+];
+
+/**
+ * Load every PUBLISHED article + radar brief + journal piece + project + knowledge
+ * doc as a SourceDoc. Scoped to `articles/`, `radar/`, `journal/`, `projects/`, and
+ * `knowledge/` only — never the whole content tree (which holds test fixtures +
+ * tags). A radar brief or journal piece carries its `summary` dek into the lead
+ * chunk (like a project summary) so the one-liner is retrievable. `knowledge/` is
  * an avatar-only source
  * (the agent's bio + how-the-site-works grounding); it is NOT an Astro collection,
  * so it never renders a page — its chunks cite an existing page (sourcePath, e.g.
@@ -107,97 +243,7 @@ export function loadPublishedSources(opts: LoadOptions = {}): SourceDoc[] {
     join(dirname(fileURLToPath(import.meta.url)), '../../content');
   const siteUrl = opts.siteUrl ?? process.env.SITE_URL ?? DEFAULT_SITE_URL;
 
-  const docs: SourceDoc[] = [];
-
-  for (const { path, raw } of readMarkdownDir(join(contentRoot, 'articles'))) {
-    const { data, content } = matter(raw);
-    const parsed = articleFrontmatterSchema.safeParse(data);
-    if (!parsed.success) {
-      throw new Error(
-        `Invalid article frontmatter in ${path}: ${parsed.error.message}`
-      );
-    }
-    const fm = parsed.data;
-    if (fm.publishState !== 'published') continue;
-    docs.push({
-      kind: 'article',
-      slug: fm.slug,
-      lang: fm.lang,
-      title: fm.title,
-      summary: '',
-      body: content,
-      pageUrl: new URL(localePath(fm.lang, `blog/${fm.slug}`), siteUrl).href,
-    });
-  }
-
-  for (const { path, raw } of readMarkdownDir(join(contentRoot, 'radar'))) {
-    const { data, content } = matter(raw);
-    const parsed = radarFrontmatterSchema.safeParse(data);
-    if (!parsed.success) {
-      throw new Error(
-        `Invalid radar frontmatter in ${path}: ${parsed.error.message}`
-      );
-    }
-    const fm = parsed.data;
-    if (fm.publishState !== 'published') continue;
-    docs.push({
-      kind: 'radar',
-      slug: fm.slug,
-      lang: fm.lang,
-      title: fm.title,
-      // The dek is a real frontmatter field on radar (unlike articles); prepend it
-      // to the lead chunk so the brief's one-liner is retrievable.
-      summary: fm.summary,
-      body: content,
-      pageUrl: new URL(localePath(fm.lang, `radar/${fm.slug}`), siteUrl).href,
-    });
-  }
-
-  for (const { path, raw } of readMarkdownDir(join(contentRoot, 'projects'))) {
-    const { data, content } = matter(raw);
-    const parsed = projectFrontmatterSchema.safeParse(data);
-    if (!parsed.success) {
-      throw new Error(
-        `Invalid project frontmatter in ${path}: ${parsed.error.message}`
-      );
-    }
-    const fm = parsed.data;
-    if (fm.publishState !== 'published') continue;
-    docs.push({
-      kind: 'project',
-      slug: fm.slug,
-      lang: fm.lang,
-      title: fm.name,
-      summary: fm.summary,
-      body: content,
-      pageUrl: new URL(localePath(fm.lang, `work/${fm.slug}`), siteUrl).href,
-    });
-  }
-
-  for (const { path, raw } of readMarkdownDir(join(contentRoot, 'knowledge'))) {
-    const { data, content } = matter(raw);
-    const parsed = knowledgeFrontmatterSchema.safeParse(data);
-    if (!parsed.success) {
-      throw new Error(
-        `Invalid knowledge frontmatter in ${path}: ${parsed.error.message}`
-      );
-    }
-    const fm = parsed.data;
-    if (fm.publishState !== 'published') continue;
-    docs.push({
-      kind: 'knowledge',
-      slug: fm.slug,
-      lang: fm.lang,
-      title: fm.title,
-      summary: '',
-      body: content,
-      // No own page: the citation points at an existing page (e.g. About) that
-      // genuinely carries this material, resolved through the SAME localePath the
-      // article/project citations use.
-      pageUrl: new URL(localePath(fm.lang, fm.sourcePath), siteUrl).href,
-    });
-  }
-
+  const docs = CONTENT_SOURCES.flatMap((load) => load(contentRoot, siteUrl));
   return docs.sort((a, b) => a.slug.localeCompare(b.slug));
 }
 

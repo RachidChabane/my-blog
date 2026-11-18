@@ -14,6 +14,7 @@
     "reindex": "tsx scripts/reindex.ts",
     "probe:avatar": "tsx scripts/probe-avatar-scope.ts",
     "voice:refs": "./scripts/fetch-voice-refs.sh",
+    "journal": "./scripts/journal.sh",
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run",

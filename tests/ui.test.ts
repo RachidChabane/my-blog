@@ -30,6 +30,10 @@ import {
   radarDetailStrings,
   RADAR_KIND_LABEL,
   radarKindLabel,
+  JOURNAL_INDEX,
+  journalIndexStrings,
+  JOURNAL_DETAIL,
+  journalDetailStrings,
 } from '@/i18n/ui';
 import { LOCALES } from '@/i18n/index';
 import { RADAR_KINDS } from '@/content/schemas';
@@ -157,10 +161,11 @@ describe('project-detail string table (PROJECT_DETAIL)', () => {
 
 describe('NAV_ITEMS', () => {
   it('maps the localized labels to shared route slugs', () => {
-    expect(NAV_ITEMS).toHaveLength(5);
+    expect(NAV_ITEMS).toHaveLength(6);
     expect(NAV_ITEMS.map((it) => it.path)).toEqual([
       'blog',
       'radar',
+      'journal',
       'work',
       'graph',
       'about',
@@ -591,5 +596,53 @@ describe('radar kind labels (RADAR_KIND_LABEL)', () => {
         expect(radarKindLabel(kind, locale)).toBe(label);
       }
     }
+  });
+});
+
+describe('journal string tables (JOURNAL_INDEX / JOURNAL_DETAIL)', () => {
+  it('fr and en expose identical key sets', () => {
+    expect(Object.keys(JOURNAL_INDEX.fr).sort()).toEqual(
+      Object.keys(JOURNAL_INDEX.en).sort()
+    );
+    expect(Object.keys(JOURNAL_DETAIL.fr).sort()).toEqual(
+      Object.keys(JOURNAL_DETAIL.en).sort()
+    );
+  });
+
+  it('every journal string is a non-empty string without emoji in both locales', () => {
+    for (const locale of LOCALES) {
+      for (const table of [JOURNAL_INDEX[locale], JOURNAL_DETAIL[locale]]) {
+        for (const [key, value] of Object.entries(table)) {
+          expect(typeof value, `${locale}.${key}`).toBe('string');
+          expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0);
+          expect(EMOJI.test(value), `${locale}.${key} = "${value}"`).toBe(
+            false
+          );
+        }
+      }
+    }
+  });
+
+  it('carries the title and the one-sentence intro per language', () => {
+    expect(JOURNAL_INDEX.fr.title).toBe('Journal');
+    expect(JOURNAL_INDEX.en.title).toBe('Journal');
+    expect(JOURNAL_INDEX.fr.intro).toBe(
+      'Ce que je pense, au jour où je le pense.'
+    );
+    expect(JOURNAL_INDEX.en.intro).toBe('What I think, on the day I think it.');
+    expect(JOURNAL_INDEX.fr.empty).toBe('Rien pour l’instant.');
+    expect(JOURNAL_INDEX.en.empty).toBe('Nothing yet.');
+  });
+
+  it('names the nav entry "Journal" in both languages', () => {
+    expect(CHROME.fr.navJournal).toBe('Journal');
+    expect(CHROME.en.navJournal).toBe('Journal');
+  });
+
+  it('journalIndexStrings/journalDetailStrings(lang) return the locale records', () => {
+    expect(journalIndexStrings('fr')).toBe(JOURNAL_INDEX.fr);
+    expect(journalIndexStrings('en')).toBe(JOURNAL_INDEX.en);
+    expect(journalDetailStrings('fr')).toBe(JOURNAL_DETAIL.fr);
+    expect(journalDetailStrings('en')).toBe(JOURNAL_DETAIL.en);
   });
 });

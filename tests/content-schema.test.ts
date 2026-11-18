@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   articleFrontmatterSchema,
+  journalFrontmatterSchema,
   projectFrontmatterSchema,
   tagSchema,
 } from '@/content/schemas';
@@ -204,5 +205,51 @@ describe('translationKey pairing', () => {
 
   it('22. FR and EN project share translationKey', () => {
     expect(PROJECT_FR.translationKey).toBe(PROJECT_EN.translationKey);
+  });
+});
+
+describe('journalFrontmatterSchema', () => {
+  const MINIMAL = {
+    translationKey: 'how-i-think-about-evals',
+    lang: 'en',
+    slug: 'how-i-think-about-evals',
+    title: 'How I think about evals',
+    publishDate: '18-11-2026',
+    summary: 'A short dek.',
+    contentHash: 'abc123',
+    publishState: 'published',
+  };
+
+  it('accepts a minimal entry and defaults tags and sources to []', () => {
+    const result = journalFrontmatterSchema.safeParse(MINIMAL);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.tags).toEqual([]);
+      expect(result.data.sources).toEqual([]);
+    }
+  });
+
+  it('accepts tags and sources when present', () => {
+    const result = journalFrontmatterSchema.safeParse({
+      ...MINIMAL,
+      tags: ['agents'],
+      sources: [
+        { label: 'Spec', url: 'https://example.com/spec', date: '01-11-2026' },
+      ],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it.each([
+    ['a bad date', { publishDate: '2026-11-18' }],
+    ['an empty title', { title: '' }],
+    ['a bad lang', { lang: 'de' }],
+    ['an empty summary', { summary: '' }],
+    ['an empty tag id', { tags: [''] }],
+    ['a bad publishState', { publishState: 'archived' }],
+  ])('rejects %s', (_label, patch) => {
+    expect(
+      journalFrontmatterSchema.safeParse({ ...MINIMAL, ...patch }).success
+    ).toBe(false);
   });
 });

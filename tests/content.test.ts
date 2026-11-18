@@ -31,9 +31,19 @@ import {
   HOME_TEASER_COUNT,
   latestArticles,
   teaserProjects,
+  formatLongDate,
+  toIsoDate,
+  getPublishedJournal,
+  toJournalCard,
+  buildJournalSlugMap,
+  getJournalPrevNext,
+  getPublishedRadar,
+  toRadarCard,
 } from '@/lib/content';
 import type {
   ArticleEntryLike,
+  JournalEntryLike,
+  RadarEntryLike,
   ProjectEntryLike,
   TagDirEntry,
 } from '@/lib/content';
@@ -1227,5 +1237,145 @@ describe('home count constants', () => {
   it('are the documented numbers (design: 3)', () => {
     expect(HOME_LATEST_COUNT).toBe(3);
     expect(HOME_TEASER_COUNT).toBe(3);
+  });
+});
+
+describe('journal helpers', () => {
+  const journalEntry = (
+    slug: string,
+    lang: 'fr' | 'en',
+    publishDate: string,
+    over: Partial<JournalEntryLike['data']> = {}
+  ): JournalEntryLike => ({
+    id: `${slug}.${lang}`,
+    data: {
+      translationKey: slug,
+      lang,
+      slug: `${slug}-${lang}`,
+      title: `Title ${slug}`,
+      publishDate,
+      summary: `Dek ${slug}`,
+      tags: [],
+      sources: [],
+      contentHash: 'h',
+      publishState: 'published',
+      ...over,
+    },
+  });
+
+  const entries = [
+    journalEntry('old', 'en', '01-03-2026'),
+    journalEntry('new', 'en', '18-11-2026'),
+    journalEntry('mid', 'en', '05-07-2026'),
+    journalEntry('same-b', 'en', '05-07-2026'),
+    journalEntry('draft', 'en', '30-12-2026', { publishState: 'draft' }),
+    journalEntry('new', 'fr', '18-11-2026'),
+    journalEntry('draft', 'fr', '30-12-2026', { publishState: 'draft' }),
+  ];
+
+  it('lists only published entries of the language, newest first, slug as tiebreak', () => {
+    expect(getPublishedJournal(entries, 'en').map((e) => e.data.slug)).toEqual([
+      'new-en',
+      'mid-en',
+      'same-b-en',
+      'old-en',
+    ]);
+    expect(getPublishedJournal(entries, 'fr').map((e) => e.data.slug)).toEqual([
+      'new-fr',
+    ]);
+  });
+
+  it('returns an empty list for an empty collection', () => {
+    expect(getPublishedJournal([], 'en')).toEqual([]);
+  });
+
+  it('pairs published translations by translationKey and skips drafts', () => {
+    expect(buildJournalSlugMap(entries, 'new')).toEqual({
+      en: 'new-en',
+      fr: 'new-fr',
+    });
+    expect(buildJournalSlugMap(entries, 'draft')).toEqual({});
+    expect(buildJournalSlugMap(entries, 'unknown')).toEqual({});
+  });
+
+  it('formats the long date in the page language', () => {
+    expect(formatLongDate('18-11-2026', 'fr')).toBe('18 novembre 2026');
+    expect(formatLongDate('18-11-2026', 'en')).toBe('18 November 2026');
+    expect(formatLongDate('not-a-date', 'en')).toBe('not-a-date');
+  });
+
+  it('converts DD-MM-YYYY to an ISO date', () => {
+    expect(toIsoDate('18-11-2026')).toBe('2026-11-18');
+  });
+
+  it('builds the list card with long date, ISO date and localized tag labels', () => {
+    const tagged = journalEntry('t', 'fr', '18-11-2026', { tags: ['agents'] });
+    const card = toJournalCard(tagged, 'fr', [
+      { slug: 'agents', label: { fr: 'Agents IA', en: 'AI agents' } },
+    ]);
+    expect(card).toMatchObject({
+      href: '/fr/journal/t-fr/',
+      dek: 'Dek t',
+      dateDisplay: '18 novembre 2026',
+      dateTime: '2026-11-18',
+    });
+    expect(card.kindLabel).toBeUndefined();
+    expect(card.tags).toEqual(['Agents IA']);
+  });
+
+  it('gives the older piece as prev and the newer one as next', () => {
+    const published = getPublishedJournal(entries, 'en');
+    const mid = published[1];
+    const nav = getJournalPrevNext(entries, mid, 'en');
+    expect(nav.next?.href).toBe('/en/journal/new-en/');
+    expect(nav.prev?.href).toBe('/en/journal/same-b-en/');
+    expect(nav.prev?.topic).toBe('5 July 2026');
+  });
+
+  it('has no neighbour past either end of the list', () => {
+    const published = getPublishedJournal(entries, 'en');
+    expect(getJournalPrevNext(entries, published[0], 'en').next).toBeNull();
+    expect(getJournalPrevNext(entries, published[3], 'en').prev).toBeNull();
+  });
+});
+
+describe('radar helpers (shared dated-collection logic)', () => {
+  const radarEntry = (
+    slug: string,
+    publishDate: string,
+    publishState: 'published' | 'draft' = 'published'
+  ): RadarEntryLike => ({
+    id: slug,
+    data: {
+      translationKey: slug,
+      lang: 'en',
+      slug,
+      title: slug,
+      publishDate,
+      kind: 'release',
+      tags: ['mcp'],
+      summary: 's',
+      sources: [{ label: 'L', url: 'https://example.com', date: publishDate }],
+      contentHash: 'h',
+      publishState,
+    },
+  });
+
+  it('orders published radar briefs newest first and builds a card with an ISO date', () => {
+    const list = getPublishedRadar(
+      [
+        radarEntry('a', '01-01-2026'),
+        radarEntry('b', '02-01-2026'),
+        radarEntry('c', '03-01-2026', 'draft'),
+      ],
+      'en'
+    );
+    expect(list.map((e) => e.data.slug)).toEqual(['b', 'a']);
+    expect(toRadarCard(list[0], 'en', 'Release')).toMatchObject({
+      href: '/en/radar/b/',
+      dateDisplay: '02-01-2026',
+      dateTime: '2026-01-02',
+      kindLabel: 'Release',
+    });
   });
 });

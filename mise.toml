@@ -51,3 +51,7 @@ run = "pnpm launch-check"
 [tasks.voice-refs]
 description = "Download the reader judge's voice reference posts (pipeline/voice/cache)"
 run = "pnpm voice:refs"
+
+[tasks.journal]
+description = "Journal pieces: new | check | publish | status (pass the verb after --)"
+run = "pnpm journal"

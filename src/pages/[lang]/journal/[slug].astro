@@ -1,0 +1,219 @@
+---
+/**
+ * Journal detail. `/[lang]/journal/[slug]/`, one page per PUBLISHED journal piece per
+ * locale. A single reading column: back link, title, the publish date in the page
+ * language's long form (it records the day the idea was held), the summary as the
+ * dek, tags when present, then the Prose reading surface, the Sources card only when
+ * the piece cites something, and the neighbouring pieces. slugMap +
+ * switchSection="journal" wire the FR/EN switch to the paired translation. The
+ * prose joins the Pagefind index via a data-pagefind-body wrapper; Sources sit
+ * outside it.
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { journalDetailStrings } from '@/i18n/ui';
+import {
+  getPublishedJournal,
+  buildJournalSlugMap,
+  getJournalPrevNext,
+  formatLongDate,
+  toIsoDate,
+  tagLabel,
+  toSourceViews,
+} from '@/lib/content';
+import type { PrevNextNav, SourceView } from '@/lib/content';
+import Base from '@/layouts/Base.astro';
+import Prose from '@/components/Prose.astro';
+import SourceList from '@/components/SourceList.astro';
+import PrevNext from '@/components/PrevNext.astro';
+import ReadingProgress from '@/components/ReadingProgress.astro';
+import ArticleTools from '@/components/ArticleTools.astro';
+
+export const getStaticPaths = (async () => {
+  const [journal, tagEntries] = await Promise.all([
+    getCollection('journal'),
+    getCollection('tags'),
+  ]);
+  const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
+  return LOCALES.flatMap((lang) =>
+    getPublishedJournal(journal, lang).map((entry) => ({
+      params: { lang, slug: entry.data.slug },
+      props: {
+        lang,
+        entry,
+        tagLabels: entry.data.tags.map((t) => tagLabel(t, lang, tags)),
+        sources: toSourceViews(entry.data.sources),
+        slugMap: buildJournalSlugMap(journal, entry.data.translationKey),
+        prevNext: getJournalPrevNext(journal, entry, lang),
+      },
+    }))
+  );
+}) satisfies GetStaticPaths;
+
+const { lang, entry, tagLabels, sources, slugMap, prevNext } = Astro.props as {
+  lang: Locale;
+  entry: CollectionEntry<'journal'>;
+  tagLabels: string[];
+  sources: SourceView[];
+  slugMap: Partial<Record<Locale, string>>;
+  prevNext: PrevNextNav;
+};
+
+const s = journalDetailStrings(lang);
+const { Content } = await render(entry);
+const { title, summary, publishDate } = entry.data;
+const pageTitle = `${title} · rachid chabane`;
+---
+
+<Base
+  title={pageTitle}
+  description={summary}
+  lang={lang}
+  slugMap={slugMap}
+  switchSection="journal"
+>
+  <article class="rc-article rc-enter">
+    <ReadingProgress />
+    <a class="rc-back" href={localePath(lang, 'journal')}>← {s.back}</a>
+
+    <header class="rc-ah">
+      <time class="rc-ah__date" datetime={toIsoDate(publishDate)}>
+        {formatLongDate(publishDate, lang)}
+      </time>
+      <h1 class="rc-article__title" data-pagefind-meta="title">{title}</h1>
+      <p class="rc-ah__lead">{summary}</p>
+      {
+        tagLabels.length > 0 && (
+          <div class="rc-ah__tags">
+            {tagLabels.map((t) => (
+              <span class="rc-chip">{t}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <div class="rc-doc__main">
+      <div
+        class="rc-pf-body"
+        data-pagefind-body
+        data-pagefind-meta={`date:${publishDate}`}
+      >
+        <Prose><Content /></Prose>
+      </div>
+      {
+        sources.length > 0 && (
+          <SourceList sources={sources} heading={s.sourcesH} />
+        )
+      }
+    </div>
+
+    <PrevNext
+      nav={prevNext}
+      prevDir={s.prevDir}
+      nextDir={s.nextDir}
+      ariaLabel={s.prevNextAria}
+    />
+
+    <ArticleTools
+      copyLink={s.copyLink}
+      copyCode={s.copyCode}
+      copied={s.copied}
+    />
+  </article>
+</Base>
+
+<style>
+  /* Single reading column, a quiet sibling of the radar/article detail surface
+     (same classes, same tokens). */
+  .rc-article {
+    width: 100%;
+    max-width: 768px;
+    margin: 0 auto;
+    padding: 44px 40px 0;
+  }
+  @media (max-width: 720px) {
+    .rc-article {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+  .rc-back {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--fg-muted);
+    margin-bottom: 26px;
+    transition: color var(--dur-hover) var(--ease-soft);
+  }
+  .rc-back:hover {
+    color: var(--accent-text);
+  }
+  .rc-ah {
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .rc-ah__date {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--accent-text);
+  }
+  .rc-article__title {
+    margin: 14px 0 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--fraunces-title);
+    font-size: var(--text-h1);
+    line-height: 1.07;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    text-wrap: balance;
+  }
+  .rc-ah__lead {
+    margin: 18px 0 0;
+    font-size: 1.2rem;
+    line-height: 1.55;
+    color: var(--fg-muted);
+    max-width: 60ch;
+  }
+  .rc-ah__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 22px;
+  }
+  .rc-chip {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-soft);
+    color: var(--accent-text);
+    border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+  }
+  .rc-doc__main {
+    min-width: 0;
+    margin-top: 38px;
+  }
+  /* Pagefind body wrapper is layout-transparent. */
+  .rc-pf-body {
+    display: contents;
+  }
+  .rc-enter {
+    animation: rc-rise var(--dur-enter) var(--ease-out);
+  }
+  @keyframes rc-rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>

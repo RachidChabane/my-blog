@@ -22,7 +22,8 @@ import {
 import { getPublishedRadar, toRadarCard } from '@/lib/content';
 import type { RadarCard } from '@/lib/content';
 import Base from '@/layouts/Base.astro';
-import RadarListItem from '@/components/RadarListItem.astro';
+import DatedListItem from '@/components/DatedListItem.astro';
+import SectionIndex from '@/components/SectionIndex.astro';
 
 export const getStaticPaths = (async () => {
   const radar = await getCollection('radar');
@@ -44,95 +45,18 @@ const title = `${s.title} · rachid chabane`;
 ---
 
 <Base title={title} description={s.intro} lang={lang} switchSection="radar">
-  <div class="rc-index rc-enter" data-pagefind-ignore>
-    <header class="rc-pagehd">
-      <span class="t-eyebrow">{s.eyebrow}</span>
-      <h1 class="rc-pagehd__title">{s.title}</h1>
-      <p class="rc-pagehd__intro">{s.intro}</p>
-      <span class="rc-pagehd__meta">{cards.length} {s.countSuffix}</span>
-    </header>
-
+  <SectionIndex
+    eyebrow={s.eyebrow}
+    title={s.title}
+    intro={s.intro}
+    meta={`${cards.length} ${s.countSuffix}`}
+    count={cards.length}
+    emptyNote={s.empty}
+  >
     {
-      cards.length > 0 ? (
-        <div class="rc-arows">
-          {cards.map((card) => (
-            <RadarListItem card={card} readCta={readCta} reveal />
-          ))}
-        </div>
-      ) : (
-        <p class="rc-empty-note">{s.empty}</p>
-      )
+      cards.map((card) => (
+        <DatedListItem card={card} readCta={readCta} reveal />
+      ))
     }
-  </div>
+  </SectionIndex>
 </Base>
-
-<style>
-  /* Same centered column as the article index (824px, tokens only). */
-  .rc-index {
-    width: 100%;
-    max-width: 824px;
-    margin: 0 auto;
-    padding: 0 40px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-6);
-  }
-  @media (max-width: 720px) {
-    .rc-index {
-      padding-left: 22px;
-      padding-right: 22px;
-    }
-  }
-  .rc-pagehd {
-    padding-top: 52px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    border-bottom: 1px solid var(--hairline);
-    padding-bottom: 22px;
-  }
-  .rc-pagehd__title {
-    margin: 0;
-    font-family: var(--font-display);
-    font-variation-settings: var(--fraunces-head);
-    font-size: var(--text-h1);
-    line-height: 1.1;
-    letter-spacing: var(--tracking-tight);
-    color: var(--fg);
-  }
-  .rc-pagehd__intro {
-    margin: 0;
-    font-size: 1.0625rem;
-    line-height: 1.55;
-    color: var(--fg-muted);
-    max-width: 60ch;
-  }
-  .rc-pagehd__meta {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    letter-spacing: 0.04em;
-    color: var(--fg-subtle);
-  }
-  .rc-arows {
-    display: flex;
-    flex-direction: column;
-  }
-  .rc-empty-note {
-    margin: 0;
-    padding: 48px 0;
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--fg-muted);
-  }
-  .rc-enter {
-    animation: rc-rise var(--dur-enter) var(--ease-out);
-  }
-  @keyframes rc-rise {
-    from {
-      transform: translateY(14px);
-    }
-    to {
-      transform: none;
-    }
-  }
-</style>

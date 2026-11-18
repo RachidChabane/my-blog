@@ -30,6 +30,7 @@ from pathlib import Path
 
 import yaml
 
+from ..contracts.published import DDMMYYYY_RE, source_item_problems
 from ..memory.topic_memory import TopicMemory, TopicRecord
 from ..stages.publish import content_hash
 from ..voice.judge import reader_verdict_problems
@@ -40,8 +41,6 @@ RADAR_REL = "src/content/radar"
 DRAFT_REL = Path("plans") / "task-draft"
 ENTRY_FILENAME = "entry.json"
 RADAR_KINDS = ("spec-change", "release", "tool", "benchmark", "security", "research")
-_DDMMYYYY_RE = re.compile(r"^\d{2}-\d{2}-\d{4}$")
-_HTTP_RE = re.compile(r"^https?://", re.IGNORECASE)
 _FRONTMATTER_RE = re.compile(r"\A---[ \t]*\r?\n(.*?)\r?\n---[ \t]*\r?\n?", re.DOTALL)
 
 
@@ -203,7 +202,7 @@ def validate_radar_published(article_text: str) -> list[str]:
     if fm.get("kind") not in RADAR_KINDS:
         problems.append(f"kind must be one of {list(RADAR_KINDS)} (got {fm.get('kind')!r})")
     pub = fm.get("publishDate")
-    if not (isinstance(pub, str) and _DDMMYYYY_RE.match(pub)):
+    if not (isinstance(pub, str) and DDMMYYYY_RE.match(pub)):
         problems.append(f"publishDate must match DD-MM-YYYY (got {pub!r})")
     tags = fm.get("tags")
     if (
@@ -216,16 +215,7 @@ def validate_radar_published(article_text: str) -> list[str]:
     if not isinstance(sources, list) or len(sources) < 1:
         problems.append("sources must be a list of length >= 1")
     else:
-        for i, s in enumerate(sources):
-            if not isinstance(s, dict):
-                problems.append(f"sources[{i}] must be a mapping")
-                continue
-            if not (isinstance(s.get("label"), str) and s["label"].strip()):
-                problems.append(f"sources[{i}].label must be a non-empty string")
-            if not (isinstance(s.get("url"), str) and _HTTP_RE.match(s["url"])):
-                problems.append(f"sources[{i}].url must be http(s) (got {s.get('url')!r})")
-            if not (isinstance(s.get("date"), str) and _DDMMYYYY_RE.match(s["date"])):
-                problems.append(f"sources[{i}].date must match DD-MM-YYYY (got {s.get('date')!r})")
+        problems.extend(source_item_problems(sources))
     if fm.get("publishState") != "published":
         problems.append(f"publishState must be 'published' (got {fm.get('publishState')!r})")
     prose = f"{fm.get('summary') or ''}\n\n{body}"
@@ -342,7 +332,7 @@ def _today_ddmmyyyy() -> str:
 
 def _cmd_from_json(args) -> int:
     publish_date = args.publish_date or _today_ddmmyyyy()
-    if not _DDMMYYYY_RE.match(publish_date):
+    if not DDMMYYYY_RE.match(publish_date):
         print(f"--publish-date must be DD-MM-YYYY (got {publish_date!r})", file=sys.stderr)
         return 1
     entries = json.loads(Path(args.entries).read_text(encoding="utf-8"))
