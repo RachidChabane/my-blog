@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import matter from 'gray-matter';
 import { clawd, frieze, projectScene, TEAM, who } from '@/office/draw';
 import { officeStrings, SECTION_ORDER, SECTION_PATHS } from '@/office/strings';
-import { mergeRows, plainParagraphs, shortDek } from '@/office/view';
+import { mergeRows, monthOf, plainParagraphs, shortDek } from '@/office/view';
 import type { Row } from '@/office/view';
 import { validateQueryRequest } from '@/lib/avatar/guard';
 import { PERSONAS } from '@/lib/avatar/protocol';
@@ -248,5 +248,15 @@ describe('what the agent reads', () => {
     expect(out[0].body).toContain('Beta: about Beta');
     expect(out[0].body).not.toContain('Gamma');
     expect(out[0].pageUrl).toBe('https://rachid-chabane.com/fr/work/');
+  });
+});
+
+describe('month of a publish date', () => {
+  it('reads the month from the written date', () => {
+    expect(monthOf('11-11-2026')).toBe('2026-11');
+    expect(monthOf('03-01-2025')).toBe('2025-01');
+  });
+  it('is empty for a malformed date', () => {
+    expect(monthOf('2026-11')).toBe('');
   });
 });

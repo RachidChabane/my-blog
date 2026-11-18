@@ -57,10 +57,10 @@ export function shortDek(text: string, max = DEK_MAX): string {
   return `${flat.slice(0, max).replace(/\s\S*$/, '')}…`;
 }
 
-function monthOf(publishDate: string): string {
-  const ms = parsePublishDate(publishDate);
-  if (ms === 0) return '';
-  return new Date(ms).toISOString().slice(0, 7);
+/** YYYY-MM of a DD-MM-YYYY publish date; empty when the date is malformed. */
+export function monthOf(publishDate: string): string {
+  const [, mm, yyyy] = publishDate.split('-');
+  return parsePublishDate(publishDate) === 0 ? '' : `${yyyy}-${mm}`;
 }
 
 export function articleRow(entry: ArticleEntryLike, lang: Locale): Row {
