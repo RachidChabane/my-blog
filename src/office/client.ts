@@ -686,12 +686,16 @@ function mount(): void {
   progress();
   const pano = $('pano');
   if (pano) {
-    let timer = 0;
+    let queued = false;
     pano.addEventListener(
       'scroll',
       () => {
-        window.clearTimeout(timer);
-        timer = window.setTimeout(liveRoom, 90);
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(() => {
+          queued = false;
+          liveRoom();
+        });
       },
       { passive: true }
     );
