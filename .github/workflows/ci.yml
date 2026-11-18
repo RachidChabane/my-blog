@@ -159,6 +159,22 @@ jobs:
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # the index step compares this push with the previous one
+
+      # A full index rebuild rewrites every passage in D1. It runs only when what
+      # the index is built from has changed, so a code-only deploy writes nothing.
+      # An unknown previous commit (first push, rewritten history) rebuilds.
+      - name: Decide whether the index needs rebuilding
+        id: index
+        run: |
+          if git diff --quiet "${{ github.event.before }}" "${{ github.sha }}" -- \
+            src/content src/lib/avatar scripts/build-avatar-index.ts; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Index inputs unchanged: skipping the index rebuild."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Check secrets present
         id: gate
@@ -185,9 +201,8 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       # Full rebuild + replace into Vectorize + D1 (bge-m3, ~$0 at this corpus size).
-      # Runs every deploy; could be content-path-gated later for efficiency.
       - name: Build + push avatar index
-        if: steps.gate.outputs.ready == 'true'
+        if: steps.gate.outputs.ready == 'true' && steps.index.outputs.changed == 'true'
         env:
           EMBEDDINGS_API_KEY: ${{ secrets.EMBEDDINGS_API_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
