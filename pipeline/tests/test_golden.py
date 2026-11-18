@@ -154,7 +154,7 @@ def test_live_adversarial_artifacts_are_clean_and_isolating():
                 # structurally valid => verify_provenance returns [] => only the judge can block
                 ClaimSourceMap.load_path(path).validate()
             if target.startswith("draft-") and target.endswith(".md"):
-                # emoji-free => the live style block is the auditor verdict, not the no-emoji scan
+                # emoji-free => the live style block is the reader-judge verdict
                 assert house_style_violations(path.read_text(encoding="utf-8")) == [], (
                     f"{entry.id}: adversarial draft must be emoji-free "
                     "so the live block is the verdict"

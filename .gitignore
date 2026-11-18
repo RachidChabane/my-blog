@@ -65,3 +65,6 @@ __pycache__/
 /inventory/
 /plans/
 /plans-writing-rigor/
+
+# Voice reference posts (third-party writing, fetched by pipeline.voice.references)
+pipeline/voice/cache/

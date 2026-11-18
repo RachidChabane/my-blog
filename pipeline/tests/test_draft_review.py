@@ -5,7 +5,7 @@ secret. These lock the MECHANICS the live draft agent shells out to — frontmat
 FR/EN parity (``draft.py``), claim->source completeness -> the cpe-parseable verdict
 (``review.py``), the style-findings parser + the no-emoji scan (``humanize.py``) — and
 that the prompt strings carry the right instructions/paths. They do NOT prove a live
-agent obeys the prompt or that the ``style-auditor`` runs; that path is only exercisable
+agent obeys the prompt or that the reader judge runs; that path is only exercisable
 in a real tmux run (the stated boundary in ``test_research_select.py``).
 
 Import convention (review-1.md I1): stage symbols are imported DIRECTLY from
@@ -254,10 +254,15 @@ def test_parse_revision_findings_fails():
         assert issue.phrase and issue.pattern
 
 
-def test_suspicious_does_not_pass():
-    # only "clean" passes; "suspicious" / "revision_needed" fail.
-    assert style_passes(parse_style_findings({"verdict": "suspicious", "issues": []})) is False
+def test_only_clean_passes():
+    assert style_passes(parse_style_findings({"verdict": "revision_needed", "issues": []})) is False
     assert style_passes(parse_style_findings({"verdict": "clean", "issues": []})) is True
+
+
+def test_suspicious_verdict_is_invalid():
+    # the vocabulary is clean | revision_needed; any other verdict is a contract error.
+    with pytest.raises(ContractError):
+        parse_style_findings({"verdict": "suspicious", "issues": []})
 
 
 def test_bad_style_json_raises():
@@ -276,7 +281,7 @@ def test_find_emoji():
     assert find_emoji("(c) © (r) ® tm ™ cafe café resume résumé") == []
     assert find_emoji("plain ascii only, no glyphs") == []
     # documented recall gap (review-1.md C1): a BMP default-presentation emoji such as
-    # U+2705 is NOT caught by the astral-only scan -- the style-auditor is the net.
+    # U+2705 is NOT caught by the astral-only scan -- the reader judge is the net.
     assert find_emoji("done ✅") == []
 
 
@@ -314,10 +319,18 @@ def test_draft_prompt_substrings():
         "/abs/repo/pipeline/runs/run-1/plans/task-draft/claim_source_map.json",
         "/abs/repo/pipeline/house_style.md",
         "claim->source",
-        "style-auditor",
-        "AUDITOR",
-        "separate",
-        "does not rewrite",
+        "reader judge",
+        "READER JUDGE (fr)",
+        "READER JUDGE (en)",
+        "/abs/repo/pipeline/voice/cache/fr",
+        "/abs/repo/pipeline/voice/cache/en",
+        "python3 -m pipeline.voice.rules check",
+        "draft-fr.md --collection articles --lang fr",
+        "draft-en.md --collection articles --lang en",
+        "python3 -m pipeline.stages.humanize verdict",
+        "CITATIONS FOLLOW THE POINT",
+        "JUDGE != AUTHOR",
+        "separate revise step",
         "## Verdict: APPROVED",
         "NEEDS_REVISION",
         "parallel",
@@ -325,7 +338,6 @@ def test_draft_prompt_substrings():
         "same source_id",
         "D-007",
         "no emoji",
-        "context",  # the style context label handed to the auditor
         "python3 -m pipeline.stages.draft validate",
         "python3 -m pipeline.stages.review check",
         "python3 -m pipeline.stages.humanize scan",
@@ -367,8 +379,8 @@ def test_draft_prompt_substrings():
         # DOSSIER body constructs (the two-column documentation reading surface): the
         # prompt must teach callouts, the verdict pair, GFM tables, and ## sections,
         # plus the faithfulness guards (INFERRED is source-free; placement; parity).
-        "BODY CONSTRUCTS",
-        "table-of-contents rail",
+        "CALLOUT: a blockquote",
+        "contents rail",
         "[!NOTE]",
         "[!CAUTION]",
         "VERDICT PAIR",
@@ -379,6 +391,8 @@ def test_draft_prompt_substrings():
         "NEVER opens the body",  # the dek-placement guard
     ]:
         assert needle in p, f"draft prompt missing {needle!r}"
+    for banned in ("style-auditor", "citations precede prose", "I think"):
+        assert banned not in p, f"draft prompt still contains {banned!r}"
     assert "Nine gates BLOCK this task" in p  # +difficulty-rating on top of the eight
     # the round cap is interpolated into the humanize section (asserted in context, not
     # as a bare '2' which would also match paths / 's2'). Use a distinctive value.
@@ -394,8 +408,10 @@ def test_revise_prompt_separation():
     assert "/abs/repo/pipeline/runs/run-1/plans/task-draft/style-fr.json" in r
     assert "/abs/repo/pipeline/runs/run-1/plans/task-draft/draft-fr.md" in r
     assert "suggested_fix" in r
-    assert "apply" in r.lower()
-    assert "do not re-audit" in r  # the auditor != editor separation
+    assert "rewrite" in r.lower()
+    assert "reader judge" in r
+    assert "style-auditor" not in r
+    assert "do not re-audit" in r  # the judge != editor separation
     assert "no emoji" in r.lower()
 
 
@@ -416,13 +432,16 @@ def test_house_style_no_emoji_and_covers_rules():
     text = (_REPO_ROOT / "pipeline" / "house_style.md").read_text(encoding="utf-8")
     assert find_emoji(text) == []  # the guide self-passes the no-emoji scan
     low = text.lower()
+    headings = [ln.lower() for ln in text.splitlines() if ln.startswith("#")]
+    assert any("voice" in h for h in headings)  # a section on voice
+    assert any("title" in h for h in headings)  # a section on titles
+    assert "\u2014" not in text  # no em-dash anywhere in the guide
     for needle in (
-        "no emoji",
-        "d-007",
         "citation",
         "translationkey",
         "bilingual",
         "voice",
+        "title",
         # the DOSSIER reading-surface constructs the draft prompt delegates here
         "callout",
         "verdict pair",

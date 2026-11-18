@@ -10,10 +10,10 @@ Two layers, both BLOCK:
 2. Per-claim semantic verdicts (``parse_factcheck_findings`` + ``factcheck_passes``) --
    consumes ``factcheck-{lang}.json``, the findings of a SEPARATE fact-check sub-agent
    dispatched by the draft prompt (judge != author, mirroring how ``humanize`` consumes
-   the ``style-auditor``'s JSON). The gate BLOCKs on any ``supported: false`` and on a
+   the reader judge's JSON). The gate BLOCKs on any ``supported: false`` and on a
    MISSING findings file -- the fact-check pass must have run.
 
-LIVE-ONLY BOUNDARY (same as the ``style-auditor`` re-check): the semantic "does this
+LIVE-ONLY BOUNDARY (same as the reader-judge re-check): the semantic "does this
 excerpt support this claim" judgment is multilingual entailment a deterministic check
 CANNOT do (the canonical "good" fixture has FR claims backed by ENGLISH excerpts, so any
 claim<->excerpt token match would wrongly fail every FR claim). In CI the

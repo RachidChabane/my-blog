@@ -553,6 +553,24 @@ def test_check_style_fr_diacritics_is_french_only():
     assert not any("fr-diacritics" in p for p in problems)
 
 
+def test_check_style_reports_voice_violations_in_both_languages():
+    findings = _fixture_text("style_findings.clean.json")
+    en = "---\ntitle: Fast, but unsafe\n---\n\nA claim [s1] and the same claim [s1].\n"
+    fr = "---\ntitle: Rapide, mais risqué\n---\n\nUne thèse [s1] et la même thèse [s1].\n"
+    for lang, text in (("en", en), ("fr", fr)):
+        problems = check_style(text, findings, lang)
+        assert any(p.startswith("voice: title-clauses") for p in problems), problems
+        assert any(p.startswith("voice: repeated-citation") for p in problems), problems
+
+
+def test_check_style_reports_worn_headings():
+    findings = _fixture_text("style_findings.clean.json")
+    text = "---\ntitle: A title\n---\n\n## The case against\n\nProse.\n"
+    assert check_style(text, findings, "en") == []
+    problems = check_style(text, findings, "en", frozenset({"the case against"}))
+    assert any("voice: reused-heading" in p for p in problems)
+
+
 def test_check_style_revision_needed():
     body = _fixture_text("draft-en.valid.md")
     findings = _fixture_text("style_findings.revision_needed.json")
@@ -586,6 +604,18 @@ def test_style_cli(tmp_path):
     )
     rev = _cli(["pipeline.gate.style", "--run-dir", str(run_dir), "--lang", "en"])
     assert rev.returncode == 1
+
+    # a voice violation blocks, also when the findings file is missing (degraded path)
+    voiced = "---\ntitle: Fast, but unsafe\n---\n\nBody.\n"
+    _make_draft_run(run_dir, {"draft-en.md": voiced, "style-en.json": clean_style})
+    voice = _cli(["pipeline.gate.style", "--run-dir", str(run_dir), "--lang", "en",
+                  "--repo-root", str(tmp_path)])
+    assert voice.returncode == 1 and "voice: title-clauses" in voice.stdout
+    (run_dir / "plans" / "task-draft" / "style-en.json").unlink()
+    degraded = _cli(["pipeline.gate.style", "--run-dir", str(run_dir), "--lang", "en",
+                     "--repo-root", str(tmp_path)])
+    assert "voice: title-clauses" in degraded.stdout
+    _make_draft_run(run_dir, {"draft-en.md": clean_body, "style-en.json": clean_style})
 
     # a missing style findings file blocks
     (run_dir / "plans" / "task-draft" / "style-en.json").unlink()

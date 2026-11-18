@@ -26,7 +26,7 @@
       "style-en.json": "fixtures/style_findings.revision_needed.json"
     },
     "expect_contains": ["style verdict is", "revision_needed"],
-    "why": "A planted AI-tell (a stock lead-in plus an em-dash cluster): the style-auditor returns a non-clean verdict. The M-4 style gate must BLOCK on the non-'clean' verdict.",
+    "why": "A planted AI-tell (a stock lead-in plus an em-dash cluster): the reader judge returns a non-clean verdict. The M-4 style gate must BLOCK on the non-'clean' verdict.",
     "live": {
       "produces": "style-en.json",
       "adversarial_artifacts": {

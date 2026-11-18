@@ -1,0 +1,76 @@
+# Human-written posts the reader judge reads to tune its ear before judging a draft.
+# Personal engineering blogs, published before 2023. Texts are fetched into the
+# gitignored pipeline/voice/cache/ by `pnpm voice:refs`; only the pointers live here.
+references:
+  - lang: en
+    author: Julia Evans
+    title: How to use undocumented web APIs
+    url: https://jvns.ca/blog/2022/03/10/how-to-use-undocumented-web-apis/
+  - lang: en
+    author: Julia Evans
+    title: Debugging a weird file not found error
+    url: https://jvns.ca/blog/2021/11/17/debugging-a-weird--file-not-found--error/
+  - lang: en
+    author: Dan Luu
+    title: Willingness to look stupid
+    url: https://danluu.com/look-stupid/
+  - lang: en
+    author: Dan Luu
+    title: Some latency measurement pitfalls
+    url: https://danluu.com/latency-pitfalls/
+  - lang: en
+    author: Bob Nystrom
+    title: Long Names Are Long
+    url: https://journal.stuffwithstuff.com/2016/06/16/long-names-are-long/
+  - lang: en
+    author: Bob Nystrom
+    title: What Color is Your Function
+    url: https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/
+  - lang: en
+    author: Hillel Wayne
+    title: Software Mimicry
+    url: https://hillelwayne.com/post/software-mimicry/
+  - lang: en
+    author: Hillel Wayne
+    title: Crimes with Python's Pattern Matching
+    url: https://hillelwayne.com/post/python-abc/
+  - lang: en
+    author: Fabien Sanglard
+    title: Observing my cellphone switch towers
+    url: https://fabiensanglard.net/lte/index.html
+  - lang: fr
+    author: Sam et Max
+    title: Les critiques des ORM sont à côté de la plaque
+    url: https://web.archive.org/web/2019id_/http://sametmax.com/les-critiques-des-orm-sont-a-cote-de-la-plaque/
+  - lang: fr
+    author: Sam et Max
+    title: Trier un CSV de 5 Go
+    url: https://web.archive.org/web/2019id_/http://sametmax.com/trier-un-csv-de-5-go/
+  - lang: fr
+    author: Stéphane Bortzmeyer
+    title: Log4Shell, et le financement du logiciel libre
+    url: https://www.bortzmeyer.org/log4shell.html
+  - lang: fr
+    author: Stéphane Bortzmeyer
+    title: Clé PGP inutilisable ?
+    url: https://www.bortzmeyer.org/pgp-key-half-expired.html
+  - lang: fr
+    author: Ploum
+    title: Les décisions à prendre avant de migrer ma mailing-liste
+    url: https://ploum.net/2022-10-23-mailing-list.html
+  - lang: fr
+    author: Ploum
+    title: Lorsqu'éclatera la bulle publicitaire
+    url: https://ploum.net/lorsqueclatera-la-bulle-publicitaire/index.html
+  - lang: fr
+    author: sebsauvage
+    title: Arrêtez de pleurer Google Reader
+    url: https://sebsauvage.net/rhaa/index.php?2013/03/15/17/15/39-arretez-de-pleurer-google-reader-hebergez-un-lecteur-rss-chez-vous
+  - lang: fr
+    author: sebsauvage
+    title: Retour sur ZeroBin
+    url: https://sebsauvage.net/rhaa/index.php?2013/02/18/01/35/23-retour-sur-zerobin
+  - lang: fr
+    author: ted (LinuxFr.org)
+    title: Compiler ses logiciels, exemple avec Geany 1.37.1
+    url: https://linuxfr.org/users/ted/journaux/compiler-ses-logiciels-exemple-avec-geany-1-37-1

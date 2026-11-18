@@ -1,8 +1,10 @@
 # Radar slate template -- the SHAPE of one autonomous RADAR run (short release/spec/tool
 # brief). Lighter than the essay slate: research -> draft -> publish, no select/argue and
-# no judge gates. A radar brief's integrity rests on the research + adversarial-verify pass
-# and the deterministic STRUCTURAL validation in pipeline/radar/stages.py (the four mandated
-# sections, kind enum, >= 1 source, no em-dash), which the publish stage enforces.
+# no essay judge gates. A radar brief's integrity rests on the research + adversarial-verify
+# pass, the deterministic validation in pipeline/radar/stages.py (kind enum, >= 1 source,
+# no em-dash, the voice rules), and one reader-judge verdict per language
+# (plans/task-draft/style-fr.json and style-en.json, both 'clean'), which the publish stage
+# requires. The body has a free structure.
 #
 # cpe v2 (zero loader warnings: version 2 + caps block + explicit on_max_review_rounds; no
 # legacy *_timeout_minutes / top-level max_review_rounds). pipeline/radar/runner.py deep-
@@ -48,13 +50,14 @@ tasks:
     depends_on: []
   - id: draft
     phase: draft
-    title: 'Draft the bilingual FR+EN radar brief (schema/code/impact sections)'
+    title: 'Draft the bilingual FR+EN radar brief (free structure, voice rules, reader judges)'
     description: |
       [STAGE: Radar draft. Authored by pipeline/radar/prompts.py.]
-      Write the FR+EN brief with the four mandated H2 sections per language (what
-      changed / the schema / in practice / impact) and the structured entry to
-      plans/task-draft/entry.json (translationKey, kind, tags, slugs, titles, summaries,
-      bodies, sources). The schema + code blocks must use real field names from the
+      Write the FR+EN brief with a free structure per language and the structured entry
+      to plans/task-draft/entry.json (translationKey, kind, tags, slugs, titles,
+      summaries, bodies, sources). Run the `check` verb until the voice rules pass, then
+      have a fresh reader judge per language write plans/task-draft/style-fr.json and
+      style-en.json. Schema and code blocks, when present, use real field names from the
       sources; no invention. No emojis, no em-dashes.
     key_files: [pipeline/radar/prompts.py, pipeline/radar/stages.py]
     commit_message: 'radar(draft): entry.json + FR/EN bodies'
@@ -66,7 +69,8 @@ tasks:
       [STAGE: Radar publish. Authored by pipeline/radar/prompts.py.]
       Shell out to `python3 -m pipeline.radar.stages publish` to project + validate BOTH
       languages + write BOTH or NEITHER into src/content/radar and append the radar topic
-      memory. Deterministic structural validation only (no judge gates). No manual step
+      memory. Publishing requires both reader-judge verdicts (style-fr.json,
+      style-en.json) to be 'clean'; otherwise nothing is written. No manual step
       (D-002).
     key_files: [pipeline/radar/stages.py]
     commit_message: 'radar(publish): FR + EN brief'

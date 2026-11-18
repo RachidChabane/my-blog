@@ -3,7 +3,7 @@
 The single ``draft`` cpe task folds Writing (role 3), the editorial Review self-gate
 (role 4), and Humanizing (role 4b) into one implement-phase instruction. ``build_draft_prompt``
 returns that instruction; ``build_revise_prompt`` is the SEPARATE revise step the humanize
-loop dispatches (auditor != editor, writing-flow section 5).
+loop dispatches (judge != editor, writing-flow section 5).
 
 Both are pure functions of their inputs; ASCII-only (no emoji, D-007); all paths are
 ABSOLUTE and shell-outs use ``PYTHONPATH={repo_root} python3 -m ...``
@@ -102,55 +102,48 @@ def _draft_section(repo_root: Path, run_dir: Path) -> str:
         "       # density, math/code depth. Rate the article AS WRITTEN, not the topic's\n"
         "       # reputation; when torn between two levels choose the HIGHER. IDENTICAL\n"
         "       # for fr and en (one rating per article; the gate enforces parity).\n"
-        "   Then the body. The lead paragraph MUST open on the problem, the stakes, or\n"
-        "   your take -- NOT a definition of the subject; put the thesis in its first\n"
-        "   sentence (the reading-surface derives the dek from this first block and\n"
-        "   truncates near 180 chars, so the point lands early and the block stands\n"
-        "   alone). Make ONE load-bearing argument the reader could disagree with\n"
-        "   (typically what most teams get wrong about the topic) and anchor it in at\n"
-        "   least one concrete number, command, or named failure mode.\n"
-        "   REFLECT, DO NOT PARAPHRASE (house_style.md section 1b, the interesting bar).\n"
-        "   A reader who already skimmed your sources must still learn something here.\n"
-        "   Every paragraph should carry a THOUGHT OF YOURS (a stance, a connection the\n"
-        "   sources do not make, a second-order consequence, a practitioner call on what\n"
-        "   to do or ignore), supported by the cited fact -- not a restatement of a\n"
-        "   source with the [sN] doing all the work. Lead with the thought, support it\n"
-        "   with the evidence; the insight usually lives in the GAP between sources. A\n"
-        "   paragraph that only relays what a source says should be cut or compressed to\n"
-        "   one sentence of evidence under a claim that is yours. Every NUMBER is a\n"
-        "   load-bearing claim: cite it [sN] from a captured source -- never an unsourced\n"
-        "   figure, not even from your own work (house_style.md sections 1 and 4). Then\n"
-        "   section headers following the outline, and INLINE citations to source_ids\n"
-        "   (citations precede prose). Vary sentence length; no textbook 'X is/does Y'\n"
-        "   openers.\n"
+        "   TITLE: one idea in one clause, short enough to say aloud (house_style.md\n"
+        "   section 2). A title that joins two facts with a comma and a conjunction, or\n"
+        "   that needs a semicolon, is two titles: keep the one the piece is about.\n"
+        "   Then the body. The first paragraph says what you think and why the reader\n"
+        "   should care, in its first sentence (the reading-surface derives the dek from\n"
+        "   this first block and truncates near 180 chars, so the block stands alone).\n"
+        "   It never defines the subject or describes the field.\n"
+        "   WRITE IT THE WAY YOU WOULD TELL A COLLEAGUE (house_style.md section 1). You\n"
+        "   worked through these sources; say what you make of them. The piece carries\n"
+        "   ONE argument the reader could disagree with, anchored in at least one\n"
+        "   concrete number, command, or named failure mode. A reader who already\n"
+        "   skimmed the sources must still learn something: the stance, the connection\n"
+        "   the sources do not make, the second-order consequence, what you would do.\n"
+        "   A paragraph that only relays a source is cut or shrunk to one sentence of\n"
+        "   evidence under a point that is yours.\n"
+        "   CITATIONS FOLLOW THE POINT. Make your point in your own sentence and put the\n"
+        "   [sN] after the fact it rests on. Name a source in the prose only when who\n"
+        "   said it matters to the argument, and once: after that the [sN] is enough.\n"
+        "   Cite a source once per paragraph. Every NUMBER carries its [sN] from a\n"
+        "   captured source -- never an unsourced figure, not even from your own work\n"
+        "   (house_style.md section 4). A judgment of yours needs no label and no\n"
+        "   citation: a sentence without [sN] is read as yours.\n"
         "\n"
-        "   BODY CONSTRUCTS (this blog renders as a two-column documentation surface, not\n"
-        "   a flat column; use a construct ONLY where the content earns it -- never to\n"
-        "   look structured, and never fabricate a callout, a row, or a verdict to fill a\n"
-        "   shape). Detailed in house_style.md section 5:\n"
-        "   - SECTIONS: write the section headers as '## ' (depth-2) headings -- they\n"
-        "     label the sticky table-of-contents rail, so name real section titles (a\n"
-        "     short briefing may legitimately have none and read as one column).\n"
-        "   - CALLOUTS: a blockquote whose FIRST line is a GitHub-alert marker alone --\n"
+        "   SHAPE: the argument decides the sections, never a template (house_style.md\n"
+        "   section 5). '## ' (depth-2) headings label the contents rail; write them for\n"
+        "   THIS piece and reuse none from earlier pieces (the style gate blocks a\n"
+        "   heading that recent publications already used). A short briefing may have no\n"
+        "   heading at all. Most pieces are prose and code and need nothing else. The\n"
+        "   renderer also understands the constructs below; each belongs in a piece only\n"
+        "   when the content has that shape, and no piece needs one:\n"
+        "   - CALLOUT: a blockquote whose FIRST line is a GitHub-alert marker alone --\n"
         "     '> [!NOTE]', '> [!TIP]', '> [!IMPORTANT]', '> [!WARNING]', '> [!CAUTION]' --\n"
-        "     with the following '> ' lines as its body, to lift a genuine caveat,\n"
-        "     pitfall, or key takeaway out of the running prose. The markers stay in\n"
-        "     ENGLISH in both languages (the renderer keys on them); the body is in the\n"
-        "     article's language. Do not wrap a load-bearing cited claim out of the main\n"
-        "     argument into a callout.\n"
+        "     then '> ' body lines, for a real caveat the reader must not miss. Markers\n"
+        "     stay in ENGLISH in both languages; the body is in the article's language.\n"
         "   - VERDICT PAIR: a '> [!CONFIRMED]' blockquote IMMEDIATELY followed (one blank\n"
-        "     line) by a '> [!INFERRED]' blockquote renders as a side-by-side\n"
-        "     evidence-vs-inference card. Use it where you separate what a source\n"
-        "     ESTABLISHES from what you INFER. The CONFIRMED card states the sourced fact\n"
-        "     and carries its [sN]; the INFERRED card is your practitioner judgment over\n"
-        "     already-cited facts and is SOURCE-FREE BY CONSTRUCTION -- it carries NO [sN]\n"
-        "     and is NEVER a claim->source-map entry (it is marked opinion, house_style.md\n"
-        "     section 1, not an uncited claim). Never cite a source to dress up an\n"
-        "     inference; the grounding gate blocks a [sN] that is not in the map.\n"
-        "   - TABLES: a GFM table whose alignment row is ASCII hyphens (e.g. '---:' for\n"
-        "     right, ':--:' for center), for a genuine multi-dimension comparison (a\n"
-        "     trade-off matrix, a what-each-catches grid); not for a list two sentences\n"
-        "     handle better.\n"
+        "     line) by a '> [!INFERRED]' one renders as an evidence-vs-inference card,\n"
+        "     for the one place where that split IS the point of the piece. CONFIRMED\n"
+        "     carries its [sN]; INFERRED is SOURCE-FREE BY CONSTRUCTION -- no [sN], and\n"
+        "     never a claim->source-map entry.\n"
+        "   - TABLE: a GFM table (ASCII-hyphen alignment row, e.g. '---:' right, ':--:'\n"
+        "     center) for a comparison across several dimensions, not for a list two\n"
+        "     sentences handle.\n"
         "   PLACEMENT + PARITY: the article's FIRST block is always the lead paragraph\n"
         "   (the dek is derived from it), so a construct NEVER opens the body -- it sits\n"
         "   inside a section, after the lead. Inside any callout body or table cell the\n"
@@ -158,15 +151,13 @@ def _draft_section(repo_root: Path, run_dir: Path) -> str:
         "   accents). FR and EN are parallel: author the SAME constructs in both languages,\n"
         "   and any [sN] a construct adds must appear in BOTH (the review gate enforces an\n"
         "   identical cited-source set across the pair).\n"
-        "   LENGTH + DEPTH (category-aware; length must be EARNED by substance, never\n"
-        "   padding): an essay or explainer is substantial -- typically 1200-1800 words\n"
-        "   across several sections that develop the argument with real depth; a briefing\n"
-        "   is tighter -- typically 500-800 words. Whatever the length, the piece MUST\n"
-        "   carry: a genuinely contestable thesis; at least one steelmanned\n"
-        "   counter-position you then ANSWER (state the strongest case against your take,\n"
-        "   fairly, before refuting it); concrete mechanisms, commands, and at least one\n"
-        "   named failure mode; and every load-bearing number cited [sN]. Multiple\n"
-        "   substantive sections, not one block padded to a count.\n"
+        "   LENGTH + DEPTH (category-aware; length is EARNED by substance, never\n"
+        "   padding): an essay or explainer typically runs 1200-1800 words; a briefing\n"
+        "   500-800. Whatever the length, the piece carries a contestable thesis,\n"
+        "   concrete mechanisms or commands, at least one named failure mode, and every\n"
+        "   load-bearing number cited [sN]. It also meets the strongest objection to its\n"
+        "   thesis, fairly, at the point in the argument where a reader would raise it;\n"
+        "   an objection needs no section of its own.\n"
         "\n"
         "   LESSON MODE -- applies if and only if the brief's chosen_topic_id starts\n"
         "   with 'lesson-' (a no-news day; the research stage pulled the next entry\n"
@@ -224,43 +215,55 @@ def _review_section(repo_root: Path, run_dir: Path) -> str:
     )
 
 
-def _humanize_section(
-    repo_root: Path, run_dir: Path, *, max_humanize_rounds: int, style_auditor: str
-) -> str:
+def _humanize_section(repo_root: Path, run_dir: Path, *, max_humanize_rounds: int) -> str:
+    """The voice step: deterministic voice rules, then a reader judge per language.
+
+    ``build_reader_judge_dispatch`` is imported LAZILY (keep this module import-light) --
+    mirrors ``_editorial_section``.
+    """
+    from ..voice.judge import build_reader_judge_dispatch  # lazy: keep prompts import-light
+
     p = _draft_paths(run_dir)
-    house_style = repo_root / "pipeline" / "house_style.md"
     scan_fr = _cmd(repo_root, f"pipeline.stages.humanize scan {p['draft_fr']}")
     scan_en = _cmd(repo_root, f"pipeline.stages.humanize scan {p['draft_en']}")
+    rules_fr = _cmd(
+        repo_root, f"pipeline.voice.rules check {p['draft_fr']} --collection articles --lang fr"
+    )
+    rules_en = _cmd(
+        repo_root, f"pipeline.voice.rules check {p['draft_en']} --collection articles --lang en"
+    )
     verdict_fr = _cmd(repo_root, f"pipeline.stages.humanize verdict {p['style_fr']}")
     verdict_en = _cmd(repo_root, f"pipeline.stages.humanize verdict {p['style_en']}")
+    judges = "".join(
+        f"   READER JUDGE ({lang}):\n"
+        + build_reader_judge_dispatch(
+            repo_root=repo_root,
+            text_desc=f"the {lang} draft at {p[f'draft_{lang}']} as a finished post",
+            out_path=p[f"style_{lang}"],
+            lang=lang,
+        )
+        for lang in ("fr", "en")
+    )
     return (
-        "5. HUMANIZE each language draft (role 4b) -- auditor != editor; keeping the\n"
-        "   judge and the editor as separate agents is what gives the gate teeth:\n"
-        f"   - Invoke the global {style_auditor} sub-agent as AUDITOR ONLY: it flags\n"
-        "     AI-tells and off-voice prose and suggests fixes; it does not rewrite.\n"
-        "     Hand it a context label and point it at the house style so it does not\n"
-        "     stall asking for context:\n"
-        '       context: "personal practitioner AI-engineering blog post; no emoji;\n'
-        "       no em-dashes (U+2014, the long dash, banned outright).\n"
-        "       voice per pipeline/house_style.md. Flag specifically: any em-dash; flat\n"
-        "       definitional or textbook leads (X is/does Y openers, field-describing\n"
-        "       intros); a\n"
-        "       missing opinionated stance (neutral explainer prose with no take); the\n"
-        "       absence of a concrete number, command, or named failure mode in the\n"
-        "       argument; and, for the FR draft, French that reads like a translation of\n"
-        '       English (calqued clause order, literal idioms like un defaut robuste)."\n'
-        f"       (also point it at {house_style})\n"
-        f"     Save its JSON output to:\n"
-        f"       {p['style_fr']}\n"
-        f"       {p['style_en']}\n"
-        "   - If a draft's verdict is not 'clean': run a separate revise step (it applies\n"
-        "     only the suggested_fix edits, preserving meaning + citations), then\n"
-        f"     re-invoke {style_auditor} to re-check -- up to {max_humanize_rounds} rounds\n"
-        "     (OQ-14b); do not let the same agent both rewrite and judge.\n"
-        "   - Then BOTH the no emoji hard gate and the clean confirmation must pass per\n"
-        "     language:\n"
+        "5. VOICE (role 4b) -- the piece must read as written by a person. Two checks per\n"
+        "   language, in this order.\n"
+        "   DETERMINISTIC RULES first (title shape, opinion-marker and attribution\n"
+        "   counts, a citation repeated inside a paragraph, a heading recent pieces\n"
+        "   already used, no emoji, no em-dash). Fix the draft until all four print OK:\n"
         f"       {scan_fr}\n"
         f"       {scan_en}\n"
+        f"       {rules_fr}\n"
+        f"       {rules_en}\n"
+        "   A rule is met by writing the sentence a person would have written, never by\n"
+        "   swapping the counted word for a synonym.\n"
+        + judges
+        + "   FOR EITHER LANGUAGE, when a verdict is not 'clean': run a separate revise step\n"
+        "   (it rewrites the flagged passages in the author's voice, keeping every fact\n"
+        "   and citation), re-run the deterministic rules, then dispatch a NEW reader\n"
+        f"   judge for that language -- up to {max_humanize_rounds} rounds. The judge's last\n"
+        "   verdict stands; never argue a flag away, and never let one agent both rewrite\n"
+        "   and judge.\n"
+        "   Then the clean confirmation must pass for both languages:\n"
         f"       {verdict_fr}\n"
         f"       {verdict_en}\n"
     )
@@ -273,14 +276,14 @@ def _factcheck_section(repo_root: Path, run_dir: Path) -> str:
     the subscription pool, exercisable only in a real run. The shipped OFFLINE gate's
     teeth are structural provenance + the findings PARSER (pipeline/gate/factcheck.py); a
     ``factcheck-{lang}.json`` fixture stands in for a sub-agent run in CI, as
-    ``style_findings.*`` stands in for the ``style-auditor``. [MEM: m4-gate-contract]
+    ``style-{lang}.json`` stands in for the reader judge. [MEM: m4-gate-contract]
     """
     p = _draft_paths(run_dir)
     factcheck_fr = _cmd(repo_root, f"pipeline.gate.factcheck --run-dir {run_dir} --lang fr")
     factcheck_en = _cmd(repo_root, f"pipeline.gate.factcheck --run-dir {run_dir} --lang en")
     return (
         "6. FACT-CHECK every load-bearing claim (role 4 / FR-C1) -- judge != author, the\n"
-        "   same separation the humanize step gets from the auditor. Do NOT grade your own\n"
+        "   same separation the voice step gets from the reader judge. Do NOT grade your own\n"
         "   claims: a self-graded check would rubber-stamp every claim and the gate would\n"
         "   verify nothing.\n"
         "   - Dispatch a separate sub-agent (a fresh general-purpose Task with clean\n"
@@ -422,7 +425,6 @@ def build_draft_prompt(
     repo_root: Path,
     run_dir: Path,
     max_humanize_rounds: int | None = None,
-    style_auditor: str = "style-auditor",
 ) -> str:
     """Build the single draft+review+humanize instruction (pure function of its inputs).
 
@@ -445,12 +447,7 @@ def build_draft_prompt(
         + "\n"
         + _review_section(repo_root, run_dir)
         + "\n"
-        + _humanize_section(
-            repo_root,
-            run_dir,
-            max_humanize_rounds=max_humanize_rounds,
-            style_auditor=style_auditor,
-        )
+        + _humanize_section(repo_root, run_dir, max_humanize_rounds=max_humanize_rounds)
         + "\n"
         + _factcheck_section(repo_root, run_dir)
         + "\n"
@@ -465,7 +462,8 @@ def build_draft_prompt(
         "Nine gates BLOCK this task (publish never runs while draft is blocked): the six\n"
         "per-language M-4 gates -- factcheck-fr, factcheck-en, grounding-fr, grounding-en,\n"
         "style-fr, style-en (fact-check provenance + supported verdict; source-grounding\n"
-        "citations + reachable sources; style no-emoji + 'clean') -- plus editorial-quality\n"
+        "citations + reachable sources; style = the voice rules + a 'clean' reader-judge\n"
+        "verdict) -- plus editorial-quality\n"
         "(G3, a fresh judge on the EN draft: non-obvious / sound structure / earns its\n"
         "length), source-quality (G2, a fresh judge on the cited source SET: primary vs\n"
         "secondary / authority / independent corroboration), and difficulty-rating (the\n"
@@ -475,24 +473,28 @@ def build_draft_prompt(
 
 
 def build_revise_prompt(*, repo_root: Path, run_dir: Path, lang: str) -> str:
-    """Build the SEPARATE revise-step instruction for one language (auditor != editor)."""
+    """Build the SEPARATE revise-step instruction for one language (judge != editor)."""
     repo_root = Path(repo_root)
     run_dir = Path(run_dir)
     draft_path = run_dir / "plans" / "task-draft" / f"draft-{lang}.md"
     style_path = run_dir / "plans" / "task-draft" / f"style-{lang}.json"
+    house_style = repo_root / "pipeline" / "house_style.md"
     return (
-        f"STAGE: Revise ({lang}) -- apply the style-auditor's suggested fixes only.\n"
+        f"STAGE: Revise ({lang}) -- rewrite the passages the reader judge flagged.\n"
         "\n"
         f"You run INSIDE the repo at repo_root: {repo_root}\n"
         "\n"
         f"1. READ the draft: {draft_path}\n"
-        f"2. READ the style findings: {style_path}\n"
-        "3. APPLY ONLY the suggested_fix edits from each issue, minimally -- preserve\n"
-        "   meaning and every citation. Prefer deleting AI-tell filler over rewriting.\n"
-        f"4. WRITE the revised draft back to: {draft_path}\n"
+        f"2. READ the reader judge's findings: {style_path}\n"
+        f"3. READ the house style: {house_style}\n"
+        "4. For each issue, rewrite the flagged passage the way the author would say it\n"
+        "   to a colleague. Each suggested_fix describes what to change; the wording is\n"
+        "   yours. Keep every fact, number and citation; touch nothing that was not\n"
+        "   flagged. When a passage only pads, delete it.\n"
+        f"5. WRITE the revised draft back to: {draft_path}\n"
         "\n"
-        "Constraint: do not re-audit the draft yourself -- the style-auditor re-checks\n"
-        "separately (auditor != editor is what gives the gate teeth). Use no emojis\n"
+        "Constraint: do not re-audit the draft yourself -- a new reader judge re-checks\n"
+        "separately (judge != editor is what gives the gate teeth). Use no emojis\n"
         "anywhere (D-007).\n"
     )
 

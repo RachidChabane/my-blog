@@ -72,8 +72,8 @@ class LiveSpec:
     ``adversarial_artifacts`` are GENUINELY defective and DO NOT include the findings file:
     a fresh judge handed these must independently produce ``produces`` with a blocking
     verdict. ``expect_contains`` is the live assertion's substrings -- looser than the
-    deterministic ones where the exact verdict word can vary (a real style-auditor may say
-    'suspicious' or 'revision_needed'; both block)."""
+    deterministic ones where the exact verdict word can vary (a real reader judge may word
+    its verdict differently; any non-clean verdict blocks)."""
 
     produces: str
     adversarial_artifacts: dict[str, str]

@@ -47,3 +47,7 @@ run = "pnpm probe:avatar"
 [tasks.launch-check]
 description = "Pre-launch gate checks"
 run = "pnpm launch-check"
+
+[tasks.voice-refs]
+description = "Download the reader judge's voice reference posts (pipeline/voice/cache)"
+run = "pnpm voice:refs"

@@ -21,8 +21,10 @@ exit-code mapping, and that the fake writes the sentinel at the correct
 from __future__ import annotations
 
 import copy
+import json
 import os
 import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol
@@ -123,6 +125,39 @@ class SlateDriver(Protocol):
         ...
 
 
+# Run sessions neither load nor write Claude Code auto memory: a run is driven by the
+# prompts, the house style and the gates only. Two carriers, because the env var reaches a
+# session only when cpe's tmux server is started by this process, while the settings file
+# is read by every session whose cwd is the run dir.
+AUTO_MEMORY_DISABLE_ENV = "CLAUDE_CODE_DISABLE_AUTO_MEMORY"
+AUTO_MEMORY_DISABLE_VALUE = "1"
+RUN_SETTINGS_RELPATH = Path(".claude") / "settings.json"
+RUN_SETTINGS = {"autoMemoryEnabled": False}
+
+
+PATH_ENV = "PATH"
+
+
+def interpreter_first_path(path: str) -> str:
+    """``path`` with this interpreter's directory first.
+
+    Every ``python3`` a run shells out to (the gate commands in invariants.yaml, the
+    stage CLIs named in the prompts) then resolves to the interpreter that runs the
+    pipeline and carries its dependencies, whatever ``python3`` means elsewhere on PATH.
+    """
+    own_dir = str(Path(sys.executable).parent)
+    rest = [entry for entry in path.split(os.pathsep) if entry and entry != own_dir]
+    return os.pathsep.join([own_dir, *rest])
+
+
+def write_run_settings(run_dir: Path) -> Path:
+    """Write the per-run Claude Code project settings (auto memory off)."""
+    path = run_dir / RUN_SETTINGS_RELPATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(RUN_SETTINGS, indent=2) + "\n", encoding="utf-8")
+    return path
+
+
 class CpeLoopDriver:
     """Production driver — wraps ``claude-plan-execute-loop`` (NFR-8 auto-resume).
 
@@ -143,6 +178,7 @@ class CpeLoopDriver:
                 "auto-resume requires the loop wrapper, not the bare runner."
             )
         argv = [
+            sys.executable,                              # cpe runs on THIS interpreter
             self.config.loop_bin,
             "--dir", str(slate.run_dir.resolve()),       # cwd = run_dir (contract)
             "--tasks", str(slate.tasks_path.resolve()),  # absolute (sentinel match)
@@ -150,7 +186,12 @@ class CpeLoopDriver:
         ]
         if self.config.skip_permissions:
             argv.append("--skip-permissions")
-        env = {**os.environ, CPE_BACKEND_ENV: self.config.claude_backend}
+        env = {
+            **os.environ,
+            CPE_BACKEND_ENV: self.config.claude_backend,
+            AUTO_MEMORY_DISABLE_ENV: AUTO_MEMORY_DISABLE_VALUE,
+            PATH_ENV: interpreter_first_path(os.environ.get(PATH_ENV, "")),
+        }
         # `resume` does not change argv: cpe skips done/blocked tasks via
         # state.json (runner._is_eligible). The loop wrapper handles the
         # usage-limit resume internally; the harness's own resume (a fresh
@@ -264,6 +305,7 @@ def assemble_slate(
     )
 
     task_ids = _topo_ids(raw["tasks"])
+    write_run_settings(run_dir)
 
     # Seed cpe state with the sticky slate_id (cpe `_resolve_slate_id` returns
     # the cached value first), giving drivers a live state file to update.
@@ -465,6 +507,10 @@ __all__ = [
     "RunResult",
     "SlateDriver",
     "CpeLoopDriver",
+    "AUTO_MEMORY_DISABLE_ENV",
+    "RUN_SETTINGS",
+    "interpreter_first_path",
+    "write_run_settings",
     "validate_slate",
     "assemble_slate",
     "load_slate",

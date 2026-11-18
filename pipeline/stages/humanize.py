@@ -1,17 +1,20 @@
 """Humanize stage — style-findings parser + the deterministic no-emoji gate.
 
 The humanize step (writing-flow.md section 5, role 4b) is an AGENT loop, not a Python
-orchestrator: the global ``style-auditor`` sub-agent FLAGS AI-tells and off-voice prose
-(it does not rewrite), a SEPARATE revise agent applies the suggested fixes, and the
-auditor re-checks -- up to ``MAX_HUMANIZE_ROUNDS``. That loop lives in the draft prompt
+orchestrator: the deterministic voice rules (``pipeline/voice/rules.py``) and a fresh
+reader-judge sub-agent (``pipeline/voice/judge.py``) FLAG prose a reader would not take
+for a person's (they do not rewrite), a SEPARATE revise agent applies the fixes, and the
+checks run again -- up to ``MAX_HUMANIZE_ROUNDS``. That loop lives in the draft prompt
 (``pipeline/prompts/draft.py``); see the plan section 2.1 for why it is prompt-encoded
 rather than backed by a fake seam.
 
 This module owns the DETERMINISTIC, testable parts the agent shells out to (and that
 task 26's blocking style gate reuses):
 
-- ``parse_style_findings`` / ``style_passes`` consume the REAL ``style-auditor`` JSON
-  shape (``~/.claude/agents/style-auditor.md`` output block); only ``clean`` passes.
+- ``parse_style_findings`` / ``style_passes`` / ``style_findings_problems`` consume the
+  reader judge's findings JSON (``verdict`` + ``issues[]``); only ``clean`` passes. The
+  essay style gate and the radar publish stage both re-check through
+  ``style_findings_problems``.
 - ``find_emoji`` / ``house_style_violations`` are the no-emoji hard rule (D-007).
 
 Emoji scope (plan section 2.5, [MEM: emoji-detection-regex]): stdlib ``re`` has no
@@ -19,8 +22,7 @@ Emoji scope (plan section 2.5, [MEM: emoji-detection-regex]): stdlib ``re`` has 
 uses a single astral-plane range. It guarantees ZERO false positives on text symbols
 like (c) (r) (tm) -- the memory's hard requirement -- at the cost of recall: BMP emoji
 (default- or VS16-presentation, e.g. U+2705 or U+26A0) are out of deterministic scope
-and are caught by the fuzzy ``style-auditor``, which writing-flow section 5 designates
-as the primary no-emoji enforcement. This scan is the fast backstop.
+and are caught by the reader judge. This scan is the fast backstop.
 """
 from __future__ import annotations
 
@@ -35,17 +37,17 @@ from ..contracts.claim_source_map import ContractError
 # OQ-14b PLACEHOLDER — the number of humanize flag->revise->recheck rounds before the
 # draft stops trying. Independent of cpe's caps.max_review_rounds (which bounds the
 # plan-review loop). Embedded in the draft prompt (pipeline/prompts/draft.py).
-MAX_HUMANIZE_ROUNDS = 2
+MAX_HUMANIZE_ROUNDS = 3
 
 # Astral-plane emoji range (plan section 2.5). Covers emoticons, pictographs,
 # transport, supplemental, extended-A and regional indicators. Single-char class so
 # findall yields one entry per emoji. Deliberately excludes BMP symbols (zero-FP).
 _EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF]")
 
-# Em-dash hard rule (D-007, house_style.md section 3): the em-dash (U+2014) is banned
+# Em-dash hard rule (D-007, house_style.md section 7): the em-dash (U+2014) is banned
 # outright in prose, headings, and frontmatter. A single BMP codepoint -> FULL
 # deterministic recall, ZERO false positives (hyphen U+002D and en-dash U+2013 are
-# NOT flagged). Backstop to the style-auditor's fuzzy em_dash flag.
+# NOT flagged).
 _EM_DASH_RE = re.compile("—")
 
 # FR diacritics hard rule (D-007, house_style.md section 6): deaccented word forms
@@ -93,17 +95,17 @@ _FM_TITLE_RE = re.compile(r"^title:\s*(.+?)\s*$", re.MULTILINE)
 _URL_RE = re.compile(r"https?://\S+")
 _MD_LINK_TARGET_RE = re.compile(r"\]\([^)]*\)")
 
-# The style-auditor's verdict vocabulary (distinct from the editorial APPROVED /
+# The reader judge's verdict vocabulary (distinct from the editorial APPROVED /
 # NEEDS_REVISION in review.py — never conflate them; plan section 2.3).
-_STYLE_VERDICTS = ("clean", "suspicious", "revision_needed")
+_STYLE_VERDICTS = ("clean", "revision_needed")
 
 
 @dataclass(frozen=True)
 class StyleIssue:
-    """One flagged AI-tell from the style-auditor (its ``issues[]`` entry shape)."""
+    """One passage the reader judge flagged (its ``issues[]`` entry shape)."""
 
     phrase: str
-    pattern: str  # the style-auditor enum: stock_phrase | em_dash | hedging | ...
+    pattern: str  # what gives the passage away, in a few words
     why_ai: str
     suggested_fix: str
 
@@ -118,9 +120,9 @@ class StyleIssue:
 
 @dataclass(frozen=True)
 class StyleReport:
-    """A parsed ``style-auditor`` finding set. Only ``verdict == 'clean'`` passes."""
+    """A parsed reader-judge finding set. Only ``verdict == 'clean'`` passes."""
 
-    verdict: str  # clean | suspicious | revision_needed
+    verdict: str  # clean | revision_needed
     issues: list[StyleIssue] = field(default_factory=list)
     context: str = ""
     confidence: str = ""
@@ -149,7 +151,7 @@ def _issue_from_dict(data: object) -> StyleIssue:
 
 
 def parse_style_findings(data: dict | str) -> StyleReport:
-    """Parse the raw style-auditor JSON (str -> ``json.loads``) into a ``StyleReport``.
+    """Parse the raw reader-judge JSON (str -> ``json.loads``) into a ``StyleReport``.
 
     Raises ``ContractError`` on invalid JSON, a non-object payload, or an unknown
     ``verdict``. Optional fields (``context`` / ``confidence`` / ``summary`` and each
@@ -180,8 +182,22 @@ def parse_style_findings(data: dict | str) -> StyleReport:
 
 
 def style_passes(report: StyleReport) -> bool:
-    """Only a ``clean`` verdict passes; ``suspicious`` / ``revision_needed`` fail."""
+    """Only a ``clean`` verdict passes; ``revision_needed`` fails."""
     return report.verdict == "clean"
+
+
+def style_findings_problems(findings_text: str, lang: str) -> list[str]:
+    """Problems with one language's findings JSON text (empty == clean): invalid JSON or
+    an unknown verdict, or a non-clean verdict followed by one line per flagged issue."""
+    try:
+        report = parse_style_findings(findings_text)
+    except ContractError as exc:
+        return [f"{lang}: invalid style findings: {exc}"]
+    if style_passes(report):
+        return []
+    problems = [f"{lang}: style verdict is {report.verdict!r} (not 'clean')"]
+    problems.extend(f"  [{issue.pattern}] {issue.phrase}" for issue in report.issues)
+    return problems
 
 
 def find_emoji(text: str) -> list[str]:
@@ -215,7 +231,7 @@ def fr_diacritic_violations(text: str) -> list[str]:
     """FR-only deterministic hard rule (D-007): flag deaccented word forms that are
     never valid French (and never English), so a dropped-accent draft BLOCKs. Scans
     the title + body prose only (see ``_fr_scannable``); empty == clean. Backstop to
-    the draft-prompt instruction and the style-auditor."""
+    the draft-prompt instruction and the reader judge."""
     problems: list[str] = []
     seen: set[str] = set()
     for match in _FR_DEACCENTED_RE.finditer(_fr_scannable(text)):
@@ -235,7 +251,7 @@ def house_style_violations(text: str) -> list[str]:
 
     The lang-agnostic hard rules (D-007): one problem per DISTINCT emoji (no-emoji)
     and one per DISTINCT em-dash U+2014 (no-em-dash). Fuzzy voice / AI-tell judgments
-    are the style-auditor's job, not this scan's; FR diacritics are a separate,
+    are the reader judge's job, not this scan's; FR diacritics are a separate,
     lang-scoped check (``fr_diacritic_violations``).
     """
     problems: list[str] = []
@@ -304,7 +320,7 @@ def _main(argv: list[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p_verdict = sub.add_parser(
-        "verdict", help="parse a style-auditor findings JSON; exit 0 iff 'clean'"
+        "verdict", help="parse a reader-judge findings JSON; exit 0 iff 'clean'"
     )
     p_verdict.add_argument("path", help="path to a style findings JSON")
 
@@ -329,6 +345,7 @@ __all__ = [
     "StyleReport",
     "parse_style_findings",
     "style_passes",
+    "style_findings_problems",
     "find_emoji",
     "find_em_dash",
     "fr_diacritic_violations",

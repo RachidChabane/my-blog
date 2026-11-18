@@ -14,10 +14,6 @@ from pathlib import Path
 
 from ..config import PipelineConfig
 
-# Only the load-bearing opening + closing sections are required; the middle is discretionary.
-_FR_REQUIRED = ("## Ce qui change", "## Impact pour une équipe")
-_EN_REQUIRED = ("## What changed", "## Impact on your team")
-
 
 def build_radar_research_prompt(
     *,
@@ -87,74 +83,124 @@ def build_radar_research_prompt(
     )
 
 
+def _radar_paths(run_dir: Path) -> dict[str, Path]:
+    draft_dir = run_dir / "plans" / "task-draft"
+    return {
+        "candidates": run_dir / "plans" / "task-research" / "radar-candidates.json",
+        "entry": draft_dir / "entry.json",
+        "style_fr": draft_dir / "style-fr.json",
+        "style_en": draft_dir / "style-en.json",
+    }
+
+
+def _radar_cmd(repo_root: Path, run_dir: Path, verb: str) -> str:
+    return (
+        f"PYTHONPATH={repo_root} python3 -m pipeline.radar.stages {verb}"
+        f" --run-dir {run_dir} --repo-root {repo_root}"
+    )
+
+
 def build_radar_draft_prompt(*, repo_root: Path, run_dir: Path) -> str:
+    # lazy: keep prompts import-light
+    from ..stages.humanize import MAX_HUMANIZE_ROUNDS
+    from ..voice.judge import build_reader_judge_dispatch
+
     repo_root, run_dir = Path(repo_root), Path(run_dir)
-    candidates = run_dir / "plans" / "task-research" / "radar-candidates.json"
-    entry = run_dir / "plans" / "task-draft" / "entry.json"
+    p = _radar_paths(run_dir)
+    house_style = repo_root / "pipeline" / "house_style.md"
+    check = _radar_cmd(repo_root, run_dir, "check")
+    judges = "".join(
+        f"   READER JUDGE ({lang}):\n"
+        + build_reader_judge_dispatch(
+            repo_root=repo_root,
+            text_desc=(
+                f"the title_{lang}, summary_{lang} and body_{lang} fields of {p['entry']} "
+                "as a finished short post"
+            ),
+            out_path=p[f"style_{lang}"],
+            lang=lang,
+        )
+        for lang in ("fr", "en")
+    )
     return (
         "STAGE: Radar draft (bilingual FR+EN).\n\n"
         f"You run with cwd = the run dir, INSIDE the repo at repo_root: {repo_root}\n\n"
-        f"1. READ the chosen candidate at: {candidates} (use the top-ranked one).\n\n"
-        "2. WRITE a bilingual radar brief. Only TWO H2 sections are REQUIRED, and they\n"
-        "   must open and close the body:\n"
-        f"   FR: '{_FR_REQUIRED[0]}' first, '{_FR_REQUIRED[1]}' last.\n"
-        f"   EN: '{_EN_REQUIRED[0]}' first, '{_EN_REQUIRED[1]}' last.\n"
-        "   Everything BETWEEN them is editorial discretion - add what THIS brief needs to\n"
-        "   land, nothing boilerplate. Tools to reach for, ONLY when they genuinely help:\n"
-        "   - A DIAGRAM, when a flow / round-trip / relationship is the crux (e.g. a request\n"
-        "     sequence). Author it as INLINE SVG (the site renders raw SVG; no library, no\n"
-        "     client JS). Keep it simple and theme it with the site tokens via inline style\n"
-        "     so it adapts to light/dark. Template:\n"
+        f"1. READ the chosen candidate at: {p['candidates']} (use the top-ranked one)\n"
+        f"   and the house style at: {house_style}\n\n"
+        "2. WRITE a bilingual radar brief: a short post from one engineer to others\n"
+        "   about something that shipped, ~250-450 words per language, the same brief in\n"
+        "   both. No emojis, no em-dashes.\n"
+        "   TITLE: what happened, in one clause a person would say aloud (house_style.md\n"
+        "   section 2). One fact. The second fact, the caveat and the number go in the\n"
+        "   body.\n"
+        "   SUMMARY: one or two sentences saying what shipped and why it matters to\n"
+        "   someone who runs this in production. It is not a table of contents of the\n"
+        "   body and it does not end on a labelled recommendation.\n"
+        "   BODY: say what changed and when (real date) in the first sentences, then\n"
+        "   what you make of it and what a team should do about it. The reader must\n"
+        "   leave with something the release notes do not say: whether it is worth\n"
+        "   adopting, how it differs from the previous version or a rival, the migration\n"
+        "   trap, what the announcement leaves out, or what to do now. Name a specific\n"
+        "   decision, risk or deadline; 'teams should evaluate this' is not one. If the\n"
+        "   whole brief could be rebuilt from the release notes, it is not worth\n"
+        "   publishing.\n"
+        "   SHAPE: the content decides it. A brief this short often needs no heading;\n"
+        "   when one helps, write it for this brief and reuse none from earlier briefs\n"
+        "   (the publish stage blocks a heading recent briefs already used). The brief\n"
+        "   has no fixed sections. Reach for these only when the content has that shape:\n"
+        "   - A CODE EXAMPLE (a FENCED CODE BLOCK) when a real request, config or command\n"
+        "     helps an engineer act: real field names from the sources, never invented.\n"
+        "   - A MARKDOWN TABLE for facts that are tabular by nature (a pricing or\n"
+        "     capability matrix); never a table inside a plaintext code fence.\n"
+        "   - A '> [!IMPORTANT]' callout for the one caveat the reader must not miss.\n"
+        "   - A DIAGRAM when a flow or round-trip is the crux, as INLINE SVG themed with\n"
+        "     the site tokens via inline style so it adapts to light/dark:\n"
         '       <figure class="rc-diagram"><svg viewBox="0 0 W H" role="img"\n'
         '         aria-label="...">...lines/rects/text using style="stroke: var(--accent)",\n'
         '         style="fill: var(--fg)", font-family via var(--font-mono)...</svg>\n'
         "         <figcaption>one-line caption</figcaption></figure>\n"
-        "     Do NOT add a diagram just to have one. Most briefs need none.\n"
-        "   - A CODE EXAMPLE, when a real snippet (request, config, CLI) helps an engineer\n"
-        "     act: a FENCED CODE BLOCK with real field names from the sources, never invented.\n"
-        "   - A real MARKDOWN TABLE for inherently tabular facts (pricing/capability matrix);\n"
-        "     never cram a table into a plaintext code fence.\n"
-        "   - '> [!IMPORTANT]' callouts for the load-bearing caveat.\n"
-        "   Use your own H2 headings for any middle sections (e.g. '## In practice',\n"
-        "   '## The round-trip'). 'What changed' = 2-4 sentences, what is new and WHEN (real\n"
-        "   date). 'Impact' = who cares + what to do (deadline/risk/migration).\n"
-        "   ~250-450 words/language. Same brief in both languages. No emojis, no em-dashes.\n\n"
-        "   REFLECT, DO NOT PARAPHRASE. A radar brief is short, but it is not a press\n"
-        "   release in your own words. 'What changed' may state the facts plainly; but the\n"
-        "   middle and 'Impact' must carry a THOUGHT a reader could not get from the\n"
-        "   release notes themselves. Earn the brief by doing at least one of: take a\n"
-        "   stance (is this worth adopting, what is overhyped, what would you actually\n"
-        "   use); connect it to what came before or to a competing option (how it differs\n"
-        "   from the prior version or a rival, what it makes obsolete); surface the\n"
-        "   non-obvious (the hidden cost, the migration trap, the failure mode, what the\n"
-        "   announcement does NOT say); or give a concrete practitioner call (what to do\n"
-        "   now, what to wait on, what to ignore). 'Impact' is never a generic 'teams\n"
-        "   should evaluate this' -- it names a specific decision, risk, or deadline. If\n"
-        "   the whole brief could be reconstructed from the release notes alone, it is not\n"
-        "   yet worth publishing.\n\n"
-        f"3. WRITE the structured entry as JSON to: {entry}\n"
+        "   CITATIONS FOLLOW THE POINT: write your sentence, put the [sN] after the fact\n"
+        "   it rests on, and cite a source once per paragraph. Name a source in the\n"
+        "   prose only when who said it matters, and once. A judgment of yours needs no\n"
+        "   label: a sentence without [sN] is read as yours.\n\n"
+        f"3. WRITE the structured entry as JSON to: {p['entry']}\n"
         "   {translationKey, kind, tags:[..], slug_fr, slug_en, title_fr, title_en,\n"
         "    summary_fr, summary_en, body_fr, body_en, sources:[{label,url,date,excerpt}]}\n"
-        "   (date is the source's publish date as DD-MM-YYYY; >= 2 sources).\n"
+        "   (date is the source's publish date as DD-MM-YYYY; >= 2 sources).\n\n"
+        "4. VOICE -- the brief must read as written by a person. First the deterministic\n"
+        "   rules (structure, title shape, opinion-marker and attribution counts, a\n"
+        "   citation repeated inside a paragraph, a heading recent briefs already used).\n"
+        "   Fix entry.json until this prints OK:\n"
+        f"     {check}\n"
+        "   A rule is met by writing the sentence a person would have written, never by\n"
+        "   swapping the counted word for a synonym.\n"
+        + judges
+        + "   FOR EITHER LANGUAGE, when a verdict is not 'clean': rewrite the flagged\n"
+        "   passages in entry.json in the author's voice (each suggested_fix says what to\n"
+        "   change; the wording is yours; every fact and citation stays), re-run the\n"
+        "   check, then dispatch a NEW reader judge for that language -- up to\n"
+        f"   {MAX_HUMANIZE_ROUNDS} rounds. The judge's last verdict stands; never argue a\n"
+        "   flag away. The publish stage refuses an entry without two 'clean' verdicts.\n"
     )
 
 
 def build_radar_publish_prompt(*, repo_root: Path, run_dir: Path) -> str:
     repo_root, run_dir = Path(repo_root), Path(run_dir)
-    entry = run_dir / "plans" / "task-draft" / "entry.json"
-    cmd = (
-        f"PYTHONPATH={repo_root} python3 -m pipeline.radar.stages publish"
-        f" --run-dir {run_dir} --repo-root {repo_root}"
-    )
+    p = _radar_paths(run_dir)
+    cmd = _radar_cmd(repo_root, run_dir, "publish")
     return (
         "STAGE: Radar publish.\n\n"
         f"You run with cwd = the run dir, INSIDE the repo at repo_root: {repo_root}\n\n"
-        f"The draft wrote the structured entry to {entry}. Publish it (project + validate\n"
-        "BOTH languages + write BOTH or NEITHER into src/content/radar + append the radar\n"
-        "topic memory) by shelling out to the deterministic publish stage:\n\n"
+        f"The draft wrote the structured entry to {p['entry']} and the reader judges\n"
+        f"wrote {p['style_fr'].name} and {p['style_en'].name} beside it. Publish it\n"
+        "(project + validate BOTH languages + write BOTH or NEITHER into\n"
+        "src/content/radar + append the radar topic memory) by shelling out to the\n"
+        "deterministic publish stage:\n\n"
         f"  {cmd}\n\n"
-        "Fix any reported structural problem in entry.json and re-run until it prints the\n"
-        "two published paths. No manual step on this path (D-002).\n"
+        "Fix any reported structural or voice-rule problem in entry.json and re-run\n"
+        "until it prints the two published paths. A reader-judge verdict is never\n"
+        "edited: a missing or non-clean verdict means the draft stage is not done. No\n"
+        "manual step on this path (D-002).\n"
     )
 
 

@@ -15,6 +15,7 @@ from __future__ import annotations
 import dataclasses
 import json
 import shutil
+import sys
 import types
 from pathlib import Path
 
@@ -212,7 +213,30 @@ def test_driver_invokes_loop_wrapper(driver_config, monkeypatch):
     captured = _capture_subprocess(monkeypatch)
     slate = assemble_slate("run-b1", driver_config)
     CpeLoopDriver(driver_config).run_slate(slate, resume=False)
-    assert captured["argv"][0].endswith("claude-plan-execute-loop")
+    assert captured["argv"][0] == sys.executable
+    assert captured["argv"][1].endswith("claude-plan-execute-loop")
+
+
+def test_driver_puts_its_interpreter_first_on_path(driver_config, monkeypatch):
+    own_dir = str(Path(sys.executable).parent)
+    monkeypatch.setenv("PATH", f"/usr/bin:{own_dir}:/bin")
+    captured = _capture_subprocess(monkeypatch)
+    slate = assemble_slate("run-b1p", driver_config)
+    CpeLoopDriver(driver_config).run_slate(slate, resume=False)
+    assert captured["env"]["PATH"].split(":") == [own_dir, "/usr/bin", "/bin"]
+
+
+def test_interpreter_first_path_handles_empty_path():
+    assert runner.interpreter_first_path("") == str(Path(sys.executable).parent)
+
+
+def test_driver_disables_auto_memory_for_run_sessions(driver_config, monkeypatch):
+    captured = _capture_subprocess(monkeypatch)
+    slate = assemble_slate("run-b1m", driver_config)
+    CpeLoopDriver(driver_config).run_slate(slate, resume=False)
+    assert captured["env"][runner.AUTO_MEMORY_DISABLE_ENV] == "1"
+    settings = json.loads((slate.run_dir / runner.RUN_SETTINGS_RELPATH).read_text())
+    assert settings == {"autoMemoryEnabled": False}
 
 
 def test_driver_passes_interactive_and_paths(driver_config, monkeypatch):

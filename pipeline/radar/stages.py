@@ -6,8 +6,8 @@ into the two ``<slug>.<lang>.md`` files matching ``src/content/schemas.ts``
 ``radarFrontmatterSchema``, validates BOTH, then writes BOTH or NEITHER, and appends the
 radar-private topic memory. Unlike the essay publish it carries no claim->source map and
 no judge gates -- a radar brief's integrity rests on the research+adversarial-verify pass
-upstream and this deterministic STRUCTURAL validation (the four mandated sections, kind in
-the enum, >= 1 source, no em-dash, FR/EN parity).
+upstream and this deterministic STRUCTURAL validation (kind in the enum, >= 1 source,
+no em-dash, the voice rules, FR/EN parity).
 
 Two entry sources converge here:
   * the seed BATCH (``from-json``): the content workflow's verified ``entries`` JSON.
@@ -32,23 +32,17 @@ import yaml
 
 from ..memory.topic_memory import TopicMemory, TopicRecord
 from ..stages.publish import content_hash
+from ..voice.judge import reader_verdict_problems
+from ..voice.rules import reused_heading_violations, voice_violations, worn_headings
 from .config import radar_memory_path
 
 RADAR_REL = "src/content/radar"
+DRAFT_REL = Path("plans") / "task-draft"
+ENTRY_FILENAME = "entry.json"
 RADAR_KINDS = ("spec-change", "release", "tool", "benchmark", "security", "research")
 _DDMMYYYY_RE = re.compile(r"^\d{2}-\d{2}-\d{4}$")
 _HTTP_RE = re.compile(r"^https?://", re.IGNORECASE)
 _FRONTMATTER_RE = re.compile(r"\A---[ \t]*\r?\n(.*?)\r?\n---[ \t]*\r?\n?", re.DOTALL)
-
-# The mandated H2 section headers per language. Only the two LOAD-BEARING ones are
-# required ("what changed" + "impact"); everything between them is editorial discretion:
-# a flow diagram (inline SVG) and/or a code example appear ONLY when they genuinely clarify
-# that brief, never systematically. Validated structurally so a malformed brief is caught
-# in Python before the Astro/zod build.
-REQUIRED_SECTIONS = {
-    "fr": ("## Ce qui change", "## Impact pour une équipe"),
-    "en": ("## What changed", "## Impact on your team"),
-}
 
 
 # ---------------------------------------------------------------------------
@@ -186,7 +180,7 @@ def build_radar_article(entry: RadarEntry, lang: str, *, publish_date: str) -> s
 
 
 def validate_radar_published(article_text: str) -> list[str]:
-    """Structural problems against ``radarFrontmatterSchema`` + the section contract."""
+    """Structural problems against ``radarFrontmatterSchema`` + the voice rules 1-4."""
     match = _FRONTMATTER_RE.match(article_text)
     if not match:
         return ["frontmatter: missing or unparseable leading --- fence"]
@@ -234,11 +228,8 @@ def validate_radar_published(article_text: str) -> list[str]:
                 problems.append(f"sources[{i}].date must match DD-MM-YYYY (got {s.get('date')!r})")
     if fm.get("publishState") != "published":
         problems.append(f"publishState must be 'published' (got {fm.get('publishState')!r})")
-    # The four mandated H2 sections for this language (the schema/code/impact promise).
-    if lang in REQUIRED_SECTIONS:
-        for header in REQUIRED_SECTIONS[lang]:
-            if not re.search(rf"(?m)^{re.escape(header)}\s*$", body):
-                problems.append(f"body: missing required section {header!r}")
+    prose = f"{fm.get('summary') or ''}\n\n{body}"
+    problems.extend(voice_violations(title=str(fm.get("title") or ""), body=prose))
     # Owner directive: zero em-dashes anywhere.
     if "—" in article_text:
         problems.append("body/frontmatter must contain no em-dash (U+2014)")
@@ -282,21 +273,30 @@ def _append_radar_memory(entry: RadarEntry, memory_path: Path, *, publish_date: 
         return False
 
 
+def entry_problems(entry: RadarEntry, repo_root: Path, *, publish_date: str) -> list[str]:
+    """Every structural and voice-rule problem of one entry, both languages (empty == ok)."""
+    problems: list[str] = []
+    if not entry.translation_key:
+        problems.append("translationKey is empty")
+    for lang, body in (("fr", entry.body_fr), ("en", entry.body_en)):
+        article = build_radar_article(entry, lang, publish_date=publish_date)
+        problems.extend(f"{lang}: {p}" for p in validate_radar_published(article))
+        worn = worn_headings(repo_root / RADAR_REL, lang)
+        problems.extend(f"{lang}: {p}" for p in reused_heading_violations(body, worn))
+    if entry.slug_fr == entry.slug_en and entry.slug_fr:
+        problems.append("slug_fr and slug_en must differ (distinct localized filenames)")
+    return problems
+
+
 def write_entry(
     entry: RadarEntry, repo_root: Path, *, publish_date: str, memory_path: Path
 ) -> RadarPublishResult:
     """Project + validate BOTH languages + write BOTH or NEITHER + append radar memory."""
-    problems: list[str] = []
-    if not entry.translation_key:
-        problems.append("translationKey is empty")
-    fr_article = build_radar_article(entry, "fr", publish_date=publish_date)
-    en_article = build_radar_article(entry, "en", publish_date=publish_date)
-    problems.extend(f"fr: {p}" for p in validate_radar_published(fr_article))
-    problems.extend(f"en: {p}" for p in validate_radar_published(en_article))
-    if entry.slug_fr == entry.slug_en and entry.slug_fr:
-        problems.append("slug_fr and slug_en must differ (distinct localized filenames)")
+    problems = entry_problems(entry, repo_root, publish_date=publish_date)
     if problems:
         return RadarPublishResult(ok=False, written=[], problems=problems)
+    fr_article = build_radar_article(entry, "fr", publish_date=publish_date)
+    en_article = build_radar_article(entry, "en", publish_date=publish_date)
 
     out_dir = repo_root / RADAR_REL
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -363,20 +363,54 @@ def _cmd_from_json(args) -> int:
     return 0 if ok == len(results) and results else (0 if ok else 1)
 
 
-def _cmd_publish(args) -> int:
-    """Scheduled cpe path: read ``plans/task-draft/entry.json`` and publish it."""
-    publish_date = args.publish_date or _today_ddmmyyyy()
-    entry_path = Path(args.run_dir) / "plans" / "task-draft" / "entry.json"
+def _load_run_entry(run_dir: Path) -> RadarEntry | None:
+    entry_path = run_dir / DRAFT_REL / ENTRY_FILENAME
     try:
-        entry = json.loads(entry_path.read_text(encoding="utf-8"))
-    except OSError as exc:
+        return RadarEntry.from_dict(json.loads(entry_path.read_text(encoding="utf-8")))
+    except (OSError, json.JSONDecodeError) as exc:
         print(f"INVALID: {exc}", file=sys.stderr)
+        return None
+
+
+def reader_judge_problems(run_dir: Path) -> list[str]:
+    """Problems with the two reader-judge verdicts of a run's draft (empty == both clean)."""
+    draft_dir = run_dir / DRAFT_REL
+    problems: list[str] = []
+    for lang in ("fr", "en"):
+        problems.extend(reader_verdict_problems(draft_dir / f"style-{lang}.json", lang))
+    return problems
+
+
+def _cmd_check(args) -> int:
+    """Draft-time self-check: the structural + voice-rule problems of the run's entry."""
+    entry = _load_run_entry(Path(args.run_dir))
+    if entry is None:
         return 1
-    memory_path = Path(args.memory) if args.memory else None
-    results = write_entries(
-        [entry], Path(args.repo_root), publish_date=publish_date, memory_path=memory_path
-    )
-    r = results[0]
+    publish_date = args.publish_date or _today_ddmmyyyy()
+    problems = entry_problems(entry, Path(args.repo_root), publish_date=publish_date)
+    for p in problems:
+        print(p)
+    if problems:
+        return 1
+    print("OK")
+    return 0
+
+
+def _cmd_publish(args) -> int:
+    """Scheduled cpe path: publish the run's entry once both reader judges said clean."""
+    publish_date = args.publish_date or _today_ddmmyyyy()
+    run_dir = Path(args.run_dir)
+    entry = _load_run_entry(run_dir)
+    if entry is None:
+        return 1
+    verdict_problems = reader_judge_problems(run_dir)
+    if verdict_problems:
+        for p in verdict_problems:
+            print(p)
+        return 1
+    repo_root = Path(args.repo_root)
+    memory_path = Path(args.memory) if args.memory else radar_memory_path(repo_root)
+    r = write_entry(entry, repo_root, publish_date=publish_date, memory_path=memory_path)
     if not r.ok:
         for p in r.problems:
             print(p)
@@ -452,6 +486,13 @@ def _main(argv: list[str] | None = None) -> int:
     p_pub.add_argument("--publish-date", default=None)
     p_pub.add_argument("--memory", default=None)
 
+    p_chk = sub.add_parser(
+        "check", help="draft-time: structural + voice-rule problems of the entry"
+    )
+    p_chk.add_argument("--run-dir", required=True)
+    p_chk.add_argument("--repo-root", required=True)
+    p_chk.add_argument("--publish-date", default=None)
+
     p_val = sub.add_parser("validate", help="validate one radar .md file")
     p_val.add_argument("path")
 
@@ -464,6 +505,8 @@ def _main(argv: list[str] | None = None) -> int:
         return _cmd_from_json(args)
     if args.cmd == "publish":
         return _cmd_publish(args)
+    if args.cmd == "check":
+        return _cmd_check(args)
     if args.cmd == "stamp":
         return _cmd_stamp(args)
     return _cmd_validate(args)
@@ -476,9 +519,10 @@ if __name__ == "__main__":
 __all__ = [
     "RADAR_REL",
     "RADAR_KINDS",
-    "REQUIRED_SECTIONS",
     "RadarEntry",
     "RadarPublishResult",
+    "entry_problems",
+    "reader_judge_problems",
     "sanitize_text",
     "clean_source_label",
     "project_sources",

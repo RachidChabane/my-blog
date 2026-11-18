@@ -20,7 +20,7 @@ present-and-FALSE descriptive boolean (e.g. source-quality's ``primary=false`` o
 legitimately sound SECONDARY source) does NOT auto-fail: ``judge_passes`` is
 VERDICT-ONLY. Each gate supplies its own verdict vocabulary + ``pass_verdict`` so the
 four vocabularies (supported|unsupported vs APPROVED|NEEDS_REVISION vs
-clean|suspicious|revision_needed vs each judge's own) are NEVER conflated.
+clean|revision_needed vs each judge's own) are NEVER conflated.
 
 Consumer note: ``item_key`` + ``required_item_fields`` exist for exactly one current
 consumer -- source-quality's ``claims`` list. Argument/editorial/independence are all

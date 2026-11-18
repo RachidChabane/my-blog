@@ -13,6 +13,7 @@
     "build:fonts": "./scripts/build-fonts.sh",
     "reindex": "tsx scripts/reindex.ts",
     "probe:avatar": "tsx scripts/probe-avatar-scope.ts",
+    "voice:refs": "./scripts/fetch-voice-refs.sh",
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run",

@@ -12,8 +12,8 @@ brief's skeleton source ids must all be covered by some claim, and FR and EN mus
 the SAME set (NFR-11 parity).
 
 Two verdict vocabularies exist and are never conflated (plan section 2.3): editorial
-review here is ``APPROVED | NEEDS_REVISION`` (cpe's sentinel); the style audit
-(``humanize.py``) is ``clean | suspicious | revision_needed``.
+review here is ``APPROVED | NEEDS_REVISION`` (cpe's sentinel); the reader-judge style
+verdict (``humanize.py``) is ``clean | revision_needed``.
 """
 from __future__ import annotations
 
