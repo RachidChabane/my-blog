@@ -275,19 +275,22 @@ test.describe('phone', () => {
 });
 
 test.describe('the 3D office', () => {
+  // Software rendering draws a few frames per second: a small view keeps the
+  // camera passage, which advances frame by frame, within the time allowed.
+  test.use({ viewport: { width: 480, height: 320 } });
+
   test('opens from a page and comes back to the page of the nearest stand', async ({
     page,
   }) => {
-    test.setTimeout(90_000);
+    test.setTimeout(300_000);
+    const html = page.locator('html');
     await page.goto('/fr/work/');
     await page.locator('#door').click();
-    await expect(page.locator('html')).toHaveClass(/in3d/, { timeout: 45_000 });
+    await expect(html).toHaveClass(/in3d/, { timeout: 60_000 });
     await expect(page.locator('#w3 canvas')).toBeVisible();
-    await page.waitForTimeout(3_000);
+    await expect(html).not.toHaveClass(/cine/, { timeout: 120_000 });
     await page.locator('#flat').click();
-    await expect(page.locator('html')).not.toHaveClass(/in3d/, {
-      timeout: 20_000,
-    });
+    await expect(html).not.toHaveClass(/in3d/, { timeout: 100_000 });
     await expect(page).toHaveURL(/\/fr\/work\/$/);
     await expect(page.locator('.room h1')).toBeVisible();
   });
