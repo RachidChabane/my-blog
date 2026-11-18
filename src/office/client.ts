@@ -175,6 +175,47 @@ function liveRoom(): void {
     room.classList.toggle('on', n === idx);
     room.classList.toggle('off', n !== idx);
   });
+  const href = pano.querySelectorAll('svg a')[idx]?.getAttribute('href');
+  if (href && (standShown !== null || idx > 0)) void showStand(href);
+}
+
+/** Address of the stand whose texts are under the frieze; null on arrival. */
+let standShown: string | null = null;
+
+/**
+ * On a phone the frieze is swiped one stand at a time: the stand in view becomes
+ * the selected section, and its texts replace what is under the frieze.
+ */
+async function showStand(href: string): Promise<void> {
+  if (href === standShown) return;
+  standShown = href;
+  document.querySelectorAll('#tabs a').forEach((a) => {
+    if (a.getAttribute('href') === href) a.setAttribute('aria-current', 'page');
+    else a.removeAttribute('aria-current');
+  });
+  placeRunner();
+  const under = document.querySelector<HTMLElement>('#main > .wrap');
+  if (!under) return;
+  under.classList.add('leaving');
+  try {
+    const html = await fetch(href).then((r) => r.text());
+    if (standShown !== href) return;
+    const next = new DOMParser()
+      .parseFromString(html, 'text/html')
+      .getElementById('main');
+    if (!next) throw new Error('page');
+    next.querySelector('.room')?.remove();
+    const pano = $('pano');
+    while (pano?.nextSibling) pano.nextSibling.remove();
+    const fresh = document.createDocumentFragment();
+    for (const node of Array.from(next.childNodes))
+      fresh.append(document.importNode(node, true));
+    pano?.after(fresh);
+    words = json<Word[]>('words') ?? [];
+    wordById = new Map(words.map((w) => [w.id, w]));
+  } catch {
+    under.classList.remove('leaving');
+  }
 }
 
 /* --------------------------------------------------------------- reading */
@@ -637,6 +678,7 @@ function mount(): void {
   wordById = new Map(words.map((w) => [w.id, w]));
   reading = json<ReadingData>('reading-data') ?? { citations: [], terms: [] };
   askCount = 0;
+  standShown = null;
   syncLamp();
   placeRunner();
   buildToc();

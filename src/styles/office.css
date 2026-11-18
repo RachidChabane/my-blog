@@ -2796,3 +2796,11 @@ a.folder:hover {
 .floor .left:empty {
   display: none;
 }
+
+/* texts under the frieze give way while the stand swiped to is loading */
+#main > .wrap {
+  transition: opacity 0.18s ease;
+}
+#main > .wrap.leaving {
+  opacity: 0.35;
+}
