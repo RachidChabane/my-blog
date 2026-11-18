@@ -1,4 +1,14 @@
 User-agent: *
 Allow: /
 
+# AI crawlers and assistants are welcome to read and cite the site.
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
 Sitemap: https://rachid-chabane.com/sitemap-index.xml

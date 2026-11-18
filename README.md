@@ -48,7 +48,7 @@ Node >= 20.3, pnpm 10.14 (`packageManager` is pinned).
 ```
 pnpm install
 pnpm dev        # dev server
-pnpm build      # static build + pagefind index
+pnpm build      # static build
 pnpm preview    # serve the build on :4321
 ```
 

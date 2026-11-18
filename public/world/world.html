@@ -1,0 +1,132 @@
+<div id="w3s">
+
+<div class="walk" id="walk">
+  <div class="stage" id="stage">
+    <canvas id="view" tabindex="0" aria-label="Le bureau des agents, vue en trois dimensions"></canvas>
+
+    <header class="bar">
+      <a class="mark" href="https://rachid-chabane.com/fr/">rachid chabane</a>
+      <nav aria-label="Sections">
+        <a data-go="radar" href="https://rachid-chabane.com/fr/radar/">Radar</a>
+        <a data-go="blog" href="https://rachid-chabane.com/fr/blog/">Articles</a>
+        <a data-read="journal" href="https://rachid-chabane.com/fr/journal/">Journal</a>
+        <a href="https://rachid-chabane.com/fr/work/">Projets</a>
+        <a href="https://rachid-chabane.com/en/">EN</a>
+      </nav>
+      <div class="tools">
+        <a class="pill flat" id="flat" href="#" aria-label="Version 2D"><span class="long">Version&nbsp;</span>2D</a>
+        <button type="button" class="pill out-game menu" id="menuBtn">Menu</button>
+        <button type="button" class="pill go out-game" id="play">Explorer</button>
+        <button type="button" class="pill in-game" id="sound" aria-pressed="true">Son</button>
+        <button type="button" class="pill go in-game" id="quit">Quitter</button>
+      </div>
+    </header>
+    <p class="keys" aria-hidden="true"><span>ZQSD ou flèches · souris · clic · E · R lire · Maj · Espace · Échap</span></p>
+    <div class="dot" aria-hidden="true"></div>
+    <button type="button" class="prompt" id="prompt"></button>
+    <p class="who" id="who"></p>
+    <div id="bulles" aria-hidden="true"></div>
+    <aside class="card" id="card" aria-live="polite">
+      <h3 id="cardName"></h3>
+      <p id="cardDoing"></p>
+      <div class="gauge"><span>café</span><i><b id="gCoffee"></b></i></div>
+      <div class="gauge"><span>énergie</span><i><b id="gEnergy"></b></i></div>
+      <div class="talk" id="talk"></div>
+      <form id="ask"><input id="askInput" type="text" autocomplete="off" aria-label="Question pour ce Clawd" placeholder="Pose-lui une question sur le blog"><button type="submit">Envoyer</button></form>
+      <div class="chips" id="chips"></div>
+      <div class="orders">
+        <button type="button" data-order="give" id="giveBtn">Donner la feuille</button>
+        <button type="button" data-order="follow" id="followBtn">Suis-moi</button>
+        <button type="button" data-order="hello">Saluer</button>
+        <button type="button" data-order="coffee">Pause café</button>
+        <button type="button" data-order="nap">Sieste</button>
+        <button type="button" data-order="work">Au travail</button>
+        <button type="button" data-order="cookie">Donner un cookie</button>
+        <button type="button" class="close" data-order="close">Fermer</button>
+      </div>
+    </aside>
+    <div class="hand" id="hand"><span><b id="handState"></b> · <span id="handTitle"></span></span><button type="button" id="handRead">Lire · R</button></div>
+    <article class="reader" id="reader" tabindex="0" aria-labelledby="readerTitle">
+      <div class="top"><span class="d" id="readerMeta"></span><button type="button" id="readerClose">Reposer</button></div>
+      <h2 id="readerTitle"></h2>
+      <div id="readerBody"></div>
+      <div class="turn"><button type="button" id="readerPrev">Cadre précédent</button><button type="button" id="readerNext">Cadre suivant</button></div>
+    </article>
+    <template id="text-9">
+      <p class="lead">L'argument de vente d'un agent de revue de code, c'est qu'il lit chaque pull request à votre place. Une étude empirique portant sur 13 d'entre eux renverse cet argument : 60,2 % des PR produites uniquement par un agent tombent dans la tranche de signal basse, de 0 à 30 %, et 12 des 13 agents restent sous un ratio de signal de 60 % <sup>[1]</sup>. Mon avis : la couverture n'a jamais été l'objectif à optimiser.</p>
+      <h3>La promesse face à la mesure</h3>
+      <p>Partons de ce que l'outil prétend faire, puis regardons ce qu'il émet. Le discours des éditeurs traite la couverture comme le produit : pointez l'agent sur un diff et il commentera tout ce qu'un humain fatigué laisserait passer. La mesure dit l'inverse. Sur 13 agents étudiés, 60,2 % des PR d'agent seul se rangent dans la tranche de signal de 0 à 30 %, et 12 des 13 affichent en moyenne un ratio de signal sous les 60 % <sup>[1]</sup>.</p>
+      <p>Je ne crois pas qu'il s'agisse d'un défaut d'un seul mauvais agent qu'un concurrent corrigera. C'est ce que l'on obtient quand la fonction objectif est la couverture. Si l'agent est récompensé pour dire quelque chose sur chaque bloc modifié, il dira quelque chose sur chaque bloc, or la plupart ne méritent aucun commentaire.</p>
+      <h3>Ce que le bruit achète en sortie</h3>
+      <p>Un ratio de signal faible pourrait n'être qu'une affaire de goût. La même étude lui donne un tranchant plus dur. Les PR d'agent seul ont fusionné à 45,20 % contre 68,37 % pour celles d'humain seul, un écart de 23,17 points, avec un taux d'abandon nettement plus élevé <sup>[2]</sup>.</p>
+      <p>Je veux manier ce chiffre avec prudence plutôt que m'appuyer dessus. Le taux de fusion est un indicateur contaminé : les PR écrites par un agent fusionnent peut-être moins parce que c'étaient des changements de moindre qualité au départ, non parce que le bruit du relecteur les a coulées.</p>
+      <h3>Pourquoi c'est déjà le régime par défaut</h3>
+      <p>Si c'était une expérience marginale, on pourrait la classer sous « débuts » et passer à autre chose. Ce n'en est pas une. Plus d'une revue de code sur cinq sur GitHub implique désormais un agent <sup>[3]</sup>. Voilà le chiffre qui transforme une curiosité en problème de système.</p>
+      <p>[Suite de l'article]</p>
+    </template>
+    <div class="stick" id="stick" role="application" aria-label="Manette de déplacement"><i id="knob"></i></div>
+    <div class="pad" id="pad"><button type="button" id="padRead" hidden>Lire</button><button type="button" id="padAct">Agir</button></div>
+
+    <section class="cap on" data-from="-21" data-to="-16.4">
+      <h1>rachid chabane</h1>
+      <p>Ingénieur IA · Lille</p>
+      <p id="startHint">Cliquer n’importe où pour explorer.</p>
+    </section>
+    <section class="cap" data-from="-13.6" data-to="-7.4" data-px="-11" data-pz="-3.4" data-r="3.6">
+      <h2>Radar</h2>
+      <ul>
+        <li><a data-read="0" href="https://rachid-chabane.com/fr/radar/"><span class="d">11-11-2026 · sécurité</span><span class="t">Les transcripts Notion AI faisaient partie de la fuite Fireworks</span></a></li>
+        <li><a data-read="1" href="https://rachid-chabane.com/fr/radar/"><span class="d">12-08-2026 · sortie</span><span class="t">Mojo 1.0 converge sur var, des fermetures unifiées et un seul type Pointer</span></a></li>
+      </ul>
+      <a data-go="radar" class="more" href="https://rachid-chabane.com/fr/radar/">101 briefs</a>
+    </section>
+    <section class="cap" data-from="-5.6" data-to="1.6" data-px="-1.85" data-pz="-3.4" data-r="3.6">
+      <h2>Projets</h2>
+      <ul>
+        <li style="display:flex;flex-direction:column;gap:3px"><span class="d">2026 · actif</span><span class="t">shallnot</span></li>
+        <li style="display:flex;flex-direction:column;gap:3px"><span class="d">2025-2026 · open source</span><span class="t">Sterna</span></li>
+      </ul>
+      <span class="more">10 projets</span>
+    </section>
+    <section class="cap" data-from="4.0" data-to="7.95" data-px="8.8" data-pz="-3.4" data-r="4.2">
+      <h2>Articles</h2>
+      <ul>
+        <li><a data-read="5" href="https://rachid-chabane.com/fr/blog/"><span class="d">11-11-2026 · essai</span><span class="t">Dimensionnez l'audit de votre filtre LLM selon la perte que vous tolérez</span></a></li>
+        <li><a data-read="6" href="https://rachid-chabane.com/fr/blog/"><span class="d">09-11-2026 · essai</span><span class="t">Jugez un écart de harnais sur Terminal-Bench à l'aune de votre propre limite de temps</span></a></li>
+      </ul>
+      <a data-go="blog" class="more" href="https://rachid-chabane.com/fr/blog/">91 articles</a>
+    </section>
+    <section class="cap journal" data-from="8.0" data-to="13" data-px="11.4" data-pz="4.0" data-r="3.2">
+      <h2>Journal</h2>
+      <ul>
+        <li><a data-read="journal" href="https://rachid-chabane.com/fr/journal/"><span class="d">[date]</span><span class="t">[Titre du dernier texte]</span></a></li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<main class="lists">
+  <section class="col">
+    <header><h2>Radar</h2><a data-go="radar" class="more" href="https://rachid-chabane.com/fr/radar/">101 briefs</a></header>
+    <ul>
+      <li><a data-read="0" href="https://rachid-chabane.com/fr/radar/"><span class="d">11-11-2026 · sécurité</span><span class="t">Les transcripts Notion AI faisaient partie de la fuite Fireworks</span></a></li>
+      <li><a data-read="1" href="https://rachid-chabane.com/fr/radar/"><span class="d">12-08-2026 · sortie</span><span class="t">Mojo 1.0 converge sur var, des fermetures unifiées et un seul type Pointer</span></a></li>
+    </ul>
+  </section>
+  <section class="col">
+    <header><h2>Articles</h2><a data-go="blog" class="more" href="https://rachid-chabane.com/fr/blog/">91 articles</a></header>
+    <ul>
+      <li><a data-read="5" href="https://rachid-chabane.com/fr/blog/"><span class="d">11-11-2026 · essai</span><span class="t">Dimensionnez l'audit de votre filtre LLM selon la perte que vous tolérez</span></a></li>
+      <li><a data-read="6" href="https://rachid-chabane.com/fr/blog/"><span class="d">09-11-2026 · essai</span><span class="t">Jugez un écart de harnais sur Terminal-Bench à l'aune de votre propre limite de temps</span></a></li>
+      <li><a data-read="7" href="https://rachid-chabane.com/fr/blog/"><span class="d">07-11-2026 · essai</span><span class="t">Inscrivez le noyau de l'hôte dans la grille de votre bac à sable pour agents</span></a></li>
+    </ul>
+  </section>
+  <section class="col journal">
+    <header><h2>Journal</h2><a data-read="journal" class="more" href="https://rachid-chabane.com/fr/journal/">tout</a></header>
+    <ul>
+      <li><a data-read="journal" href="https://rachid-chabane.com/fr/journal/"><span class="d">[date]</span><span class="t">[Titre du dernier texte]</span></a></li>
+    </ul>
+  </section>
+</main>
+
+</div>

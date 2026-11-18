@@ -15,7 +15,25 @@ export interface AvatarQueryRequest {
    * out-of-scope question refuses instead of answering from another article.
    */
   scopeSlug?: string;
+  /** Which member of the office answers; sets the voice, never the facts. */
+  persona?: Persona;
 }
+
+/** The office roles a visitor can talk to. */
+export const PERSONAS = [
+  'operator',
+  'writer',
+  'inspector',
+  'courier',
+  'archivist',
+  'gardener',
+  'barista',
+  'janitor',
+  'curator',
+  'maker',
+  'sage',
+] as const;
+export type Persona = (typeof PERSONAS)[number];
 
 /** A grounded source, derived from a retrieved chunk (NOT model-generated). */
 export interface Citation {

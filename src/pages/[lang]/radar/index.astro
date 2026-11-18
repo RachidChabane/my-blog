@@ -1,0 +1,57 @@
+---
+/** The radar stand: every published text, newest first, with a filter. */
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import Office from '@/layouts/Office.astro';
+import Room from '@/components/office/Room.astro';
+import Rows from '@/components/office/Rows.astro';
+import ListTools from '@/components/office/ListTools.astro';
+import { who } from '@/office/draw';
+import { officeStrings } from '@/office/strings';
+import { radarRows } from '@/office/view';
+
+export const getStaticPaths = (() =>
+  LOCALES.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Locale;
+const t = officeStrings(lang);
+const rows = radarRows(await getCollection('radar'), lang);
+const count = t.counts.briefs(rows.length);
+const crew = who('Vigie', 'type') + who('Écho', 'type d2');
+const kinds = ['security', 'release', 'research', 'benchmark'];
+const kindLabels = Object.fromEntries(kinds.map((k) => [k, t.kinds[k]]));
+const description =
+  lang === 'fr'
+    ? 'Le radar : ce qui vient de sortir en ingénierie de l’IA, en briefs courts et sourcés.'
+    : 'The radar: what just shipped in AI engineering, in short sourced briefs.';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: t.sections.radar,
+  url: new URL(localePath(lang, 'radar/'), Astro.site).href,
+  inLanguage: lang,
+};
+---
+
+<Office
+  title={`${t.sections.radar} · Rachid Chabane`}
+  description={description}
+  lang={lang}
+  section="radar"
+  altHref={localePath(lang === 'fr' ? 'en' : 'fr', 'radar/')}
+  jsonLd={jsonLd}
+>
+  <Room section="radar" title={t.sections.radar} count={count} crew={crew} />
+  <div class="wrap page">
+    <ListTools
+      lang={lang}
+      kinds={kinds.map((k) => ({ key: k, label: t.kinds[k] }))}
+    />
+    <div class="sheet" id="list" style="--tape:var(--radar)">
+      <Rows rows={rows} lang={lang} kindLabels={kindLabels} wide />
+      <p class="empty" id="empty" hidden>{t.noMatch}</p>
+    </div>
+  </div>
+</Office>

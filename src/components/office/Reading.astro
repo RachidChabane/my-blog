@@ -1,0 +1,179 @@
+---
+/**
+ * A text to read: the sheet with its title and body, the sources with their stamp,
+ * the question box, and what to read next. The body comes through the slot.
+ */
+import type { Locale } from '@/i18n/index';
+import { localePath } from '@/i18n/index';
+import { who } from '@/office/draw';
+import { officeStrings, SECTION_COLOR } from '@/office/strings';
+import type { Row } from '@/office/view';
+import type { SourceView } from '@/lib/content';
+
+export interface Citation {
+  n: string;
+  label: string;
+  url: string;
+  excerpt: string;
+}
+export interface Term {
+  id: string;
+  term: string;
+  def: string;
+}
+export interface Props {
+  lang: Locale;
+  section: 'blog' | 'radar' | 'journal';
+  title: string;
+  date: string;
+  minutes: number;
+  kindLabel?: string;
+  lede?: string;
+  sources?: SourceView[];
+  citations?: Citation[];
+  terms?: Term[];
+  next?: Row[];
+  /** Slug of the text, to keep the question box on this text. */
+  slug?: string;
+  /** Proof line under a journal piece. */
+  proof?: string;
+}
+const {
+  lang,
+  section,
+  title,
+  date,
+  minutes,
+  kindLabel,
+  lede,
+  sources = [],
+  citations = [],
+  terms = [],
+  next = [],
+  slug,
+  proof,
+} = Astro.props;
+const t = officeStrings(lang);
+const color = SECTION_COLOR[section];
+const writer = section === 'radar' ? 'Vigie' : 'Plume';
+const role =
+  section === 'radar' ? 'radar' : lang === 'fr' ? 'rédaction' : 'writing';
+---
+
+<div class={`wrap reading${section === 'journal' ? ' journal' : ''}`}>
+  <nav class="toc" id="toc" aria-label={t.toc} set:html={who(writer, 'type')} />
+  <article class="sheet text" style={`--tape:${color}`}>
+    <div class="kicker">
+      <a href={localePath(lang, `${section}/`)}>{t.sections[section]}</a>
+      {
+        kindLabel && (
+          <span class={`chip k-${section}`} style={`--c:${color}`}>
+            {kindLabel}
+          </span>
+        )
+      }
+      <time>{date}</time>
+      <span>{minutes} min</span>
+    </div>
+    <h1>{title}</h1>
+    {lede && <p class="lede">{lede}</p>}
+    <div class="prose" id="prose"><slot /></div>
+    {
+      sources.length > 0 && (
+        <section class="sources" id="sources">
+          <h2>{t.sources}</h2>
+          <div class="stamp">
+            <Fragment set:html={who('Tampon', 'wave d2')} />
+            <div class="mark">
+              {t.checked}
+              <br />
+              {date}
+            </div>
+          </div>
+          <ol>
+            {sources.map((s, i) => (
+              <li id={`source-${i + 1}`}>
+                <span class="mono">{i + 1}</span>
+                <span>
+                  <a href={s.url}>{s.label}</a>
+                  <br />
+                  <span class="mono">
+                    {t.consulted} {s.date}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+    {
+      proof && (
+        <div class="proof">
+          <b>
+            {t.journal.written} {date}
+          </b>
+          <span class="mono">{proof}</span>
+        </div>
+      )
+    }
+  </article>
+  <div class="rtools">
+    <button type="button" data-act="smaller" aria-label={t.smaller}>A−</button>
+    <button type="button" data-act="bigger" aria-label={t.bigger}>A+</button>
+  </div>
+  {
+    slug && section !== 'journal' && (
+      <section
+        class="ask"
+        data-slug={slug}
+        data-persona={section === 'radar' ? 'operator' : 'writer'}
+      >
+        <div class="who">
+          <Fragment set:html={who(writer, 'd2')} />
+          <div>
+            <b>{writer}</b>
+            <span>{role}</span>
+          </div>
+        </div>
+        <div class="log" id="log" aria-live="polite" />
+        <form id="askForm">
+          <input
+            id="qaInput"
+            type="text"
+            placeholder={t.ask.placeholder}
+            aria-label={t.ask.placeholder}
+            autocomplete="off"
+            maxlength="300"
+          />
+          <button class="pill go" type="submit">
+            {t.ask.send}
+          </button>
+        </form>
+        <div class="sugg">
+          {t.ask.suggestions.map((q) => (
+            <button type="button">{q}</button>
+          ))}
+        </div>
+      </section>
+    )
+  }
+  {
+    next.length > 0 && (
+      <nav class="next" aria-label={t.next}>
+        {next.map((n) => (
+          <a href={n.href}>
+            <span class="mono">{n.date}</span>
+            <b>{n.title}</b>
+          </a>
+        ))}
+      </nav>
+    )
+  }
+  <script
+    is:inline
+    type="application/json"
+    id="reading-data"
+    set:html={JSON.stringify({ citations, terms })}
+  />
+</div>

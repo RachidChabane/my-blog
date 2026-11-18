@@ -1,0 +1,69 @@
+---
+/** The blog stand: every published text, newest first, with a filter. */
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Category } from '@/content/schemas';
+import type { Locale } from '@/i18n/index';
+import Office from '@/layouts/Office.astro';
+import Room from '@/components/office/Room.astro';
+import Rows from '@/components/office/Rows.astro';
+import ListTools from '@/components/office/ListTools.astro';
+import { who } from '@/office/draw';
+import { officeStrings } from '@/office/strings';
+import { articleRows } from '@/office/view';
+
+export const getStaticPaths = (() =>
+  LOCALES.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Locale;
+const t = officeStrings(lang);
+const [entries, categoryEntries] = await Promise.all([
+  getCollection('articles'),
+  getCollection('categories'),
+]);
+const rows = articleRows(entries, lang);
+const count = t.counts.articles(rows.length);
+const crew =
+  who('Plume', 'type') + who('Virgule', 'type d2') + who('Rature', 'type d3');
+const used = [...new Set(rows.map((r) => r.kind))];
+const kindLabels = Object.fromEntries(
+  categoryEntries
+    .map((c: CollectionEntry<'categories'>) => c.data)
+    .filter((c: Category) => used.includes(c.slug))
+    .map((c: Category) => [c.slug, c.label[lang]])
+);
+const description =
+  lang === 'fr'
+    ? 'Articles de fond sur l’ingénierie de l’IA : agents, évaluation, sécurité, infrastructure.'
+    : 'Long-form articles on AI engineering: agents, evaluation, security, infrastructure.';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: t.sections.blog,
+  url: new URL(localePath(lang, 'blog/'), Astro.site).href,
+  inLanguage: lang,
+};
+---
+
+<Office
+  title={`${t.sections.blog} · Rachid Chabane`}
+  description={description}
+  lang={lang}
+  section="blog"
+  altHref={localePath(lang === 'fr' ? 'en' : 'fr', 'blog/')}
+  jsonLd={jsonLd}
+>
+  <Room section="blog" title={t.sections.blog} count={count} crew={crew} />
+  <div class="wrap page">
+    <ListTools
+      lang={lang}
+      kinds={Object.entries(kindLabels).map(([key, label]) => ({ key, label }))}
+    />
+    <div class="sheet" id="list" style="--tape:var(--art)">
+      <Rows rows={rows} lang={lang} kindLabels={kindLabels} wide />
+      <p class="empty" id="empty" hidden>{t.noMatch}</p>
+    </div>
+  </div>
+</Office>

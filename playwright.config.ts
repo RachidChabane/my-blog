@@ -19,7 +19,17 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        // The 3D office needs WebGL; software rendering keeps it deterministic in CI.
+        launchOptions: {
+          args: [
+            '--use-gl=swiftshader',
+            '--enable-unsafe-swiftshader',
+            '--ignore-gpu-blocklist',
+          ],
+        },
+      },
     },
   ],
   webServer: {

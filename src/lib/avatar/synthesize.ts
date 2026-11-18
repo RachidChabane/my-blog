@@ -4,7 +4,7 @@
 // Real impl targets OpenRouter (https://openrouter.ai/api/v1) — NOT Anthropic.
 
 import type { Candidate, LLMProvider, LlmRequest, LlmUsage } from './contracts';
-import type { Citation, Locale } from './protocol';
+import type { Citation, Locale, Persona } from './protocol';
 import {
   GROUNDING_CLAUSES,
   NO_EXFILTRATION_CLAUSES,
@@ -12,7 +12,7 @@ import {
 } from './guard';
 
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
-const DEFAULT_MODEL = 'google/gemini-3-flash-preview'; // Gemini 3 Flash (OpenRouter); swappable at the seam
+const DEFAULT_MODEL = 'qwen/qwen3.7-flash'; // low-cost model on OpenRouter; swappable at the seam
 const DEFAULT_TEMPERATURE = 0.2;
 
 /** Localized refusal message for the idk branch. */
@@ -72,7 +72,22 @@ export function buildContextBlock(chunks: Candidate[]): {
 }
 
 /** Compose the hardened, grounded-only system prompt for a given locale. */
-export function buildSystemPrompt(lang: Locale): string {
+/** Who is speaking, per office role. Each line sets a voice; the grounding rules still bind. */
+export const PERSONA_VOICE: Record<Persona, string> = {
+  operator: 'You speak as Vigie, who watches the radar for what just shipped.',
+  writer: 'You speak as Plume, who writes the long-form articles.',
+  inspector: 'You speak as Tampon, who checks sources and stamps what passes.',
+  courier: 'You speak as Navette, who carries sheets between the desks.',
+  archivist: 'You speak as Classeur, who files and finds every published text.',
+  gardener: 'You speak as Arrosoir, who looks after the office plants.',
+  barista: 'You speak as Moka, who runs the coffee corner.',
+  janitor: 'You speak as Balai, who keeps the office tidy.',
+  curator: 'You speak as Cadre, who hangs the texts in the gallery.',
+  maker: 'You speak as Maquette, who presents the projects.',
+  sage: 'You speak as Glose, the bearded keeper of definitions.',
+};
+
+export function buildSystemPrompt(lang: Locale, persona?: Persona): string {
   const language = lang === 'fr' ? 'French' : 'English';
   return [
     "You are the assistant on Rachid Chabane's personal site. You answer",
@@ -83,6 +98,12 @@ export function buildSystemPrompt(lang: Locale): string {
     `Never use em-dashes (the long dash); use commas, colons, semicolons, or periods instead.`,
     DIAGRAM_TOOL_CLAUSES,
     `Answer in ${language}. Be concise.`,
+    ...(persona
+      ? [
+          PERSONA_VOICE[persona],
+          'You are a small orange office agent: answer in the first person, in four sentences at most.',
+        ]
+      : []),
   ].join(' ');
 }
 
@@ -111,10 +132,11 @@ export function buildSynthesisRequest(args: {
   query: string;
   lang: Locale;
   chunks: Candidate[];
+  persona?: Persona;
 }): { request: LlmRequest; citations: Citation[] } {
   const { numbered, citations } = buildContextBlock(args.chunks);
   const request: LlmRequest = {
-    system: buildSystemPrompt(args.lang),
+    system: buildSystemPrompt(args.lang, args.persona),
     messages: [
       { role: 'user', content: wrapUserContent(args.query, numbered) },
     ],

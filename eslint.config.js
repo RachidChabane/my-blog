@@ -37,6 +37,8 @@ export default [
       'design/',
       'inventory/',
       'plans/',
+      // The 3D office runtime and its vendored three.js: shipped as written, not linted.
+      'public/world/',
     ],
   },
 ];

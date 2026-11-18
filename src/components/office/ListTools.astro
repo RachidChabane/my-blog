@@ -1,0 +1,23 @@
+---
+/** Search field and kind filters above a list. */
+import type { Locale } from '@/i18n/index';
+import { officeStrings } from '@/office/strings';
+
+export interface Props {
+  lang: Locale;
+  kinds: { key: string; label: string }[];
+}
+const { lang, kinds } = Astro.props;
+const t = officeStrings(lang);
+---
+
+<div class="tools">
+  <input id="q" type="search" placeholder={t.search} aria-label={t.search} />
+  {
+    kinds.map((k) => (
+      <button type="button" data-k={k.key} aria-pressed="false">
+        {k.label}
+      </button>
+    ))
+  }
+</div>

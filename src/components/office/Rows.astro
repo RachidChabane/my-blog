@@ -1,0 +1,62 @@
+---
+/** Dated list of texts, grouped by month. Each row carries what the filter needs. */
+import type { Locale } from '@/i18n/index';
+import { officeStrings } from '@/office/strings';
+import type { Row } from '@/office/view';
+
+export interface Props {
+  rows: Row[];
+  lang: Locale;
+  /** Label of each kind of text shown on the row's chip. */
+  kindLabels?: Record<string, string>;
+  /** Group the rows under month headings and show the summary. */
+  wide?: boolean;
+}
+const { rows, lang, kindLabels = {}, wide = false } = Astro.props;
+const t = officeStrings(lang);
+const COLOR = {
+  radar: 'var(--radar)',
+  blog: 'var(--art)',
+  journal: 'var(--jrnl)',
+};
+const groups: { month: string; rows: Row[] }[] = [];
+for (const r of rows) {
+  const last = groups[groups.length - 1];
+  if (wide && last && last.month === r.month) last.rows.push(r);
+  else if (wide || !last) groups.push({ month: r.month, rows: [r] });
+  else last.rows.push(r);
+}
+const monthName = (m: string) =>
+  m ? `${t.months[Number(m.slice(5)) - 1]} ${m.slice(0, 4)}` : '';
+---
+
+{
+  groups.map((g) => (
+    <section class="mgroup">
+      {wide && <div class="month">{monthName(g.month)}</div>}
+      <ul class={`rows${wide ? ' wide' : ''}`}>
+        {g.rows.map((r) => (
+          <li
+            data-k={r.kind}
+            data-s={r.section}
+            data-q={`${r.title} ${r.tags.join(' ')}`.toLowerCase()}
+          >
+            <span class="m mono">{r.date}</span>
+            <a class="t" href={r.href}>
+              {r.title}
+            </a>
+            {wide && (kindLabels[r.kind] || kindLabels[r.section]) && (
+              <span
+                class={`chip k-${r.section}`}
+                style={`--c:${COLOR[r.section]}`}
+              >
+                {kindLabels[r.kind] ?? kindLabels[r.section]}
+              </span>
+            )}
+            {wide && r.dek && <p class="d">{r.dek}</p>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))
+}

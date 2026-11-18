@@ -5,7 +5,8 @@
 // so a forged or obfuscated delimiter in untrusted text cannot break out of a DATA
 // fence. This file ships the mechanism + the grounded-only policy clauses.
 
-import type { AvatarQueryRequest, Locale } from './protocol';
+import { PERSONAS } from './protocol';
+import type { AvatarQueryRequest, Locale, Persona } from './protocol';
 
 export const MAX_QUERY_LENGTH = 2000;
 export const MAX_SLUG_LENGTH = 128;
@@ -17,7 +18,13 @@ const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /** Validation outcome: a clean request, or a status+message for a JSON reject. */
 export type ValidatedQuery =
-  | { ok: true; query: string; lang: Locale; scopeSlug?: string }
+  | {
+      ok: true;
+      query: string;
+      lang: Locale;
+      scopeSlug?: string;
+      persona?: Persona;
+    }
   | { ok: false; status: 400; message: string };
 
 /**
@@ -77,9 +84,20 @@ export function validateQueryRequest(parsed: unknown): ValidatedQuery {
     }
     scopeSlug = body.scopeSlug;
   }
-  return scopeSlug
-    ? { ok: true, query, lang, scopeSlug }
-    : { ok: true, query, lang };
+  let persona: Persona | undefined;
+  if (body.persona !== undefined) {
+    if (!PERSONAS.includes(body.persona)) {
+      return { ok: false, status: 400, message: 'Invalid "persona".' };
+    }
+    persona = body.persona;
+  }
+  return {
+    ok: true,
+    query,
+    lang,
+    ...(scopeSlug ? { scopeSlug } : {}),
+    ...(persona ? { persona } : {}),
+  };
 }
 
 // --- Prompt-isolation + grounded-only policy (composed by synthesize.ts) -----

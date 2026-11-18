@@ -30,9 +30,9 @@ import { parseArtifactStream } from '../../../src/lib/avatar/artifacts';
 import {
   D1SpendLedger,
   FALLBACK_REQUEST_COST_USD,
-  monthKey,
-  nextMonthStart,
-  parseMonthlyBudgetUsd,
+  dayKey,
+  nextDayStart,
+  parseDailyBudgetUsd,
 } from '../../../src/lib/avatar/spend';
 
 // --- type-only imports (verbatimModuleSyntax) ---
@@ -55,7 +55,7 @@ import type {
 interface Env {
   OPENROUTER_API_KEY?: string; // avatar LLM (synthesis)
   AVATAR_SIMILARITY_THRESHOLD?: string; // optional runtime override, non-secret
-  AVATAR_MONTHLY_BUDGET_USD?: string; // optional spend-cap override, non-secret
+  AVATAR_DAILY_BUDGET_USD?: string; // optional spend-cap override, non-secret
   AI?: AiBinding; // Workers AI: query-time bge-m3 embeddings (no key/HTTP)
   VECTORIZE?: VectorizeIndex; // dense leg
   DB?: D1Database; // lexical (FTS5 BM25) + chunk hydration
@@ -103,13 +103,13 @@ function idkResponse(
 }
 
 /**
- * UNAVAILABLE: the monthly spend budget is exhausted. Deliberately generic (the
- * budget is never disclosed as the reason); `availableAt` is the 1st of the next
- * month (UTC), when the ledger rolls over. The client renders a localized
+ * UNAVAILABLE: the daily spend budget is exhausted. Deliberately generic (the
+ * budget is never disclosed as the reason); `availableAt` is the next
+ * day (UTC), when the ledger rolls over. The client renders a localized
  * "temporarily unavailable, back on {date}" line from it.
  */
 function unavailableResponse(now: Date): Response {
-  const availableAt = nextMonthStart(now);
+  const availableAt = nextDayStart(now);
   return new Response(
     JSON.stringify({ error: 'Avatar temporarily unavailable.', availableAt }),
     {
@@ -174,7 +174,7 @@ function groundedResponse(
             llm.lastUsage?.()?.costUsd ?? FALLBACK_REQUEST_COST_USD;
           const now = spend.now?.() ?? new Date();
           try {
-            await spend.ledger.addSpentUsd(monthKey(now), costUsd);
+            await spend.ledger.addSpentUsd(dayKey(now), costUsd);
           } catch {
             // fail-open: the guardrail degrades to "uncounted", never to "broken"
           }
@@ -196,7 +196,7 @@ export interface AvatarEndpointDeps {
   threshold?: number; // default DEFAULT_SIMILARITY_THRESHOLD (0.25)
   maxNearMisses?: number; // default DEFAULT_MAX_NEAR_MISSES (3)
   retrieveOptions?: RetrieveOptions;
-  /** Monthly spend guardrail; absent → no cap (e.g. local dev without D1). */
+  /** Daily spend guardrail; absent → no cap (e.g. local dev without D1). */
   spend?: SpendGuardOptions;
 }
 
@@ -218,14 +218,14 @@ export async function handleAvatarQuery(
   const v = validateQueryRequest(parsed);
   if (!v.ok) return jsonError(v.status, v.message);
 
-  // 2b. Monthly spend guardrail — checked BEFORE retrieval so an exhausted month
+  // 2b. Daily spend guardrail — checked BEFORE retrieval so an exhausted day
   // costs nothing at all (no embeddings, no Vectorize, no LLM). A ledger READ
-  // failure fails open (the avatar stays up, the month merely risks running
+  // failure fails open (the avatar stays up, the day merely risks running
   // uncounted); only a positive "budget spent" verdict blocks the agent.
   if (deps.spend) {
     const now = deps.spend.now?.() ?? new Date();
     try {
-      const spent = await deps.spend.ledger.getSpentUsd(monthKey(now));
+      const spent = await deps.spend.ledger.getSpentUsd(dayKey(now));
       if (spent >= deps.spend.budgetUsd) return unavailableResponse(now);
     } catch {
       // fail-open (see above)
@@ -262,6 +262,7 @@ export async function handleAvatarQuery(
     query: v.query,
     lang: v.lang,
     chunks: dedupeChunksByArticle(outcome.chunks, v.lang),
+    persona: v.persona,
   });
   return groundedResponse(
     citations,
@@ -313,7 +314,7 @@ function createBindingRetriever(env: Env): AvatarRetriever {
 }
 
 /**
- * Wire the monthly spend guardrail over the existing D1 binding. `undefined`
+ * Wire the daily spend guardrail over the existing D1 binding. `undefined`
  * (no DB) simply disables the cap rather than breaking the endpoint — in
  * production createBindingRetriever has already thrown 503 by then anyway.
  */
@@ -321,7 +322,7 @@ function createSpendGuard(env: Env): SpendGuardOptions | undefined {
   if (!env.DB) return undefined;
   return {
     ledger: new D1SpendLedger(env.DB),
-    budgetUsd: parseMonthlyBudgetUsd(env.AVATAR_MONTHLY_BUDGET_USD),
+    budgetUsd: parseDailyBudgetUsd(env.AVATAR_DAILY_BUDGET_USD),
   };
 }
 

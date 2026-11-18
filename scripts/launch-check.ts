@@ -219,50 +219,36 @@ export function checkSecretScan(): CheckResult {
 
 export function checkPerfA11yBudgets(): CheckResult {
   const name = 'Perf/a11y budgets';
-
-  if (!fileExists('e2e/perf.spec.ts')) {
-    return { name, pass: false, message: 'e2e/perf.spec.ts not found' };
-  }
-
-  const perf = readFile('e2e/perf.spec.ts');
-  for (const s of [
-    'LCP',
-    'SCRIPT_COUNT_BUDGET',
-    "test.describe('perf budgets",
-  ]) {
-    if (!perf.includes(s)) {
-      return { name, pass: false, message: `e2e/perf.spec.ts missing: ${s}` };
+  const required: Array<[file: string, marks: string[]]> = [
+    [
+      'e2e/perf.spec.ts',
+      ['LCP', 'SCRIPT_COUNT_BUDGET', "test.describe('perf budgets"],
+    ],
+    ['e2e/a11y.spec.ts', ['AxeBuilder', 'wcag2aa']],
+    ['e2e/office.spec.ts', ["test.describe('the 3D office"]],
+  ];
+  for (const [file, marks] of required) {
+    if (!fileExists(file)) {
+      return { name, pass: false, message: `${file} not found` };
+    }
+    const text = readFile(file);
+    for (const mark of marks) {
+      if (!text.includes(mark)) {
+        return { name, pass: false, message: `${file} missing: ${mark}` };
+      }
     }
   }
-
-  if (!fileExists('e2e/a11y.spec.ts')) {
-    return { name, pass: false, message: 'e2e/a11y.spec.ts not found' };
+  if (!fileExists('perf/lighthouse-budgets.json')) {
+    return {
+      name,
+      pass: false,
+      message: 'perf/lighthouse-budgets.json not found',
+    };
   }
-
-  const a11y = readFile('e2e/a11y.spec.ts');
-  for (const s of [
-    'AxeBuilder',
-    'structuralScan',
-    'contrastScan',
-    'KNOWN_AA_DEFECTS',
-  ]) {
-    if (!a11y.includes(s)) {
-      return { name, pass: false, message: `e2e/a11y.spec.ts missing: ${s}` };
-    }
-  }
-
-  if (!fileExists('e2e/helpers/axe.ts')) {
-    return { name, pass: false, message: 'e2e/helpers/axe.ts not found' };
-  }
-
-  if (!fileExists('e2e/full-site.spec.ts')) {
-    return { name, pass: false, message: 'e2e/full-site.spec.ts not found' };
-  }
-
   return {
     name,
     pass: true,
-    message: 'e2e/perf.spec.ts + e2e/a11y.spec.ts + helpers/axe.ts present',
+    message: `${required.map(([file]) => file).join(' + ')} + perf/lighthouse-budgets.json present`,
   };
 }
 
@@ -313,7 +299,7 @@ export function checkCloudflareConfig(): CheckResult {
   }
 
   const pkg = readFile('package.json');
-  if (!pkg.includes('"build": "astro build && pagefind --site dist"')) {
+  if (!pkg.includes('"build": "astro build"')) {
     return {
       name,
       pass: false,

@@ -1,0 +1,341 @@
+---
+/**
+ * The office shell shared by every page: ceiling bar, hanging signs, the page
+ * itself, the parquet strip with its tabs, the menu drawer, and the mount point
+ * of the 3D world. Search engines and agents get the full page here; the world
+ * is loaded on demand over it.
+ */
+import '@/styles/office.css';
+import { themeInitScript } from '@/lib/theme';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import { who } from '@/office/draw';
+import {
+  officeStrings,
+  SECTION_COLOR,
+  SECTION_ORDER,
+  SECTION_PATHS,
+} from '@/office/strings';
+import type { SectionKey } from '@/office/strings';
+
+export interface Props {
+  title: string;
+  description?: string;
+  lang?: Locale;
+  /** Section the page belongs to; absent on the home page. */
+  section?: SectionKey;
+  /** Same page in the other locale; the home page of that locale when absent. */
+  altHref?: string;
+  /** True on pages made for reading: enables progress and the text-size card. */
+  reading?: boolean;
+  /** Words of the text, for the time-left readout. */
+  words?: number;
+  ogType?: 'website' | 'article';
+  jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = 'Rachid Chabane · AI engineering blog & portfolio',
+  lang = 'fr',
+  section,
+  altHref,
+  reading = false,
+  words = 0,
+  ogType = 'website',
+  jsonLd,
+  noindex = false,
+} = Astro.props;
+
+const t = officeStrings(lang);
+const other: Locale = lang === 'fr' ? 'en' : 'fr';
+const otherHref = altHref ?? localePath(other);
+const site = Astro.site ?? new URL('https://rachid-chabane.com');
+const canonical = new URL(Astro.url.pathname, site).href;
+const hrefFor = (l: Locale) =>
+  new URL(l === lang ? Astro.url.pathname : otherHref, site).href;
+/** Stand of the 3D office that matches this page. */
+const place = section === undefined || section === 'about' ? 'home' : section;
+const TAB_SECTIONS: SectionKey[] = [
+  'radar',
+  'blog',
+  'journal',
+  'work',
+  'library',
+];
+const clientStrings = {
+  night: t.night,
+  day: t.day,
+  left: t.left(-1).replace('-1', '{n}'),
+  done: t.done,
+  size: t.size,
+  noMatch: t.noMatch,
+  loading3d: t.loading3d,
+  outOfTokens: t.ask.outOfTokens,
+  sage: {
+    quips: t.sage.quips,
+    shake: t.sage.shake,
+    unknown: t.sage.unknown('{q}'),
+    readOne: t.sage.readCount(1).replace('1', '{n}'),
+    readMany: t.sage.readCount(2).replace('2', '{n}'),
+    related: t.sage.related,
+    citedIn: t.sage.citedIn,
+    trail: t.sage.trail,
+    seeRelated: t.sage.seeRelated,
+    themes: t.sage.themes,
+  },
+};
+---
+
+<!doctype html>
+<html lang={lang} data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <script is:inline set:html={themeInitScript} />
+    <link
+      rel="preload"
+      href="/fonts/SchibstedGrotesk-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    {
+      LOCALES.map((l) => (
+        <link rel="alternate" hreflang={l} href={hrefFor(l)} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={hrefFor('fr')} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Rachid Chabane" />
+    <meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_GB'} />
+    <meta property="og:image" content={new URL('/og.png', site).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#2F7378" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`Rachid Chabane · ${t.sections.blog}`}
+      href={`/${lang}/rss.xml`}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`Rachid Chabane · ${t.sections.radar}`}
+      href={`/${lang}/radar/rss.xml`}
+    />
+    {
+      jsonLd && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(jsonLd)}
+        />
+      )
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      {lang === 'fr' ? 'Aller au contenu' : 'Skip to content'}
+    </a>
+    <div id="w3"></div>
+    <div id="site2d">
+      <div
+        id="s2"
+        data-lang={lang}
+        data-place={place}
+        data-section={section ?? 'home'}
+        data-reading={reading ? '1' : '0'}
+        data-words={words}
+      >
+        <div class="top" id="top">
+          <div class="ceil">
+            <div class="wrap">
+              <a class="pill name" href={localePath(lang)}>rachid chabane</a>
+              <nav class="mini" aria-label="Sections">
+                {
+                  SECTION_ORDER.map((k) => (
+                    <a
+                      data-k={k}
+                      style={`--c:${SECTION_COLOR[k]}`}
+                      href={localePath(lang, SECTION_PATHS[k])}
+                      aria-current={k === section ? 'page' : undefined}
+                    >
+                      {k === 'library' ? t.libraryShort : t.sections[k]}
+                    </a>
+                  ))
+                }
+              </nav>
+              <span class="spacer"></span>
+              <button class="pill door" id="door" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 2l9 5v10l-9 5-9-5V7z" fill="#171B2B"></path>
+                  <path d="M12 2l9 5-9 5-9-5z" fill="#FFFFFF"></path>
+                  <path d="M12 12l9-5v10l-9 5z" fill="#F2C230"></path>
+                </svg>
+                <span class="lg"
+                  >{t.enter3d.replace(/3D$/, '').trim()}&nbsp;</span
+                >3D
+              </button>
+              <a
+                class="pill small"
+                id="lang"
+                href={otherHref}
+                hreflang={other}
+                lang={other}
+              >
+                {other.toUpperCase()}
+              </a>
+              <button class="pill small" id="lamp" type="button">
+                {t.night}
+              </button>
+              <button
+                class="pill small"
+                id="more"
+                type="button"
+                aria-expanded="false"
+              >
+                {t.menu}
+              </button>
+            </div>
+          </div>
+          <div class="beamline"></div>
+        </div>
+        <nav class="wrap signs" aria-label="Sections">
+          {
+            SECTION_ORDER.map((k) => (
+              <a
+                class="sign"
+                data-k={k}
+                style={`--c:${SECTION_COLOR[k]}`}
+                href={localePath(lang, SECTION_PATHS[k])}
+                aria-current={k === section ? 'page' : undefined}
+              >
+                {t.sections[k]}
+              </a>
+            ))
+          }
+        </nav>
+        <main id="main"><slot /></main>
+        <footer class={`floor${reading ? '' : ' stroll'}`} id="floor">
+          <nav class="tabs" id="tabs" aria-label="Sections">
+            {
+              TAB_SECTIONS.map((k) => (
+                <a
+                  data-k={k}
+                  style={`--c:${SECTION_COLOR[k]}`}
+                  href={localePath(lang, SECTION_PATHS[k])}
+                  aria-current={k === section ? 'page' : undefined}
+                >
+                  <span>
+                    {k === 'library' ? t.libraryShort : t.sections[k]}
+                  </span>
+                </a>
+              ))
+            }
+          </nav>
+          <div class="wrap"><span class="left" id="left"></span></div>
+          <div class="runner" id="runner">
+            <span
+              class="walkers"
+              set:html={who(reading ? 'Relais' : 'Navette', '', {
+                hold: reading ? '#F2C230' : '#4F53D6',
+              })}
+            />
+            <span class="carrier" set:html={who('Navette', '', { up: true })} />
+          </div>
+        </footer>
+        <div class="toast" id="toast" hidden></div>
+        <div class="scrim" id="scrim" hidden></div>
+        <div
+          class="msheet"
+          id="msheet"
+          hidden
+          role="dialog"
+          aria-label={t.menu}
+        >
+          <div class="peek" set:html={who('Moka', 'd2')} />
+          <div class="handle"></div>
+          <div class="deck" id="deck">
+            <a
+              class="icard"
+              href={localePath(lang, SECTION_PATHS.about)}
+              style="--tab:var(--clawd)"
+            >
+              <span class="pic" set:html={who('Arrosoir', 'wave d3')} />
+              <b>{t.sections.about}</b>
+              <span class="mono">{t.aboutSub}</span>
+            </a>
+            <button
+              class="icard"
+              type="button"
+              data-act="lamp"
+              style="--tab:var(--jrnl)"
+            >
+              <span class="pic">
+                <svg viewBox="0 0 56 44" aria-hidden="true">
+                  <rect width="56" height="44" fill="#FFFFFF"></rect>
+                  <rect x="4" y="4" width="48" height="36" fill="var(--sky)"
+                  ></rect>
+                  <circle cx="36" cy="18" r="9" fill="var(--sun)"></circle>
+                  <rect x="26" y="4" width="3" height="36" fill="#FFFFFF"
+                  ></rect>
+                  <rect x="4" y="21" width="48" height="3" fill="#FFFFFF"
+                  ></rect>
+                </svg>
+              </span>
+              <b id="mLamp">{t.night}</b>
+              <span class="mono">{t.theme}</span>
+            </button>
+            <a class="icard" href={otherHref} style="--tab:var(--radar)">
+              <span class="pic lng">
+                <i class={lang === 'fr' ? 'on' : ''}>FR</i>
+                <i class={lang === 'en' ? 'on' : ''}>EN</i>
+              </span>
+              <b>{t.language}</b>
+              <span class="mono">{t.otherLanguage}</span>
+            </a>
+            <div
+              class="icard"
+              id="mText"
+              style="--tab:var(--ctrl)"
+              hidden={!reading}
+            >
+              <span class="pic az">
+                <button type="button" data-act="smaller" aria-label={t.smaller}>
+                  A−
+                </button>
+                <button type="button" data-act="bigger" aria-label={t.bigger}>
+                  A+
+                </button>
+              </span>
+              <b>{t.textSize}</b>
+              <span class="mono" id="mRead">{t.size}</span>
+            </div>
+          </div>
+        </div>
+        <script
+          is:inline
+          type="application/json"
+          id="office-strings"
+          set:html={JSON.stringify(clientStrings)}
+        />
+      </div>
+    </div>
+    <script>
+      import '@/office/client';
+    </script>
+  </body>
+</html>

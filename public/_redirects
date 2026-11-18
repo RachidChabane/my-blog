@@ -1,2 +1,10 @@
+/fr/graph/ /fr/library/ 301
+/en/graph/ /en/library/ 301
+/fr/search/ /fr/library/ 301
+/en/search/ /en/library/ 301
+/fr/tags/* /fr/library/ 301
+/en/tags/* /en/library/ 301
+/fr/blog/:page/ /fr/blog/ 301
+/en/blog/:page/ /en/blog/ 301
 /fr/* /fr/404/ 404
 /en/* /en/404/ 404

@@ -1,0 +1,136 @@
+---
+/** The library: every text with a search, and Glose who keeps the definitions. */
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import type { Concept } from '@/content/schemas';
+import Office from '@/layouts/Office.astro';
+import Room from '@/components/office/Room.astro';
+import Rows from '@/components/office/Rows.astro';
+import ListTools from '@/components/office/ListTools.astro';
+import { who } from '@/office/draw';
+import { officeStrings } from '@/office/strings';
+import { articleRows, mergeRows, radarRows, words } from '@/office/view';
+
+export const getStaticPaths = (() =>
+  LOCALES.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Locale;
+const t = officeStrings(lang);
+const [articles, radar, conceptEntries] = await Promise.all([
+  getCollection('articles'),
+  getCollection('radar'),
+  getCollection('concepts'),
+]);
+const concepts: Concept[] = conceptEntries.map(
+  (c: CollectionEntry<'concepts'>) => c.data as Concept
+);
+const rows = mergeRows(articleRows(articles, lang), radarRows(radar, lang));
+const wordList = words(concepts, articles, radar, lang);
+const themes = Object.keys(t.sage.themes).map((key) => ({
+  key,
+  label: t.sage.themes[key],
+  n: wordList.filter((w) => w.theme === key).length,
+}));
+const kindLabels = { radar: t.kinds.radar, blog: t.kinds.blog };
+const description =
+  lang === 'fr'
+    ? 'La bibliothèque : tous les textes du site, et les définitions des mots de l’ingénierie de l’IA.'
+    : 'The library: every text of the site, and definitions of the words of AI engineering.';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  name: t.sections.library,
+  inLanguage: lang,
+  hasDefinedTerm: wordList.map((w) => ({
+    '@type': 'DefinedTerm',
+    name: w.label,
+    description: w.def,
+  })),
+};
+---
+
+<Office
+  title={`${t.sections.library} · Rachid Chabane`}
+  description={description}
+  lang={lang}
+  section="library"
+  altHref={localePath(lang === 'fr' ? 'en' : 'fr', 'library/')}
+  jsonLd={jsonLd}
+>
+  <Room
+    section="library"
+    title={t.sections.library}
+    count={`${t.counts.texts(rows.length)} · ${t.counts.words(wordList.length)}`}
+    crew={who('Classeur', 'd2', { hold: '#4F53D6' })}
+  />
+  <div class="wrap page">
+    <section class="sage">
+      <form id="sageForm">
+        <input
+          id="sageInput"
+          type="text"
+          placeholder={t.sage.placeholder}
+          aria-label={t.sage.placeholder}
+          autocomplete="off"
+        />
+        <button class="pill go" type="submit">{t.sage.ask}</button>
+        <button class="pill" type="button" id="sageRandom">
+          {t.sage.random}
+        </button>
+      </form>
+      <div class="themes" id="themes">
+        {
+          themes.map((th) => (
+            <button type="button" data-t={th.key} aria-pressed="false">
+              {th.label} · {th.n}
+            </button>
+          ))
+        }
+      </div>
+      <div class="hints" id="hints"></div>
+      <div class="glose" id="glose">
+        <Fragment set:html={who('Glose', 'd2')} />
+        <div class="bubble">
+          <p class="says" id="says">{t.sage.hello}</p>
+          <span class="mono" id="beardCount">
+            {t.sage.inBeard(wordList.length)}
+          </span>
+        </div>
+      </div>
+      <div id="scrollBox"></div>
+      <script
+        is:inline
+        type="application/json"
+        id="words"
+        set:html={JSON.stringify(wordList)}
+      />
+    </section>
+    <ListTools
+      lang={lang}
+      kinds={[
+        { key: 'radar', label: t.kinds.radar },
+        { key: 'blog', label: t.kinds.blog },
+      ]}
+    />
+    <div class="sheet" id="list" style="--tape:var(--clawd)">
+      <Rows rows={rows} lang={lang} kindLabels={kindLabels} wide />
+      <p class="empty" id="empty" hidden>{t.noMatch}</p>
+    </div>
+    <details class="glossary">
+      <summary>{t.counts.words(wordList.length)}</summary>
+      <dl>
+        {
+          wordList.map((w) => (
+            <>
+              <dt id={`word-${w.id}`}>{w.label}</dt>
+              <dd>{w.def}</dd>
+            </>
+          ))
+        }
+      </dl>
+    </details>
+  </div>
+</Office>
