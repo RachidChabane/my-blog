@@ -2797,10 +2797,34 @@ a.folder:hover {
   display: none;
 }
 
-/* texts under the frieze give way while the stand swiped to is loading */
-#main > .wrap {
-  transition: opacity 0.18s ease;
+/* phone home: what is under the frieze follows the swipe. --dir is 1 when the
+   frieze moved on to the next stand, -1 when it went back. */
+#main {
+  overflow-x: clip;
 }
 #main > .wrap.leaving {
-  opacity: 0.35;
+  animation: stand-out 0.17s ease-in forwards;
+}
+#main > .wrap.arrive > * {
+  animation: stand-in 0.46s cubic-bezier(0.2, 0.9, 0.25, 1.08) both;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+@keyframes stand-out {
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--dir, 1) * -44px));
+  }
+}
+@keyframes stand-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--dir, 1) * 64px))
+      rotate(calc(var(--dir, 1) * 1.4deg));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #main > .wrap.leaving,
+  #main > .wrap.arrive > * {
+    animation: none;
+  }
 }

@@ -175,46 +175,90 @@ function liveRoom(): void {
     room.classList.toggle('on', n === idx);
     room.classList.toggle('off', n !== idx);
   });
-  const href = pano.querySelectorAll('svg a')[idx]?.getAttribute('href');
-  if (href && (standShown !== null || idx > 0)) void showStand(href);
+  const links = Array.from(pano.querySelectorAll('svg a'));
+  const href = links[idx]?.getAttribute('href');
+  if (standShown === null && idx === 0) {
+    for (const a of links) void standPage(a.getAttribute('href') ?? '');
+    return;
+  }
+  if (href) void showStand(href, idx >= standIdx ? 1 : -1, idx);
 }
 
 /** Address of the stand whose texts are under the frieze; null on arrival. */
 let standShown: string | null = null;
+let standIdx = 0;
+/** Section pages already asked for, so a swipe never waits on the network twice. */
+const standPages = new Map<string, Promise<string>>();
+const STAND_OUT_MS = 170;
+const STAND_STAGGER_MAX = 6;
+
+function standPage(href: string): Promise<string> {
+  let page = standPages.get(href);
+  if (!page) {
+    page = fetch(href).then((r) => r.text());
+    page.catch(() => standPages.delete(href));
+    standPages.set(href, page);
+  }
+  return page;
+}
 
 /**
  * On a phone the frieze is swiped one stand at a time: the stand in view becomes
- * the selected section, and its texts replace what is under the frieze.
+ * the selected section. What is under the frieze leaves the way the frieze went,
+ * and the texts of the new stand come in from the other side, one after another.
  */
-async function showStand(href: string): Promise<void> {
+async function showStand(
+  href: string,
+  dir: 1 | -1,
+  idx: number
+): Promise<void> {
   if (href === standShown) return;
   standShown = href;
+  standIdx = idx;
   document.querySelectorAll('#tabs a').forEach((a) => {
     if (a.getAttribute('href') === href) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
   });
   placeRunner();
-  const under = document.querySelector<HTMLElement>('#main > .wrap');
-  if (!under) return;
-  under.classList.add('leaving');
+  const pano = $('pano');
+  const main = $('main');
+  if (!pano || !main) return;
+  main.style.setProperty('--dir', String(dir));
+  const old = Array.from(main.querySelectorAll<HTMLElement>(':scope > .wrap'));
+  old.forEach((el) => {
+    el.classList.remove('arrive');
+    el.classList.add('leaving');
+  });
   try {
-    const html = await fetch(href).then((r) => r.text());
+    const [html] = await Promise.all([
+      standPage(href),
+      new Promise((done) => window.setTimeout(done, STAND_OUT_MS)),
+    ]);
     if (standShown !== href) return;
     const next = new DOMParser()
       .parseFromString(html, 'text/html')
       .getElementById('main');
     if (!next) throw new Error('page');
     next.querySelector('.room')?.remove();
-    const pano = $('pano');
-    while (pano?.nextSibling) pano.nextSibling.remove();
     const fresh = document.createDocumentFragment();
     for (const node of Array.from(next.childNodes))
       fresh.append(document.importNode(node, true));
-    pano?.after(fresh);
+    for (const wrap of Array.from(fresh.children)) {
+      if (!wrap.classList.contains('wrap')) continue;
+      wrap.classList.add('arrive');
+      Array.from(wrap.children).forEach((child, n) =>
+        (child as HTMLElement).style.setProperty(
+          '--i',
+          String(Math.min(n, STAND_STAGGER_MAX))
+        )
+      );
+    }
+    while (pano.nextSibling) pano.nextSibling.remove();
+    pano.after(fresh);
     words = json<Word[]>('words') ?? [];
     wordById = new Map(words.map((w) => [w.id, w]));
   } catch {
-    under.classList.remove('leaving');
+    old.forEach((el) => el.classList.remove('leaving'));
   }
 }
 
@@ -679,6 +723,7 @@ function mount(): void {
   reading = json<ReadingData>('reading-data') ?? { citations: [], terms: [] };
   askCount = 0;
   standShown = null;
+  standIdx = 0;
   syncLamp();
   placeRunner();
   buildToc();
