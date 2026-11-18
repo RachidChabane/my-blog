@@ -972,9 +972,11 @@ window.__boot3D = function () {
   padRead.addEventListener('click', function () { if (held && reading === null) openReader(heldIdx, true); });
   document.getElementById('menuBtn').addEventListener('click', function () { document.getElementById('w3s').classList.toggle('navopen'); });
   var stick = document.getElementById('stick'), knob = document.getElementById('knob'), stickId = null;
-  function stickMove(e) { var r = stick.getBoundingClientRect(), vx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2), vy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2), l = Math.hypot(vx, vy); if (l > 1) { vx /= l; vy /= l; }
+  var STICK_REACH = 34, stickFrom = null;
+  function stickMove(e) { var vx = (e.clientX - stickFrom.x) / STICK_REACH, vy = (e.clientY - stickFrom.y) / STICK_REACH, l = Math.hypot(vx, vy); if (l > 1) { vx /= l; vy /= l; }
     stickVec.x = vx; stickVec.y = vy; knob.style.transform = 'translate(' + (vx * 34) + 'px,' + (vy * 34) + 'px)'; }
-  stick.addEventListener('pointerdown', function (e) { stickId = e.pointerId; try { stick.setPointerCapture(e.pointerId); } catch (err) {} stickMove(e); e.preventDefault(); e.stopPropagation(); });
+  stick.addEventListener('touchstart', function (e) { e.preventDefault(); }, { passive: false });
+  stick.addEventListener('pointerdown', function (e) { stickId = e.pointerId; stickFrom = { x: e.clientX, y: e.clientY }; try { stick.setPointerCapture(e.pointerId); } catch (err) {} stickMove(e); e.preventDefault(); e.stopPropagation(); });
   stick.addEventListener('pointermove', function (e) { if (e.pointerId === stickId) { stickMove(e); e.stopPropagation(); } });
   function stickEnd(e) { if (e.pointerId === stickId) { stickId = null; stickVec.x = stickVec.y = 0; knob.style.transform = ''; canvas.focus(); } }
   stick.addEventListener('pointerup', stickEnd); stick.addEventListener('pointercancel', stickEnd);
