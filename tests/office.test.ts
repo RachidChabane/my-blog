@@ -162,6 +162,7 @@ describe('agent persona and daily budget', () => {
     expect(voiced).toContain('Plume');
     expect(voiced.startsWith(plain.slice(0, 200))).toBe(true);
     expect(plain).not.toContain('Plume');
+    expect(voiced).toContain("Rachid's work, never yours");
   });
 
   it('caps a day at ten cents unless a valid override is given', () => {

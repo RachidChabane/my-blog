@@ -485,8 +485,10 @@ function askHere(question: string): void {
   answer.className = 'cl';
   answer.textContent = '…';
   log.append(me, answer);
+  // Naming the text keeps a general question ("sum it up") on this text's passages.
+  const title = s2().querySelector('.sheet.text h1')?.textContent ?? '';
   ask({
-    q,
+    q: title ? `${q} (${title})` : q,
     persona: box.dataset.persona,
     scopeSlug: box.dataset.slug,
     onText: (t) => (answer.textContent = t),
