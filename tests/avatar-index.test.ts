@@ -787,6 +787,7 @@ describe('loadPublishedSources + draft exclusion + build→retrieve (FS fixtures
       'j-pub-en',
       'k-pub-en',
       'p-pub-en',
+      'projects-overview-en',
       'r-pub-en',
     ]);
 

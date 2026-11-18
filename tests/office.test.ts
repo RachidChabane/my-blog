@@ -8,6 +8,10 @@ import type { Row } from '@/office/view';
 import { validateQueryRequest } from '@/lib/avatar/guard';
 import { PERSONAS } from '@/lib/avatar/protocol';
 import { buildSystemPrompt, PERSONA_VOICE } from '@/lib/avatar/synthesize';
+import { wholeTextCandidates } from '@/lib/avatar/whole-text';
+import { projectOverviews } from '@/lib/avatar/index-build';
+import type { SourceDoc } from '@/lib/avatar/index-build';
+import type { IndexChunk } from '@/lib/avatar/contracts';
 import {
   DEFAULT_DAILY_BUDGET_USD,
   parseDailyBudgetUsd,
@@ -182,5 +186,66 @@ describe('redirects', () => {
     expect(sources.length).toBeGreaterThan(0);
     for (const source of sources)
       expect(source, source).not.toMatch(/\/(blog|radar|journal|work)\//);
+  });
+});
+
+describe('what the agent reads', () => {
+  const chunk = (id: string, text: string): IndexChunk => ({
+    id,
+    slug: 's',
+    lang: 'fr',
+    sourceUrl: 'https://x/',
+    headingAnchor: '',
+    title: 't',
+    text,
+    embedding: [],
+  });
+
+  it('keeps a whole text in reading order', () => {
+    const out = wholeTextCandidates(
+      [chunk('a', 'one'), chunk('b', 'two')],
+      0.6
+    );
+    expect(out.map((c) => c.chunk.id)).toEqual(['a', 'b']);
+    expect(out[0].vectorSimilarity).toBe(0.6);
+  });
+
+  it('stops before the passage that would pass the ceiling, never mid-passage', () => {
+    const out = wholeTextCandidates(
+      [chunk('a', 'x'.repeat(60)), chunk('b', 'y'.repeat(60)), chunk('c', 'z')],
+      0.5,
+      100
+    );
+    expect(out.map((c) => c.chunk.id)).toEqual(['a']);
+  });
+
+  it('always keeps the first passage, however long', () => {
+    expect(
+      wholeTextCandidates([chunk('a', 'x'.repeat(500))], 0.5, 100)
+    ).toHaveLength(1);
+  });
+
+  it('lists every project of a locale in one overview document', () => {
+    const doc = (lang: 'fr' | 'en', title: string): SourceDoc => ({
+      kind: 'project',
+      slug: title,
+      lang,
+      title,
+      summary: `about ${title}`,
+      body: '',
+      pageUrl: 'https://x/',
+    });
+    const out = projectOverviews(
+      [doc('fr', 'Alpha'), doc('fr', 'Beta'), doc('en', 'Gamma')],
+      'https://rachid-chabane.com'
+    );
+    expect(out.map((d) => d.slug)).toEqual([
+      'projects-overview-fr',
+      'projects-overview-en',
+    ]);
+    expect(out[0].body).toContain('Alpha: about Alpha');
+    expect(out[0].body).toContain('Beta: about Beta');
+    expect(out[0].body).not.toContain('Gamma');
+    expect(out[0].pageUrl).toBe('https://rachid-chabane.com/fr/work/');
   });
 });

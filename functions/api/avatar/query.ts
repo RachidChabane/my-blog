@@ -16,6 +16,11 @@ import { WorkersAiBindingEmbedder } from '../../../src/lib/avatar/embedder';
 import { VectorizeVectorStore } from '../../../src/lib/avatar/vectorize-store';
 import { D1LexicalStore } from '../../../src/lib/avatar/d1-lexical';
 import {
+  loadChunkIdsBySlug,
+  loadChunksByIds,
+} from '../../../src/lib/avatar/d1';
+import { wholeTextCandidates } from '../../../src/lib/avatar/whole-text';
+import {
   buildSynthesisRequest,
   dedupeChunksByArticle,
   IDK_MESSAGE,
@@ -37,6 +42,8 @@ import {
 
 // --- type-only imports (verbatimModuleSyntax) ---
 import type {
+  Candidate,
+  IndexChunk,
   LLMProvider,
   LlmRequest,
   RetrievalResult,
@@ -196,6 +203,8 @@ export interface AvatarEndpointDeps {
   threshold?: number; // default DEFAULT_SIMILARITY_THRESHOLD (0.25)
   maxNearMisses?: number; // default DEFAULT_MAX_NEAR_MISSES (3)
   retrieveOptions?: RetrieveOptions;
+  /** Every chunk of one text, in reading order; absent → scoped questions use retrieved passages. */
+  loadText?: (slug: string) => Promise<IndexChunk[]>;
   /** Daily spend guardrail; absent → no cap (e.g. local dev without D1). */
   spend?: SpendGuardOptions;
 }
@@ -261,7 +270,7 @@ export async function handleAvatarQuery(
   const { request: llmRequest, citations } = buildSynthesisRequest({
     query: v.query,
     lang: v.lang,
-    chunks: dedupeChunksByArticle(outcome.chunks, v.lang),
+    chunks: await synthesisChunks(deps, v.scopeSlug, v.lang, outcome),
     persona: v.persona,
   });
   return groundedResponse(
@@ -272,6 +281,29 @@ export async function handleAvatarQuery(
     outcome.threshold,
     deps.spend
   );
+}
+
+/**
+ * What the model reads. A question scoped to one text gets the whole text, so a
+ * request like "sum it up" covers all of it; otherwise the retrieved passages,
+ * one per article. A failed or empty load falls back to the retrieved passages.
+ */
+async function synthesisChunks(
+  deps: AvatarEndpointDeps,
+  scopeSlug: string | undefined,
+  lang: Locale,
+  outcome: { chunks: Candidate[]; topSimilarity: number }
+): Promise<Candidate[]> {
+  if (scopeSlug && deps.loadText) {
+    try {
+      const text = await deps.loadText(scopeSlug);
+      if (text.length > 0)
+        return wholeTextCandidates(text, outcome.topSimilarity);
+    } catch {
+      /* the retrieved passages below still answer the question */
+    }
+  }
+  return dedupeChunksByArticle(outcome.chunks, lang);
 }
 
 // --- runtime wiring (onRequestPost; not unit-tested — needs the live bindings) -
@@ -287,10 +319,21 @@ export async function onRequestPost(context: PagesContext): Promise<Response> {
       llm,
       threshold,
       spend,
+      loadText: env.DB ? loadTextFrom(env.DB) : undefined,
     });
   } catch {
     return jsonError(503, 'Avatar service unavailable.');
   }
+}
+
+function loadTextFrom(db: D1Database) {
+  return async (slug: string): Promise<IndexChunk[]> => {
+    const ids = await loadChunkIdsBySlug(db, slug);
+    const byId = await loadChunksByIds(db, ids);
+    return ids
+      .map((id) => byId.get(id))
+      .filter((c): c is IndexChunk => c !== undefined);
+  };
 }
 
 /**

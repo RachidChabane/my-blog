@@ -244,7 +244,64 @@ export function loadPublishedSources(opts: LoadOptions = {}): SourceDoc[] {
   const siteUrl = opts.siteUrl ?? process.env.SITE_URL ?? DEFAULT_SITE_URL;
 
   const docs = CONTENT_SOURCES.flatMap((load) => load(contentRoot, siteUrl));
+  docs.push(...projectOverviews(docs, siteUrl));
   return docs.sort((a, b) => a.slug.localeCompare(b.slug));
+}
+
+/** Room for the overview's text: it must stay one chunk so every project is read together. */
+const OVERVIEW_MAX_CHARS = 1100;
+
+/** One line per project: its name and as much of its summary as the room allows. */
+function overviewBody(projects: SourceDoc[]): string {
+  const names = projects.map((p) => p.title.split(':')[0].trim());
+  const fixed = names.reduce((n, name) => n + name.length + 3, 0);
+  const each = Math.max(
+    0,
+    Math.floor((OVERVIEW_MAX_CHARS - fixed) / projects.length)
+  );
+  return projects
+    .map((p, i) => {
+      const flat = p.summary.replace(/\s+/g, ' ').trim();
+      const clipped =
+        flat.length <= each
+          ? flat
+          : `${flat.slice(0, each).replace(/\s\S*$/, '')}…`;
+      return `${names[i]}: ${clipped}`;
+    })
+    .join('\n');
+}
+
+const OVERVIEW_TITLE: Record<Locale, string> = {
+  fr: 'Les projets de Rachid Chabane',
+  en: "Rachid Chabane's projects",
+};
+
+/**
+ * One document per locale that names every published project with its summary.
+ * A question such as "what has he built?" resembles no single project page; this
+ * gives it one passage that lists them all. It cites the projects index.
+ */
+export function projectOverviews(
+  docs: SourceDoc[],
+  siteUrl: string
+): SourceDoc[] {
+  return (['fr', 'en'] as const).flatMap((lang) => {
+    const projects = docs.filter(
+      (d) => d.kind === 'project' && d.lang === lang
+    );
+    if (projects.length === 0) return [];
+    return [
+      {
+        kind: 'knowledge' as const,
+        slug: `projects-overview-${lang}`,
+        lang,
+        title: OVERVIEW_TITLE[lang],
+        summary: '',
+        body: overviewBody(projects),
+        pageUrl: new URL(localePath(lang, 'work'), siteUrl).href,
+      },
+    ];
+  });
 }
 
 /**
