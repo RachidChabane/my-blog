@@ -171,3 +171,15 @@ describe('agent persona and daily budget', () => {
     expect(parseDailyBudgetUsd('0.5')).toBe(0.5);
   });
 });
+
+describe('redirects', () => {
+  it('never catches the address of a text or a project', () => {
+    const sources = readFileSync('public/_redirects', 'utf8')
+      .split('\n')
+      .filter((line) => line.trim() && !line.endsWith(' 404'))
+      .map((line) => line.split(/\s+/)[0]);
+    expect(sources.length).toBeGreaterThan(0);
+    for (const source of sources)
+      expect(source, source).not.toMatch(/\/(blog|radar|journal|work)\//);
+  });
+});
