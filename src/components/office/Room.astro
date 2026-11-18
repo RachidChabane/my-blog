@@ -1,0 +1,31 @@
+---
+/** Header band of a section: its wall colour, its name, and who works there. */
+import { SECTION_COLOR } from '@/office/strings';
+import type { SectionKey } from '@/office/strings';
+
+export interface Props {
+  section: SectionKey;
+  title: string;
+  count: string;
+  /** SVG markup of the Clawds standing at the desk. */
+  crew: string;
+}
+const { section, title, count, crew } = Astro.props;
+const dark = section === 'blog';
+---
+
+<div
+  class="room"
+  style={`--c:${SECTION_COLOR[section]};--on:${dark ? '#171B2B' : '#fff'}`}
+>
+  <div class="wrap">
+    <div>
+      <h1>{title}</h1>
+      <div class="count">{count}</div>
+    </div>
+    <div>
+      <div class="crew" set:html={crew} />
+      <div class="desk"></div>
+    </div>
+  </div>
+</div>

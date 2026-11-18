@@ -1,0 +1,23 @@
+# Rachid Chabane
+
+> AI engineering blog and portfolio, in French and English. Long-form articles, a daily radar of sourced briefs, a personal journal and open-source projects. Every text is a plain HTML page with its sources listed.
+
+## Sections
+
+- [Articles (EN)](https://rachid-chabane.com/en/blog/): long-form pieces on agents, evaluation, security and infrastructure
+- [Articles (FR)](https://rachid-chabane.com/fr/blog/)
+- [Radar (EN)](https://rachid-chabane.com/en/radar/): short sourced briefs on what just shipped
+- [Radar (FR)](https://rachid-chabane.com/fr/radar/)
+- [Journal (EN)](https://rachid-chabane.com/en/journal/): dated personal ideas
+- [Journal (FR)](https://rachid-chabane.com/fr/journal/)
+- [Projects (EN)](https://rachid-chabane.com/en/work/)
+- [Library (EN)](https://rachid-chabane.com/en/library/): every text, and definitions of the terms used
+- [About (EN)](https://rachid-chabane.com/en/about/)
+
+## Feeds
+
+- [Articles RSS (EN)](https://rachid-chabane.com/en/rss.xml)
+- [Articles RSS (FR)](https://rachid-chabane.com/fr/rss.xml)
+- [Radar RSS (EN)](https://rachid-chabane.com/en/radar/rss.xml)
+- [Radar RSS (FR)](https://rachid-chabane.com/fr/radar/rss.xml)
+- [Sitemap](https://rachid-chabane.com/sitemap-index.xml)

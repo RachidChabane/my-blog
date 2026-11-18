@@ -1,0 +1,56 @@
+---
+/** The journal stand: every published text, newest first, with a filter. */
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import Office from '@/layouts/Office.astro';
+import Room from '@/components/office/Room.astro';
+import Rows from '@/components/office/Rows.astro';
+import { officeStrings } from '@/office/strings';
+import { journalRows } from '@/office/view';
+
+export const getStaticPaths = (() =>
+  LOCALES.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Locale;
+const t = officeStrings(lang);
+const rows = journalRows(await getCollection('journal'), lang);
+const count = t.counts.texts(rows.length);
+const crew =
+  '<svg viewBox="0 0 60 44" class="lampdraw" aria-hidden="true"><rect x="27" y="14" width="3" height="30" fill="#171B2B"/><path d="M12 16L19 0H38L45 16Z" fill="#F2C230"/></svg>';
+const kindLabels = {};
+const description =
+  lang === 'fr'
+    ? 'Le journal de Rachid Chabane : des idées datées, écrites au moment où il les a.'
+    : 'Rachid Chabane’s journal: dated ideas, written down when he has them.';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: t.sections.journal,
+  url: new URL(localePath(lang, 'journal/'), Astro.site).href,
+  inLanguage: lang,
+};
+---
+
+<Office
+  title={`${t.sections.journal} · Rachid Chabane`}
+  description={description}
+  lang={lang}
+  section="journal"
+  altHref={localePath(lang === 'fr' ? 'en' : 'fr', 'journal/')}
+  jsonLd={jsonLd}
+>
+  <Room
+    section="journal"
+    title={t.sections.journal}
+    count={count}
+    crew={crew}
+  />
+  <div class="wrap page">
+    <div class="sheet" id="list" style="--tape:var(--jrnl)">
+      <Rows rows={rows} lang={lang} kindLabels={kindLabels} wide />
+      <p class="empty" id="empty" hidden>{t.noMatch}</p>
+    </div>
+  </div>
+</Office>

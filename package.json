@@ -8,9 +8,8 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pagefind --site dist",
+    "build": "astro build",
     "build:index": "tsx scripts/build-avatar-index.ts",
-    "build:fonts": "./scripts/build-fonts.sh",
     "reindex": "tsx scripts/reindex.ts",
     "probe:avatar": "tsx scripts/probe-avatar-scope.ts",
     "voice:refs": "./scripts/fetch-voice-refs.sh",
@@ -50,7 +49,6 @@
     "globals": "^17.6.0",
     "gray-matter": "^4.0.3",
     "happy-dom": "^20.10.1",
-    "pagefind": "^1.5.2",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
     "tsx": "^4.19.4",

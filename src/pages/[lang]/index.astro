@@ -1,247 +1,143 @@
 ---
-/**
- * S1 — Home / hub. `/[lang]/` (FR + EN). A restrained typographic hero (the page
- * heading; the brand wordmark is the masthead's), then two blocks: the newest
- * published articles ("Derniers articles") reusing the pinned ArticleListItem
- * (S2 row), and a top-flagships teaser ("Projets") reusing ProjectCard (S6 card).
- * No SaaS landing tropes, no gradient hero, no email capture (task constraint,
- * guarded statically by tests/home.test.ts).
- *
- * Selectors + view-models come from src/lib/content.ts; copy from src/i18n/ui.ts;
- * chrome (masthead/footer/avatar/skip-link) from Base. No slugMap → the language
- * switcher falls back to the localized home (decision #6; NFR-11 holds since both
- * /fr/ and /en/ exist). The two "see all" affordances link to the section indexes
- * (/[lang]/blog/, /[lang]/work/), which exist. Blocks render only when non-empty
- * (defensive; the seeds guarantee ≥3 published per locale).
- */
+/** Home: the office in section, then the newest text of each stand. */
 import type { GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
 import { LOCALES, localePath } from '@/i18n/index';
 import type { Locale } from '@/i18n/index';
-import {
-  homeStrings,
-  articleIndexStrings,
-  portfolioIndexStrings,
-} from '@/i18n/ui';
-import {
-  latestArticles,
-  teaserProjects,
-  toArticleCard,
-  toProjectCard,
-  toProjectFeature,
-} from '@/lib/content';
-import type { ArticleCard, ProjectCardVM } from '@/lib/content';
-import Base from '@/layouts/Base.astro';
-import Hero from '@/components/Hero.astro';
-import ArticleListItem from '@/components/ArticleListItem.astro';
-import ProjectCard from '@/components/ProjectCard.astro';
+import { getPublishedProjects } from '@/lib/content';
+import Office from '@/layouts/Office.astro';
+import Rows from '@/components/office/Rows.astro';
+import { frieze } from '@/office/draw';
+import type { FriezeRoom } from '@/office/draw';
+import { officeStrings, SECTION_PATHS } from '@/office/strings';
+import { articleRows, journalRows, radarRows } from '@/office/view';
 
-export const getStaticPaths = (async () => {
-  const [articles, projects, tagEntries] = await Promise.all([
+export const getStaticPaths = (() =>
+  LOCALES.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Locale;
+const t = officeStrings(lang);
+const [articleEntries, radarEntries, journalEntries, projectEntries] =
+  await Promise.all([
     getCollection('articles'),
+    getCollection('radar'),
+    getCollection('journal'),
     getCollection('projects'),
-    getCollection('tags'),
   ]);
-  const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
-  return LOCALES.map((lang) => {
-    const teaserEntries = teaserProjects(projects, lang);
-    return {
-      params: { lang },
-      props: {
-        lang,
-        latest: latestArticles(articles, lang).map((e) =>
-          toArticleCard(e, lang, tags)
-        ),
-        // the curated flagship (teaser[0]) becomes the wide feature card.
-        teaser: teaserEntries.map((e, i) =>
-          i === 0 ? toProjectFeature(e, lang) : toProjectCard(e, lang)
-        ),
-        // totals for the hero ledger (full published lists, not the capped slices).
-        articleCount: latestArticles(articles, lang, Infinity).length,
-        projectCount: teaserProjects(projects, lang, Infinity).length,
-      },
-    };
-  });
-}) satisfies GetStaticPaths;
-
-const { lang, latest, teaser, articleCount, projectCount } = Astro.props as {
-  lang: Locale;
-  latest: ArticleCard[];
-  teaser: ProjectCardVM[];
-  articleCount: number;
-  projectCount: number;
+const articles = articleRows(articleEntries, lang);
+const radar = radarRows(radarEntries, lang);
+const journal = journalRows(journalEntries, lang);
+const projects = getPublishedProjects(projectEntries, lang);
+const lead = articles[0];
+const HOME_RADAR = 5;
+const HOME_ARTICLES = 5;
+const rooms: FriezeRoom[] = (
+  ['radar', 'blog', 'work', 'library', 'journal'] as const
+).map((key) => ({
+  key,
+  label: t.sections[key],
+  href: localePath(lang, SECTION_PATHS[key]),
+  say: t.frieze.say[key],
+}));
+const description =
+  lang === 'fr'
+    ? 'Ingénierie de l’IA : articles de fond, radar quotidien, journal et projets open source de Rachid Chabane.'
+    : 'AI engineering: long-form articles, a daily radar, a journal and open-source projects by Rachid Chabane.';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Rachid Chabane',
+  url: new URL(localePath(lang), Astro.site).href,
+  inLanguage: lang,
+  author: { '@type': 'Person', name: 'Rachid Chabane' },
 };
-const h = homeStrings(lang);
-const ai = articleIndexStrings(lang); // ai.readCta — reused for the article rows
-const pi = portfolioIndexStrings(lang); // pi.ordinalWord / pi.viewCta — reused for the cards
-const blogHref = localePath(lang, 'blog');
-const workHref = localePath(lang, 'work');
-
-// The hero's autonomous ledger: a living stat strip read off the content.
-const heroStats = [
-  { value: String(articleCount), label: h.statWritings },
-  { value: String(projectCount), label: h.projectsTitle },
-  { value: 'FR · EN', label: h.statLanguages },
-  { value: latest[0]?.dateDisplay ?? '', label: h.updatedLabel },
-];
 ---
 
-<Base title={h.metaTitle} description={h.heroSub} lang={lang}>
-  <div class="rc-home rc-enter">
-    <Hero
-      eyebrow={h.heroEyebrow}
-      line={h.heroLine}
-      sub={h.heroSub}
-      ctaLabel={h.heroCta}
-      ctaHref={blogHref}
-      ctaAltLabel={h.heroCtaAlt}
-      ctaAltHref={workHref}
-      systemLabel={h.systemLabel}
-      stats={heroStats}
-    />
-
-    {
-      latest.length > 0 && (
-        <section class="rc-block">
-          <div class="rc-block__head" data-reveal>
-            <div class="rc-block__lead">
-              <span class="rc-block__n" aria-hidden="true">
-                01
-              </span>
-              <h2 class="rc-block__title">{h.latestTitle}</h2>
-            </div>
-            <a class="rc-teaser-all" href={blogHref}>
-              {h.latestAll} →
-            </a>
-          </div>
-          <div class="rc-arows">
-            {latest.map((card) => (
-              <ArticleListItem card={card} readCta={ai.readCta} reveal />
-            ))}
-          </div>
-        </section>
-      )
-    }
-
-    {
-      teaser.length > 0 && (
-        <section class="rc-block">
-          <div class="rc-block__head" data-reveal>
-            <div class="rc-block__lead">
-              <span class="rc-block__n" aria-hidden="true">
-                02
-              </span>
-              <h2 class="rc-block__title">{h.projectsTitle}</h2>
-            </div>
-            <a class="rc-teaser-all" href={workHref}>
-              {h.projectsAll} →
-            </a>
-          </div>
-          <div class="rc-projgrid">
-            {teaser.map((card, i) => (
-              <ProjectCard
-                card={card}
-                ordinal={String(i + 1).padStart(2, '0')}
-                ordinalWord={pi.ordinalWord}
-                viewCta={pi.viewCta}
-                feature={i === 0}
-                reveal
-              />
-            ))}
-          </div>
-        </section>
-      )
-    }
+<Office
+  title="Rachid Chabane · AI engineering"
+  description={description}
+  lang={lang}
+  altHref={localePath(lang === 'fr' ? 'en' : 'fr')}
+  jsonLd={jsonLd}
+>
+  <div class="pano" id="pano">
+    <div class="strip">
+      <Fragment set:html={frieze(rooms, t.frieze.aria)} />
+      <div class="snaps"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
   </div>
-</Base>
-
-<style>
-  /* Inner content column (Base already provides <main>; no second <main>). Same
-     1080px width + padding as work/index.astro so the teaser grid aligns with the
-     portfolio it links into. Tokens only. */
-  .rc-home {
-    width: 100%;
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 40px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-9);
-  }
-  @media (max-width: 720px) {
-    .rc-home {
-      padding-left: 22px;
-      padding-right: 22px;
+  <div class="wrap home">
+    {
+      lead && (
+        <article class="sheet lead">
+          <div class="kicker">
+            <time>{lead.date}</time>
+            <span>{lead.minutes} min</span>
+            <span>
+              {lead.sources} {t.sources.toLowerCase()}
+            </span>
+          </div>
+          <h2>
+            <a href={lead.href}>{lead.title}</a>
+          </h2>
+          <p>{lead.dek}</p>
+          <a class="pill go" href={lead.href}>
+            {t.read}
+          </a>
+        </article>
+      )
     }
-  }
-  .rc-block {
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-  }
-  .rc-block__head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-    border-bottom: 1px solid var(--rule);
-    padding-bottom: 16px;
-  }
-  /* numbered section lead — color-as-structure (accent numeral + Fraunces head) */
-  .rc-block__lead {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    min-width: 0;
-  }
-  .rc-block__n {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: var(--accent-text);
-    font-variant-numeric: tabular-nums;
-  }
-  .rc-block__title {
-    margin: 0;
-    font-family: var(--font-display);
-    font-variation-settings: var(--fraunces-head);
-    font-size: var(--text-h2);
-    letter-spacing: -0.015em;
-    color: var(--fg);
-  }
-  .rc-teaser-all {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--accent);
-    white-space: nowrap;
-    transition: color var(--dur-hover) var(--ease-soft);
-  }
-  .rc-teaser-all:hover {
-    color: var(--accent-strong);
-  }
-  .rc-arows {
-    display: flex;
-    flex-direction: column;
-  }
-  .rc-projgrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    gap: 22px;
-  }
-  .rc-enter {
-    animation: rc-rise var(--dur-enter) var(--ease-out);
-  }
-  @keyframes rc-rise {
-    from {
-      transform: translateY(14px);
-    }
-    to {
-      transform: none;
-    }
-  }
-</style>
+    <section class="board">
+      <h3>{t.sections.radar}</h3>
+      <ol>
+        {
+          radar.slice(0, HOME_RADAR).map((r) => (
+            <li>
+              <span class="mono">
+                {r.date} · {t.kinds[r.kind] ?? r.kind}
+              </span>
+              <a href={r.href}>{r.title}</a>
+            </li>
+          ))
+        }
+      </ol>
+      <a class="all" href={localePath(lang, SECTION_PATHS.radar)}>
+        {t.counts.briefs(radar.length)}
+      </a>
+    </section>
+    <section class="sheet more" style="--tape:var(--ctrl)">
+      <h3>{t.sections.blog}</h3>
+      <Rows rows={articles.slice(1, 1 + HOME_ARTICLES)} lang={lang} />
+      <p class="allp">
+        <a class="all" href={localePath(lang, SECTION_PATHS.blog)}>
+          {t.counts.articles(articles.length)}
+        </a>
+      </p>
+    </section>
+    <div class="side">
+      {
+        journal[0] && (
+          <section class="jr">
+            <h3>{t.sections.journal}</h3>
+            <a class="t" href={journal[0].href}>
+              {journal[0].title}
+            </a>
+            <span class="mono">{journal[0].date}</span>
+          </section>
+        )
+      }
+      <section>
+        <h3>{t.sections.work}</h3>
+        <div class="proj">
+          {
+            projects.map((p) => (
+              <a href={localePath(lang, `work/${p.data.slug}`)}>
+                {p.data.name.split(':')[0].trim()}
+              </a>
+            ))
+          }
+        </div>
+      </section>
+    </div>
+  </div>
+</Office>

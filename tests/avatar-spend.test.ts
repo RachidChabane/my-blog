@@ -15,11 +15,11 @@ import { createRetriever } from '@/lib/avatar/retrieval';
 import { parseSSE } from '@/lib/avatar/protocol';
 import {
   D1SpendLedger,
-  DEFAULT_MONTHLY_BUDGET_USD,
+  DEFAULT_DAILY_BUDGET_USD,
   FALLBACK_REQUEST_COST_USD,
-  monthKey,
-  nextMonthStart,
-  parseMonthlyBudgetUsd,
+  dayKey,
+  nextDayStart,
+  parseDailyBudgetUsd,
 } from '@/lib/avatar/spend';
 import type { SpendLedger } from '@/lib/avatar/spend';
 import { OpenRouterLLMProvider } from '@/lib/avatar/synthesize';
@@ -82,30 +82,35 @@ beforeEach(() => {
 });
 
 // --- calendar + budget parsing ----------------------------------------------
+/** The ledger key of the fixed test clock, and the day after it. */
+const DAY = '2026-07-15';
+const NEXT_DAY = '2026-07-16';
+
 describe('spend calendar + budget parsing', () => {
-  it('monthKey is the UTC YYYY-MM of the date', () => {
-    expect(monthKey(JULY())).toBe('2026-07');
+  it('dayKey is the UTC YYYY-MM-DD of the date', () => {
+    expect(dayKey(JULY())).toBe(DAY);
   });
 
-  it('nextMonthStart is the 1st of the following month, incl. year rollover', () => {
-    expect(nextMonthStart(JULY())).toBe('2026-08-01');
-    expect(nextMonthStart(new Date(Date.UTC(2026, 11, 31)))).toBe('2027-01-01');
+  it('nextDayStart is the following day, incl. month and year rollover', () => {
+    expect(nextDayStart(JULY())).toBe(NEXT_DAY);
+    expect(nextDayStart(new Date(Date.UTC(2026, 6, 31)))).toBe('2026-08-01');
+    expect(nextDayStart(new Date(Date.UTC(2026, 11, 31)))).toBe('2027-01-01');
   });
 
-  it('parseMonthlyBudgetUsd honors positive overrides, floors the rest to the default', () => {
-    expect(parseMonthlyBudgetUsd(undefined)).toBe(DEFAULT_MONTHLY_BUDGET_USD);
-    expect(parseMonthlyBudgetUsd('2.5')).toBe(2.5);
+  it('parseDailyBudgetUsd honors positive overrides, floors the rest to the default', () => {
+    expect(parseDailyBudgetUsd(undefined)).toBe(DEFAULT_DAILY_BUDGET_USD);
+    expect(parseDailyBudgetUsd('2.5')).toBe(2.5);
     // 0 / negative / NaN would disable the agent permanently — fall back.
-    expect(parseMonthlyBudgetUsd('0')).toBe(DEFAULT_MONTHLY_BUDGET_USD);
-    expect(parseMonthlyBudgetUsd('-1')).toBe(DEFAULT_MONTHLY_BUDGET_USD);
-    expect(parseMonthlyBudgetUsd('abc')).toBe(DEFAULT_MONTHLY_BUDGET_USD);
+    expect(parseDailyBudgetUsd('0')).toBe(DEFAULT_DAILY_BUDGET_USD);
+    expect(parseDailyBudgetUsd('-1')).toBe(DEFAULT_DAILY_BUDGET_USD);
+    expect(parseDailyBudgetUsd('abc')).toBe(DEFAULT_DAILY_BUDGET_USD);
   });
 });
 
 // --- endpoint gate ----------------------------------------------------------
 describe('endpoint spend gate', () => {
   it('budget spent → 503 with availableAt; retriever and LLM never touched', async () => {
-    ledger.totals.set('2026-07', 5);
+    ledger.totals.set(DAY, 5);
     let retrieveCalls = 0;
     const spyRetriever: AvatarRetriever = {
       retrieve: (q, opts) => {
@@ -119,9 +124,9 @@ describe('endpoint spend gate', () => {
       spend: { ledger, budgetUsd: 5, now: JULY },
     });
     expect(res.status).toBe(503);
-    expect(res.headers.get('Retry-After')).toContain('Aug 2026');
+    expect(res.headers.get('Retry-After')).toContain('16 Jul 2026');
     const body = (await res.json()) as { error: string; availableAt: string };
-    expect(body.availableAt).toBe('2026-08-01');
+    expect(body.availableAt).toBe(NEXT_DAY);
     // The reason (budget) is never disclosed.
     expect(JSON.stringify(body)).not.toMatch(/budget|spend|quota|cost/i);
     expect(retrieveCalls).toBe(0);
@@ -129,7 +134,7 @@ describe('endpoint spend gate', () => {
   });
 
   it('the gate is inclusive: spent === budget blocks', async () => {
-    ledger.totals.set('2026-07', 2);
+    ledger.totals.set(DAY, 2);
     const res = await handleAvatarQuery(post({ query: ON_TOPIC }), {
       retriever,
       llm,
@@ -138,8 +143,8 @@ describe('endpoint spend gate', () => {
     expect(res.status).toBe(503);
   });
 
-  it('under budget → grounded 200 and the request cost is recorded for the month', async () => {
-    ledger.totals.set('2026-07', 4.5);
+  it('under budget → grounded 200 and the request cost is recorded for the day', async () => {
+    ledger.totals.set(DAY, 4.5);
     const res = await handleAvatarQuery(post({ query: ON_TOPIC }), {
       retriever,
       llm,
@@ -150,7 +155,7 @@ describe('endpoint spend gate', () => {
     expect(frames.some((f) => f.event === 'done')).toBe(true);
     // FakeLLMProvider reports no usage → the conservative fallback is recorded.
     expect(ledger.addCalls).toEqual([
-      { month: '2026-07', usd: FALLBACK_REQUEST_COST_USD },
+      { month: DAY, usd: FALLBACK_REQUEST_COST_USD },
     ]);
   });
 

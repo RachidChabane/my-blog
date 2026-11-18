@@ -13,7 +13,6 @@
  * Locale is chosen client-side from navigator.languages (the edge Accept-Language
  * equivalent); unknown languages fall back to DEFAULT_LOCALE.
  */
-import '@/styles/tokens.css';
 import { DEFAULT_LOCALE, LOCALES, localePath } from '@/i18n/index';
 
 const defaultHref = localePath(DEFAULT_LOCALE);
@@ -62,10 +61,10 @@ const locales = [...LOCALES];
         align-items: center;
         justify-content: center;
         min-height: 100vh;
-        background: var(--bg, #fafafb);
-        color: var(--fg, #16171c);
-        font-family: var(--font-display, Georgia, 'Times New Roman', serif);
-        font-variation-settings: var(--fraunces-sub, normal);
+        background: #2f7378;
+        color: #f6f3e8;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        font-weight: 800;
         font-size: 1.5rem;
         letter-spacing: -0.015em;
       }
@@ -74,7 +73,7 @@ const locales = [...LOCALES];
         opacity: 0.92;
       }
       .rc-redirect__dot {
-        color: var(--accent, #5b4be0);
+        color: #f2c230;
       }
       .rc-redirect a {
         color: inherit;

@@ -1,776 +1,139 @@
 ---
-/**
- * S3 — Article reading surface ("DOSSIER"). `/[lang]/blog/[slug]/`, one page per
- * PUBLISHED article per locale (FR/EN). A document layout: a header masthead
- * (kicker, Fraunces title, lead, meta + topic chips), then a sticky contents rail
- * (built from render()'s h2 headings) beside a content canvas of soft cards —
- * numbered prose sections, callout/verdict cards, booktabs-style tables, a
- * build-time glossary panel, and source cards; plus prev/next by shared tag.
- *
- * View-data is precomputed in getStaticPaths (sources / prevNext / slugMap / meta
- * tags) from the pure helpers in src/lib/content.ts; the body only calls
- * render(entry) for the markdown <Content/>. Passing slugMap → Base is the ONLY
- * wiring the parallel-translation language switch needs (switcherHref already
- * resolves /<lang>/blog/<slug>/ when the counterpart is published; NFR-11 home
- * fallback otherwise). Coexists with [...page].astro (the index): disjoint path
- * sets (no article slug is a bare page number).
- */
+/** An article: its sheet, its sources, the question box, what to read next. */
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
-import { LOCALES, localePath } from '@/i18n/index';
+import { LOCALES, switcherHref } from '@/i18n/index';
 import type { Locale } from '@/i18n/index';
-import { articleDetailStrings } from '@/i18n/ui';
 import {
-  getPublishedArticles,
-  getPrevNextByTag,
   buildSlugMap,
-  toSourceViews,
-  readingLabel,
-  difficultyStars,
-  excerpt,
-  tagLabel,
   categoryLabel,
+  excerpt,
+  getPublishedArticles,
+  readingTime,
+  toIsoDate,
+  toSourceViews,
 } from '@/lib/content';
-import { difficultyStrings } from '@/i18n/ui';
-import type { PrevNextNav, SourceView } from '@/lib/content';
-import type { Concept } from '@/content/schemas';
-import Base from '@/layouts/Base.astro';
-import Prose from '@/components/Prose.astro';
-import SourceList from '@/components/SourceList.astro';
-import PrevNext from '@/components/PrevNext.astro';
-import ArticleAskButton from '@/components/ArticleAskButton.astro';
-import ProvenanceSidenotes from '@/components/ProvenanceSidenotes.astro';
-import ReadingProgress from '@/components/ReadingProgress.astro';
-import ArticleTools from '@/components/ArticleTools.astro';
-import type { ProvenanceCitation } from '@/lib/avatar/sidenotes';
+import type { SourceView } from '@/lib/content';
+import type { Concept, Provenance } from '@/content/schemas';
+import Office from '@/layouts/Office.astro';
+import Reading from '@/components/office/Reading.astro';
+import type { Citation, Term } from '@/components/office/Reading.astro';
+import { NEXT_COUNT, articleRow, shortDek } from '@/office/view';
+import type { Row } from '@/office/view';
 
 export const getStaticPaths = (async () => {
-  const [articles, tagEntries, provenance, categoryEntries, conceptEntries] =
+  const [articles, provenance, categoryEntries, conceptEntries] =
     await Promise.all([
       getCollection('articles'),
-      getCollection('tags'),
       getCollection('provenance'),
       getCollection('categories'),
       getCollection('concepts'),
     ]);
-  const tags = tagEntries.map((t: CollectionEntry<'tags'>) => t.data);
   const categories = categoryEntries.map(
     (c: CollectionEntry<'categories'>) => c.data
   );
   const concepts: Concept[] = conceptEntries.map(
     (c: CollectionEntry<'concepts'>) => c.data as Concept
   );
-  return LOCALES.flatMap((lang) =>
-    getPublishedArticles(articles, lang).map((entry) => {
+  return LOCALES.flatMap((lang) => {
+    const published = getPublishedArticles(articles, lang);
+    return published.map((entry, i) => {
       const prov = provenance.find(
         (p: CollectionEntry<'provenance'>) =>
           p.data.slug === entry.data.slug && p.data.lang === lang
       );
-      // Build-time GLOSSARY: the canonical concepts that cite THIS article
-      // (concept.articles carries translationKeys), localized + alphabetized. Zero
-      // markdown change — the apparatus assembles itself from the knowledge graph.
-      const glossary = concepts
+      const citations: Citation[] = (prov?.data.citations ?? []).map(
+        (c: Provenance['citations'][number]) => ({
+          n: c.sourceId.slice(1),
+          label: c.label,
+          url: c.url,
+          excerpt: shortDek(c.excerpt, 260),
+        })
+      );
+      const terms: Term[] = concepts
         .filter((c) => c.articles.includes(entry.data.translationKey))
         .map((c) => ({
           id: c.id,
           term: c.label[lang],
           def: c.definition[lang],
-        }))
-        .sort((a, b) => a.term.localeCompare(b.term, lang));
+        }));
+      const others = published.filter((_, n) => n !== i);
+      const next = [...others.slice(i, i + NEXT_COUNT), ...others].slice(
+        0,
+        NEXT_COUNT
+      );
       return {
         params: { lang, slug: entry.data.slug },
         props: {
           lang,
           entry,
           sources: toSourceViews(entry.data.sources),
-          prevNext: getPrevNextByTag(articles, entry, lang, tags),
           slugMap: buildSlugMap(articles, entry.data.translationKey),
-          categoryName: categoryLabel(entry.data.category, lang, categories),
-          metaTags: entry.data.tags.map((t) => tagLabel(t, lang, tags)),
-          provenanceCitations: prov?.data.citations ?? [],
-          glossary,
+          kindLabel: categoryLabel(entry.data.category, lang, categories),
+          citations,
+          terms,
+          next: next.map((e) => articleRow(e, lang)),
         },
       };
-    })
-  );
+    });
+  });
 }) satisfies GetStaticPaths;
 
-const {
-  lang,
-  entry,
-  sources,
-  prevNext,
-  slugMap,
-  categoryName,
-  metaTags,
-  provenanceCitations,
-  glossary,
-} = Astro.props as {
-  lang: Locale;
-  entry: CollectionEntry<'articles'>;
-  sources: SourceView[];
-  prevNext: PrevNextNav;
-  slugMap: Partial<Record<Locale, string>>;
-  categoryName: string;
-  metaTags: string[];
-  provenanceCitations: ProvenanceCitation[];
-  glossary: { id: string; term: string; def: string }[];
+const { lang, entry, sources, slugMap, kindLabel, citations, terms, next } =
+  Astro.props as {
+    lang: Locale;
+    entry: CollectionEntry<'articles'>;
+    sources: SourceView[];
+    slugMap: Partial<Record<Locale, string>>;
+    kindLabel: string;
+    citations: Citation[];
+    terms: Term[];
+    next: Row[];
+  };
+const { Content } = await render(entry);
+const d = entry.data;
+const description = shortDek(excerpt(entry.body, 400), 170);
+const words = (entry.body ?? '').split(/\s+/).length;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: d.title,
+  description,
+  datePublished: toIsoDate(d.publishDate),
+  inLanguage: lang,
+  wordCount: words,
+  keywords: d.tags.join(', '),
+  author: { '@type': 'Person', name: 'Rachid Chabane' },
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+  citation: sources.map((s) => s.url),
 };
-
-const s = articleDetailStrings(lang);
-
-/* The per-article COLOR LEGEND — a small key naming what each ink meant in THIS
-   piece. Clay (structure) is always present; semantic hues are added only when the
-   body actually uses that callout type, so the legend is a real key, not
-   boilerplate. It doubles as an accessibility aid (color is never the sole signal). */
-const calloutKinds = [
-  ...new Set(
-    [...entry.body.matchAll(/\[!(\w+)\]/g)].map((m) => m[1].toLowerCase())
-  ),
-];
-const hasTable = /\n\s*\|.*\|/.test(entry.body);
-const LEGEND_HUE: Record<string, string> = {
-  note: '--cl-note',
-  info: '--cl-note',
-  tip: '--cl-tip',
-  confirmed: '--cl-tip',
-  important: '--accent-strong',
-  warning: '--cl-warn',
-  caution: '--cl-caution',
-  pitfall: '--cl-caution',
-  inferred: '--cl-caution',
-};
-const LEGEND_TAG: Record<string, string> = {
-  note: 'NOTE',
-  info: 'NOTE',
-  tip: 'TIP',
-  confirmed: 'CONFIRMED',
-  important: 'IMPORTANT',
-  warning: 'WARNING',
-  caution: 'CAUTION',
-  pitfall: 'CAUTION',
-  inferred: 'INFERRED',
-};
-const LEGEND_MEANING: Record<string, Record<string, string>> = {
-  structure: { fr: 'structure & emphase', en: 'structure & emphasis' },
-  note: { fr: 'à noter', en: 'note' },
-  tip: { fr: 'astuce', en: 'tip' },
-  confirmed: { fr: 'confirmé', en: 'confirmed' },
-  important: { fr: 'point clé', en: 'key point' },
-  warning: { fr: 'attention', en: 'warning' },
-  caution: { fr: 'piège', en: 'pitfall' },
-  pitfall: { fr: 'piège', en: 'pitfall' },
-  inferred: { fr: 'inféré', en: 'inferred' },
-};
-const legendItems: { hue: string; tag: string; meaning: string }[] = [
-  {
-    hue: '--accent-strong',
-    tag: 'CLAY',
-    meaning: LEGEND_MEANING.structure[lang],
-  },
-];
-const seenHue = new Set(['--accent-strong']);
-for (const k of calloutKinds) {
-  const hue = LEGEND_HUE[k];
-  if (!hue || seenHue.has(hue)) continue;
-  seenHue.add(hue);
-  legendItems.push({
-    hue,
-    tag: LEGEND_TAG[k] ?? k.toUpperCase(),
-    meaning: LEGEND_MEANING[k]?.[lang] ?? k,
-  });
-}
-const showLegend = calloutKinds.length > 0 || hasTable || glossary.length > 0;
-const legendLabel = lang === 'fr' ? 'Légende' : 'Legend';
-const glossaryLabel = lang === 'fr' ? 'Glossaire' : 'Glossary';
-const { Content, headings } = await render(entry); // ← the load-bearing call (plan G1)
-const dek = excerpt(entry.body);
-// Contents rail: the article's ## sections (Astro auto-slugs the heading ids that
-// the rail anchors target). h3s stay out of the rail to keep it scannable.
-const toc: { slug: string; text: string }[] = headings
-  .filter((h: { depth: number }) => h.depth === 2)
-  .map((h: { slug: string; text: string }) => ({ slug: h.slug, text: h.text }));
-const onThisPage = lang === 'fr' ? 'Sur cette page' : 'On this page';
-// Eyebrow leads with the localized CATEGORY (the 3-way taxonomy), then the first
-// tag, then the agent-maintained tail. `·` is typographic punctuation (INV-9 safe).
-const eyebrow = `${categoryName} · ${metaTags[0]} · ${s.maintained}`;
-// Seeded from the TITLE, not the first tag: the title carries the thesis, so the
-// pre-filled question lands in this article's own chunks and clears the avatar's
-// similarity gate. A tag-seeded question ("...about quality?") is often only loosely
-// about the piece and drew an honest "I don't know". See the askSeed note in i18n/ui.ts.
-const askSeed = s.askSeed.replace('{title}', entry.data.title);
-const hasBoth = Boolean(slugMap.fr && slugMap.en);
-// Stars render right AFTER the reading time (spec: difficulty next to read
-// time, on card and page alike) as a dedicated role="img" span — they need an
-// aria-label, so they can't ride the plain-string metaItems list.
-const metaItems = [entry.data.publishDate, readingLabel(entry.body)];
-const stars = difficultyStars(entry.data.difficulty);
-const starsAria = difficultyStrings(lang).aria.replace(
-  '{n}',
-  String(entry.data.difficulty)
-);
-const title = `${entry.data.title} · rachid chabane`;
 ---
 
-<Base title={title} description={dek} lang={lang} slugMap={slugMap}>
-  <article
-    class={`rc-article rc-enter${toc.length === 0 ? ' rc-article--solo' : ''}`}
+<Office
+  title={`${d.title} · Rachid Chabane`}
+  description={description}
+  lang={lang}
+  section="blog"
+  altHref={switcherHref(lang === 'fr' ? 'en' : 'fr', slugMap, 'blog')}
+  reading
+  words={words}
+  ogType="article"
+  jsonLd={jsonLd}
+>
+  <Reading
+    lang={lang}
+    section="blog"
+    title={d.title}
+    date={d.publishDate}
+    minutes={readingTime(entry.body)}
+    kindLabel={kindLabel}
+    sources={sources}
+    citations={citations}
+    terms={terms}
+    next={next}
+    slug={d.slug}
   >
-    <ReadingProgress />
-    <a class="rc-back" href={localePath(lang, 'blog')}>← {s.back}</a>
-
-    {
-      /* Header — kicker, title, lead, meta + topic chips (the document masthead). */
-    }
-    <header class="rc-ah">
-      <span class="rc-eyebrow">{eyebrow}</span>
-      <h1 class="rc-article__title" data-pagefind-meta="title">
-        {entry.data.title}
-      </h1>
-      <p class="rc-ah__lead">{dek}</p>
-      <div class="rc-ah__meta">
-        <div class="rc-meta">
-          {
-            metaItems.map((m, i) => (
-              <>
-                {i > 0 && <span class="rc-meta__dot" />}
-                <span>{m}</span>
-              </>
-            ))
-          }
-          <span class="rc-meta__dot"></span>
-          <span class="rc-stars" role="img" aria-label={starsAria}>{stars}</span
-          >
-          {
-            hasBoth && (
-              <>
-                <span class="rc-meta__dot" />
-                <span>{s.bilingualNote}</span>
-              </>
-            )
-          }
-        </div>
-        <div class="rc-ah__tags">
-          {metaTags.map((t) => <span class="rc-chip">{t}</span>)}
-        </div>
-      </div>
-    </header>
-
-    {
-      /* Document body — sticky contents rail + content canvas. Section-less
-       articles (no ## headings → no rail) collapse to a single centered column. */
-    }
-    <div class={`rc-doc${toc.length === 0 ? ' rc-doc--solo' : ''}`}>
-      {
-        toc.length > 0 && (
-          <aside class="rc-rail">
-            <nav class="rc-toc" aria-label={onThisPage}>
-              <p class="rc-toc__label">{onThisPage}</p>
-              <ul class="rc-toc__list">
-                {toc.map((h, i) => (
-                  <li>
-                    <a
-                      class="rc-toc__link"
-                      href={`#${h.slug}`}
-                      data-toc-link={h.slug}
-                    >
-                      <span class="rc-toc__n">{i + 1}</span>
-                      <span class="rc-toc__t">{h.text}</span>
-                    </a>
-                  </li>
-                ))}
-                {glossary.length > 0 && (
-                  <li class="rc-toc__extra">
-                    <a
-                      class="rc-toc__link"
-                      href="#glossary"
-                      data-toc-link="glossary"
-                    >
-                      <span class="rc-toc__t">{glossaryLabel}</span>
-                    </a>
-                  </li>
-                )}
-                <li
-                  class={
-                    toc.length > 0 && glossary.length === 0
-                      ? 'rc-toc__extra'
-                      : ''
-                  }
-                >
-                  <a
-                    class="rc-toc__link"
-                    href="#sources"
-                    data-toc-link="sources"
-                  >
-                    <span class="rc-toc__t">{s.sourcesH}</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </aside>
-        )
-      }
-
-      <div class="rc-doc__main">
-        {
-          /* Prominent top entry to the scoped assistant — puts the feature forward
-           before the read. Same delegated [data-avatar-ask] wiring as the quiet
-           end-of-article button; OUTSIDE data-pagefind-body (placed before it). */
-        }
-        <ArticleAskButton
-          variant="feature"
-          prompt={s.askFeaturePrompt}
-          label={s.askFeatureLabel}
-          seed={askSeed}
-          scope={entry.data.slug}
-        />
-        {
-          /* S9 search corpus (task 15): data-pagefind-body restricts Pagefind to the
-            prose. Glossary / Sources / rail sit outside it so neighbour text and
-            concept definitions never pollute article search results. */
-        }
-        <div
-          class="rc-pf-body"
-          data-pagefind-body
-          data-pagefind-meta={`date:${entry.data.publishDate}, reading:${readingLabel(entry.body)}, difficulty:${entry.data.difficulty}`}
-        >
-          <Prose><Content /></Prose>
-        </div>
-
-        {
-          glossary.length > 0 && (
-            <section class="rc-gloss" id="glossary" aria-label={glossaryLabel}>
-              <h2 class="rc-sec2__h">{glossaryLabel}</h2>
-              <dl class="rc-gloss__list">
-                {glossary.map((g) => (
-                  <div class="rc-gloss__row">
-                    <dt class="rc-gloss__term">
-                      <dfn id={`gloss-${g.id}`}>{g.term}</dfn>
-                    </dt>
-                    <dd class="rc-gloss__def">{g.def}</dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
-          )
-        }
-
-        <SourceList sources={sources} heading={s.sourcesH} />
-
-        {
-          showLegend && (
-            <aside class="rc-legend" aria-label={legendLabel}>
-              <span class="rc-legend__lbl">{legendLabel}</span>
-              <ul class="rc-legend__items">
-                {legendItems.map((it) => (
-                  <li class="rc-legend__item">
-                    <span
-                      class="rc-legend__sw"
-                      style={`background: var(${it.hue})`}
-                      aria-hidden="true"
-                    />
-                    <span class="rc-legend__tag">{it.tag}</span>
-                    <span class="rc-legend__mean">{it.meaning}</span>
-                  </li>
-                ))}
-              </ul>
-            </aside>
-          )
-        }
-      </div>
-    </div>
-
-    <PrevNext
-      nav={prevNext}
-      prevDir={s.prevDir}
-      nextDir={s.nextDir}
-      ariaLabel={s.prevNextAria}
-    />
-    <ArticleAskButton
-      prompt={s.askPrompt}
-      label={s.askLabel}
-      seed={askSeed}
-      scope={entry.data.slug}
-    />
-    {
-      provenanceCitations.length > 0 && (
-        <ProvenanceSidenotes citations={provenanceCitations} />
-      )
-    }
-    <ArticleTools
-      copyLink={s.copyLink}
-      copyCode={s.copyCode}
-      copied={s.copied}
-    />
-  </article>
-
-  <script>
-    // Active-section highlight in the contents rail (progressive enhancement).
-    const links = document.querySelectorAll<HTMLElement>('[data-toc-link]');
-    if (links.length) {
-      const byId = new Map();
-      links.forEach((l) => byId.set(l.getAttribute('data-toc-link'), l));
-      const targets = [...byId.keys()]
-        .map((id) => document.getElementById(id))
-        .filter((el): el is HTMLElement => el !== null);
-      const obs = new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) {
-            if (e.isIntersecting) {
-              links.forEach((l) => l.classList.remove('is-active'));
-              byId.get(e.target.id)?.classList.add('is-active');
-            }
-          }
-        },
-        { rootMargin: '-90px 0px -68% 0px', threshold: 0 }
-      );
-      targets.forEach((t) => obs.observe(t));
-
-      // Smooth-scroll a contents-rail click to its section (progressive
-      // enhancement over the native #anchor jump). Honors reduced motion
-      // (instant), and updates the URL hash without a second jump.
-      // scrollIntoView respects each target's scroll-margin-top, so the section
-      // clears the sticky masthead exactly as the native jump does.
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-      links.forEach((link) => {
-        link.addEventListener('click', (e) => {
-          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-          const id = link.getAttribute('data-toc-link');
-          if (!id) return;
-          const target = document.getElementById(id);
-          if (!target) return; // no target in DOM → let the native anchor jump
-          e.preventDefault();
-          target.scrollIntoView({
-            behavior: reduce.matches ? 'auto' : 'smooth',
-            block: 'start',
-          });
-          // Match the native fragment jump's focus semantics: move document focus
-          // (and the sequential-focus starting point) onto the section so the next
-          // Tab continues from the content, not the rail (WCAG 2.4.3). The headings
-          // aren't focusable, so make the target programmatically focusable;
-          // preventScroll keeps this from overriding the smooth scroll above.
-          if (target.tabIndex < 0) target.setAttribute('tabindex', '-1');
-          target.focus({ preventScroll: true });
-          history.pushState(null, '', `#${id}`);
-        });
-      });
-    }
-  </script>
-</Base>
-
-<style>
-  /* DOSSIER article — a wide document: header masthead + sticky contents rail +
-     a content canvas of soft cards. Base provides <main>; this is the inner page.
-     Tokens only. */
-  .rc-article {
-    width: 100%;
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 44px 40px 0;
-  }
-  /* section-less articles: a single, aligned centered reading column */
-  .rc-article--solo {
-    max-width: 768px;
-  }
-  @media (max-width: 720px) {
-    .rc-article {
-      padding-left: 20px;
-      padding-right: 20px;
-    }
-  }
-  .rc-back {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 12.5px;
-    color: var(--fg-muted);
-    margin-bottom: 26px;
-    transition: color var(--dur-hover) var(--ease-soft);
-  }
-  .rc-back:hover {
-    color: var(--accent-text);
-  }
-
-  /* header masthead — narrower than the doc grid, for an asymmetric rhythm */
-  .rc-ah {
-    max-width: 760px;
-  }
-  .rc-eyebrow {
-    font-family: var(--font-mono);
-    font-size: var(--text-meta);
-    font-weight: 600;
-    letter-spacing: var(--tracking-eyebrow);
-    text-transform: uppercase;
-    color: var(--accent-text);
-  }
-  .rc-article__title {
-    margin: 14px 0 0;
-    font-family: var(--font-display);
-    font-variation-settings: var(--fraunces-title);
-    font-size: var(--text-h1);
-    line-height: 1.07;
-    letter-spacing: -0.02em;
-    color: var(--fg);
-    text-wrap: balance;
-  }
-  .rc-ah__lead {
-    margin: 18px 0 0;
-    font-size: 1.2rem;
-    line-height: 1.55;
-    color: var(--fg-muted);
-    max-width: 60ch;
-  }
-  .rc-ah__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px 18px;
-    margin-top: 22px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--hairline);
-  }
-  .rc-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 9px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--fg-subtle);
-  }
-  .rc-meta__dot {
-    width: 3px;
-    height: 3px;
-    border-radius: 50%;
-    background: var(--fg-subtle);
-    display: inline-block;
-  }
-  .rc-stars {
-    letter-spacing: 0.16em;
-    font-size: 12px;
-    color: var(--accent);
-  }
-  .rc-ah__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-  }
-  .rc-chip {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.03em;
-    padding: 3px 10px;
-    border-radius: var(--radius-pill);
-    background: var(--accent-soft);
-    color: var(--accent-text);
-    border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
-  }
-
-  /* document grid — sticky rail + content canvas */
-  .rc-doc {
-    margin-top: 38px;
-  }
-  @media (min-width: 1000px) {
-    .rc-doc:not(.rc-doc--solo) {
-      display: grid;
-      grid-template-columns: 210px minmax(0, 1fr);
-      gap: 56px;
-      align-items: start;
-    }
-  }
-  .rc-doc__main {
-    min-width: 0;
-    max-width: 760px;
-  }
-  /* no contents rail → a single centered reading column */
-  .rc-doc--solo .rc-doc__main {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .rc-pf-body {
-    display: contents;
-  }
-
-  /* contents rail (hidden on small — the content is the focus there) */
-  .rc-rail {
-    display: none;
-  }
-  @media (min-width: 1000px) {
-    .rc-rail {
-      display: block;
-      position: sticky;
-      top: 88px;
-    }
-  }
-  .rc-toc__label {
-    margin: 0 0 12px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--fg-muted);
-  }
-  .rc-toc__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-left: 1px solid var(--border);
-  }
-  .rc-toc__link {
-    display: flex;
-    gap: 9px;
-    padding: 6px 0 6px 14px;
-    margin-left: -1px;
-    border-left: 2px solid transparent;
-    font-size: 13px;
-    line-height: 1.4;
-    color: var(--fg-muted);
-    transition:
-      color var(--dur-hover) var(--ease-soft),
-      border-color var(--dur-hover) var(--ease-soft);
-  }
-  .rc-toc__link:hover {
-    color: var(--fg);
-    border-left-color: var(--border);
-  }
-  .rc-toc__link.is-active {
-    color: var(--accent-text);
-    border-left-color: var(--accent);
-  }
-  .rc-toc__n {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--accent);
-    flex: none;
-    padding-top: 1px;
-  }
-  .rc-toc__link.is-active .rc-toc__n {
-    color: var(--accent-text);
-  }
-  .rc-toc__extra {
-    margin-top: 6px;
-    padding-top: 6px;
-    border-top: 1px solid var(--hairline);
-  }
-
-  /* shared section heading (glossary; SourceList mirrors it internally) */
-  .rc-sec2__h {
-    margin: 0 0 16px;
-    font-family: var(--font-display);
-    font-variation-settings:
-      'opsz' 40,
-      'wght' 540;
-    font-size: var(--text-h2);
-    line-height: 1.2;
-    letter-spacing: -0.012em;
-    color: var(--fg);
-  }
-
-  /* glossary — a card of term → definition rows */
-  .rc-gloss {
-    margin: 48px 0 0;
-    scroll-margin-top: 92px;
-  }
-  .rc-gloss__list {
-    margin: 0;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--surface);
-    overflow: hidden;
-  }
-  .rc-gloss__row {
-    display: grid;
-    grid-template-columns: minmax(0, 15rem) 1fr;
-    gap: 4px 26px;
-    align-items: baseline;
-    padding: 15px 22px;
-    border-top: 1px solid var(--hairline);
-  }
-  .rc-gloss__row:first-child {
-    border-top: 0;
-  }
-  .rc-gloss__term {
-    margin: 0;
-  }
-  .rc-gloss__term dfn {
-    font-family: var(--font-display);
-    font-style: normal;
-    font-variation-settings:
-      'opsz' 30,
-      'wght' 580;
-    font-size: 1.02rem;
-    color: var(--accent-text);
-  }
-  .rc-gloss__def {
-    margin: 0;
-    font-size: 0.95rem;
-    line-height: 1.55;
-    color: var(--fg-muted);
-  }
-  @media (max-width: 620px) {
-    .rc-gloss__row {
-      grid-template-columns: 1fr;
-      gap: 4px;
-    }
-  }
-
-  /* per-article legend strip */
-  .rc-legend {
-    margin: 32px 0 0;
-    padding-top: 18px;
-    border-top: 1px solid var(--hairline);
-  }
-  .rc-legend__lbl {
-    display: block;
-    margin-bottom: 11px;
-    font-family: var(--font-mono);
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--fg-muted);
-  }
-  .rc-legend__items {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 20px;
-  }
-  .rc-legend__item {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .rc-legend__sw {
-    width: 11px;
-    height: 11px;
-    flex: none;
-    border-radius: 3px;
-  }
-  .rc-legend__tag {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    color: var(--fg);
-  }
-  .rc-legend__mean {
-    font-size: 12.5px;
-    color: var(--fg-muted);
-  }
-
-  .rc-enter {
-    animation: rc-rise var(--dur-enter) var(--ease-out);
-  }
-  @keyframes rc-rise {
-    from {
-      transform: translateY(14px);
-    }
-    to {
-      transform: none;
-    }
-  }
-</style>
+    <Content />
+  </Reading>
+</Office>

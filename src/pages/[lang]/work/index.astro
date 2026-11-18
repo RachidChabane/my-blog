@@ -1,219 +1,66 @@
 ---
-/**
- * S6 — Portfolio index. `/[lang]/work/` (FR + EN). A restrained, uniform grid of
- * project cards generated from the `projects` content collection (task 11),
- * published-only (app-ia §4: only "published" reaches a visitor). One grid per
- * locale, no pagination (the design shows a single grid).
- *
- * View-models + curated ordering come from src/lib/content.ts; copy from
- * src/i18n/ui.ts; chrome (masthead/footer/avatar/skip-link) from Base. No slugMap
- * → the language switcher falls back to the localized home (plan §0 / blog
- * decision #6; NFR-11 holds since both /fr/work/ and /en/work/ exist). Cards link
- * to the task-13 detail route /[lang]/work/<slug>/ (a forward reference — asserted
- * by href, never required to resolve until that task lands).
- */
+/** The projects stand: one folder per project, each with its own scene. */
 import type { GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
-import { LOCALES } from '@/i18n/index';
+import { LOCALES, localePath } from '@/i18n/index';
 import type { Locale } from '@/i18n/index';
-import { portfolioIndexStrings } from '@/i18n/ui';
-import {
-  countLiveProjects,
-  getPublishedProjects,
-  toProjectCard,
-  toProjectFeature,
-} from '@/lib/content';
-import type { ProjectCardVM } from '@/lib/content';
-import Base from '@/layouts/Base.astro';
-import ProjectCard from '@/components/ProjectCard.astro';
+import { getPublishedProjects } from '@/lib/content';
+import Office from '@/layouts/Office.astro';
+import Room from '@/components/office/Room.astro';
+import { projectScene, who } from '@/office/draw';
+import { officeStrings } from '@/office/strings';
+import { shortDek } from '@/office/view';
 
-export const getStaticPaths = (async () => {
-  const projects = await getCollection('projects');
-  return LOCALES.map((lang) => {
-    const published = getPublishedProjects(projects, lang);
-    // The flagship (curated PROJECT_ORDER[0]) renders as the wide, enriched feature
-    // card; the rest stay uniform. Splitting here keeps the route declarative.
-    const liveCount = countLiveProjects(projects, lang);
-    return {
-      params: { lang },
-      props: {
-        lang,
-        featured:
-          published.length > 0 ? toProjectFeature(published[0], lang) : null,
-        cards: published.slice(1).map((e) => toProjectCard(e, lang)),
-        total: published.length,
-        liveCount,
-      },
-    };
-  });
-}) satisfies GetStaticPaths;
+export const getStaticPaths = (() =>
+  LOCALES.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
 
-const { lang, featured, cards, total, liveCount } = Astro.props as {
-  lang: Locale;
-  featured: ProjectCardVM | null;
-  cards: ProjectCardVM[];
-  total: number;
-  liveCount: number;
-};
-const s = portfolioIndexStrings(lang);
-const title = `${s.title} · rachid chabane`;
-// Portfolio ledger — the documentation-register opener (computed off the collection).
-const workStats = [
-  { value: String(total), label: s.title },
-  { value: String(liveCount), label: s.statLive },
-];
+const lang = Astro.params.lang as Locale;
+const t = officeStrings(lang);
+const projects = getPublishedProjects(await getCollection('projects'), lang);
+const TABS = ['var(--art)', 'var(--clawd)', '#BFE0FF', '#C9C2F0', '#BFE6D6'];
+const description =
+  lang === 'fr'
+    ? 'Les projets de Rachid Chabane : outils pour agents de code, plateformes RAG, logiciels open source.'
+    : 'Rachid Chabane’s projects: tools for coding agents, RAG platforms, open-source software.';
 ---
 
-<Base title={title} lang={lang}>
-  <div class="rc-work rc-enter">
-    <header class="rc-pagehd">
-      <span class="rc-pagehd__eyebrow t-eyebrow">{s.eyebrow}</span>
-      <h1 class="rc-pagehd__title">{s.title}</h1>
-      <span class="rc-pagehd__meta">{s.meta}</span>
-      <dl class="rc-workstats">
-        {
-          workStats.map((st) => (
-            <div class="rc-workstat">
-              <dt class="rc-workstat__v">{st.value}</dt>
-              <dd class="rc-workstat__l">{st.label}</dd>
-            </div>
-          ))
-        }
-      </dl>
-    </header>
-
-    {
-      featured || cards.length > 0 ? (
-        <div class="rc-projgrid">
-          {featured && (
-            <ProjectCard
-              card={featured}
-              ordinal="01"
-              ordinalWord={s.ordinalWord}
-              viewCta={s.viewCta}
-              feature
-              reveal
-            />
-          )}
-          {cards.map((card, i) => (
-            <ProjectCard
-              card={card}
-              ordinal={String(i + 2).padStart(2, '0')}
-              ordinalWord={s.ordinalWord}
-              viewCta={s.viewCta}
-              reveal
-            />
-          ))}
-        </div>
-      ) : (
-        <p class="rc-empty-note">{s.empty}</p>
-      )
-    }
+<Office
+  title={`${t.sections.work} · Rachid Chabane`}
+  description={description}
+  lang={lang}
+  section="work"
+  altHref={localePath(lang === 'fr' ? 'en' : 'fr', 'work/')}
+>
+  <Room
+    section="work"
+    title={t.sections.work}
+    count={t.counts.projects(projects.length)}
+    crew={who('Maquette', 'type d2') + who('Balai', 'd3')}
+  />
+  <div class="wrap page">
+    <div class="cards">
+      {
+        projects.map((p, i) => {
+          const [name, ...rest] = p.data.name.split(':');
+          const sub = rest.join(':').trim();
+          return (
+            <a
+              class="folder"
+              href={localePath(lang, `work/${p.data.slug}`)}
+              data-y={[p.data.year, p.data.status].filter(Boolean).join(' · ')}
+              style={`--tab:${TABS[i % TABS.length]}`}
+            >
+              <div
+                class="pscene inset"
+                set:html={projectScene(p.data.translationKey, name.trim())}
+              />
+              <h3>{name.trim()}</h3>
+              {sub && <div class="sub">{sub}</div>}
+              <p>{shortDek(p.data.summary, 170)}</p>
+            </a>
+          );
+        })
+      }
+    </div>
   </div>
-</Base>
-
-<style>
-  /* Inner content column (Base already provides <main>; no second <main>). Wider
-     than the article index (824px) so the auto-fill minmax(300px,1fr) grid shows
-     2–3 columns. Tokens only. */
-  .rc-work {
-    width: 100%;
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 40px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-6);
-  }
-  @media (max-width: 720px) {
-    .rc-work {
-      padding-left: 22px;
-      padding-right: 22px;
-    }
-  }
-
-  /* Page header — identical block to the article index (screens.css). */
-  .rc-pagehd {
-    padding-top: 52px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .rc-pagehd__eyebrow {
-    color: var(--accent-text);
-  }
-  .rc-pagehd__title {
-    margin: 0;
-    font-family: var(--font-display);
-    font-variation-settings: var(--fraunces-head);
-    font-size: var(--text-h1);
-    line-height: 1.1;
-    letter-spacing: var(--tracking-tight);
-    color: var(--fg);
-  }
-  .rc-pagehd__meta {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    letter-spacing: 0.04em;
-    color: var(--fg-subtle);
-  }
-
-  /* portfolio ledger — a mono stat strip, the documentation-register opener */
-  .rc-workstats {
-    margin: 14px 0 0;
-    padding-top: 18px;
-    border-top: 1px solid var(--rule);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
-  }
-  .rc-workstat {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .rc-workstat__v {
-    font-family: var(--font-display);
-    font-variation-settings: var(--fraunces-sub);
-    font-size: 28px;
-    line-height: 1;
-    color: var(--fg);
-  }
-  .rc-workstat__l {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--fg-muted);
-  }
-
-  /* Uniform card grid (screens.css .rc-projgrid). */
-  .rc-projgrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 22px;
-  }
-
-  .rc-empty-note {
-    margin: 0;
-    padding: 48px 0;
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--fg-muted);
-  }
-
-  /* Translate-only entrance (no opacity fade) so content is never hidden if the
-     animation is paused; prefers-reduced-motion neutralizes it via tokens.css. */
-  .rc-enter {
-    animation: rc-rise var(--dur-enter) var(--ease-out);
-  }
-  @keyframes rc-rise {
-    from {
-      transform: translateY(14px);
-    }
-    to {
-      transform: none;
-    }
-  }
-</style>
+</Office>

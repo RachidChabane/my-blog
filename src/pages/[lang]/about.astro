@@ -1,360 +1,93 @@
 ---
-/**
- * S8 — About / contact. `/[lang]/about/` (FR + EN). A two-column DOSSIER document:
- * a sticky identity RAIL (portrait + name + tagline) beside a numbered content
- * column (Bio, Contact, How this site works). A real first-person bio + tagline
- * (grounded in the owner's résumé), a quiet contact list (plain links, NO backend
- * form per W-2), and a REAL "how this site works" credibility note. D-007 split: a
- * profile photo identifies the author here, while the abstract AvatarMark lattice
- * still stands in for the AI agent in the how-it-works note and the avatar dock.
- *
- * Copy + contact data from src/i18n/ui.ts (ABOUT / CONTACTS); chrome
- * (masthead/footer/avatar/skip-link) from Base. No slugMap, so the language switcher
- * falls back to the localized home (blog/work decision #6; NFR-11 holds since both
- * /fr/about/ and /en/about/ exist). GitHub, LinkedIn, and email are all live,
- * verifiably-public contacts (email + LinkedIn published from the public résumé; the
- * privacy gate noted in CLAUDE.md #3 / FR-D3 / NFR-6). DOM order of the three
- * .rc-sec__h is Bio, Contact, How (e2e about.spec pins nth(0..2)).
- */
+/** About: who writes, a framed portrait on the wall, and the team of Clawds. */
 import type { GetStaticPaths } from 'astro';
-import { LOCALES } from '@/i18n/index';
+import { LOCALES, localePath } from '@/i18n/index';
 import type { Locale } from '@/i18n/index';
 import { aboutStrings, CONTACTS } from '@/i18n/ui';
-import Base from '@/layouts/Base.astro';
-import AvatarMark from '@/components/AvatarMark.astro';
-import ContactIcon from '@/components/ContactIcon.astro';
+import Office from '@/layouts/Office.astro';
+import Room from '@/components/office/Room.astro';
+import { clawd, TEAM, who } from '@/office/draw';
+import { officeStrings } from '@/office/strings';
 
 export const getStaticPaths = (() =>
-  LOCALES.map((lang) => ({
-    params: { lang },
-    props: { lang },
-  }))) satisfies GetStaticPaths;
+  LOCALES.map((lang) => ({ params: { lang } }))) satisfies GetStaticPaths;
 
-const { lang } = Astro.props as { lang: Locale };
+const lang = Astro.params.lang as Locale;
+const t = officeStrings(lang);
 const s = aboutStrings(lang);
-const isExternal = (href: string): boolean => href.startsWith('http');
-const title = `${s.title} · rachid chabane`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Rachid Chabane',
+  url: new URL(localePath(lang, 'about/'), Astro.site).href,
+  image: new URL('/profile.jpg', Astro.site).href,
+  jobTitle: s.tagline,
+  sameAs: CONTACTS.filter((c) => c.href?.startsWith('http')).map((c) => c.href),
+};
 ---
 
-<Base title={title} description={s.metaDesc} lang={lang}>
-  <div class="rc-about rc-enter">
-    <div class="rc-about__rail">
-      <span class="rc-about__eyebrow t-eyebrow">{s.eyebrow}</span>
-      <div class="rc-about__mark">
-        <img
-          class="rc-about__photo"
-          src="/profile.jpg"
-          alt="Rachid Chabane"
-          width="96"
-          height="96"
-          loading="eager"
-          decoding="async"
-        />
+<Office
+  title={`${t.sections.about} · Rachid Chabane`}
+  description={s.metaDesc}
+  lang={lang}
+  section="about"
+  altHref={localePath(lang === 'fr' ? 'en' : 'fr', 'about/')}
+  reading
+  jsonLd={jsonLd}
+>
+  <Room
+    section="about"
+    title={t.sections.about}
+    count={s.tagline}
+    crew={who('Arrosoir', 'wave')}
+  />
+  <div class="wrap page">
+    <article class="sheet" style="--tape:var(--clawd)">
+      <div class="about">
+        <div class="prose">
+          <p>{s.bioP}</p>
+          <h2>{s.howH}</h2>
+          <p>{s.howText}</p>
+          <h2>{s.contactH}</h2>
+          <ul>
+            {
+              CONTACTS.filter((c) => c.href !== null).map((c) => (
+                <li>
+                  {c.label} : <a href={c.href}>{'value' in c ? c.value : ''}</a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <figure class="frame">
+          <img
+            src="/profile.jpg"
+            alt={t.about.portrait}
+            width="320"
+            height="320"
+          />
+          <figcaption>Rachid</figcaption>
+        </figure>
       </div>
-      <h1 class="rc-about__title">{s.title}</h1>
-      <p class="rc-about__tagline">{s.tagline}</p>
-    </div>
-
-    <div class="rc-about__main">
-      <section class="rc-sec">
-        <div class="rc-sec__head">
-          <span class="rc-sec__n" aria-hidden="true">01</span>
-          <h2 class="rc-sec__h">{s.bioH}</h2>
-        </div>
-        <div class="rc-bio">
-          <p class="rc-bio__p">{s.bioP}</p>
-        </div>
-      </section>
-
-      <section class="rc-sec">
-        <div class="rc-sec__head">
-          <span class="rc-sec__n" aria-hidden="true">02</span>
-          <h2 class="rc-sec__h">{s.contactH}</h2>
-        </div>
-        <div class="rc-contact">
-          {
-            CONTACTS.map((c) =>
-              c.href ? (
-                <a
-                  class="rc-contact__row"
-                  href={c.href}
-                  target={isExternal(c.href) ? '_blank' : undefined}
-                  rel={isExternal(c.href) ? 'noopener noreferrer' : undefined}
-                >
-                  <span class="rc-contact__ico">
-                    <ContactIcon name={c.icon} />
-                  </span>
-                  <span class="rc-contact__key">{c.label}</span>
-                  <span class="rc-contact__val">{c.value}</span>
-                  <span class="rc-contact__ext" aria-hidden="true">
-                    ↗
-                  </span>
-                </a>
-              ) : (
-                <div class="rc-contact__row is-placeholder">
-                  <span class="rc-contact__ico">
-                    <ContactIcon name={c.icon} />
-                  </span>
-                  <span class="rc-contact__key">{c.label}</span>
-                  <span class="rc-contact__val">{s.contactPh}</span>
-                </div>
-              )
-            )
-          }
-        </div>
-      </section>
-
-      <section class="rc-sec">
-        <div class="rc-sec__head">
-          <span class="rc-sec__n" aria-hidden="true">03</span>
-          <h2 class="rc-sec__h">{s.howH}</h2>
-        </div>
-        <div class="rc-howit">
-          <div class="rc-howit__mark"><AvatarMark size={34} /></div>
-          <div class="rc-howit__body">
-            <span class="rc-howit__lbl">{s.howLbl}</span>
-            <p class="rc-howit__text">{s.howText}</p>
-          </div>
-        </div>
-      </section>
-    </div>
+      <h2 class="teamh">{t.about.team}</h2>
+      <div class="team">
+        {
+          TEAM.map((m, i) => (
+            <figure>
+              <Fragment
+                set:html={clawd({
+                  wear: m.wear,
+                  tint: m.tint,
+                  cls: `d${(i % 3) + 1}`,
+                  name: m.name,
+                })}
+              />
+              <b>{m.name}</b>
+              <span>{m.role[lang]}</span>
+            </figure>
+          ))
+        }
+      </div>
+    </article>
   </div>
-</Base>
-
-<style>
-  /* Two-column DOSSIER document: a sticky identity rail + a numbered content
-     column. Collapses to a single column below 900px. Tokens only. */
-  .rc-about {
-    width: 100%;
-    max-width: 1060px;
-    margin: 0 auto;
-    padding: 56px 40px 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  @media (min-width: 900px) {
-    .rc-about {
-      grid-template-columns: 264px minmax(0, 1fr);
-      gap: 64px;
-      align-items: start;
-    }
-  }
-  @media (max-width: 720px) {
-    .rc-about {
-      padding-left: 22px;
-      padding-right: 22px;
-    }
-  }
-
-  /* identity rail — a compact card, sticky beside the scrolling content */
-  .rc-about__rail {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-  @media (min-width: 900px) {
-    .rc-about__rail {
-      position: sticky;
-      top: 88px;
-      padding: 26px 24px 28px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      background: var(--surface);
-      box-shadow: var(--shadow-sm);
-    }
-  }
-  .rc-about__eyebrow {
-    color: var(--accent-text);
-  }
-  .rc-about__mark {
-    margin: 14px 0 6px;
-  }
-  .rc-about__photo {
-    width: 84px;
-    height: 84px;
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: center 28%;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
-  }
-  .rc-about__title {
-    margin: 8px 0 0;
-    font-family: var(--font-display);
-    font-variation-settings: var(--fraunces-head);
-    font-size: var(--text-h1);
-    line-height: 1.08;
-    letter-spacing: var(--tracking-tight);
-    color: var(--fg);
-  }
-  .rc-about__tagline {
-    margin: 12px 0 0;
-    font-family: var(--font-body);
-    font-size: var(--text-body);
-    line-height: 1.6;
-    color: var(--fg-muted);
-  }
-
-  /* content column */
-  .rc-about__main {
-    display: flex;
-    flex-direction: column;
-    gap: 44px;
-    min-width: 0;
-    max-width: 660px;
-  }
-  .rc-sec {
-    margin: 0;
-  }
-  .rc-sec__head {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    margin: 0 0 18px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--rule);
-  }
-  .rc-sec__n {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: var(--accent-text);
-    font-variant-numeric: tabular-nums;
-  }
-  .rc-sec__h {
-    margin: 0;
-    font-family: var(--font-display);
-    font-variation-settings: var(--fraunces-sub);
-    font-size: var(--text-h3);
-    line-height: 1.2;
-    letter-spacing: -0.01em;
-    color: var(--fg);
-  }
-
-  /* bio prose */
-  .rc-bio {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .rc-bio__p {
-    margin: 0;
-    font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.72;
-    color: var(--fg);
-  }
-
-  /* contact list — quiet plain links, no form. Bordered rows that tint on hover. */
-  .rc-contact {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .rc-contact__row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 13px 16px;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius);
-    background: var(--surface);
-    transition:
-      border-color var(--dur-hover) var(--ease-soft),
-      background var(--dur-hover) var(--ease-soft);
-  }
-  .rc-contact__row:hover {
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-    background: var(--accent-soft);
-  }
-  .rc-contact__ico {
-    display: inline-flex;
-    color: var(--fg-muted);
-    transition: color var(--dur-hover) var(--ease-soft);
-  }
-  .rc-contact__row:hover .rc-contact__ico {
-    color: var(--accent-text);
-  }
-  .rc-contact__key {
-    font-family: var(--font-body);
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--fg);
-  }
-  .rc-contact__val {
-    margin-left: auto;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--fg-subtle);
-  }
-  .rc-contact__ext {
-    color: var(--accent-text);
-    font-size: 13px;
-  }
-  /* owner-fill rows are non-interactive (not links) — neutralize the hover. */
-  .rc-contact__row.is-placeholder {
-    cursor: default;
-  }
-  .rc-contact__row.is-placeholder:hover {
-    border-color: var(--border-subtle);
-    background: var(--surface);
-  }
-  .rc-contact__row.is-placeholder:hover .rc-contact__ico {
-    color: var(--fg-muted);
-  }
-  .rc-contact__row.is-placeholder .rc-contact__key {
-    color: var(--fg-muted);
-  }
-
-  /* how-it-works credibility note — the distinctive autonomous meta-narrative */
-  .rc-howit {
-    display: flex;
-    gap: 18px;
-    align-items: flex-start;
-    padding: 24px 26px;
-    border-radius: var(--radius-lg);
-    background: var(--accent-soft);
-    border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
-    border-left: 3px solid var(--accent);
-  }
-  .rc-howit__mark {
-    flex: none;
-    margin-top: 2px;
-  }
-  .rc-howit__body {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .rc-howit__lbl {
-    font-family: var(--font-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent-deep);
-  }
-  .rc-howit__text {
-    margin: 0;
-    font-family: var(--font-body);
-    font-size: 15.5px;
-    line-height: 1.62;
-    color: var(--fg);
-  }
-
-  /* Translate-only entrance (no opacity fade) so content is never hidden if the
-     animation is paused; prefers-reduced-motion neutralizes it via tokens.css. */
-  .rc-enter {
-    animation: rc-rise var(--dur-enter) var(--ease-out);
-  }
-  @keyframes rc-rise {
-    from {
-      transform: translateY(14px);
-    }
-    to {
-      transform: none;
-    }
-  }
-</style>
+</Office>
