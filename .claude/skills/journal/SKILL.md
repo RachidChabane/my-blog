@@ -15,8 +15,15 @@ argument-hint: '[the idea in a few words, or the key of an existing draft]'
 A Journal piece records what Rachid thinks about a subject, on the day he publishes it.
 It is the kind of post an engineering team writes to explain how it works ("How the
 Claude Code team thinks about verification"), but in one person's voice: a stance, the
-few principles that follow from it, how each one shows up in practice, and what is still
-open. The site lists the pieces by date under `/fr/journal/` and `/en/journal/`.
+few ideas that follow from it, the reasoning behind each, and what is still open. It is
+an essay of ideas, thought through in long paragraphs. It is not an account of his
+projects: a reader who has never heard of his tools must be able to follow it, and to
+apply it with tools of their own. The site lists the pieces by date under
+`/fr/journal/` and `/en/journal/`.
+
+The Journal exists to put his thinking on record before others publish the same ideas.
+Each piece has to stand as the general statement of the idea, the one a team would
+later write about its own practice.
 
 The ideas are his. Your job is to understand one well enough to write it the way he
 would if he wrote. Nothing in a piece comes from you: no opinion he did not voice, no
@@ -104,10 +111,16 @@ Read `pipeline/house_style.md` first. Sections 1 (voice), 2 (titles), 6 (French)
   `[sN]` citations are needed. When the piece refers to someone else's work, link it
   inline, list it in `sources`, and say what it says fairly before agreeing or
   disagreeing.
-- **Shape.** Open on the claim and why it matters to him, in the first two sentences.
-  Then one section per principle: the principle as the heading, the reasoning in a
-  paragraph or two, then what he actually does about it. Close on what is still open or
-  where the idea stops working. No summary, no moral.
+- **Shape.** Open on the claim and the reason for it, in the first two sentences. Then
+  a few sections, each headed by an idea stated as a claim and carried by one or two
+  long paragraphs that think it through: why it holds, what follows, the objection a
+  competent reader would raise, where it stops. A section argues; it does not list a
+  rule and its implementation. Close on what is still open or where the idea stops
+  working. No summary, no moral.
+- **Ideas, not tools.** His projects, their commands, file formats and identifiers stay
+  out of the text. A practice is described as something anyone could do ("every test
+  names the requirement it verifies"), never as a feature of a tool he wrote. Name one
+  of his projects only when he asks for it.
 - **Tone.** More personal than the blog: what annoyed him, what he got wrong before,
   what he is unsure of. Not confessional, and not a pitch.
 - **Priority is shown by the date, never argued.** The page carries its publish date;
@@ -116,7 +129,7 @@ Read `pipeline/house_style.md` first. Sections 1 (voice), 2 (titles), 6 (French)
   someone else has published the same idea, say so and say he agrees.
 - **Privacy.** Employers, clients, colleagues and private projects are named only if he
   said in this conversation that they can be.
-- **Length.** As long as the principles need, usually 600 to 1500 words.
+- **Length.** As long as the ideas need, usually 1000 to 1800 words.
 
 Then write the other language as its own text: same claim, same sections, same
 examples, sentences rebuilt for that language rather than translated.
