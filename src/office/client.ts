@@ -191,6 +191,9 @@ function liveRoom(): void {
     room.classList.toggle('on', n === idx);
     room.classList.toggle('off', n !== idx);
   });
+  pano.querySelectorAll('.dots i').forEach((dot, n) => {
+    dot.classList.toggle('on', n === idx);
+  });
   const links = Array.from(pano.querySelectorAll('svg a'));
   const href = links[idx]?.getAttribute('href');
   if (standShown === null && idx === 0) {

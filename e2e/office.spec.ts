@@ -249,6 +249,22 @@ test.describe('phone', () => {
     await noSideScroll(page);
   });
 
+  test('dots under the home drawing follow the stand in view', async ({
+    page,
+  }) => {
+    await page.goto('/fr/');
+    const dots = page.locator('#pano .dots i');
+    await expect(dots).toHaveCount(5);
+    await expect(page.locator('#pano .dots')).toBeVisible();
+    await expect(dots.nth(0)).toHaveClass('on');
+    await page.locator('#pano').evaluate((el) => {
+      el.scrollLeft = el.scrollWidth;
+    });
+    await expect(dots.nth(4)).toHaveClass('on');
+    await expect(dots.nth(0)).not.toHaveClass('on');
+    await noSideScroll(page);
+  });
+
   test('the drawer offers the text size only where there is a text to read', async ({
     page,
   }) => {

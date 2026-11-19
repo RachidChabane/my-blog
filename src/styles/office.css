@@ -456,6 +456,9 @@ h3 {
 .pano .snaps i {
   flex: 1;
 }
+.pano .dots {
+  display: none;
+}
 .pano a rect.hit {
   fill: transparent;
 }
@@ -2381,6 +2384,30 @@ a.folder:hover {
   }
   .pano .snaps i {
     scroll-snap-align: center;
+  }
+  /* one dot per stand, pinned under the drawing while it slides */
+  .pano .dots {
+    position: sticky;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding-block: 6px 8px;
+    pointer-events: none;
+  }
+  .pano .dots i {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--ink);
+    opacity: 0.28;
+    transition:
+      width 0.2s,
+      opacity 0.2s;
+  }
+  .pano .dots i.on {
+    width: 18px;
+    opacity: 0.8;
   }
   .home {
     padding-block: 18px 36px;
