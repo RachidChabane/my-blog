@@ -31,8 +31,13 @@ jobs:
 
   e2e:
     name: E2E tests
-    # Pinned: the Playwright release in the lockfile installs its browsers on this image.
     runs-on: ubuntu-24.04
+    # The image ships Chromium and its system libraries, so the job installs
+    # nothing from the Ubuntu mirrors. Its tag is the Playwright version of the
+    # lockfile; tests/ci-playwright-image.test.ts fails when the two differ.
+    container:
+      image: mcr.microsoft.com/playwright:v1.60.0-noble
+      options: --ipc=host
     steps:
       - uses: actions/checkout@v6
 
@@ -45,9 +50,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
 
       - name: E2E tests
         run: pnpm test:e2e

@@ -23,6 +23,16 @@ export const WORKERS_AI_DIMENSIONS = 1024;
 /** Per-request batch cap for the REST path (kept well under Workers AI limits). */
 export const EMBED_BATCH_SIZE = 100;
 const CF_API_BASE = 'https://api.cloudflare.com/client/v4';
+/** Attempts per batch on the REST path, and the wait before the first retry. */
+export const EMBED_MAX_ATTEMPTS = 3;
+const EMBED_RETRY_BASE_MS = 2000;
+const HTTP_TOO_MANY_REQUESTS = 429;
+const HTTP_SERVER_ERROR_MIN = 500;
+
+/** A response the service may answer differently on the next attempt. */
+function isTransient(status: number): boolean {
+  return status === HTTP_TOO_MANY_REQUESTS || status >= HTTP_SERVER_ERROR_MIN;
+}
 
 /** Fail-loud when the real embedder is requested without wiring (mirrors Python). */
 export class EmbedderNotConfigured extends Error {
@@ -63,12 +73,16 @@ export class WorkersAiRestEmbedder implements Embedder {
   private readonly accountId: string;
   private readonly apiToken: string;
   private readonly fetchImpl: typeof fetch;
+  private readonly retryBaseMs: number;
 
   constructor(opts: {
     accountId: string;
     apiToken: string;
     fetchImpl?: typeof fetch;
+    /** Wait before the first retry; doubles on each further one. */
+    retryBaseMs?: number;
   }) {
+    this.retryBaseMs = opts.retryBaseMs ?? EMBED_RETRY_BASE_MS;
     this.accountId = opts.accountId;
     this.apiToken = opts.apiToken;
     // Bind to globalThis so a bare native `fetch` survives being called as
@@ -77,16 +91,27 @@ export class WorkersAiRestEmbedder implements Embedder {
     this.fetchImpl = opts.fetchImpl ?? globalThis.fetch.bind(globalThis);
   }
 
+  /** POST, retrying a transient answer (429, 5xx) with a doubling wait. */
+  private async postWithRetry(url: string, body: string): Promise<Response> {
+    for (let attempt = 1; ; attempt++) {
+      const res = await this.fetchImpl(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.apiToken}`,
+          'Content-Type': 'application/json',
+        },
+        body,
+      });
+      if (!isTransient(res.status) || attempt === EMBED_MAX_ATTEMPTS)
+        return res;
+      const wait = this.retryBaseMs * 2 ** (attempt - 1);
+      await new Promise((resolve) => setTimeout(resolve, wait));
+    }
+  }
+
   private async runBatch(texts: string[]): Promise<number[][]> {
     const url = `${CF_API_BASE}/accounts/${this.accountId}/ai/run/${WORKERS_AI_MODEL}`;
-    const res = await this.fetchImpl(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${this.apiToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ text: texts }),
-    });
+    const res = await this.postWithRetry(url, JSON.stringify({ text: texts }));
     if (!res.ok) {
       throw new Error(`Workers AI embeddings error (status ${res.status}).`);
     }

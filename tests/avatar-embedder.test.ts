@@ -6,6 +6,7 @@ import {
   EmbedderNotConfigured,
   WORKERS_AI_MODEL,
   WORKERS_AI_DIMENSIONS,
+  EMBED_MAX_ATTEMPTS,
 } from '@/lib/avatar/embedder';
 import type { AiBinding } from '@/lib/avatar/cf';
 
@@ -91,14 +92,51 @@ describe('WorkersAiRestEmbedder', () => {
     expect(calls).toHaveLength(2); // 100 + 1
   });
 
-  it('throws on a non-2xx response', async () => {
+  it('retries a transient answer and returns the vectors', async () => {
+    const calls: { url: string; body: unknown }[] = [];
+    const ok = workersAiFetch(calls);
+    let failures = EMBED_MAX_ATTEMPTS - 1;
     const emb = new WorkersAiRestEmbedder({
       accountId: 'acc',
       apiToken: 'tok',
-      fetchImpl: (() =>
-        Promise.resolve(new Response('nope', { status: 500 }))) as typeof fetch,
+      retryBaseMs: 0,
+      fetchImpl: ((...args: Parameters<typeof fetch>) =>
+        failures-- > 0
+          ? Promise.resolve(new Response('busy', { status: 500 }))
+          : ok(...args)) as typeof fetch,
+    });
+    expect(await emb.embed(['x'])).toHaveLength(1);
+    expect(calls).toHaveLength(1);
+  });
+
+  it('gives up after EMBED_MAX_ATTEMPTS transient answers', async () => {
+    let seen = 0;
+    const emb = new WorkersAiRestEmbedder({
+      accountId: 'acc',
+      apiToken: 'tok',
+      retryBaseMs: 0,
+      fetchImpl: (() => {
+        seen++;
+        return Promise.resolve(new Response('nope', { status: 500 }));
+      }) as typeof fetch,
     });
     await expect(emb.embed(['x'])).rejects.toThrow(/status 500/);
+    expect(seen).toBe(EMBED_MAX_ATTEMPTS);
+  });
+
+  it('does not retry a client error', async () => {
+    let seen = 0;
+    const emb = new WorkersAiRestEmbedder({
+      accountId: 'acc',
+      apiToken: 'tok',
+      retryBaseMs: 0,
+      fetchImpl: (() => {
+        seen++;
+        return Promise.resolve(new Response('no', { status: 401 }));
+      }) as typeof fetch,
+    });
+    await expect(emb.embed(['x'])).rejects.toThrow(/status 401/);
+    expect(seen).toBe(1);
   });
 
   it('throws on a malformed (success:false) response', async () => {
