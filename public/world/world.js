@@ -986,10 +986,18 @@ window.__boot3D = function () {
   var STICK_REACH = 34, stickFrom = null;
   function stickMove(e) { var vx = (e.clientX - stickFrom.x) / STICK_REACH, vy = (e.clientY - stickFrom.y) / STICK_REACH, l = Math.hypot(vx, vy); if (l > 1) { vx /= l; vy /= l; }
     stickVec.x = vx; stickVec.y = vy; knob.style.transform = 'translate(' + (vx * 34) + 'px,' + (vy * 34) + 'px)'; }
-  stick.addEventListener('touchstart', function (e) { e.preventDefault(); }, { passive: false });
-  stick.addEventListener('pointerdown', function (e) { stickId = e.pointerId; stickFrom = { x: e.clientX, y: e.clientY }; try { stick.setPointerCapture(e.pointerId); } catch (err) {} stickMove(e); e.preventDefault(); e.stopPropagation(); });
-  stick.addEventListener('pointermove', function (e) { if (e.pointerId === stickId) { stickMove(e); e.stopPropagation(); } });
-  function stickEnd(e) { if (e.pointerId === stickId) { stickId = null; stickVec.x = stickVec.y = 0; knob.style.transform = ''; canvas.focus(); } }
+  function stickStart(id, at) { stickId = id; stickFrom = { x: at.clientX, y: at.clientY }; stickMove(at); }
+  function stickStop() { stickId = null; stickVec.x = stickVec.y = 0; knob.style.transform = ''; canvas.focus(); }
+  // a finger drives the stick through touch events, which keep reaching the element it started on wherever it goes;
+  // a mouse or a pen goes through pointer events
+  function stickTouch(list) { for (var i = 0; i < list.length; i++) if (list[i].identifier === stickId) return list[i]; return null; }
+  stick.addEventListener('touchstart', function (e) { e.preventDefault(); e.stopPropagation(); if (stickId === null) stickStart(e.changedTouches[0].identifier, e.changedTouches[0]); }, { passive: false });
+  stick.addEventListener('touchmove', function (e) { e.preventDefault(); var t = stickTouch(e.touches); if (t) stickMove(t); }, { passive: false });
+  function stickTouchEnd(e) { if (stickTouch(e.changedTouches)) stickStop(); }
+  stick.addEventListener('touchend', stickTouchEnd); stick.addEventListener('touchcancel', stickTouchEnd);
+  stick.addEventListener('pointerdown', function (e) { e.preventDefault(); e.stopPropagation(); if (e.pointerType === 'touch') return; try { stick.setPointerCapture(e.pointerId); } catch (err) {} stickStart(e.pointerId, e); });
+  stick.addEventListener('pointermove', function (e) { if (e.pointerType !== 'touch' && e.pointerId === stickId) { stickMove(e); e.stopPropagation(); } });
+  function stickEnd(e) { if (e.pointerType !== 'touch' && e.pointerId === stickId) stickStop(); }
   stick.addEventListener('pointerup', stickEnd); stick.addEventListener('pointercancel', stickEnd);
 
   // ---- the guided walk: where you stand, how high your eyes are, what you look at
