@@ -469,7 +469,7 @@ window.__boot3D = function () {
   var PROJ_KEYS = WD.projects.map(function (p) { return p.key; });
   var PROJ = WD.projects.map(function (p) { return [p.name, p.year, p.summary, p.highlights]; });
   box(7.5, 2.95, 0.06, 0x6C4BD8, -1.85, 1.15, -8.46, null, true);
-  function openProject(d) { if (document.exitPointerLock && document.pointerLockElement) document.exitPointerLock(); selected = null; keys = {}; reading = 'index'; inHand = false; readerEl.className = 'reader';
+  function openProject(d) { releasePointer(); selected = null; keys = {}; reading = 'index'; inHand = false; readerEl.className = 'reader';
     document.getElementById('readerMeta').textContent = 'Projet · ' + d[1]; document.getElementById('readerTitle').textContent = d[0]; var body = document.getElementById('readerBody'); body.textContent = '';
     var lead = document.createElement('p'); lead.className = 'lead'; lead.textContent = d[2]; body.appendChild(lead); d[3].forEach(function (h) { var q = document.createElement('p'); q.textContent = h; body.appendChild(q); });
     document.getElementById('readerPrev').hidden = document.getElementById('readerNext').hidden = true; document.getElementById('w3s').classList.add('reading'); readerEl.scrollTop = 0; readerEl.focus(); sfx('take'); }
@@ -815,7 +815,7 @@ window.__boot3D = function () {
     if (!t) return;
     if (t.clawd && t.clawd.offer > time && !held) { var o = t.clawd; o.offer = 0; takeSheet(o.role === 'operator' ? 'radar' : 'blog'); speak(o, 'Merci ! Tampon est au bout de l’allée.', 3.4); sfx('greet', o.g.position); return; }
     if (t.clawd && t.clawd.role === 'guard') return;
-    if (t.clawd) { selected = t.clawd; var cb = document.getElementById('chips'); cb.textContent = ''; (CHIPS[selected.role] || []).forEach(function (q) { var b = document.createElement('button'); b.type = 'button'; b.textContent = q; cb.appendChild(b); }); renderTalk(); sfx('greet', t.clawd.g.position); if (document.exitPointerLock && document.pointerLockElement) document.exitPointerLock(); return; }
+    if (t.clawd) { selected = t.clawd; var cb = document.getElementById('chips'); cb.textContent = ''; (CHIPS[selected.role] || []).forEach(function (q) { var b = document.createElement('button'); b.type = 'button'; b.textContent = q; cb.appendChild(b); }); renderTalk(); sfx('greet', t.clawd.g.position); releasePointer(); return; }
     if (t.dist > t.click.reach) { say('Trop loin'); return; } t.click.run();
   }
 
@@ -826,7 +826,7 @@ window.__boot3D = function () {
   function standAt(idx) { var d = POSTERS[idx]; glideTo(d[3] + Math.sin(d[5]) * 2.3, d[4] + Math.cos(d[5]) * 2.3, d[5], 0.24); }
   function goPlace(kind) { if (!playing) startPlay(); closeReader(); if (kind === 'radar') glideTo(-7.5, -11.6, 0, 0.12); else glideTo(4.9, -11.6, 0, 0.12); }
   function openReader(which, stay) {
-    if (!playing) startPlay(); if (document.exitPointerLock && document.pointerLockElement) document.exitPointerLock(); selected = null; keys = {};
+    if (!playing) startPlay(); releasePointer(); selected = null; keys = {};
     reading = which; var journal = which === 'journal' || POSTERS[which][0] === 'journal';
     if (which === 'journal') glideTo(9.9, 4.3, Math.atan2(-1.4, -0.7), -0.42); else if (!stay && !journal) standAt(which);
     readerEl.className = 'reader ' + (journal ? 'journal' : POSTERS[which][0] === 'radar' ? 'radar' : '') + (stay ? ' inhand' : ''); inHand = !!stay;
@@ -841,7 +841,7 @@ window.__boot3D = function () {
     document.getElementById('w3s').classList.add('reading'); readerEl.scrollTop = 0; readerEl.style.animation = 'none'; void readerEl.offsetWidth; readerEl.style.animation = ''; readerEl.focus(); sfx('take'); if (stay) paintRead();
   }
   // the archives, empty-handed: every text, to take a copy of
-  function openIndex() { if (document.exitPointerLock && document.pointerLockElement) document.exitPointerLock(); selected = null; keys = {}; reading = 'index'; inHand = false; readerEl.className = 'reader';
+  function openIndex() { releasePointer(); selected = null; keys = {}; reading = 'index'; inHand = false; readerEl.className = 'reader';
     document.getElementById('readerMeta').textContent = '192 textes publiés'; document.getElementById('readerTitle').textContent = 'Archives'; var body = document.getElementById('readerBody'); body.textContent = '';
     var ul = document.createElement('ul'); ul.className = 'index'; POSTERS.forEach(function (d, i) { var li = document.createElement('li'), b = document.createElement('button'); b.type = 'button';
       var m = document.createElement('span'); m.className = 'd'; m.textContent = KIND[d[0]] + (d[1] ? ' · ' + d[1] : ''); var t = document.createElement('span'); t.textContent = d[2]; b.appendChild(m); b.appendChild(t);
@@ -899,6 +899,7 @@ window.__boot3D = function () {
       if (!txt) { var near = currentAction(); if (near) txt = near.label; }
       if (MOBILE) txt = txt.replace(/^(clic|E) · /, ''); promptEl.textContent = txt; promptEl.classList.toggle('on', !!txt); }
     if (selected && Math.hypot(player.x - selected.g.position.x, player.z - selected.g.position.z) > 16) selected = null;
+    if (relock && !selected && reading === null && !cine) { relock = false; if (playing) lockPointer(); }
     cardEl.classList.toggle('on', !!selected); document.getElementById('w3s').classList.toggle('talking', !!selected);
     // phone: the drawer covers the lower part of the screen, so turn to the Clawd and lift the picture into the space above it
     if (MOBILE) { var sw = stage.clientWidth, sh = stage.clientHeight, lift = selected ? Math.min(cardEl.offsetHeight, sh * 0.66) / 2 : 0;
@@ -915,6 +916,9 @@ window.__boot3D = function () {
       if (tmpV.z < 1) { whoEl.innerHTML = '<b>' + best.name + '</b> · ' + LABELS[best.role] + (best.act ? ' · ' + best.act : '');
         whoEl.style.transform = 'translate(-50%,-100%) translate(' + ((tmpV.x + 1) / 2 * stage.clientWidth).toFixed(0) + 'px,' + ((1 - tmpV.y) / 2 * stage.clientHeight).toFixed(0) + 'px)'; } else whoEl.classList.remove('on'); }
   }
+  // a panel takes the mouse back; the look comes back on its own once the panel is closed
+  var relock = false;
+  function releasePointer() { if (document.pointerLockElement === canvas && document.exitPointerLock) { relock = true; document.exitPointerLock(); } }
   function lockPointer() { try { var asked = canvas.requestPointerLock && canvas.requestPointerLock(); if (asked && asked.catch) asked.catch(function () {}); } catch (e) {} }
   function lookBy(dx, dy) { player.yaw -= dx * 0.0024; player.pitch = Math.max(-1.2, Math.min(1.2, player.pitch - dy * 0.0024)); }
   function startPlay() {
@@ -924,7 +928,7 @@ window.__boot3D = function () {
     if (!audio) { try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { audio = null; } } if (audio && audio.state === 'suspended') audio.resume();
     playing = true; keys = {}; ambience(); document.getElementById('w3s').classList.add('playing'); document.body.classList.add('locked'); fit(); canvas.focus(); lockPointer();
   }
-  function stopPlay() { closeReader(); glide = null; playing = false; selected = null; viewLift = 0; if (camera.view) camera.clearViewOffset(); document.getElementById('w3s').classList.remove('talking'); cardEl.classList.remove('on'); promptEl.classList.remove('on'); whoEl.classList.remove('on'); bob.visible = false; document.getElementById('w3s').classList.remove('playing'); document.body.classList.remove('locked'); lookNow = null;
+  function stopPlay() { relock = false; closeReader(); glide = null; playing = false; selected = null; viewLift = 0; if (camera.view) camera.clearViewOffset(); document.getElementById('w3s').classList.remove('talking'); cardEl.classList.remove('on'); promptEl.classList.remove('on'); whoEl.classList.remove('on'); bob.visible = false; document.getElementById('w3s').classList.remove('playing'); document.body.classList.remove('locked'); lookNow = null;
     if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); fit(); ambience(); }
   document.getElementById('play').addEventListener('click', startPlay); document.getElementById('quit').addEventListener('click', function () { window.Shell.to2D(); }); document.getElementById('flat').addEventListener('click', function (e) { e.preventDefault(); window.Shell.to2D(); });
   promptEl.addEventListener('click', function () { useKey(); canvas.focus(); });
@@ -1017,7 +1021,7 @@ window.__boot3D = function () {
     return { t: back ? 0 : -0.35, dur: back ? 1.35 : 1.9, back: !!back, done: done, e: back ? 1 : 0, ax: ax, az: az, bx: p[0], bz: p[1], yaw: p[2], pitch: back ? player.pitch : 0, dist: Math.hypot(p[0] - ax, p[1] - az) }; }
   window.World = {
     enter: function (place, done) { var p = PLACES[place] || PLACES.home; startPlay(); glide = null; cine = shot(p, false, done); player.x = cine.ax; player.z = cine.az; player.yaw = p[2]; player.pitch = -0.1; player.eye = 2.65; },
-    leave: function (done) { closeReader(); selected = null; glide = null; if (document.exitPointerLock && document.pointerLockElement) document.exitPointerLock();
+    leave: function (done) { relock = false; closeReader(); selected = null; glide = null; if (document.exitPointerLock && document.pointerLockElement) document.exitPointerLock();
       var best = 'home', bd = 1e9; Object.keys(PLACES).forEach(function (k) { var d = Math.hypot(player.x - PLACES[k][0], player.z - PLACES[k][1]); if (d < bd) { bd = d; best = k; } });
       cine = shot([player.x, player.z, player.yaw], true, done); return best; },
     stop: function () { cine = null; stopPlay(); }

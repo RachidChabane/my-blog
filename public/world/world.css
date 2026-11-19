@@ -152,7 +152,7 @@
 #w3 .pad button{ font: inherit; font-weight: 800; font-size: 0.85rem; border: 0; width: 68px; height: 68px; border-radius: 50%; background: rgba(251, 252, 254, 0.72); color: var(--ink); }
 #w3 .pad button.live{ background: var(--clawd); }
 #w3 .pad #padRead{ width: 58px; height: 58px; background: var(--ink); color: var(--surface); }
-#w3 .mobile.playing .prompt.on{ top: auto; left: auto; right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(106px + env(safe-area-inset-bottom, 0px)); transform: none; font-size: 0.85rem; white-space: normal; max-width: 52vw; text-align: right; }
+#w3 .mobile.playing .prompt.on{ top: auto; left: auto; right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(144px + env(safe-area-inset-bottom, 0px)); transform: none; font-size: 0.85rem; white-space: normal; max-width: 52vw; text-align: right; }
 #w3 .mobile.playing .hand.on{ left: max(12px, env(safe-area-inset-left, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); top: calc(58px + env(safe-area-inset-top, 0px)); bottom: auto; transform: none; max-width: none; padding: 8px 14px; }
 #w3 .mobile .hand button{ display: none; }
 #w3 .mobile.playing .card.on{ left: 0; right: 0; top: auto; bottom: 0; width: 100%; max-height: 66%; border-radius: 20px 20px 0 0; padding: 16px 18px calc(18px + env(safe-area-inset-bottom, 0px)); box-sizing: border-box; }
