@@ -1,0 +1,103 @@
+{
+  "slug": "le-cout-par-tache-d-un-graphique-de-lancement-n-est-pas-le-votre",
+  "lang": "fr",
+  "translationKey": "launch-chart-cost-per-task-is-price-list-times-token-counts",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Microsoft AI, MAI Code 2 and Code 2 Flash, headline ratio",
+      "url": "https://microsoft.ai/news/introducing-mai-code-2-and-mai-code-2-flash/",
+      "excerpt": "MAI Code 2 gives you 98% of the performance of GPT-6.1 Sol at 40% of the cost, and 96% of Claude Opus 5.5’s performance at just 5% of the cost."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Microsoft AI, MAI Code 2 and Code 2 Flash, benchmark footnote",
+      "url": "https://microsoft.ai/news/introducing-mai-code-2-and-mai-code-2-flash/",
+      "excerpt": "All models were run at max reasoning effort. DeepSWE 1.1, TerminalBench 2.1, and SWE Atlas were run on MSBench (Microsoft’s internal eval platform) with the GitHub Copilot CLI without subagents. FrontierCode 1.1 scores and costs are from Artificial Analysis; MAI Code 2 cost is shown at its 50% promotional price"
+    },
+    {
+      "sourceId": "s3",
+      "label": "Microsoft AI, MAI Code 2 and Code 2 Flash, tuning scope",
+      "url": "https://microsoft.ai/news/introducing-mai-code-2-and-mai-code-2-flash/",
+      "excerpt": "They’re explicitly not yet tuned for harder problems, like fundamental science research and very long-horizon agentic work."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Microsoft AI, MAI Code 2 and Code 2 Flash, comparison disclaimer",
+      "url": "https://microsoft.ai/news/introducing-mai-code-2-and-mai-code-2-flash/",
+      "excerpt": "Performance and cost comparisons vary by workload, model configuration, reasoning effort, and pricing assumptions."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Fello AI, MAI Code 2, promotional and list prices",
+      "url": "https://felloai.com/mai-code-2/",
+      "excerpt": "MAI Code 2 costs $0.50 per million input tokens and $2.50 per million output tokens in GitHub Copilot until 17 May 2027. From that date, the price doubles to $1 and $5."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Fello AI, MAI Code 2, chart figures",
+      "url": "https://felloai.com/mai-code-2/",
+      "excerpt": "The claim: 63.2% average pass rate across four coding benchmarks, against 64.1% for GPT-6.1 Sol and 65.3% for Claude Opus 5.5, at $0.309 per task against $0.761 and $6.306."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Fello AI, MAI Code 2, list-price arithmetic",
+      "url": "https://felloai.com/mai-code-2/",
+      "excerpt": "The promotion halves every token class (input, cached input and output), so the list-price cost per task is exactly double Microsoft's figure."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Fello AI, MAI Code 2, saving after May",
+      "url": "https://felloai.com/mai-code-2/",
+      "excerpt": "Against GPT-6.1 Sol the saving shrinks to about a fifth after May."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Fello AI, MAI Code 2, baseline model",
+      "url": "https://felloai.com/mai-code-2/",
+      "excerpt": "OpenAI shipped GPT-6.2 on the same 17 November, and GitHub lists GPT-6.2 Sol at the same $2 and $10 as GPT-6.1 Sol. Microsoft's charts compare against the older GPT-6.1 Sol"
+    },
+    {
+      "sourceId": "s10",
+      "label": "GitHub Changelog, MAI Code 2 and MAI Code 2 Flash in GitHub Copilot, billing",
+      "url": "https://github.blog/changelog/2026-11-17-mai-code-2-and-mai-code-2-flash-in-github-copilot",
+      "excerpt": "These models are billed under usage-based billing."
+    },
+    {
+      "sourceId": "s11",
+      "label": "GitHub Changelog, MAI Code 2 and MAI Code 2 Flash in GitHub Copilot, default enablement",
+      "url": "https://github.blog/changelog/2026-11-17-mai-code-2-and-mai-code-2-flash-in-github-copilot",
+      "excerpt": "Under default model enablement, new models are enabled automatically unless an administrator has turned off the global default or explicitly disables the model."
+    },
+    {
+      "sourceId": "s12",
+      "label": "OpenAI API docs, GPT-6.2 Astra model page, long-context pricing",
+      "url": "https://developers.openai.com/api/docs/models/gpt-6.2-astra",
+      "excerpt": "For requests with more than 272K input tokens, input and cache rates double and output costs 1.5 times the short-context rate for the full request."
+    },
+    {
+      "sourceId": "s13",
+      "label": "LiteLLM, GPT-6.2 Astra and GPT-6.2 Sol API pricing, price cut",
+      "url": "https://docs.litellm.ai/blog/gpt-6-2-astra-sol",
+      "excerpt": "GPT-6.2 Astra input and output are 20% cheaper than GPT-6 Astra and cached input is 60% cheaper."
+    },
+    {
+      "sourceId": "s14",
+      "label": "LiteLLM, GPT-6.2 Astra and GPT-6.2 Sol API pricing, Astra prices",
+      "url": "https://docs.litellm.ai/blog/gpt-6-2-astra-sol",
+      "excerpt": "$8.00 per 1M input tokens and $40.00 per 1M output tokens. Cache reads cost $0.40 per 1M tokens. Above 272K input tokens, the prices are $16.00, $60.00 and $0.80."
+    },
+    {
+      "sourceId": "s15",
+      "label": "OpenAI API docs, GPT-6.2 Astra model page, maximum input",
+      "url": "https://developers.openai.com/api/docs/models/gpt-6.2-astra",
+      "excerpt": "Maximum input tokens: 922,000"
+    },
+    {
+      "sourceId": "s16",
+      "label": "Alibaba Cloud, Alibaba Unveils Qwen4-Max, Work360 cost",
+      "url": "https://www.alibabacloud.com/press-room/alibaba-unveils-qwen4-max",
+      "excerpt": "According to Work360—a proprietary benchmark evaluating performance on challenging industry tasks across 721 specialized fields—Qwen4-Max outperforms its predecessor, Qwen3.8-Max, overall while using 35% fewer tokens at High effort reasoning mode and reducing the average cost per task by around 60%."
+    }
+  ]
+}

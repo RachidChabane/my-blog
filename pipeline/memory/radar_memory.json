@@ -3267,5 +3267,29 @@
     ],
     "published_at": "2026-11-11",
     "embedding": null
+  },
+  {
+    "translation_key": "qwen4-max-hosted-only-open-weights-for-smaller-models",
+    "topic_id": "qwen4-max-hosted-only-open-weights-for-smaller-models",
+    "dedup_key": "qwen4 max hosted only open weights for smaller models",
+    "title": "Qwen4-Max is hosted only",
+    "slugs": {
+      "fr": "qwen4-max-n-existe-qu-en-version-hebergee",
+      "en": "qwen4-max-is-hosted-only"
+    },
+    "sources": [
+      {
+        "label": "Alibaba Cloud, Alibaba Unveils Qwen4-Max",
+        "url": "https://www.alibabacloud.com/press-room/alibaba-unveils-qwen4-max",
+        "date": "16-11-2026"
+      },
+      {
+        "label": "TechNode, Alibaba launches Qwen4-Max with lower API prices and a million-token context window",
+        "url": "https://technode.com/2026/11/16/alibaba-launches-qwen4-max-with-lower-api-prices-and-a-million-token-context-window/",
+        "date": "16-11-2026"
+      }
+    ],
+    "published_at": "2026-11-19",
+    "embedding": null
   }
 ]
