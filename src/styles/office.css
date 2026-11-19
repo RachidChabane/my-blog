@@ -2869,3 +2869,43 @@ a.folder:hover {
     );
   }
 }
+
+/* day shift and night shift of a crew */
+:root[data-theme='light'] .room .crew .when-day,
+:root[data-theme='dark'] .room .crew .when-night {
+  display: contents;
+}
+.cl .zz text {
+  animation: doze 2.6s ease-in-out infinite;
+}
+.cl .zz text:nth-child(2) {
+  animation-delay: 0.5s;
+}
+.cl .zz text:nth-child(3) {
+  animation-delay: 1s;
+}
+@keyframes doze {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0.6px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-0.6px);
+  }
+}
+.cl .glow {
+  animation: flicker 1.9s ease-in-out infinite alternate;
+}
+@keyframes flicker {
+  to {
+    opacity: 0.5;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cl .zz text,
+  .cl .glow {
+    animation: none;
+  }
+}

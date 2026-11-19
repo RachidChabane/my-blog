@@ -8,7 +8,7 @@ import Office from '@/layouts/Office.astro';
 import Room from '@/components/office/Room.astro';
 import Rows from '@/components/office/Rows.astro';
 import ListTools from '@/components/office/ListTools.astro';
-import { who } from '@/office/draw';
+import { crew } from '@/office/draw';
 import { officeStrings } from '@/office/strings';
 import { radarRows } from '@/office/view';
 
@@ -19,7 +19,6 @@ const lang = Astro.params.lang as Locale;
 const t = officeStrings(lang);
 const rows = radarRows(await getCollection('radar'), lang);
 const count = t.counts.briefs(rows.length);
-const crew = who('Vigie', 'type') + who('Écho', 'type d2');
 const kinds = ['security', 'release', 'research', 'benchmark'];
 const kindLabels = Object.fromEntries(kinds.map((k) => [k, t.kinds[k]]));
 const description =
@@ -43,7 +42,12 @@ const jsonLd = {
   altHref={localePath(lang === 'fr' ? 'en' : 'fr', 'radar/')}
   jsonLd={jsonLd}
 >
-  <Room section="radar" title={t.sections.radar} count={count} crew={crew} />
+  <Room
+    section="radar"
+    title={t.sections.radar}
+    count={count}
+    crew={crew('radar')}
+  />
   <div class="wrap page">
     <ListTools
       lang={lang}

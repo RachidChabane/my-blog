@@ -10,7 +10,7 @@ import Office from '@/layouts/Office.astro';
 import Room from '@/components/office/Room.astro';
 import Rows from '@/components/office/Rows.astro';
 import ListTools from '@/components/office/ListTools.astro';
-import { who } from '@/office/draw';
+import { crew, who } from '@/office/draw';
 import { officeStrings } from '@/office/strings';
 import { articleRows, mergeRows, radarRows, words } from '@/office/view';
 
@@ -64,7 +64,7 @@ const jsonLd = {
     section="library"
     title={t.sections.library}
     count={`${t.counts.texts(rows.length)} · ${t.counts.words(wordList.length)}`}
-    crew={who('Classeur', 'd2', { hold: '#4F53D6' })}
+    crew={crew('library')}
   />
   <div class="wrap page">
     <section class="sage">

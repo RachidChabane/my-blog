@@ -10,6 +10,8 @@
 const BODY = '#D77757';
 const INK = '#171B2B';
 const NAVY = '#2B3154';
+const NIGHTCAP = '#C9C2F0';
+const LANTERN = '#F2C230';
 
 export type Wear =
   | 'headset'
@@ -25,7 +27,8 @@ export type Wear =
   | 'apron'
   | 'brows'
   | 'beard'
-  | 'wizard';
+  | 'wizard'
+  | 'nightcap';
 
 export interface ClawdLook {
   wear?: Wear[];
@@ -36,6 +39,10 @@ export interface ClawdLook {
   up?: boolean;
   /** Colour of the first line of a sheet held overhead. */
   hold?: string;
+  /** Eyes shut, with the small z of a nap drifting up. */
+  asleep?: boolean;
+  /** A lit lantern in the right hand. */
+  lantern?: boolean;
   name?: string;
   /** Placement inside a parent SVG. */
   x?: number;
@@ -187,7 +194,9 @@ export function clawd(look: ClawdLook = {}): string {
   if (has('scarf')) s += R(2, 7, 12, 1.2, tint) + R(11, 8, 1.6, 2, tint);
   if (has('apron'))
     s += R(4.5, 5.6, 7, 3.4, '#FFFFFF') + R(4.5, 5.2, 7, 0.5, tint);
-  s += `<g class="eyes">${R(5, 3, 1, 2, INK)}${R(10, 3, 1, 2, INK)}</g>`;
+  s += look.asleep
+    ? R(4.6, 4, 1.8, 0.6, INK) + R(9.6, 4, 1.8, 0.6, INK)
+    : `<g class="eyes">${R(5, 3, 1, 2, INK)}${R(10, 3, 1, 2, INK)}</g>`;
   if (has('brows'))
     s += `<path d="M3.6 1.6L7 2.6V3.4L3.6 2.4ZM12.4 1.6L9 2.6V3.4L12.4 2.4Z" fill="${INK}"/>`;
   if (has('beard'))
@@ -228,6 +237,22 @@ export function clawd(look: ClawdLook = {}): string {
       R(4, -0.2, 8, 0.5, '#D4472F');
   if (has('hardhat'))
     s += R(3, -1.2, 10, 2.2, '#F2C230') + R(2, 0.4, 12, 0.7, '#F2C230');
+  if (has('nightcap'))
+    s +=
+      R(3, -0.7, 10, 1.8, NIGHTCAP) +
+      `<path d="M4.6 -0.7L9.6 -4.2L14.4 -1.5L12.8 -0.7Z" fill="${NIGHTCAP}"/>` +
+      R(13.6, -1.9, 1.7, 1.7, '#FFFFFF');
+  if (look.lantern)
+    s +=
+      `<circle class="glow" cx="15.5" cy="8" r="3.4" fill="${LANTERN}" opacity="0.3"/>` +
+      R(15.2, 5.6, 0.6, 1, INK) +
+      R(14.3, 6.5, 2.4, 2.8, LANTERN) +
+      R(14.1, 6.3, 2.8, 0.5, INK) +
+      R(14.1, 9.2, 2.8, 0.5, INK);
+  if (look.asleep)
+    s +=
+      `<g class="zz" fill="#FFFFFF" font-weight="800" aria-hidden="true">` +
+      `<text x="11.6" y="0.4" font-size="2.6">z</text><text x="13.6" y="-1.7" font-size="2">z</text><text x="15.1" y="-3.4" font-size="1.5">z</text></g>`;
   if (look.hold)
     s +=
       R(4.5, -4.6, 7, 5, '#FFFFFF') +
@@ -256,11 +281,70 @@ export function who(
   return clawd({ wear: m.wear, tint: m.tint, name: m.name, cls, ...extra });
 }
 
+export type RoomKey = 'radar' | 'blog' | 'work' | 'library' | 'journal';
+
+/** One Clawd at a stand: who, where along the room, how they are drawn. */
+type Post = [name: string, x: number, cls: string, extra?: Partial<ClawdLook>];
+
+/** Who stands at each desk by day, and who is left there at night. */
+const SHIFTS: Record<RoomKey, { day: Post[]; night: Post[] }> = {
+  radar: {
+    day: [
+      ['Vigie', 96, 'type'],
+      ['Écho', 196, 'type d2'],
+    ],
+    night: [
+      ['Vigie', 96, 'd3', { lantern: true }],
+      ['Écho', 196, '', { asleep: true }],
+    ],
+  },
+  blog: {
+    day: [
+      ['Plume', 74, 'type d3'],
+      ['Virgule', 156, 'type'],
+      ['Rature', 246, 'type d2'],
+    ],
+    night: [
+      ['Plume', 74, 'type d3'],
+      ['Virgule', 156, '', { asleep: true }],
+      ['Rature', 246, '', { asleep: true, wear: ['nightcap'] }],
+    ],
+  },
+  work: {
+    day: [
+      ['Maquette', 70, 'type d2'],
+      ['Balai', 150, 'd3'],
+    ],
+    night: [
+      ['Maquette', 70, '', { asleep: true }],
+      ['Balai', 150, 'd3', { lantern: true }],
+    ],
+  },
+  library: {
+    day: [['Classeur', 84, 'd2', { hold: '#4F53D6' }]],
+    night: [['Classeur', 84, '', { asleep: true }]],
+  },
+  journal: { day: [], night: [] },
+};
+
+/** What Glose wears once the lamps are low. */
+const SAGE_NIGHT: Partial<ClawdLook> = { wear: ['beard', 'nightcap'] };
+
+/** The crew behind a section's desk, day shift and night shift. */
+export function crew(room: RoomKey): string {
+  const line = (posts: Post[]) =>
+    posts.map(([name, , cls, extra]) => who(name, cls, extra)).join('');
+  const s = SHIFTS[room];
+  return `<span class="when-day">${line(s.day)}</span><span class="when-night">${line(s.night)}</span>`;
+}
+
 export interface FriezeRoom {
-  key: 'radar' | 'blog' | 'work' | 'library' | 'journal';
+  key: RoomKey;
   label: string;
   href: string;
   say: string;
+  /** What the room says at night. */
+  sayNight: string;
 }
 
 /** The office in elevation: five rooms of 380 units, each one a link. */
@@ -268,7 +352,7 @@ export function frieze(rooms: FriezeRoom[], ariaLabel: string): string {
   const W = 380;
   const R = rect;
   const v = (t: string) => `var(--${t})`;
-  const color: Record<FriezeRoom['key'], string> = {
+  const color: Record<RoomKey, string> = {
     radar: v('radar'),
     blog: v('art'),
     work: v('ctrl'),
@@ -363,38 +447,31 @@ export function frieze(rooms: FriezeRoom[], ariaLabel: string): string {
         R(x + 52, 78, 96, 96, '#FFFFFF') +
         R(x + 58, 84, 84, 84, v('sky')) +
         `<circle cx="${x + 118}" cy="108" r="14" fill="${v('sun')}"/>` +
+        `<g class="when-night"><circle cx="${x + 125}" cy="103" r="12" fill="${v('sky')}"/>` +
+        `${R(x + 68, 94, 3, 3, '#FFFFFF')}${R(x + 84, 146, 2, 2, '#FFFFFF')}${R(x + 130, 152, 3, 3, '#FFFFFF')}${R(x + 72, 132, 2, 2, '#FFFFFF')}</g>` +
         R(x + 98, 84, 4, 84, '#FFFFFF') +
         R(x + 58, 124, 84, 4, '#FFFFFF') +
         R(x + 300, 150, 4, 54, INK) +
         `<path d="M${x + 280} 150L${x + 290} 128H${x + 314}L${x + 324} 150Z" fill="#F2C230"/>` +
         R(x + 200, 196, 44, 8, '#FFFFFF') +
         R(x + 204, 191, 36, 5, '#BFE0FF');
-    const crews: Record<FriezeRoom['key'], [string, number, string][]> = {
-      radar: [
-        ['Vigie', 96, 'type'],
-        ['Écho', 196, 'type d2'],
-      ],
-      blog: [
-        ['Plume', 74, 'type d3'],
-        ['Virgule', 156, 'type'],
-        ['Rature', 246, 'type d2'],
-      ],
-      work: [
-        ['Maquette', 70, 'type d2'],
-        ['Balai', 150, 'd3'],
-      ],
-      library: [],
-      journal: [],
-    };
-    crews[k].forEach((m, n) => {
-      s += `<g class="cw" style="animation-delay:-${n * 0.12}s">${who(m[0], m[2], { x: x + m[1], y: 154, w: 62 })}</g>`;
-    });
+    const stand = (posts: Post[], y: number) =>
+      posts
+        .map(
+          ([name, px, cls, extra], n) =>
+            `<g class="cw" style="animation-delay:-${n * 0.12}s">${who(name, cls, { x: x + px, y, w: 62, ...extra })}</g>`
+        )
+        .join('');
+    const crewY = k === 'library' ? 196 : 154;
+    s +=
+      `<g class="when-day">${stand(SHIFTS[k].day, crewY)}</g>` +
+      `<g class="when-night">${stand(SHIFTS[k].night, crewY)}</g>`;
     if (k === 'library')
       s +=
         R(x + 232, 222, 60, 14, BODY) +
         R(x + 236, 210, 52, 12, '#F2C230') +
-        `<g class="cw">${who('Classeur', 'd2', { x: x + 84, y: 196, w: 62, hold: '#4F53D6' })}</g>` +
-        `<g class="sage">${who('Glose', 'd3', { x: x + 224, y: 128, w: 78 })}</g>`;
+        `<g class="sage when-day">${who('Glose', 'd3', { x: x + 224, y: 128, w: 78 })}</g>` +
+        `<g class="sage when-night">${who('Glose', 'd3', { x: x + 224, y: 128, w: 78, ...SAGE_NIGHT })}</g>`;
     else
       s +=
         R(x + 48, 206, W - 96, 8, k === 'journal' ? '#C99562' : v('table')) +
@@ -405,15 +482,18 @@ export function frieze(rooms: FriezeRoom[], ariaLabel: string): string {
       R(x + W / 2 + 60, 46, 2, 14, INK) +
       `<path class="spot" d="M${x + W / 2 - 40} 15H${x + W / 2 + 40}L${x + W - 30} 300H${x + 30}Z" fill="#FFF3C4"/>` +
       R(x, 46, W, 254, '#0B1220', 'dim');
-    if (room.say) {
-      const bw = room.say.length * 7.6 + 30;
+    const bubble = (text: string, when: string) => {
+      if (!text) return '';
+      const bw = text.length * 7.6 + 30;
       const bx = x + W / 2 - bw / 2;
-      s +=
-        `<g class="say"><rect x="${bx}" y="104" width="${bw}" height="32" rx="16" fill="#FFFFFF" stroke="${INK}" stroke-width="2"/>` +
+      return (
+        `<g class="say ${when}"><rect x="${bx}" y="104" width="${bw}" height="32" rx="16" fill="#FFFFFF" stroke="${INK}" stroke-width="2"/>` +
         `<path d="M${x + W / 2 - 8} 135l8 12 8-12z" fill="#FFFFFF" stroke="${INK}" stroke-width="2"/>` +
         `<rect x="${x + W / 2 - 10}" y="130" width="20" height="5" fill="#FFFFFF"/>` +
-        `<text x="${x + W / 2}" y="125" text-anchor="middle" font-size="14" fill="${INK}">${esc(room.say)}</text></g>`;
-    }
+        `<text x="${x + W / 2}" y="125" text-anchor="middle" font-size="14" fill="${INK}">${esc(text)}</text></g>`
+      );
+    };
+    s += bubble(room.say, 'when-day') + bubble(room.sayNight, 'when-night');
     s +=
       `<a href="${room.href}" aria-label="${esc(room.label)}"><rect class="hit" x="${x}" y="46" width="${W}" height="254"/>` +
       `<g class="sg"><rect x="${x + W / 2 - 74}" y="58" width="148" height="34" rx="4" fill="${v('pill')}"/>` +

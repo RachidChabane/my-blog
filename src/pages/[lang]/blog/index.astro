@@ -10,7 +10,7 @@ import Office from '@/layouts/Office.astro';
 import Room from '@/components/office/Room.astro';
 import Rows from '@/components/office/Rows.astro';
 import ListTools from '@/components/office/ListTools.astro';
-import { who } from '@/office/draw';
+import { crew } from '@/office/draw';
 import { officeStrings } from '@/office/strings';
 import { articleRows } from '@/office/view';
 
@@ -25,8 +25,6 @@ const [entries, categoryEntries] = await Promise.all([
 ]);
 const rows = articleRows(entries, lang);
 const count = t.counts.articles(rows.length);
-const crew =
-  who('Plume', 'type') + who('Virgule', 'type d2') + who('Rature', 'type d3');
 const used = [...new Set(rows.map((r) => r.kind))];
 const kindLabels = Object.fromEntries(
   categoryEntries
@@ -55,7 +53,12 @@ const jsonLd = {
   altHref={localePath(lang === 'fr' ? 'en' : 'fr', 'blog/')}
   jsonLd={jsonLd}
 >
-  <Room section="blog" title={t.sections.blog} count={count} crew={crew} />
+  <Room
+    section="blog"
+    title={t.sections.blog}
+    count={count}
+    crew={crew('blog')}
+  />
   <div class="wrap page">
     <ListTools
       lang={lang}

@@ -44,7 +44,11 @@ export interface OfficeStrings {
     words: (n: number) => string;
   };
   kinds: Record<string, string>;
-  frieze: { aria: string; say: Record<string, string> };
+  frieze: {
+    aria: string;
+    say: Record<string, string>;
+    sayNight: Record<string, string>;
+  };
   ask: {
     placeholder: string;
     send: string;
@@ -130,6 +134,13 @@ const FR: OfficeStrings = {
       blog: 'On écrit. Entre lire.',
       work: 'Viens voir les maquettes.',
       library: 'Un mot ? Il est dans ma barbe.',
+      journal: '',
+    },
+    sayNight: {
+      radar: 'Je veille. Rien ne passe.',
+      blog: 'Chut, on écrit encore.',
+      work: 'Les maquettes dorment.',
+      library: 'Un mot ? Même la nuit.',
       journal: '',
     },
   },
@@ -259,6 +270,13 @@ const EN: OfficeStrings = {
       blog: 'We write. Come read.',
       work: 'Come see the models.',
       library: 'A word? It’s in my beard.',
+      journal: '',
+    },
+    sayNight: {
+      radar: 'On watch. Nothing gets by.',
+      blog: 'Hush, still writing.',
+      work: 'The models are asleep.',
+      library: 'A word? Even at night.',
       journal: '',
     },
   },

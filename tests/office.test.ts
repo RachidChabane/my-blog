@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import matter from 'gray-matter';
-import { clawd, frieze, projectScene, TEAM, who } from '@/office/draw';
+import { clawd, crew, frieze, projectScene, TEAM, who } from '@/office/draw';
 import { officeStrings, SECTION_ORDER, SECTION_PATHS } from '@/office/strings';
 import { mergeRows, monthOf, plainParagraphs, shortDek } from '@/office/view';
 import type { Row } from '@/office/view';
@@ -48,11 +48,31 @@ describe('office drawings', () => {
         label: key,
         href: `/fr/${key}/`,
         say: '',
+        sayNight: key === 'radar' ? 'on watch' : '',
       })),
       'office'
     );
     for (const key of ['radar', 'blog', 'work', 'library', 'journal'])
       expect(svg).toContain(`href="/fr/${key}/"`);
+    expect(svg).toContain('class="say when-night"');
+    expect(svg).not.toContain('class="say when-day"');
+  });
+
+  it('keeps the same Clawds at a desk by day and by night', () => {
+    for (const room of ['radar', 'blog', 'work', 'library'] as const) {
+      const [day, night] = crew(room).split('<span class="when-night">');
+      const names = (html: string) =>
+        [...html.matchAll(/aria-label="([^"]+)"/g)].map((m) => m[1]);
+      expect(names(night)).toEqual(names(day));
+      expect(names(day).length).toBeGreaterThan(0);
+    }
+  });
+
+  it('draws a sleeper with shut eyes and a watcher with a lantern', () => {
+    expect(clawd({ asleep: true })).not.toContain('class="eyes"');
+    expect(clawd({ asleep: true })).toContain('class="zz"');
+    expect(clawd({ lantern: true })).toContain('class="glow"');
+    expect(clawd()).not.toContain('class="zz"');
   });
 
   it('has a scene of its own for every published project', () => {

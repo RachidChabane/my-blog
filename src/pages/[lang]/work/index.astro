@@ -7,7 +7,7 @@ import type { Locale } from '@/i18n/index';
 import { getPublishedProjects } from '@/lib/content';
 import Office from '@/layouts/Office.astro';
 import Room from '@/components/office/Room.astro';
-import { projectScene, who } from '@/office/draw';
+import { crew, projectScene } from '@/office/draw';
 import { officeStrings } from '@/office/strings';
 import { shortDek } from '@/office/view';
 
@@ -35,7 +35,7 @@ const description =
     section="work"
     title={t.sections.work}
     count={t.counts.projects(projects.length)}
-    crew={who('Maquette', 'type d2') + who('Balai', 'd3')}
+    crew={crew('work')}
   />
   <div class="wrap page">
     <div class="cards">
