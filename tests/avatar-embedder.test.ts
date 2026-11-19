@@ -93,7 +93,7 @@ describe('WorkersAiRestEmbedder', () => {
   });
 
   it('retries a transient answer and returns the vectors', async () => {
-    const calls: { url: string; body: unknown }[] = [];
+    const calls: NonNullable<Parameters<typeof workersAiFetch>[0]> = [];
     const ok = workersAiFetch(calls);
     let failures = EMBED_MAX_ATTEMPTS - 1;
     const emb = new WorkersAiRestEmbedder({
