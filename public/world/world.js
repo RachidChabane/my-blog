@@ -379,7 +379,7 @@ window.__boot3D = function () {
     janitor: function (a) { goTo(a, spot(rnd(-19, 18), pick([-3.0, 0.6, 2.4, 2.4]))); act(a, 'sweep', rnd(2, 4), 'balaie'); },
     curator: function (a) { goTo(a, pick(S.frames[a.room])); act(a, 'sort', rnd(3, 5), 'redresse un cadre'); }
   };
-  var LABELS = { operator: 'vigie', writer: 'rédaction', inspector: 'tampon', courier: 'coursier', archivist: 'archives', gardener: 'jardin', barista: 'café', janitor: 'entretien', curator: 'galerie' };
+  var LABELS = { guard: 'garde', operator: 'vigie', writer: 'rédaction', inspector: 'tampon', courier: 'coursier', archivist: 'archives', gardener: 'jardin', barista: 'café', janitor: 'entretien', curator: 'galerie' };
   var clawds = [];
   // a phone screen holds fewer, smaller Clawds: one per table, one courier, the archivist, the barista and one curator per gallery
   var PHONE_CAST = ['Glose', 'Verrou', 'Cadenas', 'Vigie', 'Plume', 'Brouillon', 'Tampon', 'Navette', 'Classeur', 'Moka', 'Cadre', 'Cimaise'];
