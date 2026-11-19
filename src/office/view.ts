@@ -212,6 +212,8 @@ export interface WorldData {
     highlights: string[];
   }[];
   words: [label: string, def: string][];
+  /** Published texts per section, all of them. */
+  counts: { articles: number; radar: number };
 }
 
 /** How many frames each gallery of the 3D office holds. */
@@ -239,13 +241,16 @@ export function worldData(
     text: [...(lead ? [shortDek(lead, 400)] : []), ...plainParagraphs(e.body)],
   });
   const journal = getPublishedJournal(src.journal, lang)[0];
+  const radar = getPublishedRadar(src.radar, lang);
+  const articles = getPublishedArticles(src.articles, lang);
   return {
-    radar: getPublishedRadar(src.radar, lang)
+    counts: { articles: articles.length, radar: radar.length },
+    radar: radar
       .slice(0, WORLD_FRAMES)
       .map((e) =>
         text(e, localePath(lang, `radar/${e.data.slug}`), e.data.summary)
       ),
-    articles: getPublishedArticles(src.articles, lang)
+    articles: articles
       .slice(0, WORLD_FRAMES)
       .map((e) => text(e, localePath(lang, `blog/${e.data.slug}`))),
     journal: journal

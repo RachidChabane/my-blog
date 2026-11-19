@@ -49,6 +49,8 @@ interface AskOptions {
   q: string;
   persona?: string;
   scopeSlug?: string;
+  /** Said in place of the agent's own line when it finds nothing in the texts. */
+  idk?: string;
   onText?: (text: string) => void;
 }
 declare global {
@@ -563,7 +565,7 @@ async function ask(o: AskOptions): Promise<string> {
           text += data.text;
           o.onText?.(text);
         } else if (ev.event === SSE_EVENT.idk && data?.message) {
-          text = data.message;
+          text = o.idk ?? data.message;
           o.onText?.(text);
         } else if (ev.event === SSE_EVENT.error) throw new Error('stream');
       }

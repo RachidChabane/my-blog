@@ -637,7 +637,6 @@ window.__boot3D = function () {
   function setHeld(v) { held = v; heldMesh.visible = !!v; if (v) paintHeld(); var h = document.getElementById('hand'); h.classList.toggle('on', !!v);
     if (v) { document.getElementById('handState').textContent = KIND[POSTERS[heldIdx][0]] + (v === 'stamped' ? ', tamponnée' : ''); document.getElementById('handTitle').textContent = POSTERS[heldIdx][2]; } }
   function takeSheet(kind) { var list = []; POSTERS.forEach(function (d, i) { if (d[0] === kind) list.push(i); }); heldIdx = pick(list); setHeld('raw'); sfx('take'); }
-  function giveSheet(n) { heldIdx = n; setHeld('raw'); sfx('take'); say('Feuille reçue'); }
   function fileSheet() { filed++; sfx('file'); box(0.36, 0.62, 0.2, C.clawd, 21.55, 0.56, 4.75 + filed * 0.29); say(filed + (filed > 1 ? ' classées' : ' classée')); }
   document.getElementById('handRead').addEventListener('click', function () { openReader(heldIdx, true); });
   function nearPt(x, z, r) { return Math.hypot(player.x - x, player.z - z) < r; }
@@ -665,20 +664,12 @@ window.__boot3D = function () {
   click(shade, 'allumer ou éteindre', function () { lamp.intensity = lamp.intensity ? 0 : 1.0; sfx('take'); }, 5);
   var sayT = 0; function say(text) { promptEl.textContent = text; promptEl.classList.add('on'); sayT = 2.2; }
   function redo(a) { if (a.spot && a.spot.busy === a) a.spot.busy = null; a.plan.forEach(function (st) { if (st.arrive && st.arrive.busy === a) st.arrive.busy = null; }); a.plan = []; a.act = ''; emote(a, ''); carry(a, null); a.g.position.y = 0; if (a.spot && Math.hypot(a.spot.x - a.g.position.x, a.spot.z - a.g.position.z) > 0.4) a.spot = null; }
-  var ROLE_BRIEF = { operator: 'tu surveilles le radar : ce qui vient de sortir en IA, les briefs courts', writer: 'tu rédiges les articles de fond du blog', inspector: 'tu contrôles chaque texte avant publication et tu tamponnes ce qui passe',
-    courier: 'tu portes les feuilles entre les postes', archivist: 'tu classes tout ce qui est publié et tu retrouves n’importe quel texte', gardener: 'tu t’occupes des plantes du bureau', barista: 'tu tiens le coin café',
-    janitor: 'tu fais le ménage et tu entends tout', curator: 'tu accroches les textes dans les galeries' };
   var CHIPS = { operator: ['Quoi de neuf ?', 'Le dernier brief ?'], writer: ['Sur quoi tu écris ?', 'Conseille-moi un article'], inspector: ['Comment tu vérifies ?', 'Tu refuses souvent ?'], courier: ['Tu vas où ?', 'Où sont les archives ?'],
     archivist: ['Trouve-moi un article sur les agents', 'Combien de textes ?'], gardener: ['Ça pousse bien ?'], barista: ['Un café ?'], janitor: ['Quoi de neuf dans le bureau ?'], curator: ['Quel cadre me conseilles-tu ?'] };
   var chats = {}, talkEl = document.getElementById('talk'), askInput = document.getElementById('askInput');
   function renderTalk() { talkEl.textContent = ''; if (!selected) return; (chats[selected.name] || []).forEach(function (m) { var el = document.createElement('p'); el.className = m.who; el.textContent = m.text; talkEl.appendChild(el); }); talkEl.scrollTop = talkEl.scrollHeight; }
   function addMsg(a, who, text) { var m = { who: who, text: text }; (chats[a.name] = chats[a.name] || []).push(m); if (selected === a) renderTalk(); return m; }
-  function reply(a, text) { addMsg(a, 'clawd', text); speak(a, text, 3.4); sfx('greet', a.g.position); }
-  function brief(a) { return 'Tu es ' + a.name + ', un petit agent orange du bureau de Rachid Chabane, dont le blog parle d’ingénierie de l’IA. Ton métier ici : ' + ROLE_BRIEF[a.role] + '. En ce moment tu ' + (a.act || 'te déplaces') + '.\n' +
-    'Réponds en français, à la première personne, en une à trois phrases courtes, avec le caractère de ton métier, sans emoji et sans liste. Tu ne connais du blog que ce qui suit ; si la réponse n’y est pas, dis-le simplement.\n' +
-    'Le blog compte 91 articles de fond et 101 briefs radar, plus un Journal où Rachid consigne ses idées personnelles (écrit à l’encre bleue, à son bureau près de la fenêtre) et une section Projets. Les articles et le radar sont rédigés par des agents sous garde-fous.\n' +
-    'Textes que tu peux citer, avec leur numéro :\n' + POSTERS.map(function (d, i) { return i + '. [' + KIND[d[0]] + (d[1] && d[1][0] !== '[' ? ' du ' + d[1] : '') + '] ' + d[2]; }).join('\n') +
-    '\nQuand un de ces textes répond à la question, appelle l’outil donner_feuille avec son numéro : le visiteur recevra la feuille en main et pourra la lire.'; }
+  function reply(a, text) { addMsg(a, 'clawd', text); speak(a, text.length > 150 ? text.slice(0, 147) + '…' : text, 3.4); sfx('greet', a.g.position); }
   // out of tokens for the day: each Clawd says so in character, and has two more lines for visitors who insist
   var QUOTA = {
     operator: ['Plus un token sur mes écrans pour aujourd’hui : Rachid a vidé sa tirelire. Reviens demain, le radar aura refait le plein. D’ici là, les feuilles sont en libre-service au présentoir.', 'Je scrute, je scrute… toujours zéro token à l’horizon. Demain, promis.', 'Signal perdu. Je passe en veille jusqu’à demain.'],
@@ -694,17 +685,33 @@ window.__boot3D = function () {
   function quota(a) { a.insist = (a.insist || 0) + 1; if (a.insist >= 2) a.frownT = time + 9; var lines = QUOTA[a.role], level = Math.min(a.insist, lines.length);
     if (level === lines.length) setTimeout(function () { if (a.sheetBusy) return; if (selected === a) selected = null; a.follow = false; redo(a); a.coffee = 0; a.energy = -0.2; }, 2600);
     return lines[level - 1]; }
-  function canned(a) { var kind = a.role === 'operator' ? 'radar' : 'blog', list = POSTERS.filter(function (d) { return d[0] === kind; }), d = list[0];
-    return { operator: 'Dernier signal capté : « ' + d[2] + ' ».', writer: 'Mon dernier texte : « ' + d[2] + ' ».', inspector: 'Je vérifie les sources de chaque texte, puis je tamponne. Sans tampon, rien ne sort.', courier: 'Je fais la navette entre les bureaux, le tampon et les archives.',
-      archivist: 'Tout est rangé au fond : 91 articles et 101 briefs.', gardener: 'Les plantes vont bien, merci.', barista: 'Le café est prêt au comptoir.', janitor: 'Rien à signaler, tout le monde travaille.', curator: 'Je te conseille « ' + d[2] + ' ».' }[a.role]; }
-  ROLE_BRIEF.maker = 'tu présentes les projets de Rachid, ses outils et ses logiciels open source'; CHIPS.maker = ['Quel projet me conseilles-tu ?', 'C’est quoi shallnot ?'];
+  // questions about the office itself: the Clawd answers from what the office holds, without asking the site's agent
+  function newest(kind) { return POSTERS.filter(function (d) { return d[0] === kind; }); }
+  function titled(d) { return '« ' + d[2] + ' »' + (d[1] ? ', du ' + d[1] : ''); }
+  var LOCAL = {
+    'Quoi de neuf ?': function () { return 'Derniers signaux captés : ' + newest('radar').slice(0, 2).map(function (d) { return '« ' + d[2] + ' »'; }).join(' ; ') + '.'; },
+    'Le dernier brief ?': function () { return titled(newest('radar')[0]) + '. Il est accroché dans la galerie radar.'; },
+    'Sur quoi tu écris ?': function () { return 'Le dernier article sorti d’ici : ' + titled(newest('blog')[0]) + '.'; },
+    'Conseille-moi un article': function () { return 'Lis ' + titled(pick(newest('blog'))) + '. Il est accroché dans la galerie des articles.'; },
+    'Tu vas où ?': function () { return 'Entre les bureaux, le tampon et les archives. Toute la journée.'; },
+    'Où sont les archives ?': function () { return 'Au mur des classeurs, là où travaille Classeur. Tout ce qui est publié finit là-bas.'; },
+    'Combien de textes ?': function () { return WD.counts.articles + ' articles et ' + WD.counts.radar + ' briefs radar, tous classés.'; },
+    'Ça pousse bien ?': function () { return 'Très bien, merci. J’arrose le matin, avant que le bureau s’agite.'; },
+    'Un café ?': function () { return 'Il est prêt au comptoir.'; },
+    'Quoi de neuf dans le bureau ?': function () { return 'Rien à signaler, tout le monde travaille. Dernière feuille accrochée : ' + titled(newest('radar')[0]) + '.'; },
+    'Quel cadre me conseilles-tu ?': function () { return 'Je te conseille ' + titled(pick(POSTERS.filter(function (d) { return d[0] !== 'journal'; }))) + '.'; },
+    'Quel projet me conseilles-tu ?': function () { var p = pick(PROJ); return 'Va voir ' + p[0] + '. ' + p[2]; }
+  };
+  // what a Clawd says when the site's agent finds nothing in the texts
+  function stumped(a) { var known = (CHIPS[a.role] || []).filter(function (q) { return LOCAL[q]; })[0]; return 'Je n’ai rien là-dessus dans les textes du site.' + (known ? ' Demande-moi plutôt : « ' + known + ' »' : ''); }
+  CHIPS.maker = ['Quel projet me conseilles-tu ?', 'C’est quoi shallnot ?'];
   QUOTA.maker = ['Plus de tokens en stock aujourd’hui, je n’ai que des maquettes. Les fiches au mur se lisent toujours. Reviens demain.', 'J’ai retourné toutes les caisses. Demain.', 'Je ferme l’établi. À demain.'];
-  LABELS.sage = 'savant'; ROLE_BRIEF.sage = 'tu es le savant du bureau, tu gardes les définitions de tous les mots du blog dans ta longue barbe'; CHIPS.sage = ['Définis « agent »', 'C’est quoi le rappel ?', 'Un mot au hasard'];
+  LABELS.sage = 'savant'; CHIPS.sage = ['Définis « agent »', 'C’est quoi le rappel ?', 'Un mot au hasard'];
   QUOTA.sage = ['Ma barbe est pleine de mots, mais plus un seul token pour les phrases. Demande-moi une définition, ou reviens demain.', 'J’ai fouillé jusqu’au menton. Pas de token. Demain.', 'Je vais me peigner. À demain.'];
-  function ask(a, q, sheet) { q = String(q || '').trim().slice(0, 300); if (!q) return; if (a.role === 'sage' && !sheet) { askSage(a, q); return; } addMsg(a, 'moi', sheet ? q + ' (en lui donnant « ' + POSTERS[sheet.idx][2] + ' »)' : q); var m = addMsg(a, 'clawd', '…'); emote(a, '…');
+  function ask(a, q, sheet) { q = String(q || '').trim().slice(0, 300); if (!q) return; if (a.role === 'sage' && !sheet) { askSage(a, q); return; } addMsg(a, 'moi', sheet ? q + ' (en lui donnant « ' + POSTERS[sheet.idx][2] + ' »)' : q); if (!sheet && LOCAL[q]) { reply(a, LOCAL[q](a)); return; } var m = addMsg(a, 'clawd', '…'); emote(a, '…');
     function done() { emote(a, ''); if (selected === a) renderTalk(); sfx('greet', a.g.position); speak(a, m.text.length > 150 ? m.text.slice(0, 147) + '…' : m.text, 5); if (sheet) { a.plan.unshift({ anim: 'wave', dur: 0.7, label: 'te répond' }); setTimeout(sheet.done, 1900); } }
     var askSite = window.Shell && window.Shell.ask; if (!askSite) { setTimeout(function () { m.text = quota(a); done(); }, 500); return; }
-    askSite({ q: sheet ? q + ' (« ' + POSTERS[sheet.idx][2] + ' »)' : q, persona: a.role, onText: function (t) { m.text = t; if (selected === a) renderTalk(); } })
+    askSite({ q: sheet ? q + ' (« ' + POSTERS[sheet.idx][2] + ' »)' : q, persona: a.role, idk: stumped(a), onText: function (t) { m.text = t; if (selected === a) renderTalk(); } })
       .then(function (t) { m.text = t || quota(a); done(); }, function () { m.text = quota(a); done(); });
   }
   document.getElementById('ask').addEventListener('submit', function (e) { e.preventDefault(); if (!selected || !askInput.value.trim()) return; if (held) giveTo(selected, askInput.value.trim()); else ask(selected, askInput.value); askInput.value = ''; });

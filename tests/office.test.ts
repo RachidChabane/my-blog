@@ -3,7 +3,14 @@ import { readdirSync, readFileSync } from 'node:fs';
 import matter from 'gray-matter';
 import { clawd, crew, frieze, projectScene, TEAM, who } from '@/office/draw';
 import { officeStrings, SECTION_ORDER, SECTION_PATHS } from '@/office/strings';
-import { mergeRows, monthOf, plainParagraphs, shortDek } from '@/office/view';
+import {
+  mergeRows,
+  monthOf,
+  plainParagraphs,
+  shortDek,
+  worldData,
+} from '@/office/view';
+import type { ArticleEntryLike } from '@/lib/content';
 import type { Row } from '@/office/view';
 import { validateQueryRequest } from '@/lib/avatar/guard';
 import { PERSONAS } from '@/lib/avatar/protocol';
@@ -122,6 +129,34 @@ describe('office view models', () => {
       'First bold and a link.',
       'Second.',
     ]);
+  });
+
+  it('counts every published text while the galleries hold the newest', () => {
+    const TOTAL = 14;
+    const articles = Array.from({ length: TOTAL }, (_, i) => ({
+      id: `a${i}`,
+      body: 'Body.',
+      data: {
+        title: `T${i}`,
+        slug: `t${i}`,
+        lang: 'fr',
+        translationKey: `k${i}`,
+        publishDate: `${String(i + 1).padStart(2, '0')}-01-2026`,
+        publishState: 'published',
+        category: 'analysis',
+        tags: [],
+        sources: [],
+      },
+    })) as unknown as ArticleEntryLike[];
+    const data = worldData('fr', {
+      articles,
+      radar: [],
+      journal: [],
+      projects: [],
+      concepts: [],
+    });
+    expect(data.counts).toEqual({ articles: TOTAL, radar: 0 });
+    expect(data.articles.length).toBeLessThan(TOTAL);
   });
 
   it('merges lists newest first', () => {
