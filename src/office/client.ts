@@ -3,13 +3,11 @@
  * the library's sage, questions to the agent, and the passage into the 3D world.
  * Pages are complete without it; this only adds what needs a click.
  */
-import { getCurrentTheme, toggleTheme } from '@/lib/theme';
+import { toggleTheme } from '@/lib/theme';
 import { parseSSE, SSE_EVENT } from '@/lib/avatar/protocol';
 import { takeFrames } from '@/lib/sse-frames';
 
 interface Strings {
-  night: string;
-  day: string;
   left: string;
   done: string;
   size: string;
@@ -137,12 +135,28 @@ function toast(message: string): void {
 
 /* ---------------------------------------------------------------- chrome */
 
-function syncLamp(): void {
-  const label = getCurrentTheme() === 'dark' ? T.day : T.night;
-  for (const id of ['lamp', 'mLamp']) {
-    const el = $(id);
-    if (el) el.textContent = label;
-  }
+const LAMP_MS = 620;
+
+/** Switches day and night; the new theme spreads from where the visitor pressed. */
+function flipLamp(e: MouseEvent): void {
+  const root = document.documentElement;
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!document.startViewTransition || still) return void toggleTheme();
+  const x = e.clientX || window.innerWidth / 2;
+  const y = e.clientY || 0;
+  const reach = Math.hypot(
+    Math.max(x, window.innerWidth - x),
+    Math.max(y, window.innerHeight - y)
+  );
+  root.style.setProperty('--lamp-x', `${x}px`);
+  root.style.setProperty('--lamp-y', `${y}px`);
+  root.style.setProperty('--lamp-r', `${reach}px`);
+  root.style.setProperty('--lamp-ms', `${LAMP_MS}ms`);
+  root.classList.add('lamping');
+  const done = () => root.classList.remove('lamping');
+  document
+    .startViewTransition(() => void toggleTheme())
+    .finished.then(done, done);
 }
 
 function menu(open: boolean): void {
@@ -724,7 +738,6 @@ function mount(): void {
   askCount = 0;
   standShown = null;
   standIdx = 0;
-  syncLamp();
   placeRunner();
   buildToc();
   linkTerms();
@@ -780,21 +793,13 @@ function onClick(e: MouseEvent): void {
   }
   if (!t.closest('.note')) closeNotes();
   if (t.closest('#door')) return void to3D();
-  if (t.closest('#lamp')) {
-    toggleTheme();
-    syncLamp();
-    return;
-  }
+  if (t.closest('#lamp')) return flipLamp(e);
   if (t.closest('#more')) return menu($('msheet')?.hidden !== false);
   if (t.id === 'scrim') return menu(false);
   const act = t.closest<HTMLElement>('[data-act]')?.dataset.act;
   if (act === 'smaller') return setRead(-1);
   if (act === 'bigger') return setRead(1);
-  if (act === 'lamp') {
-    toggleTheme();
-    syncLamp();
-    return;
-  }
+  if (act === 'lamp') return flipLamp(e);
   const word = t.closest<HTMLElement>('[data-c]');
   if (word && $('scrollBox')) {
     e.preventDefault();

@@ -182,13 +182,10 @@ test.describe('language and theme', () => {
     await page.goto('/fr/');
     const before = await page.locator('html').getAttribute('data-theme');
     await page.locator('#lamp').click();
-    const after = await page.locator('html').getAttribute('data-theme');
-    expect(after).not.toBe(before);
+    const after = before === 'dark' ? 'light' : 'dark';
+    await expect(page.locator('html')).toHaveAttribute('data-theme', after);
     await page.reload();
-    await expect(page.locator('html')).toHaveAttribute(
-      'data-theme',
-      after ?? ''
-    );
+    await expect(page.locator('html')).toHaveAttribute('data-theme', after);
   });
 });
 

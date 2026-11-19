@@ -20,7 +20,8 @@ export interface OfficeStrings {
   menu: string;
   theme: string;
   language: string;
-  otherLanguage: string;
+  /** Name of the locale itself. */
+  thisLanguage: string;
   textSize: string;
   size: string;
   smaller: string;
@@ -90,9 +91,9 @@ const FR: OfficeStrings = {
   night: 'Nuit',
   day: 'Jour',
   menu: 'Menu',
-  theme: 'thème',
+  theme: 'Thème',
   language: 'Langue',
-  otherLanguage: 'English',
+  thisLanguage: 'Français',
   textSize: 'Texte',
   size: 'taille',
   smaller: 'Texte plus petit',
@@ -219,9 +220,9 @@ const EN: OfficeStrings = {
   night: 'Night',
   day: 'Day',
   menu: 'Menu',
-  theme: 'theme',
+  theme: 'Theme',
   language: 'Language',
-  otherLanguage: 'Français',
+  thisLanguage: 'English',
   textSize: 'Text',
   size: 'size',
   smaller: 'Smaller text',

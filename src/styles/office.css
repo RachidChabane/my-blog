@@ -2339,15 +2339,25 @@ a.folder:hover {
     align-items: flex-end;
     gap: 6px;
   }
-  .icard .lng i {
+  .icard .opts i {
+    display: grid;
+    place-items: center;
+    min-width: 38px;
+    height: 32px;
     font-style: normal;
     font-weight: 800;
     font-size: 13px;
-    padding: 6px 9px;
+    padding: 0 9px;
     border-radius: 5px;
     background: var(--paper-2);
+    color: var(--ink-2);
   }
-  .icard .lng i.on {
+  .icard .opts svg {
+    width: 18px;
+  }
+  .icard .opts i.on,
+  :root[data-theme='light'] .icard .opts .when-day-on,
+  :root[data-theme='dark'] .icard .opts .when-night-on {
     background: var(--jrnl);
     color: #fff;
   }
@@ -2826,5 +2836,36 @@ a.folder:hover {
   #main > .wrap.leaving,
   #main > .wrap.arrive > * {
     animation: none;
+  }
+}
+
+/* theme switch: the state in force is the one shown */
+:root[data-theme='light'] .when-night,
+:root[data-theme='dark'] .when-day,
+:root[data-theme='light'] .lamp .moon,
+:root[data-theme='dark'] .lamp .sun {
+  display: none;
+}
+.lamp svg {
+  width: 16px;
+  height: 16px;
+}
+/* the new theme spreads in a circle from the press */
+.lamping::view-transition-old(root),
+.lamping::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+.lamping::view-transition-new(root) {
+  animation: lamp-spread var(--lamp-ms, 620ms) cubic-bezier(0.3, 0, 0.2, 1) both;
+}
+@keyframes lamp-spread {
+  from {
+    clip-path: circle(0 at var(--lamp-x, 50%) var(--lamp-y, 0));
+  }
+  to {
+    clip-path: circle(
+      var(--lamp-r, 150vmax) at var(--lamp-x, 50%) var(--lamp-y, 0)
+    );
   }
 }

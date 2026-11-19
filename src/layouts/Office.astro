@@ -64,9 +64,12 @@ const TAB_SECTIONS: SectionKey[] = [
   'work',
   'library',
 ];
+/** Sun and moon of the theme switch; the stylesheet shows the one in force. */
+const SUN =
+  '<svg class="sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="4.5" fill="currentColor"/><path d="M10 1v3M10 16v3M1 10h3M16 10h3M3.6 3.6l2.1 2.1M14.3 14.3l2.1 2.1M3.6 16.4l2.1-2.1M14.3 5.7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+const MOON =
+  '<svg class="moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.6A7.5 7.5 0 0 1 7.4 3.5a7.5 7.5 0 1 0 9.1 9.1z" fill="currentColor"/></svg>';
 const clientStrings = {
-  night: t.night,
-  day: t.day,
   left: t.left(-1).replace('-1', '{n}'),
   done: t.done,
   size: t.size,
@@ -198,8 +201,15 @@ const clientStrings = {
               >
                 {other.toUpperCase()}
               </a>
-              <button class="pill small" id="lamp" type="button">
-                {t.night}
+              <button
+                class="pill small lamp"
+                id="lamp"
+                type="button"
+                aria-label={t.theme}
+              >
+                <Fragment set:html={SUN + MOON} />
+                <span class="when-day">{t.day}</span>
+                <span class="when-night">{t.night}</span>
               </button>
               <button
                 class="pill small"
@@ -284,28 +294,23 @@ const clientStrings = {
               data-act="lamp"
               style="--tab:var(--jrnl)"
             >
-              <span class="pic">
-                <svg viewBox="0 0 56 44" aria-hidden="true">
-                  <rect width="56" height="44" fill="#FFFFFF"></rect>
-                  <rect x="4" y="4" width="48" height="36" fill="var(--sky)"
-                  ></rect>
-                  <circle cx="36" cy="18" r="9" fill="var(--sun)"></circle>
-                  <rect x="26" y="4" width="3" height="36" fill="#FFFFFF"
-                  ></rect>
-                  <rect x="4" y="21" width="48" height="3" fill="#FFFFFF"
-                  ></rect>
-                </svg>
+              <span class="pic opts">
+                <i class="when-day-on" set:html={SUN} />
+                <i class="when-night-on" set:html={MOON} />
               </span>
-              <b id="mLamp">{t.night}</b>
-              <span class="mono">{t.theme}</span>
+              <b>{t.theme}</b>
+              <span class="mono">
+                <span class="when-day">{t.day}</span>
+                <span class="when-night">{t.night}</span>
+              </span>
             </button>
             <a class="icard" href={otherHref} style="--tab:var(--radar)">
-              <span class="pic lng">
+              <span class="pic opts">
                 <i class={lang === 'fr' ? 'on' : ''}>FR</i>
                 <i class={lang === 'en' ? 'on' : ''}>EN</i>
               </span>
               <b>{t.language}</b>
-              <span class="mono">{t.otherLanguage}</span>
+              <span class="mono">{t.thisLanguage}</span>
             </a>
             <div
               class="icard"
