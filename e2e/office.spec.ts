@@ -172,6 +172,7 @@ test.describe('language and theme', () => {
     await expect(page.locator('.signs a[data-k="work"]')).toHaveText(
       'Projects'
     );
+    await expect(page.locator('#lang')).toHaveText('EN');
     await page.locator('#lang').click();
     await expect(page).toHaveURL(/\/fr\/blog\/$/);
   });
