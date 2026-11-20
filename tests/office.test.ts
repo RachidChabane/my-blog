@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import matter from 'gray-matter';
 import { clawd, crew, frieze, projectScene, TEAM, who } from '@/office/draw';
+import { passage, PASSAGE_ORDER } from '@/office/passage';
 import { officeStrings } from '@/office/strings';
 import {
   FRIEZE_ORDER,
@@ -337,5 +338,28 @@ describe('month of a publish date', () => {
   });
   it('is empty for a malformed date', () => {
     expect(monthOf('2026-11')).toBe('');
+  });
+});
+
+describe('passage between pages', () => {
+  const at = (path: string) => `https://example.test${path}`;
+  const way = (from: string, to: string) =>
+    passage(at(from), at(to), PASSAGE_ORDER);
+
+  it('follows the order of the signs, home first', () => {
+    expect(way('/fr/', '/fr/radar/')).toBe('forward');
+    expect(way('/fr/radar/', '/fr/training/')).toBe('forward');
+    expect(way('/en/about/', '/en/blog/')).toBe('back');
+    expect(way('/fr/blog/', '/fr/')).toBe('back');
+  });
+
+  it('counts a text as part of its section', () => {
+    expect(way('/fr/blog/', '/fr/blog/some-text/')).toBe('stay');
+    expect(way('/fr/blog/some-text/', '/fr/journal/')).toBe('forward');
+  });
+
+  it('stays put when an address is unknown or missing', () => {
+    expect(passage('', at('/fr/radar/'), PASSAGE_ORDER)).toBe('stay');
+    expect(way('/fr/tags/agents/', '/fr/radar/')).toBe('stay');
   });
 });

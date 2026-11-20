@@ -522,3 +522,75 @@ test.describe('the 3D office', () => {
     expect(data.words.length).toBeGreaterThan(100);
   });
 });
+
+test.describe('going from one section to the next', () => {
+  async function arrive(page: Page, href: string): Promise<string[]> {
+    await page.locator(`a.sign[href="${href}"]`).click();
+    await page.waitForURL(`**${href}`);
+    return page.evaluate(() => {
+      const seen = (window as { __passage?: ViewTransition | null }).__passage;
+      return seen ? [...seen.types] : ['none'];
+    });
+  }
+
+  test('the room slides the way the signs are ordered', async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName !== 'chromium', 'cross-document view transitions');
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.addInitScript(() => {
+      addEventListener('pagereveal', (e) => {
+        (window as { __passage?: ViewTransition | null }).__passage =
+          e.viewTransition;
+      });
+    });
+    await page.goto('/fr/radar/');
+    expect(await arrive(page, '/fr/work/')).toEqual(['forward']);
+    expect(await arrive(page, '/fr/blog/')).toEqual(['back']);
+    const kept = await page.evaluate(() =>
+      ['.top', '#floor', '#main'].map(
+        (q) => getComputedStyle(document.querySelector(q)!).viewTransitionName
+      )
+    );
+    expect(kept).toEqual(['top', 'floor', 'room']);
+  });
+
+  test('a visitor who asked for less motion gets a plain page change', async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName !== 'chromium', 'cross-document view transitions');
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.addInitScript(() => {
+      addEventListener('pagereveal', (e) => {
+        (window as { __passage?: ViewTransition | null }).__passage =
+          e.viewTransition;
+      });
+    });
+    await page.goto('/fr/radar/');
+    expect(await arrive(page, '/fr/work/')).toEqual(['none']);
+  });
+
+  test('pages of the site are prepared when a visitor points at them', async ({
+    page,
+  }) => {
+    await page.goto('/fr/training/');
+    const rules = JSON.parse(
+      (await page
+        .locator('script[type="speculationrules"]')
+        .textContent()) as string
+    );
+    expect(rules.prerender[0].eagerness).toBe('moderate');
+    const play = page.locator('a[href$="#play"]').first();
+    await expect(play).toHaveCount(1);
+    const skipped = rules.prerender[0].where.and
+      .map(
+        (c: { not?: { selector_matches?: string } }) => c.not?.selector_matches
+      )
+      .find(Boolean) as string;
+    expect(await play.evaluate((a, sel) => a.matches(sel), skipped)).toBe(true);
+  });
+});

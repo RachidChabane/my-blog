@@ -2922,6 +2922,56 @@ a.folder:hover {
   }
 }
 
+/* from one page to the next: the ceiling and the floor stay, the room slides */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+:root:not(.lamping) .top {
+  view-transition-name: top;
+}
+:root:not(.lamping) #floor {
+  view-transition-name: floor;
+}
+:root:not(.lamping) #main {
+  view-transition-name: room;
+}
+::view-transition-group(top),
+::view-transition-group(floor) {
+  z-index: 1;
+}
+::view-transition-old(room) {
+  animation: room-out 0.12s ease-in both;
+}
+::view-transition-new(room) {
+  animation: room-in 0.26s cubic-bezier(0.2, 0.9, 0.25, 1) 0.06s both;
+}
+:root:active-view-transition-type(forward) {
+  --walk: 1;
+}
+:root:active-view-transition-type(back) {
+  --walk: -1;
+}
+@keyframes room-out {
+  to {
+    opacity: 0;
+    transform: translate(
+      calc(var(--walk, 0) * -4vw),
+      calc((1 - max(var(--walk, 0), -1 * var(--walk, 0))) * -8px)
+    );
+  }
+}
+@keyframes room-in {
+  from {
+    opacity: 0;
+    transform: translate(
+      calc(var(--walk, 0) * 6vw),
+      calc((1 - max(var(--walk, 0), -1 * var(--walk, 0))) * 14px)
+    );
+  }
+}
+
 /* day shift and night shift of a crew */
 :root[data-theme='light'] .room .crew .when-day,
 :root[data-theme='dark'] .room .crew .when-night {

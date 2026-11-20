@@ -10,6 +10,7 @@ import { themeInitScript } from '@/lib/theme';
 import { LOCALES, localePath } from '@/i18n/index';
 import type { Locale } from '@/i18n/index';
 import { who } from '@/office/draw';
+import { passageScript, speculationRules } from '@/office/passage';
 import { officeStrings } from '@/office/strings';
 import {
   ROOM_SECTIONS,
@@ -94,6 +95,8 @@ const clientStrings = {
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <script is:inline set:html={themeInitScript} />
+    <script is:inline set:html={passageScript} />
+    <script is:inline type="speculationrules" set:html={speculationRules} />
     <link
       rel="preload"
       href="/fonts/SchibstedGrotesk-Variable.woff2"
