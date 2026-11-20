@@ -1,28 +1,44 @@
-/** Screens around the fights: title, map, a chapter's rooms and doors, café, chest, tally, level-up. */
+/**
+ * Screens around the fights: title, options, map, a chapter's rooms and doors, the
+ * recruits and the line-up, café, chest, tally and level-up.
+ */
+import { fightXp, setLevel } from '../../domain/engine';
+import type { Run } from '../../domain/engine';
+import type { AllyKey } from '../../domain/party';
 import {
-  afterStep,
-  applyReward,
-  fightXp,
-  genChest,
-  genDoors,
-  newRun,
-  restAtCafe,
-} from '../../domain/engine';
-import type { DoorKey, Reward, Run } from '../../domain/engine';
-import { sheetLabel } from '../../domain/bank';
+  ALLY_KEYS,
+  LINEUP_SIZE,
+  MEMBERS,
+  lineupWith,
+} from '../../domain/party';
+import { recruitAt } from '../../domain/campaign';
 import {
-  CHAPTERS,
   FIGHTS_PER_CHAPTER,
   RULES,
   levelOf,
-  maxHpOf,
-  maxInkOf,
+  maxTokensOf,
 } from '../../domain/rules';
+import type { ItemKey } from '../../domain/rules';
+import {
+  afterStep,
+  applyReward,
+  assistOf,
+  delivery,
+  genChest,
+  genDoors,
+  join,
+  newRun,
+  restAtCafe,
+  setLineup,
+} from '../../domain/run';
+import type { DoorKey, Reward } from '../../domain/run';
+import type { Speed } from '../../domain/save';
+import { SPEEDS } from '../../domain/save';
+import { sheetLabel } from '../../domain/bank';
 import { chapterCopy } from '../../i18n/copy';
-import { G, $, esc, reduced, wait } from './state';
+import { G, $, chapters, domainOf, esc, reduced, wait } from './state';
 import {
   Zone,
-  blip,
   bubbleAt,
   choose,
   openHowto,
@@ -38,50 +54,53 @@ import {
 } from './ui';
 import {
   cafeSvg,
+  castSvg,
   chestSvg,
   crownSvg,
   doorSvg,
+  elIcon,
   foeSvg,
-  gloseBack,
   gloseSvg,
-  heroBack,
   heroSvg,
   icon24,
   svg,
   R,
 } from './art';
+import { memberName, partyHtml } from './hud';
 import { placeOfStep, placeSvg, timeOfStep, titleSet } from './sets';
 import { battle } from './battle';
 import { playCine, replayMenu } from './cine';
+import { blip } from './sound';
 
 const go = (label: string) => `${esc(label)} ${icon24('arrow')}`;
 const total = () => G.qById.size;
 const freedIn = (domain: string) => {
-  const f = new Set(G.host.save.freed);
+  const f = new Set(G.host.progress.freed);
   return (G.ctx.bank[domain] ?? []).filter((id) => f.has(id)).length;
 };
 const chapterOpen = (i: number) =>
-  i === 0 || G.host.save.beaten.includes(CHAPTERS[i - 1].domain);
+  i === 0 || G.host.progress.beaten.includes(chapters()[i - 1].domain);
 
 /* ---------- title ---------- */
 export async function titleScreen(): Promise<void> {
   const c = G.c;
   const save = G.host.save;
+  const prog = G.host.progress;
   G.run = null;
   G.F = null;
   G.screen = 'title';
   setScene(titleSet(), { time: 'night' });
-  setWhere(c.game, '');
+  setWhere(c.page.game, '');
   $('layer').innerHTML =
-    `<div class="title-wrap"><h1>${esc(c.game)}</h1></div>` +
+    `<div class="title-wrap"><h1>${esc(c.page.game)}</h1></div>` +
     `<div class="title-art" aria-hidden="true"><span class="shade">${foeSvg('grib')}</span>${gloseSvg()}${heroSvg()}<span class="shade">${foeSvg('din')}</span></div>`;
   renderStatus();
-  if (!save.seen.includes('intro')) {
+  if (!prog.seen.includes('intro')) {
     await playCine('intro');
     return titleScreen();
   }
   showLine(
-    esc(save.freed.length || save.xp ? c.lines.titleBack : c.lines.titleNew),
+    esc(prog.freed.length || prog.xp ? c.lines.titleBack : c.lines.titleNew),
     'glose'
   );
   if (!save.soundAsked) {
@@ -108,13 +127,14 @@ export async function titleScreen(): Promise<void> {
           k: 'start',
           cls: 'primary',
           html: go(
-            save.freed.length || save.xp ? c.actions.cont : c.actions.start
+            prog.freed.length || prog.xp ? c.actions.cont : c.actions.start
           ),
         },
       ],
       secondary: [
         { k: 'sheets', html: `${icon24('sheets')}${esc(c.actions.sheets)}` },
         { k: 'cines', html: `${icon24('film')}${esc(c.actions.cines)}` },
+        { k: 'options', html: `${icon24('options')}${esc(c.actions.options)}` },
         { k: 'help', html: `${icon24('help')}${esc(c.actions.howto)}` },
       ],
     });
@@ -124,12 +144,48 @@ export async function titleScreen(): Promise<void> {
       await replayMenu();
       return titleScreen();
     }
+    if (k === 'options') await optionsMenu();
     if (k === 'help') openHowto();
   }
 }
 
 export function renderToggles(): void {
   $('snd').setAttribute('aria-pressed', String(!!G.host.save.sound));
+  G.root
+    .querySelectorAll<HTMLElement>('[data-speed]')
+    .forEach((b) =>
+      b.setAttribute(
+        'aria-pressed',
+        String(b.dataset.speed === G.host.save.speed)
+      )
+    );
+}
+
+export function setSpeed(s: Speed): void {
+  G.host.save.speed = s;
+  G.host.persist();
+  renderToggles();
+}
+
+/** The options: fight speed, saved with the progress. */
+async function optionsMenu(): Promise<void> {
+  const c = G.c;
+  for (;;) {
+    showLine(esc(c.labels.speedHelp), 'glose');
+    const k = await choose({
+      kind: 'options',
+      label: c.labels.speed,
+      back: true,
+      layout: 'c2',
+      items: SPEEDS.map((s) => ({
+        k: `speed:${s}`,
+        cls: `primary${G.host.save.speed === s ? ' on' : ''}`,
+        html: `${esc(c.labels.speeds[s])}${G.host.save.speed === s ? ' ✓' : ''}`,
+      })),
+    });
+    if (k === 'back') return;
+    setSpeed(k.slice(6) as Speed);
+  }
 }
 
 /* ---------- map: the building in cross-section, one room per exam domain ---------- */
@@ -142,45 +198,55 @@ const lockSvg = () =>
 
 export async function mapScreen(): Promise<void> {
   const c = G.c;
-  const save = G.host.save;
+  const prog = G.host.progress;
   G.run = null;
   G.F = null;
   G.screen = 'map';
+  /* allies who joined before this version of the game get their scene once */
+  const missed = ALLY_KEYS.filter(
+    (k) => prog.recruits.includes(k) && !prog.seen.includes(`join-${k}`)
+  );
+  if (missed.length) {
+    for (const k of missed) await playCine(`join-${k}`);
+    return mapScreen();
+  }
   G.host.refresh();
   setScene('', { time: '' });
-  setWhere(c.game, esc(c.titles[levelOf(save.xp) - 1]));
+  setWhere(c.page.game, esc(c.titles[levelOf(prog.xp) - 1]));
   renderStatus();
-  let sel = CHAPTERS.findIndex(
-    (ch, i) => chapterOpen(i) && !save.beaten.includes(ch.domain)
+  let sel = chapters().findIndex(
+    (ch, i) => chapterOpen(i) && !prog.beaten.includes(ch.domain)
   );
   if (sel < 0) sel = 0;
-  $('layer').innerHTML = `<div class="bldg">${CHAPTERS.map((ch, i) => {
-    const open = chapterOpen(i);
-    const beaten = save.beaten.includes(ch.domain);
-    const f = freedIn(ch.domain);
-    const tot = (G.ctx.bank[ch.domain] ?? []).length;
-    const cc = chapterCopy(c, i);
-    return (
-      `<button type="button" class="room${open ? '' : ' locked'}" data-room="${i}" aria-label="${esc(c.lines.roomAria(i + 1, cc.domain, f, tot, !open))}">${placeSvg(ch.domain, 0)}` +
-      (beaten
-        ? `<span class="crown" aria-hidden="true">${crownSvg()}</span>`
-        : !open
-          ? `<span class="lock" aria-hidden="true">${lockSvg()}</span>`
-          : '') +
-      `<span class="lab"><b><span class="no">${i + 1}</span><span class="nm">${esc(cc.short)}</span></b><span class="p"><span class="hb"><i style="width:${tot ? (f / tot) * 100 : 0}%"></i></span>${f}/${tot}</span></span></button>`
-    );
-  }).join(
-    ''
-  )}<div class="room total" aria-hidden="true"><span class="lab"><b>${save.freed.length}/${total()}</b><span class="p">${esc(c.titles[levelOf(save.xp) - 1])}</span></span></div></div>`;
-  const all = save.beaten.length === CHAPTERS.length;
+  $('layer').innerHTML = `<div class="bldg">${chapters()
+    .map((ch, i) => {
+      const open = chapterOpen(i);
+      const beaten = prog.beaten.includes(ch.domain);
+      const f = freedIn(ch.domain);
+      const tot = (G.ctx.bank[ch.domain] ?? []).length;
+      const cc = chapterCopy(c, domainOf(i));
+      return (
+        `<button type="button" class="room${open ? '' : ' locked'}" data-room="${i}" aria-label="${esc(c.lines.roomAria(i + 1, cc.domain, f, tot, !open))}">${placeSvg(ch.domain, 0)}` +
+        (beaten
+          ? `<span class="crown" aria-hidden="true">${crownSvg()}</span>`
+          : !open
+            ? `<span class="lock" aria-hidden="true">${lockSvg()}</span>`
+            : '') +
+        `<span class="lab"><b><span class="no">${i + 1}</span><span class="nm">${esc(cc.short)}</span></b><span class="p"><span class="hb"><i style="width:${tot ? (f / tot) * 100 : 0}%"></i></span>${f}/${tot}</span></span></button>`
+      );
+    })
+    .join(
+      ''
+    )}<div class="room total" aria-hidden="true"><span class="lab"><b>${prog.freed.length}/${total()}</b><span class="p">${esc(c.titles[levelOf(prog.xp) - 1])}</span></span></div></div>`;
+  const all = prog.beaten.length === chapters().length;
   const lineFor = (i: number) => {
-    const cc = chapterCopy(c, i);
-    return `<b>${esc(c.status.chapterTag(i + 1))} · ${esc(cc.domain)}</b>. ${esc(c.lines.mapAt(cc.short, freedIn(CHAPTERS[i].domain), (G.ctx.bank[CHAPTERS[i].domain] ?? []).length))}`;
+    const cc = chapterCopy(c, domainOf(i));
+    return `<b>${esc(c.status.chapterTag(i + 1))} · ${esc(cc.domain)}</b>. ${esc(c.lines.mapAt(cc.short, freedIn(chapters()[i].domain), (G.ctx.bank[chapters()[i].domain] ?? []).length))}`;
   };
   showLine(
     all
       ? esc(c.lines.mapAll)
-      : !save.freed.length && !save.xp
+      : !prog.freed.length && !prog.xp
         ? esc(c.lines.mapFirst)
         : lineFor(sel),
     'glose'
@@ -202,8 +268,8 @@ export async function mapScreen(): Promise<void> {
     if (!b) return;
     const open = chapterOpen(i);
     b.innerHTML = open
-      ? go(c.actions.enter(chapterCopy(c, i).short))
-      : esc(c.actions.locked(chapterCopy(c, i - 1).boss.name));
+      ? go(c.actions.enter(chapterCopy(c, domainOf(i)).short))
+      : esc(c.actions.locked(chapterCopy(c, domainOf(i - 1)).boss.name));
     if (open) b.removeAttribute('aria-disabled');
     else b.setAttribute('aria-disabled', 'true');
     if (speak) showLine(lineFor(i), 'glose');
@@ -220,7 +286,7 @@ export async function mapScreen(): Promise<void> {
     if (!chapterOpen(i))
       bubbleAt(
         r.querySelector('.lab'),
-        c.lines.lockedTip(chapterCopy(c, i - 1).boss.name),
+        c.lines.lockedTip(chapterCopy(c, domainOf(i - 1)).boss.name),
         'tip'
       );
   };
@@ -235,8 +301,8 @@ export async function mapScreen(): Promise<void> {
       onKey: (e) => {
         if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return false;
         select(
-          (sel + (e.key === 'ArrowRight' ? 1 : CHAPTERS.length - 1)) %
-            CHAPTERS.length,
+          (sel + (e.key === 'ArrowRight' ? 1 : chapters().length - 1)) %
+            chapters().length,
           true
         );
         return true;
@@ -260,9 +326,8 @@ export async function mapScreen(): Promise<void> {
         ],
       });
       if (r === 'yes') {
-        const fresh = G.host.reset();
-        fresh.soundAsked = true;
-        fresh.seen = ['intro'];
+        G.host.reset();
+        G.host.progress.seen = ['intro'];
         G.host.persist();
         return mapScreen();
       }
@@ -270,17 +335,14 @@ export async function mapScreen(): Promise<void> {
   }
 }
 
-/* ---------- a chapter: places, doors, rooms and fights ---------- */
-export function partyHtml(): string {
-  return `<div class="party"><div class="actor hero">${heroBack()}<span class="sts" id="sts-hero"></span></div><div class="actor glose">${gloseBack()}<span class="sts" id="sts-glose"></span></div></div>`;
-}
+/* ---------- a chapter: places, doors, recruits, rooms and fights ---------- */
 export function chapterChrome(): void {
   const r = G.run;
   if (!r) return;
-  const cc = chapterCopy(G.c, r.ch);
+  const cc = chapterCopy(G.c, domainOf(r.ch));
   setWhere(
     cc.short,
-    `${stripHtml()}<span>${r.step === FIGHTS_PER_CHAPTER ? esc(G.c.status.bossStep) : `${r.step + 1}/5`}</span>`
+    `${stripHtml()}<span>${r.step === FIGHTS_PER_CHAPTER ? esc(G.c.status.bossStep) : `${r.step + 1}/${FIGHTS_PER_CHAPTER + 1}`}</span>`
   );
   renderStatus();
 }
@@ -290,13 +352,26 @@ export function setForStep(
   restored = false
 ): { html: string; time: string } {
   return {
-    html: placeSvg(CHAPTERS[r.ch].domain, placeOfStep(r.step), restored),
+    html: placeSvg(chapters()[r.ch].domain, placeOfStep(r.step), restored),
     time: timeOfStep(r.step, restored),
   };
 }
+const inParty = (r: Run) => ['hero' as const, ...r.lineup];
+
 async function startChapter(i: number): Promise<void> {
-  G.run = newRun(i, G.rng, G.host.save.perks);
+  const prog = G.host.progress;
+  const domain = chapters()[i].domain;
+  G.run = newRun(G.host.campaign, i, {
+    level: levelOf(prog.xp),
+    perks: prog.perks,
+    recruits: prog.recruits,
+    lineup: prog.lineup,
+    defeats: prog.defeats[domain] ?? 0,
+  });
   await playCine(`chapter-${i}`);
+  const assist = assistOf(prog.defeats[domain]);
+  if (assist)
+    await say({ who: 'glose', text: G.c.lines.notes(assist), wait: true });
   return chapterLoop();
 }
 
@@ -309,7 +384,7 @@ async function walkTo(r: Run): Promise<void> {
   }
   const s = setForStep(r);
   setScene(s.html, { time: s.time });
-  $('layer').innerHTML = partyHtml();
+  $('layer').innerHTML = partyHtml(inParty(r));
   const p2 = $('layer').querySelector('.party');
   if (p2 && !reduced()) {
     p2.classList.add('walk-in');
@@ -318,22 +393,102 @@ async function walkTo(r: Run): Promise<void> {
   }
 }
 
+/** An ally met in this room joins: their scene, then the line-up if it is full. */
+async function recruit(r: Run, k: AllyKey): Promise<void> {
+  const prog = G.host.progress;
+  await playCine(`join-${k}`);
+  blip('join');
+  await say({ who: k, text: G.c.members[k].hello });
+  if (!prog.recruits.includes(k)) prog.recruits.push(k);
+  join(r, k);
+  if (!r.lineup.includes(k)) {
+    setLineup(r, lineupWith(r.lineup, k));
+    await say({
+      who: 'glose',
+      text: G.c.lines.lineupFull(memberName(k)),
+      wait: true,
+    });
+    await teamScreen(r, k);
+  }
+  prog.lineup = [...r.lineup];
+  G.host.persist();
+  if (prog.recruits.length === 1)
+    await say({ who: 'glose', text: G.c.lines.teachParty, wait: true });
+}
+
+/** The line-up: pick the two allies who fight next to you. */
+async function teamScreen(r: Run, focus?: AllyKey): Promise<void> {
+  const c = G.c;
+  const prog = G.host.progress;
+  const allies = prog.recruits.filter((k) => r.party[k]);
+  let pick = [...r.lineup];
+  for (;;) {
+    $('layer').innerHTML =
+      partyHtml(['hero', ...pick]) +
+      `<div class="team-art" aria-hidden="true">${allies.map((k) => `<span class="${pick.includes(k) ? 'on' : ''}">${castSvg(k)}</span>`).join('')}</div>`;
+    renderStatus();
+    showLine(
+      esc(c.lines.teamAt(pick.map(memberName).join(', ') || '…')),
+      'glose'
+    );
+    const need = Math.min(LINEUP_SIZE, allies.length);
+    const k = await choose({
+      kind: 'team',
+      label: c.labels.teamPick,
+      layout: 'list team',
+      focus,
+      items: [
+        ...allies.map((a) => ({
+          k: `ally:${a}`,
+          cls: `ally${pick.includes(a) ? ' on' : ''}`,
+          html: `<span class="af">${castSvg(a)}</span><span class="an"><b>${esc(memberName(a))}</b> ${elIcon(MEMBERS[a].el, 'mini')}${esc(c.elements[MEMBERS[a].el].name)} · ${esc(c.roles[MEMBERS[a].role])}<span class="d">${esc(c.passives[MEMBERS[a].passive].name)} : ${esc(c.passives[MEMBERS[a].passive].text)}</span></span>`,
+        })),
+        {
+          k: 'done',
+          cls: 'primary',
+          html: go(c.labels.teamDone),
+          dis: pick.length !== need,
+          why: c.labels.teamPick,
+        },
+      ],
+    });
+    if (k === 'done') break;
+    const a = k.slice(5) as AllyKey;
+    pick = pick.includes(a)
+      ? pick.filter((x) => x !== a)
+      : [...pick, a].slice(-LINEUP_SIZE);
+    focus = a;
+  }
+  setLineup(r, pick);
+  prog.lineup = [...r.lineup];
+  G.host.persist();
+}
+
 let lastPlace = -1;
 async function chapterLoop(): Promise<void> {
   const c = G.c;
+  const prog = G.host.progress;
   for (;;) {
     const r = G.run as Run;
-    const cc = chapterCopy(c, r.ch);
+    const cc = chapterCopy(c, domainOf(r.ch));
     G.screen = 'doors';
     G.F = null;
     const place = placeOfStep(r.step);
     if (r.first || lastPlace === -1) {
       const s = setForStep(r);
       setScene(s.html, { time: s.time });
-      $('layer').innerHTML = partyHtml();
+      $('layer').innerHTML = partyHtml(inParty(r));
     } else await walkTo(r);
     lastPlace = place;
     chapterChrome();
+    const newcomer = recruitAt(r.camp, r.ch, r.step);
+    if (newcomer && !prog.recruits.includes(newcomer)) {
+      await recruit(r, newcomer);
+      const s = setForStep(r);
+      setScene(s.html, { time: s.time });
+      $('layer').innerHTML = partyHtml(inParty(r));
+      chapterChrome();
+    }
     $('layer').insertAdjacentHTML(
       'beforeend',
       `<span class="place">${esc(cc.places[place])}</span>`
@@ -342,9 +497,12 @@ async function chapterLoop(): Promise<void> {
     if (r.first) {
       lines.push({ who: 'glose', text: cc.intro, wait: true });
       r.first = false;
-    } else if (refill.ink || refill.hp)
-      lines.push({ who: 'glose', text: c.lines.refill(refill.ink, refill.hp) });
-    refill = { ink: 0, hp: 0 };
+    } else if (refill.tokens || refill.hp)
+      lines.push({
+        who: 'glose',
+        text: c.lines.refill(refill.tokens, refill.hp),
+      });
+    refill = { tokens: 0, hp: 0 };
     const doors = genDoors(r, G.rng);
     if (doors[0] === 'boss')
       lines.push({
@@ -353,8 +511,9 @@ async function chapterLoop(): Promise<void> {
         wait: true,
       });
     await say(...lines);
-    let door: DoorKey = doors[0];
-    if (doors.length > 1 || door === 'boss') {
+    let door: DoorKey;
+    for (;;) {
+      $('layer').querySelector('.doors-art')?.remove();
       $('layer').insertAdjacentHTML(
         'afterbegin',
         `<div class="doors-art" aria-hidden="true">${doors.map((d) => `<span class="door-${d}">${doorSvg(d)}</span>`).join('')}</div>`
@@ -363,7 +522,8 @@ async function chapterLoop(): Promise<void> {
         esc(doors.length > 1 ? c.lines.twoDoors : c.lines.bossWaits),
         'glose'
       );
-      door = (await choose({
+      const team = prog.recruits.length > LINEUP_SIZE;
+      const pick = await choose({
         kind: 'doors',
         label: doors.length > 1 ? c.labels.whichDoor : '',
         layout: doors.length > 1 ? 'c2' : 'list',
@@ -373,13 +533,24 @@ async function chapterLoop(): Promise<void> {
           html:
             doors.length > 1
               ? `${doorSvg(d)}<span>${esc(c.doors[d].name)}<span class="d">${esc(c.doors[d].text)}</span></span>`
-              : go(c.actions.faceBoss),
+              : go(d === 'boss' ? c.actions.faceBoss : c.doors[d].name),
         })),
-      })) as DoorKey;
-      const chosen = $('layer').querySelector(`.door-${door}`);
-      chosen?.classList.add('opening');
-      await wait(420);
+        secondary: team
+          ? [{ k: 'team', html: `${icon24('team')}${esc(c.actions.team)}` }]
+          : undefined,
+      });
+      if (pick === 'team') {
+        await teamScreen(r);
+        $('layer').innerHTML = partyHtml(inParty(r));
+        chapterChrome();
+        continue;
+      }
+      door = pick as DoorKey;
+      break;
     }
+    const chosen = $('layer').querySelector(`.door-${door}`);
+    chosen?.classList.add('opening');
+    await wait(420);
     r.elite = door === 'elite';
     if (door === 'cafe') {
       await cafe();
@@ -395,6 +566,9 @@ async function chapterLoop(): Promise<void> {
     if (out === 'flee') return mapScreen();
     if (out === 'lose') {
       await defeat();
+      const d = chapters()[r.ch].domain;
+      prog.defeats[d] = (prog.defeats[d] ?? 0) + 1;
+      G.host.persist();
       return mapScreen();
     }
     await victory();
@@ -402,12 +576,18 @@ async function chapterLoop(): Promise<void> {
       lastPlace = -1;
       return afterBoss(r);
     }
+    const brought = delivery(r, G.rng);
+    if (brought)
+      await say({
+        who: 'navette',
+        text: c.lines.delivery(c.items[brought].name),
+      });
     await chest(r.elite);
     stepDone(r);
   }
 }
 /** What the last rest gave back, told when the next place opens. */
-let refill = { ink: 0, hp: 0 };
+let refill = { tokens: 0, hp: 0 };
 function stepDone(r: Run): void {
   r.step++;
   refill = afterStep(r);
@@ -416,25 +596,24 @@ function stepDone(r: Run): void {
 /** The boss room changes once the boss is down: lights back on, dawn in the window. */
 async function afterBoss(r: Run): Promise<void> {
   const c = G.c;
-  const save = G.host.save;
-  const ch = CHAPTERS[r.ch];
-  const firstWin = !save.beaten.includes(ch.domain);
-  if (firstWin) {
-    save.beaten.push(ch.domain);
-    G.host.persist();
-  }
+  const prog = G.host.progress;
+  const ch = chapters()[r.ch];
+  const firstWin = !prog.beaten.includes(ch.domain);
+  if (firstWin) prog.beaten.push(ch.domain);
+  delete prog.defeats[ch.domain];
+  G.host.persist();
   await playCine(`fall-${r.ch}`);
   const s = setForStep(r, true);
   setScene(s.html, { time: s.time });
-  $('layer').innerHTML = partyHtml();
+  $('layer').innerHTML = partyHtml(inParty(r));
   void anim($('layer').querySelector('.party'), 'cheer', 500);
-  const nxt = CHAPTERS[r.ch + 1];
-  const allDone = save.beaten.length === CHAPTERS.length;
+  const nxt = chapters()[r.ch + 1];
+  const allDone = prog.beaten.length === chapters().length;
   await say({
     who: 'glose',
     text:
       nxt && !allDone
-        ? c.lines.chapterWon(chapterCopy(c, r.ch + 1).short)
+        ? c.lines.chapterWon(chapterCopy(c, domainOf(r.ch + 1)).short)
         : c.lines.allWon,
     wait: true,
   });
@@ -454,13 +633,13 @@ async function cafe(): Promise<void> {
   const s = setForStep(r);
   setScene(s.html, { time: s.time, cls: 'warm' });
   $('layer').innerHTML =
-    partyHtml() +
+    partyHtml(inParty(r)) +
     `<div class="center-art cafe" aria-hidden="true">${cafeSvg()}</div>`;
   const got = restAtCafe(r);
   renderStatus();
   await say(
     { who: 'moka', text: c.lines.cafe },
-    { who: 'glose', text: c.lines.cafeGlose(got.hp, got.ink), wait: true }
+    { who: 'glose', text: c.lines.cafeGlose(got.hp, got.tokens), wait: true }
   );
 }
 
@@ -472,7 +651,7 @@ async function chest(rich: boolean): Promise<void> {
   const s = setForStep(r);
   setScene(s.html, { time: s.time });
   $('layer').innerHTML =
-    partyHtml() +
+    partyHtml(inParty(r)) +
     `<div class="center-art chest" id="chest" aria-hidden="true">${chestSvg(false)}</div>`;
   chapterChrome();
   const box = $('chest');
@@ -487,7 +666,7 @@ async function chest(rich: boolean): Promise<void> {
   const opts = genChest(r, rich, G.rng);
   const info = (o: Reward) => {
     const [kind, k] = o.split(':');
-    return kind === 'item' ? c.items[k as 'cafe'] : c.boons[k as 'ink'];
+    return kind === 'item' ? c.items[k as ItemKey] : c.boons[k as 'ink'];
   };
   const k = (await choose({
     kind: 'chest',
@@ -496,7 +675,7 @@ async function chest(rich: boolean): Promise<void> {
     items: opts.map((o) => ({
       k: o,
       cls: 'reward',
-      html: `${o.startsWith('item') ? icon24('sac') : icon24('verve')}<span>${esc(info(o).name)}<span class="d">${esc(info(o).text)}</span></span>`,
+      html: `${o.startsWith('item') ? icon24('sac') : icon24('boon')}<span>${esc(info(o).name)}<span class="d">${esc(info(o).text)}</span></span>`,
     })),
   })) as Reward;
   applyReward(r, k);
@@ -510,9 +689,9 @@ async function tally(won: boolean): Promise<void> {
   const r = G.run;
   if (!F || !r) return;
   const c = G.c;
-  const save = G.host.save;
+  const prog = G.host.progress;
   G.screen = 'results';
-  const xp = fightXp(F, won);
+  const xp = fightXp(F, r, won);
   const s = setForStep(r);
   setScene(s.html, { time: s.time });
   setTurn(null);
@@ -522,7 +701,7 @@ async function tally(won: boolean): Promise<void> {
   const cards = F.freedHere.map((id) => G.qById.get(id)).filter((q) => !!q);
   $('layer').innerHTML =
     `<div class="wcards">${cards.map((q, i) => `<div class="wcard back" data-i="${i}">${esc(sheetLabel(q.id))}</div>`).join('')}</div>` +
-    partyHtml();
+    partyHtml(inParty(r));
   renderStatus();
   if (!cards.length) await say({ text: c.lines.tallyNone, wait: true });
   for (let i = 0; i < cards.length; i++) {
@@ -533,7 +712,7 @@ async function tally(won: boolean): Promise<void> {
     card.classList.add('flip', 'cur');
     card.insertAdjacentHTML(
       'beforeend',
-      `<span class="st">${esc(c.sheets.freed)}</span>`
+      `<span class="st">${esc(c.page.sheets.freed)}</span>`
     );
     blip('free');
     const q = cards[i];
@@ -543,17 +722,18 @@ async function tally(won: boolean): Promise<void> {
     });
     card.classList.remove('cur');
   }
-  const before = levelOf(save.xp);
-  save.xp += xp;
+  const before = levelOf(prog.xp);
+  prog.xp += xp;
   G.host.persist();
   await sayOne({ text: c.lines.tallySum(cards.length, xp) });
-  if (levelOf(save.xp) > before) await levelUp(levelOf(save.xp));
+  const after = levelOf(prog.xp);
+  for (let l = before + 1; l <= after; l++) await levelUp(l);
   G.host.refresh();
   Zone.idle();
 }
 async function levelUp(l: number): Promise<void> {
   const c = G.c;
-  const save = G.host.save;
+  const prog = G.host.progress;
   const r = G.run;
   G.screen = 'levelup';
   blip('level');
@@ -562,8 +742,8 @@ async function levelUp(l: number): Promise<void> {
     `<div class="fanfare"><span class="sparks" aria-hidden="true">${'<i></i>'.repeat(8)}</span><b>${esc(c.lines.levelName(l))}</b><span>${esc(c.titles[l - 1])}</span></div>`
   );
   showLine(esc(c.lines.levelUp(l, c.titles[l - 1])), 'glose');
-  const capped = maxHpOf(save.perks) >= RULES.hpCap;
-  const inkCapped = maxInkOf(save.perks) >= RULES.inkCap;
+  const pvCapped = prog.perks.pv >= RULES.maxPerks;
+  const inkCapped = maxTokensOf(prog.perks) >= RULES.tokensCap;
   const k = (await choose({
     kind: 'levelup',
     label: c.labels.progress,
@@ -572,7 +752,7 @@ async function levelUp(l: number): Promise<void> {
       {
         k: 'pv',
         html: `${esc(c.lines.perkPv(RULES.perkPv))}<span class="d">${esc(c.lines.perkPvText)}</span>`,
-        dis: capped,
+        dis: pvCapped,
         why: c.lines.perkCapped,
       },
       {
@@ -583,17 +763,11 @@ async function levelUp(l: number): Promise<void> {
       },
     ],
   })) as 'pv' | 'ink';
-  save.perks[k]++;
+  prog.perks[k]++;
   G.host.persist();
   if (r) {
-    if (k === 'pv') {
-      const m = Math.min(RULES.hpCap, r.maxHp + RULES.perkPv);
-      r.hp += m - r.maxHp;
-      r.maxHp = m;
-    } else {
-      r.maxInk++;
-      r.ink++;
-    }
+    r.perks = prog.perks;
+    setLevel(r, l);
   }
   $('fx').querySelector('.fanfare')?.remove();
   renderStatus();

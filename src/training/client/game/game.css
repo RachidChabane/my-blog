@@ -1,5 +1,40 @@
 /* The game console. Lives in a shadow root: nothing here reaches the page, nothing of the page reaches here. */
 :host {
+  --el-encre: #2d3a8c;
+  --el-papier: #e8e1cf;
+  --el-cafe: #8a5a2b;
+  --el-courant: #e0a800;
+  --st-poison: #5f9e2f;
+  --st-burn: #e0632f;
+  --st-sleep: #6c6fd8;
+  --st-stun: #d4a500;
+  --st-silence: #7a7f96;
+  --st-smudge: #171b2b;
+  --st-guard: #4f53d6;
+  --st-shield: #3f8fb0;
+  --st-regen: #2e8b62;
+  --st-taunt: #c23a24;
+  --fog: #c9cdda;
+  --m-hero: #b8552f;
+  --m-vigie: #2b3154;
+  --m-navette: #3f6fe0;
+  --m-moka: #8a5a2b;
+  --m-tampon: #2e6b52;
+  --m-arrosoir: #a8762f;
+  --k-cap: #3f6fe0;
+  --k-apron: #ffffff;
+  --k-navy: #2b3154;
+  --k-visor: #3e9b6e;
+  --k-visor-d: #1e4f55;
+  --k-straw: #f0dcbc;
+  --k-straw-band: #d4472f;
+  --k-can: #3e9b6e;
+  --en-spam: #7a2f5c;
+  --en-spam-2: #c46b9e;
+  --en-deca: #6b5a4a;
+  --en-deca-2: #c9b8a0;
+  --en-kettle: #b0563a;
+  --en-kettle-2: #e0a070;
   --wains: #1e4f55;
   --wains-2: #1a464c;
   --on-wains: #f6f3e8;
@@ -154,6 +189,41 @@
   outline: none;
 }
 :host([data-theme='dark']) {
+  --el-encre: #8f9bff;
+  --el-papier: #d9d4c4;
+  --el-cafe: #c08850;
+  --el-courant: #f2c94a;
+  --st-poison: #8fd05a;
+  --st-burn: #ff8a5a;
+  --st-sleep: #a3a6ff;
+  --st-stun: #f2c94a;
+  --st-silence: #a9aec4;
+  --st-smudge: #ece8dc;
+  --st-guard: #8f93ff;
+  --st-shield: #6fc0e0;
+  --st-regen: #4fc48f;
+  --st-taunt: #ff7a60;
+  --fog: #5a6380;
+  --m-hero: #c06040;
+  --m-vigie: #3a4170;
+  --m-navette: #4f7ff0;
+  --m-moka: #9a6a3b;
+  --m-tampon: #2e7b62;
+  --m-arrosoir: #a8762f;
+  --k-cap: #4f7ff0;
+  --k-apron: #f3eee2;
+  --k-navy: #3a4170;
+  --k-visor: #4fc48f;
+  --k-visor-d: #2a6a70;
+  --k-straw: #e6d2b0;
+  --k-straw-band: #ef6a50;
+  --k-can: #4fc48f;
+  --en-spam: #9a3f74;
+  --en-spam-2: #d88ab8;
+  --en-deca: #7d6a58;
+  --en-deca-2: #d9c8b0;
+  --en-kettle: #c86a48;
+  --en-kettle-2: #f0b080;
   --wains: #0d2227;
   --wains-2: #0a1c20;
   --on-wains: #e6efea;
@@ -996,8 +1066,15 @@ button {
 }
 .row2 {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 6px;
+}
+.row2.n4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+/* the turn menu: Talents is the longest word and the most used */
+.row2.n5 {
+  grid-template-columns: minmax(0, 1.3fr) repeat(4, minmax(0, 1fr));
 }
 .row2.n2 {
   grid-template-columns: 1fr 1fr;
@@ -1029,7 +1106,7 @@ button {
   color: var(--c-ink);
 }
 .back-btn {
-  min-height: 40px;
+  min-height: 44px;
   padding: 4px 12px;
   border: 3px solid var(--line);
   border-radius: 6px;
@@ -1093,8 +1170,9 @@ button {
   color: var(--ink);
   cursor: pointer;
 }
+/* a defeated enemy leaves the scene whatever layout the others use */
 .foe.gone {
-  display: none;
+  display: none !important;
 }
 .foe .intent {
   display: inline-flex;
@@ -1165,15 +1243,6 @@ button {
   text-align: center;
   color: var(--ink);
 }
-.plate .fpv {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-family: var(--mono);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--ink);
-}
 .plate .hb {
   width: 44px;
   height: 8px;
@@ -1186,17 +1255,6 @@ button {
   display: block;
   height: 100%;
   background: var(--hurt);
-}
-.plate .toks {
-  display: flex;
-  gap: 3px;
-}
-.plate .toks span {
-  width: 9px;
-  height: 12px;
-  border: 2px solid var(--line);
-  border-radius: 2px;
-  background: var(--gold);
 }
 .foe.targeted .plate {
   border-color: var(--focus);
@@ -1238,16 +1296,6 @@ button {
 .foe.shielded .art svg {
   opacity: 0.55;
 }
-.foe .shield {
-  font-family: var(--mono);
-  font-size: 14px;
-  font-weight: 700;
-  padding: 0 6px;
-  border: 2px solid var(--line);
-  border-radius: 4px;
-  background: var(--paper-3);
-  color: var(--ink);
-}
 .party {
   position: absolute;
   left: 3%;
@@ -1270,19 +1318,6 @@ button {
 }
 .actor.glose svg {
   width: clamp(50px, 14vw, 92px);
-}
-.actor .sts {
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  display: flex;
-  gap: 3px;
-  flex-wrap: wrap;
-  width: max-content;
-  max-width: 160px;
-}
-.actor .sts .chip {
-  background: var(--paper);
 }
 .actor.cheer svg {
   animation: cheer 0.5s ease-out;
@@ -1338,124 +1373,6 @@ button {
 }
 
 /* hero attacks and impacts */
-.proj {
-  position: absolute;
-  z-index: 6;
-  pointer-events: none;
-}
-.proj svg {
-  width: 34px;
-  height: 34px;
-}
-.proj.fly {
-  transition: transform 0.35s cubic-bezier(0.3, 0.1, 0.5, 1);
-}
-.thread {
-  position: absolute;
-  inset: 0;
-  z-index: 6;
-  pointer-events: none;
-}
-.thread path {
-  stroke: var(--gold);
-  stroke-width: 4;
-  fill: none;
-  stroke-dasharray: 600;
-  stroke-dashoffset: 600;
-  animation: draw 0.35s ease-out forwards;
-}
-@keyframes draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-.stampfx {
-  position: absolute;
-  z-index: 6;
-  pointer-events: none;
-  animation: slam 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
-}
-.stampfx svg {
-  width: 56px;
-  height: 56px;
-}
-@keyframes slam {
-  from {
-    transform: translateY(-60px) scale(1.6);
-    opacity: 0;
-  }
-  to {
-    transform: none;
-    opacity: 1;
-  }
-}
-.bead {
-  position: absolute;
-  z-index: 6;
-  width: 18px;
-  height: 18px;
-  border: 3px solid var(--line);
-  border-radius: 50%;
-  background: var(--gold);
-  pointer-events: none;
-  transition: transform 0.55s cubic-bezier(0.4, -0.4, 0.6, 1);
-}
-.pop {
-  position: absolute;
-  z-index: 6;
-  transform: translate(-50%, 0);
-  font-family: var(--mono);
-  font-weight: 700;
-  font-size: 26px;
-  color: var(--hurt);
-  -webkit-text-stroke: 1px var(--paper);
-  paint-order: stroke fill;
-  animation: float 1s ease-out forwards;
-  white-space: nowrap;
-  pointer-events: none;
-}
-.pop.good {
-  color: var(--ok);
-}
-.pop.big {
-  font-size: 34px;
-}
-.pop.gray {
-  color: var(--ink-2);
-}
-@keyframes float {
-  from {
-    transform: translate(-50%, 0);
-    opacity: 1;
-  }
-  to {
-    transform: translate(-50%, -54px);
-    opacity: 0;
-  }
-}
-.critstamp {
-  white-space: nowrap;
-  position: absolute;
-  z-index: 7;
-  transform: translate(-50%, -50%) rotate(-8deg);
-  padding: 4px 12px;
-  border: 4px solid var(--hurt);
-  border-radius: 6px;
-  color: var(--hurt);
-  background: var(--paper);
-  font-family: var(--mono);
-  font-weight: 700;
-  font-size: 26px;
-  pointer-events: none;
-  animation: crit-in 0.3s cubic-bezier(0.3, 1.8, 0.5, 1);
-}
-@keyframes crit-in {
-  from {
-    transform: translate(-50%, -50%) rotate(-8deg) scale(2.4);
-    opacity: 0;
-  }
-}
-
 /* enemy motion */
 .art.enter svg {
   animation: enter 0.55s cubic-bezier(0.2, 1.4, 0.5, 1) both;
@@ -2113,7 +2030,8 @@ button {
 .console.answering .party,
 .console.answering .foe:not(.sel),
 .console.answering .banner span,
-.console.answering .bubble {
+.console.answering .bubble,
+.console.answering .still {
   display: none;
 }
 .console.answering .foes {
@@ -2144,9 +2062,6 @@ button {
   flex-direction: row;
   gap: 6px;
   padding: 2px 8px;
-}
-.console.answering .plate .toks {
-  display: none;
 }
 .console.answering .banner {
   top: 50%;
@@ -2468,16 +2383,6 @@ button {
     --sz: 44px;
     bottom: 28%;
   }
-  .foes[data-n='3'] .plate .toks {
-    display: none;
-  }
-  .foes[data-n='3'] .foe .shield {
-    position: absolute;
-    left: 50%;
-    bottom: -12px;
-    transform: translateX(-50%);
-    z-index: 1;
-  }
   .howto ul {
     font-size: 14px;
   }
@@ -2552,10 +2457,6 @@ button {
   width: 18px;
   height: 14px;
 }
-.status .g.vg {
-  flex: 0 1 90px;
-}
-
 /* ---------- time of day: the window's sky, and a tint over the set, never over the actors ---------- */
 .scene {
   --sky-now: var(--sky-day);
@@ -2656,70 +2557,9 @@ button {
 }
 
 /* ---------- area moves: a band across both heroes, then a marked zone ---------- */
-.wavefx {
-  position: absolute;
-  z-index: 6;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, var(--hurt) 40%, transparent);
-  opacity: 0.5;
-  animation: sweep-l 0.42s ease-in forwards;
-}
-@keyframes sweep-l {
-  from {
-    transform: translateX(40%) scaleX(0.2);
-  }
-  to {
-    transform: none;
-    opacity: 0;
-  }
-}
-.zonefx {
-  position: absolute;
-  z-index: 6;
-  pointer-events: none;
-  border: 4px dashed var(--hurt);
-  border-radius: 50%;
-  animation: zone-pulse 0.8s ease-out forwards;
-}
-@keyframes zone-pulse {
-  from {
-    transform: scale(0.6);
-    opacity: 1;
-  }
-  to {
-    transform: scale(1.1);
-    opacity: 0;
-  }
-}
-.ripple {
-  position: absolute;
-  z-index: 6;
-  width: 24px;
-  height: 24px;
-  margin: -12px 0 0 -12px;
-  border: 4px solid var(--gold);
-  border-radius: 50%;
-  pointer-events: none;
-  animation: ripple 0.55s ease-out forwards;
-}
-@keyframes ripple {
-  to {
-    transform: translate(var(--dx), var(--dy)) scale(2.4);
-    opacity: 0;
-  }
-}
 .foe .intent.area {
   outline: 3px dashed var(--hurt);
   outline-offset: 1px;
-}
-.foe .intent.i-wave,
-.foe .intent.i-fog {
-  background: var(--hurt);
-  color: var(--paper);
-}
-.choice.area {
-  border-style: double;
-  border-width: 4px;
 }
 .scene.quake {
   animation: quake 0.45s;
@@ -3344,7 +3184,12 @@ button {
     height: 112px;
   }
   .zone {
-    height: 184px;
+    height: 236px;
+  }
+  /* talents, powers and the bag read side by side on a wide screen */
+  .zone.grow .choices.list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
   .choice.weapon {
     min-height: 96px;
@@ -3359,5 +3204,1064 @@ button {
   }
   .foes[data-n='3'] {
     --sz: min(110px, 13vh);
+  }
+}
+
+/* ---------- the party strip: one card per member, then the tokens ---------- */
+.status:has(.pcs) {
+  height: 58px;
+  padding: 0 6px;
+  gap: 6px;
+  white-space: normal;
+}
+.pcs {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr));
+  gap: 4px;
+}
+.pcs[data-n='1'] {
+  --n: 1;
+}
+.pcs[data-n='2'] {
+  --n: 2;
+}
+.pc {
+  min-width: 0;
+  height: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 2px 4px;
+  border: 2px solid var(--status-ink);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--status-ink);
+  font-family: var(--mono);
+  cursor: pointer;
+  text-align: left;
+}
+.pc.acting {
+  background: var(--gold);
+  color: var(--c-ink);
+  border-color: var(--gold);
+  box-shadow: 0 -4px 0 var(--gold);
+}
+.pc.down {
+  opacity: 0.6;
+}
+.pc .pt {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+.pc .pf svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+.pc .pvn.delta,
+.plate .pvn.delta {
+  font-weight: 800;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+.pc .pvn.delta.hurt,
+.plate .pvn.delta.hurt {
+  background: var(--hurt);
+  color: var(--paper);
+}
+.pc .pvn.delta.heal,
+.plate .pvn.delta.heal {
+  background: var(--ok);
+  color: var(--paper);
+}
+.hb {
+  position: relative;
+  display: block;
+  height: 6px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--paper-2);
+}
+.hb i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: block;
+}
+.hb .ghost {
+  background: var(--gold);
+  transition: width 0.6s ease-in 0.35s;
+}
+.hb .fill {
+  background: var(--hp);
+  transition: width 0.7s ease-out;
+}
+.hb.low .fill {
+  background: var(--hp-low);
+}
+.plate .hb .fill {
+  background: var(--hurt);
+}
+.pst {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 16px;
+  overflow: hidden;
+}
+.el.mini {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+.el-encre {
+  color: var(--el-encre);
+}
+.el-papier {
+  color: var(--el-papier);
+  --el-fold: #0002;
+}
+.el-cafe {
+  color: var(--el-cafe);
+}
+.el-courant {
+  color: var(--el-courant);
+}
+.chip[class*='st-'] {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  padding: 0 3px;
+  font-size: 14px;
+  line-height: 16px;
+  border-width: 1.5px;
+  background: var(--paper);
+  color: var(--ink);
+  --chip-bg: var(--paper);
+}
+.chip .sti {
+  width: 13px;
+  height: 13px;
+}
+.chip.st-poison .sti {
+  color: var(--st-poison);
+}
+.chip.st-burn .sti {
+  color: var(--st-burn);
+}
+.chip.st-sleep .sti {
+  color: var(--st-sleep);
+}
+.chip.st-stun .sti {
+  color: var(--st-stun);
+}
+.chip.st-silence .sti {
+  color: var(--st-silence);
+}
+.chip.st-smudge .sti {
+  color: var(--st-smudge);
+}
+.chip.st-guard .sti {
+  color: var(--st-guard);
+}
+.chip.st-shield .sti {
+  color: var(--st-shield);
+}
+.chip.st-regen .sti {
+  color: var(--st-regen);
+}
+.chip.st-taunt .sti {
+  color: var(--st-taunt);
+}
+.tok {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--status-ink);
+}
+.tok svg {
+  width: 16px;
+  height: 16px;
+  color: var(--pip);
+}
+.tok b {
+  font-size: 18px;
+}
+
+/* ---------- enemies: statuses over the sprite, a plate with element, bar and figures ---------- */
+.foe .fsts {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 0;
+}
+.plate .frow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.plate .fel {
+  display: inline-flex;
+}
+.plate .fel svg {
+  width: 16px;
+  height: 16px;
+}
+.plate .fel .unk {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 14px;
+  border: 1.5px dashed var(--ink-2);
+  border-radius: 50%;
+}
+.plate .hb {
+  width: 48px;
+  color: var(--line);
+}
+.plate .pvn {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.foe .shield-tag {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0 6px;
+  border: 2px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper-3);
+  color: var(--ink);
+}
+.foe .intent .tgt {
+  display: inline-flex;
+}
+.foe .intent .tgt svg {
+  width: 16px;
+  height: 16px;
+}
+.foe .intent b {
+  font-size: 15px;
+}
+.foe .intent.i-area,
+.foe .intent.i-fog,
+.foe .intent.i-burn,
+.foe .intent.i-spill {
+  background: var(--hurt);
+  color: var(--paper);
+}
+.foe .intent.i-sleep,
+.foe .intent.i-overflow {
+  background: var(--st-sleep);
+  color: var(--paper);
+}
+.foe .intent.i-poison {
+  background: var(--st-poison);
+  color: var(--c-ink);
+}
+.foe.asleep .art svg {
+  filter: grayscale(0.5) brightness(0.85);
+}
+.acting-now svg {
+  filter: drop-shadow(0 0 6px var(--gold)) !important;
+}
+
+/* ---------- the party in the scene: seen from behind, at the bottom left ---------- */
+.party .actor svg {
+  width: clamp(40px, 11vw, 84px);
+}
+.party .actor.glose svg {
+  width: clamp(34px, 9vw, 70px);
+  opacity: 0.9;
+}
+.party .actor.acting svg {
+  filter: drop-shadow(0 0 4px var(--gold)) drop-shadow(0 0 2px var(--gold));
+  transform: translateY(-6px);
+  transition: transform 0.2s;
+}
+.party .actor.down svg {
+  transform: rotate(-90deg) translateX(-30%);
+  opacity: 0.5;
+}
+.party .actor.asleep svg {
+  filter: grayscale(0.4) brightness(0.85);
+}
+
+/* ---------- the turn menu: three format cards with the figure they promise ---------- */
+.zhead .lbl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.zhead .lbl .el {
+  width: 18px;
+  height: 18px;
+}
+.choice.fmt {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 2px;
+  padding: 6px 8px;
+  text-align: left;
+}
+.choice.fmt .fn {
+  font-weight: 800;
+  font-size: 16px;
+}
+.choice.fmt .fig {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto;
+}
+.choice.fmt .big {
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1.1;
+  color: var(--hurt);
+}
+.choice.fmt.aff-resist .big {
+  color: var(--ink-2);
+}
+.choice .tag {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0 4px;
+  border: 2px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper-3);
+  color: var(--ink);
+}
+.choice .tag.weak {
+  background: var(--gold);
+  color: var(--c-ink);
+}
+.choice .tag.resist {
+  background: var(--paper-2);
+  color: var(--ink-2);
+}
+.choice.skill {
+  display: grid;
+  gap: 1px;
+  text-align: left;
+  padding: 6px 10px;
+}
+.choice.skill .sn {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 800;
+}
+.choice .c svg {
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+  color: var(--pip);
+}
+.choice.skill .fig {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--hurt);
+}
+.choice.ally {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+.choice.ally .af svg {
+  width: 40px;
+  height: 40px;
+}
+.choice.ally.on {
+  background: var(--gold);
+  color: var(--c-ink);
+  border-color: var(--line);
+}
+.choice.ally.on::after {
+  content: '✓';
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  font-weight: 800;
+}
+.choice.primary.on {
+  outline: 3px solid var(--gold);
+}
+.team-art {
+  position: absolute;
+  right: 4%;
+  bottom: 6%;
+  display: flex;
+  gap: 4px;
+}
+.team-art span svg {
+  width: clamp(34px, 9vw, 64px);
+  opacity: 0.5;
+}
+.team-art span.on svg {
+  opacity: 1;
+}
+.speedrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.speedrow .btn[aria-pressed='true'] {
+  background: var(--gold);
+  color: var(--c-ink);
+}
+
+/* ---------- the effect layer: props in flight, bursts, beams, stamps, still badges ---------- */
+.fxp {
+  position: absolute;
+  z-index: 6;
+  pointer-events: none;
+}
+.fxp svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.fxp.fly svg {
+  filter: drop-shadow(1px 1px 0 var(--drop));
+}
+.fxp.ring {
+  border: 4px solid var(--gold);
+  border-radius: 50%;
+}
+.fxp.beam {
+  inset: 0;
+}
+.wavefx {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--wc) 35%,
+    var(--wc) 65%,
+    transparent
+  );
+  opacity: 0.75;
+}
+.wavefx svg {
+  width: 28px;
+  height: 28px;
+}
+.sweepfx {
+  top: 0;
+  left: 0;
+  width: 24px;
+  background: linear-gradient(90deg, transparent, var(--wc), transparent);
+  opacity: 0.8;
+}
+.tintfx {
+  inset: 0;
+}
+.stampword {
+  width: auto !important;
+  height: auto !important;
+  padding: 2px 8px;
+  border: 3px solid var(--hurt);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--hurt);
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+.shieldfx {
+  border: 4px solid var(--blade);
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 55%, #ffffff55);
+}
+.revealfx,
+.stfx {
+  filter: drop-shadow(0 0 2px var(--paper)) drop-shadow(0 0 2px var(--paper));
+}
+.stfx.st-poison {
+  color: var(--st-poison);
+}
+.stfx.st-burn {
+  color: var(--st-burn);
+}
+.stfx.st-sleep {
+  color: var(--st-sleep);
+}
+.stfx.st-stun {
+  color: var(--st-stun);
+}
+.stfx.st-silence {
+  color: var(--st-silence);
+}
+.stfx.st-regen {
+  color: var(--st-regen);
+}
+.stfx.st-taunt {
+  color: var(--st-taunt);
+}
+.stfx.st-guard,
+.stfx.st-shield {
+  color: var(--st-shield);
+}
+.pop {
+  position: absolute;
+  z-index: 8;
+  transform: translate(-50%, 0);
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--hurt);
+  pointer-events: none;
+  text-shadow:
+    2px 0 0 var(--paper),
+    -2px 0 0 var(--paper),
+    0 2px 0 var(--paper),
+    0 -2px 0 var(--paper);
+  white-space: nowrap;
+}
+.pop.weak {
+  font-size: 30px;
+  color: var(--hurt);
+}
+.pop.resist {
+  font-size: 20px;
+  color: var(--ink-2);
+}
+.pop.heal {
+  color: var(--ok);
+}
+.still {
+  position: absolute;
+  z-index: 7;
+  transform: translateY(-100%);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 800;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.still svg {
+  width: 18px;
+  height: 18px;
+}
+.still.call.weak {
+  background: var(--gold);
+  color: var(--c-ink);
+}
+.still.call.resist,
+.still.call.miss {
+  background: var(--paper-3);
+}
+.pop.still {
+  transform: translate(-50%, -100%);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 22px;
+}
+.scene[data-phase='1'].boss-fight .foe .art svg {
+  filter: drop-shadow(0 0 6px var(--hurt)) drop-shadow(2px 0 0 var(--en-rim));
+}
+.scene[data-phase='2'].boss-fight .foe .art svg {
+  filter: drop-shadow(0 0 10px var(--hurt)) drop-shadow(0 0 4px var(--gold));
+}
+
+/* ---------- cinematics: the allies at work ---------- */
+.cast.c-recruit svg,
+.cast.c-ally svg {
+  width: clamp(64px, 18vw, 120px);
+}
+.cast.c-ally.at-row {
+  position: absolute;
+  bottom: 8%;
+}
+.cast.slot1 {
+  left: 6%;
+}
+.cast.slot2 {
+  left: 24%;
+}
+.cast.slot3 {
+  left: 42%;
+}
+.cast.slot4 {
+  left: 60%;
+}
+.cast.slot5 {
+  left: 78%;
+}
+.cast.c-ally.walk-in-l {
+  position: absolute;
+  bottom: 8%;
+  animation: walk-in-cast 1.2s ease-out both;
+}
+.cast.late1 {
+  animation-delay: 0.3s !important;
+}
+.cast.late2 {
+  animation-delay: 0.5s !important;
+}
+.cast.late3 {
+  animation-delay: 0.7s !important;
+}
+.cast.late4 {
+  animation-delay: 0.9s !important;
+}
+.cast.late5 {
+  animation-delay: 1.1s !important;
+}
+@keyframes walk-in-cast {
+  from {
+    transform: translateX(-60vw);
+  }
+}
+.cast.at-radar {
+  position: absolute;
+  left: 40%;
+  bottom: 10%;
+}
+.cast.scanning svg {
+  animation: scan 1.6s ease-in-out infinite;
+}
+@keyframes scan {
+  50% {
+    transform: translateX(-6px) rotate(-4deg);
+    filter: drop-shadow(0 0 6px var(--s-glow));
+  }
+}
+.prop {
+  position: absolute;
+  pointer-events: none;
+}
+.prop.radar-blips {
+  left: 46%;
+  top: 22%;
+  width: 60px;
+  height: 40px;
+  background:
+    radial-gradient(circle at 20% 40%, var(--hurt) 0 4px, transparent 5px),
+    radial-gradient(circle at 70% 60%, var(--hurt) 0 4px, transparent 5px),
+    radial-gradient(circle at 50% 20%, var(--hurt) 0 4px, transparent 5px);
+  animation: blink-led 0.9s steps(2, end) infinite;
+}
+.cast.turn svg {
+  animation: hop 0.6s ease-out;
+}
+.cast.run-across {
+  position: absolute;
+  bottom: 8%;
+  animation: run-across 2.2s linear both;
+}
+@keyframes run-across {
+  from {
+    left: -30%;
+  }
+  to {
+    left: 110%;
+  }
+}
+.cast.run-across svg {
+  animation: bob 0.2s steps(2, end) infinite;
+}
+.cast.skid {
+  animation: skid 0.8s ease-out both;
+}
+@keyframes skid {
+  from {
+    transform: translateX(40vw) skewX(-14deg);
+  }
+  70% {
+    transform: translateX(-6px) skewX(8deg);
+  }
+}
+.flock.trail i {
+  animation: trail 2.2s linear infinite;
+  animation-delay: calc(var(--i) * 0.2s);
+}
+@keyframes trail {
+  from {
+    transform: translate(-40vw, 0) rotate(0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(60vw, -40px) rotate(200deg);
+    opacity: 0;
+  }
+}
+.prop.machine {
+  left: 50%;
+  bottom: 4%;
+  width: min(60%, 260px);
+  transform: translateX(-50%);
+}
+.prop.machine svg {
+  width: 100%;
+  height: auto;
+}
+.cast.behind-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 30%;
+  transform: translateX(-50%);
+}
+.cast.pour svg {
+  animation: sway 1.2s ease-in-out infinite;
+}
+.prop.cup-slide {
+  left: 50%;
+  bottom: 30%;
+  width: 34px;
+  animation: cup-slide 1.4s ease-out 0.4s both;
+}
+@keyframes cup-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-30vw);
+  }
+}
+.prop.counter {
+  left: 30%;
+  right: 10%;
+  bottom: 6%;
+  height: 26%;
+  background: var(--s-wood);
+  border-top: 6px solid var(--s-wood-d);
+}
+.cast.at-desk {
+  position: absolute;
+  left: 52%;
+  bottom: 26%;
+}
+.cast.stamping svg {
+  animation: stamp 0.7s steps(2, end) infinite;
+}
+@keyframes stamp {
+  50% {
+    transform: translateY(6px) scaleY(0.94);
+  }
+}
+.flock.pile i {
+  animation: none;
+  transform: translate(calc(var(--i) * 6px), calc(var(--i) * -4px));
+}
+.prop.visa-mark {
+  left: 40%;
+  top: 30%;
+  padding: 2px 8px;
+  border: 3px solid var(--ok);
+  color: var(--ok);
+  background: var(--paper);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 18px;
+  transform: rotate(-10deg);
+  animation: chest-pop 0.5s ease-out 0.6s both;
+}
+.prop.plants {
+  left: 4%;
+  right: 4%;
+  bottom: 4%;
+  display: flex;
+  justify-content: space-between;
+}
+.prop.plants svg {
+  width: clamp(40px, 12vw, 80px);
+  height: auto;
+}
+.cast.among-plants {
+  position: absolute;
+  left: 44%;
+  bottom: 10%;
+}
+.cast.watering svg {
+  animation: water 1.4s ease-in-out infinite;
+}
+@keyframes water {
+  50% {
+    transform: rotate(-8deg);
+  }
+}
+.prop.drops {
+  left: 58%;
+  bottom: 22%;
+  width: 30px;
+  height: 40px;
+  background:
+    radial-gradient(circle at 30% 20%, var(--s-glow) 0 3px, transparent 4px),
+    radial-gradient(circle at 60% 60%, var(--s-glow) 0 3px, transparent 4px),
+    radial-gradient(circle at 40% 90%, var(--s-glow) 0 3px, transparent 4px);
+  animation: drift 0.8s linear infinite;
+}
+.prop.leaf-fall {
+  left: 60%;
+  top: 10%;
+  width: 26px;
+  animation: leaf-fall 2.4s ease-in-out infinite;
+}
+@keyframes leaf-fall {
+  from {
+    transform: translateY(0) rotate(0);
+  }
+  to {
+    transform: translateY(120px) rotate(160deg);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 759px) {
+  .status:has(.pcs) {
+    height: 58px;
+  }
+  .pc .pt {
+    font-size: 14px;
+  }
+  .choice.fmt {
+    padding: 4px 6px;
+    gap: 0;
+  }
+  .choice.fmt .big {
+    font-size: 21px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hb i {
+    transition: none !important;
+  }
+}
+.dialog .txt .affline.weak {
+  color: var(--gold);
+}
+.dialog .txt .affline.resist {
+  color: var(--dlg-ink-2);
+}
+
+/* ---------- on a phone the party keeps to the left third, beside the enemies: two by two ---------- */
+@media (max-width: 759px) {
+  .party:is([data-n='2'], [data-n='3']) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 33%;
+    align-items: end;
+    justify-items: center;
+    gap: 0 2px;
+  }
+  /* you and the first ally in front, the others a step behind */
+  .party:is([data-n='2'], [data-n='3']) .actor:nth-child(1) {
+    grid-area: 2 / 1;
+  }
+  .party:is([data-n='2'], [data-n='3']) .actor:nth-child(2) {
+    grid-area: 2 / 2;
+  }
+  .party:is([data-n='2'], [data-n='3']) .actor:nth-child(n + 3) {
+    grid-row: 1;
+    margin-bottom: -10px;
+  }
+}
+
+/* three enemies on a phone: each plate keeps to its column; the line above names the target */
+@media (max-width: 759px) {
+  .foes[data-n='3'] .plate {
+    min-width: 0;
+    max-width: 100%;
+    padding: 2px 4px 4px;
+  }
+  .foes[data-n='3'] .plate .fname {
+    display: none;
+  }
+}
+
+/*
+ * One enemy on a phone (a boss, or a lone foe): the scene is too short for the intent,
+ * the sprite and the plate in one column, so the sprite takes the scene's height and the
+ * intent, statuses and plate stand beside it. The sprite is sized from the enemies' box
+ * itself, never squeezed by what stands next to it.
+ */
+@media (max-width: 759px) {
+  .foes[data-n='1'] {
+    container-type: size;
+    left: 37%;
+  }
+  .foes[data-n='1'] .foe {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'intent art'
+      'fsts art'
+      '. art'
+      'plate art';
+    align-items: end;
+    justify-items: end;
+    column-gap: 6px;
+    padding: 0;
+  }
+  .foes[data-n='1'] .foe .intent {
+    grid-area: intent;
+    align-self: start;
+  }
+  .foes[data-n='1'] .foe .fsts {
+    grid-area: fsts;
+    justify-content: flex-end;
+  }
+  .foes[data-n='1'] .foe .art {
+    grid-area: art;
+    position: relative;
+    width: 100%;
+    height: 100cqh;
+    align-self: center;
+  }
+  .foes[data-n='1'] .foe .art svg {
+    width: 100%;
+    height: 100%;
+  }
+  .foes[data-n='1'] .foe .plate {
+    grid-area: plate;
+    max-width: 100%;
+    padding: 2px 4px 4px;
+  }
+  .foes[data-n='1'] .foe .plate .fname {
+    font-size: 14px;
+  }
+  .foes[data-n='1'] .foe .shield-tag {
+    grid-area: fsts;
+  }
+}
+
+/* doors: the name beside a small door, the line under both, so the card holds its text */
+.choice.door {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  align-content: center;
+  column-gap: 8px;
+  row-gap: 2px;
+}
+.choice.door > span {
+  display: contents;
+}
+.choice.door svg {
+  width: 22px;
+  height: 26px;
+}
+.choice.door .d {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+/* three members: a chip showing "old → new" keeps it inside by setting the face aside */
+.pcs[data-n='3'] .pc:has(.pvn.delta) .pf {
+  display: none;
+}
+
+/* a boss with company on a phone: the boss keeps the full height, the others share a column */
+@media (max-width: 759px) {
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) {
+    display: grid;
+    left: 37%;
+    top: 6px;
+    bottom: 6px;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 2px 4px;
+  }
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .foe {
+    grid-column: 2;
+    min-height: 0;
+  }
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .foe.boss {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .art {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+  }
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .plate .fname,
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .shield-tag,
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .fsts:empty {
+    display: none;
+  }
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .foe.boss {
+    padding: 0;
+    gap: 0;
+  }
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .plate {
+    padding: 1px 4px 2px;
+  }
+  /* the others: intent on top, the sprite beside its plate */
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .foe:not(.boss) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas: 'intent intent' 'fsts fsts' 'art plate';
+    align-items: end;
+    gap: 2px;
+    padding: 0;
+  }
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .foe:not(.boss) .intent {
+    grid-area: intent;
+    justify-self: center;
+  }
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .foe:not(.boss) .fsts {
+    grid-area: fsts;
+  }
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .foe:not(.boss) .art {
+    grid-area: art;
+    height: 100%;
+    align-self: stretch;
+  }
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .foe:not(.boss) .plate {
+    grid-area: plate;
+    padding: 1px 2px 2px;
+  }
+  .boss-fight .foes:is([data-n='2'], [data-n='3']) .foe:not(.boss) .plate .hb {
+    width: 28px;
   }
 }

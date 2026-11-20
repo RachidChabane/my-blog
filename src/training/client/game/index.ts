@@ -8,12 +8,14 @@ import { bookFor } from '../../domain/save';
 import { COPY } from '../../i18n/copy';
 import type { GameHost } from '../host';
 import css from './game.css?raw';
-import { icon16 } from './battle';
+import type { MoveKey } from '../../domain/foes';
+import { SPEEDS } from '../../domain/save';
+import type { Speed } from '../../domain/save';
 import { G, $, esc } from './state';
-import { bindInput, blip, closeHowto, openHowto } from './ui';
-import { renderToggles, titleScreen } from './screens';
-import { icon24 } from './art';
-import type { IntentName } from '../../i18n/copy';
+import { bindInput, closeHowto, openHowto } from './ui';
+import { renderToggles, setSpeed, titleScreen } from './screens';
+import { icon24, moveIcon } from './art';
+import { blip } from './sound';
 
 function markup(): string {
   const c = G.c;
@@ -46,7 +48,8 @@ function markup(): string {
     <div class="howto" id="howto" role="dialog" aria-modal="true" aria-labelledby="howto-t" hidden>
       <h2 id="howto-t">${esc(c.howto.title)}</h2>
       <ul>${c.howto.items.map((x) => `<li>${x}</li>`).join('')}</ul>
-      <div class="legend">${(Object.entries(c.legend) as [IntentName, string][]).map(([k, l]) => `<span>${icon16(k)}${esc(l)}</span>`).join('')}</div>
+      <div class="legend">${(Object.entries(c.legend) as [MoveKey, string][]).map(([k, l]) => `<span>${moveIcon(k)}${esc(l)}</span>`).join('')}</div>
+      <div class="speedrow" role="group" aria-label="${esc(c.labels.speed)}"><b>${esc(c.labels.speed)}</b>${SPEEDS.map((s) => `<button class="btn" type="button" data-speed="${s}" aria-pressed="false">${esc(c.labels.speeds[s])}</button>`).join('')}</div>
       <button class="btn" type="button" id="howto-close">${esc(c.howto.close)}</button>
     </div>
   </div>
@@ -85,13 +88,14 @@ export function mountGame(host: HTMLElement, api: GameHost): void {
     rng: G.rng,
     bank: idsByDomain(api.questions),
     get book() {
-      return bookFor(api.save, () => api.persist());
+      return bookFor(api.progress, () => api.persist());
     },
   };
   G.run = null;
   G.F = null;
   G.screen = 'title';
   G.sel = null;
+  G.hurry = false;
   wrap.innerHTML = markup();
   followTheme(host);
   $('help').onclick = (e) => {
@@ -109,6 +113,13 @@ export function mountGame(host: HTMLElement, api: GameHost): void {
     renderToggles();
     blip('ok');
   };
+  G.root.querySelectorAll<HTMLElement>('[data-speed]').forEach((b) => {
+    b.onclick = (e) => {
+      e.stopPropagation();
+      setSpeed(b.dataset.speed as Speed);
+      blip('ok');
+    };
+  });
   $('quit').onclick = (e) => {
     e.stopPropagation();
     api.close();

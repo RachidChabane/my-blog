@@ -6,9 +6,17 @@
 import type { Locale } from '@/i18n/index';
 import { fold } from '../domain/bank';
 import type { Question } from '../domain/bank';
-import { SAVE_KEY, parseSave, serializeSave } from '../domain/save';
+import { LEGACY_CAMPAIGN, campaignOf } from '../domain/campaigns';
+import {
+  SAVE_KEY,
+  loadSave,
+  progressOf,
+  readable,
+  serializeSave,
+  storedSave,
+} from '../domain/save';
 import type { SaveData } from '../domain/save';
-import { COPY } from '../i18n/copy';
+import { PAGE_COPY } from '../i18n/page-copy';
 import type { GameHost } from './host';
 import { PHONE } from './host';
 
@@ -17,7 +25,7 @@ if (root) setup(root);
 
 function setup(root: HTMLElement): void {
   const lang = (root.dataset.lang === 'en' ? 'en' : 'fr') as Locale;
-  const c = COPY[lang];
+  const c = PAGE_COPY[lang];
   const q = <T extends HTMLElement>(sel: string) =>
     document.querySelector(sel) as T;
   const sheets = [
@@ -33,18 +41,23 @@ function setup(root: HTMLElement): void {
     ),
     why: el.querySelector('.tg-why-t')?.textContent ?? '',
   }));
-  const ids = new Set(questions.map((x) => x.id));
-  const domains = new Set(questions.map((x) => x.domain));
+  const camp = campaignOf(root.dataset.campaign ?? '');
+  const shelves = [{ camp, ids: new Set(questions.map((x) => x.id)) }];
   const haystack = new Map(
     sheets.map((el) => [el, fold(el.textContent ?? '')])
   );
 
-  let save: SaveData = parseSave(readStore(), ids, domains);
-  const persist = () => writeStore(serializeSave(save));
+  let save: SaveData = loadSave(readStore, shelves, LEGACY_CAMPAIGN);
+  /* a save this build cannot read (newer, damaged) is played from scratch, never overwritten */
+  const locked = !readable(storedSave(readStore));
+  const progress = () => progressOf(save, camp.key);
+  const persist = () => {
+    if (!locked) writeStore(serializeSave(save));
+  };
 
   /* ---------- marks and counts ---------- */
   function refresh(): void {
-    const freed = new Set(save.freed);
+    const freed = new Set(progress().freed);
     const total = questions.length;
     q('#tg-progress').textContent = c.launch.progress(freed.size, total);
     q('#tg-bar').style.width = `${(freed.size / total) * 100}%`;
@@ -69,9 +82,11 @@ function setup(root: HTMLElement): void {
     sheets.forEach((el) => {
       const id = el.dataset.id ?? '';
       (el.querySelector('.tg-freed') as HTMLElement).hidden = !freed.has(id);
-      (el.querySelector('.tg-review') as HTMLElement).hidden = !save.review[id];
+      (el.querySelector('.tg-review') as HTMLElement).hidden =
+        !progress().review[id];
     });
-    q('#tg-play-label').textContent = freed.size || save.xp ? c.resume : c.play;
+    q('#tg-play-label').textContent =
+      freed.size || progress().xp ? c.resume : c.play;
   }
 
   /* ---------- search and domain filter ---------- */
@@ -186,12 +201,16 @@ function setup(root: HTMLElement): void {
     const api: GameHost = {
       lang,
       questions,
+      campaign: camp,
       get save() {
         return save;
       },
+      get progress() {
+        return progress();
+      },
       persist,
       reset() {
-        save = parseSave(null, ids, domains);
+        delete save.campaigns[camp.key];
         persist();
         refresh();
         return save;
@@ -235,9 +254,9 @@ function setup(root: HTMLElement): void {
   }
 }
 
-function readStore(): string | null {
+function readStore(key: string): string | null {
   try {
-    return localStorage.getItem(SAVE_KEY);
+    return localStorage.getItem(key);
   } catch {
     return null;
   }

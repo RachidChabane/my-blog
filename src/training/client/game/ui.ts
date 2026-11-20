@@ -2,96 +2,19 @@
  * The four zones of the console: top bar, scene, dialogue box (fixed height), action zone
  * (fixed height, exactly one thing to do). Plus input, speech bubbles and sound.
  */
-import {
-  CHAPTERS,
-  RULES,
-  LEVELS,
-  FIGHTS_PER_CHAPTER,
-  levelOf,
-} from '../../domain/rules';
-import type { Foe, Say } from '../../domain/engine';
-import { chapterCopy } from '../../i18n/copy';
-import type { FoeCopy, BossCopy } from '../../i18n/copy';
-import { G, $, esc, reduced, typeset } from './state';
-import {
-  bossColor,
-  bossSvg,
-  crownSvg,
-  foeSvg,
-  gloseSvg,
-  heroSvg,
-  icon24,
-  mokaSvg,
-} from './art';
-
-/* ---------- sound: off until the player says yes, short blips generated in code ---------- */
-let actx: AudioContext | null = null;
-const SEQ: Record<string, [number, number][]> = {
-  ok: [[660, 0.05]],
-  move: [[520, 0.025]],
-  hit: [
-    [196, 0.12],
-    [147, 0.14],
-  ],
-  free: [
-    [784, 0.06],
-    [1046, 0.09],
-  ],
-  crit: [
-    [523, 0.05],
-    [784, 0.05],
-    [1046, 0.12],
-  ],
-  level: [
-    [523, 0.1],
-    [659, 0.1],
-    [784, 0.1],
-    [1046, 0.2],
-  ],
-  clank: [
-    [330, 0.04],
-    [311, 0.06],
-  ],
-  chest: [
-    [392, 0.08],
-    [523, 0.08],
-    [659, 0.14],
-  ],
-  boom: [
-    [98, 0.18],
-    [73, 0.22],
-  ],
-};
-export function blip(kind: keyof typeof SEQ | string): void {
-  if (!G.host.save.sound) return;
-  try {
-    actx = actx ?? new AudioContext();
-    let t = actx.currentTime + 0.01;
-    for (const [f, d] of SEQ[kind] ?? SEQ.ok) {
-      const o = actx.createOscillator();
-      const g = actx.createGain();
-      o.type = kind === 'hit' || kind === 'boom' ? 'triangle' : 'sine';
-      o.frequency.value = f;
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.035, t + 0.012);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + d);
-      o.connect(g).connect(actx.destination);
-      o.start(t);
-      o.stop(t + d + 0.03);
-      t += d * 0.9;
-    }
-  } catch {
-    /* audio unavailable */
-  }
-}
+import type { Foe } from '../../domain/engine';
+import type { MemberKey } from '../../domain/party';
+import { MEMBER_KEYS } from '../../domain/party';
+import { FIGHTS_PER_CHAPTER, LEVELS, levelOf } from '../../domain/rules';
+import { G, $, FAST_READ, esc, fast, reduced, typeset } from './state';
+import { bossColor, castSvg, crownSvg, gloseSvg, icon24 } from './art';
+import { foeArt, foeName, renderParty } from './hud';
+import { blip } from './sound';
 
 /* ---------- speakers ---------- */
-export type Who = 'glose' | 'hero' | 'moka' | Foe | null | undefined;
-export const foeCopy = (e: Foe): FoeCopy | BossCopy =>
-  e.type === 'boss' ? chapterCopy(G.c, e.ch).boss : G.c.types[e.type];
-export const foeName = (e: Foe): string => foeCopy(e).name;
-export const foeArt = (e: Foe): string =>
-  e.type === 'boss' ? bossSvg(CHAPTERS[e.ch].domain) : foeSvg(e.type);
+export type Who = 'glose' | MemberKey | Foe | null | undefined;
+const isMember = (w: unknown): w is MemberKey =>
+  typeof w === 'string' && (MEMBER_KEYS as readonly string[]).includes(w);
 
 interface Speaker {
   name: string;
@@ -108,31 +31,24 @@ function speakerOf(who: Who): Speaker | null {
       bg: 'var(--hat)',
       ink: 'var(--on-hat)',
     };
-  if (who === 'hero')
+  if (isMember(who))
     return {
-      name: G.c.you,
-      art: heroSvg(),
-      bg: 'var(--c-body)',
-      ink: 'var(--c-ink)',
-    };
-  if (who === 'moka')
-    return {
-      name: G.c.moka,
-      art: mokaSvg(),
-      bg: 'var(--s-book-b)',
+      name: G.c.members[who].name,
+      art: castSvg(who),
+      bg: `var(--m-${who})`,
       ink: 'var(--on-hat)',
     };
-  if (who.type === 'boss')
+  if (who.kind === 'boss')
     return {
       name: foeName(who),
       art: foeArt(who),
-      bg: bossColor(CHAPTERS[who.ch].domain),
+      bg: bossColor(who.chapter.boss.key),
       ink: 'var(--on-hat)',
     };
   return {
     name: foeName(who),
     art: foeArt(who),
-    bg: `var(--en-${who.type})`,
+    bg: `var(--en-${who.kind})`,
     ink: 'var(--en-eye)',
   };
 }
@@ -147,10 +63,8 @@ export interface Line {
   bubble?: boolean;
 }
 const Dlg = {
-  hold: false,
   done: null as null | (() => void),
   timer: 0 as ReturnType<typeof setTimeout> | 0,
-  speed: 1,
 };
 export const waiting = () => !!Dlg.done;
 
@@ -180,7 +94,8 @@ const READ_MS_PER_CHAR = 60;
 const READ_MAX_MS = 9000;
 export const readingTime = (text: string) =>
   Math.min(READ_MAX_MS, READ_BASE_MS + READ_MS_PER_CHAR * text.length);
-const lineDelay = (text: string) => readingTime(text) / Dlg.speed;
+const lineDelay = (text: string) =>
+  readingTime(text) * (fast() ? FAST_READ : 1);
 
 export function sayOne(line: Line | string): Promise<void> {
   const l: Line = typeof line === 'string' ? { text: line } : line;
@@ -189,7 +104,8 @@ export function sayOne(line: Line | string): Promise<void> {
     setLine(l);
     if (l.bubble !== false && l.who && (l.text ?? '').length <= 80)
       bubbleFor(l.who, l.text ?? '');
-    const manual = (l.wait || reduced()) && !Dlg.hold;
+    G.hurry = false;
+    const manual = l.wait || reduced();
     Dlg.done = () => {
       clearTimeout(Dlg.timer);
       Dlg.done = null;
@@ -239,29 +155,6 @@ export function holdLine(html: string, who: Who): Promise<void> {
     };
   });
 }
-/** Message of an engine event, in the player's language. */
-export function sayText(ev: Say): string {
-  const foe = ev.foe;
-  const fc = foe ? foeCopy(foe) : null;
-  let hitLine = '';
-  if (fc) {
-    if (ev.say === 'fall') hitLine = fc.fall;
-    else if (ev.say === 'specialAnnounce') hitLine = (fc as BossCopy).announce;
-    else hitLine = fc.hit(ev.n ?? 0);
-  }
-  return G.c.msg[ev.say]({
-    name: fc?.name ?? '',
-    n: ev.n ?? 0,
-    m: ev.m ?? 0,
-    weapon: ev.w ? G.c.weapons[ev.w].name : '',
-    item: ev.item ? G.c.items[ev.item].name : '',
-    big: !!ev.big,
-    guarded: !!ev.guarded,
-    hitLine,
-    boss: foe && foe.type === 'boss' ? chapterCopy(G.c, foe.ch).boss.move : '',
-  });
-}
-
 /* ---------- the action zone: exactly one thing to do, always in the same place ---------- */
 export interface Item {
   k: string;
@@ -275,6 +168,8 @@ export interface Item {
 export interface Spec {
   kind?: string;
   label?: string;
+  /** An icon set before the label: the element of the member whose turn it is. */
+  labelIcon?: string;
   back?: boolean;
   layout?: string;
   items: Item[];
@@ -315,20 +210,7 @@ export const Zone = {
     const go = $('go');
     go.onclick = (e) => {
       e.stopPropagation();
-      advance(true);
-    };
-    let holdT: ReturnType<typeof setTimeout> | undefined;
-    go.onpointerdown = () => {
-      holdT = setTimeout(() => {
-        Dlg.speed = 6;
-        Dlg.hold = true;
-        advance(true);
-      }, 380);
-    };
-    go.onpointerup = go.onpointerleave = () => {
-      clearTimeout(holdT);
-      Dlg.speed = 1;
-      Dlg.hold = false;
+      if (!advance(true)) G.hurry = true;
     };
     if (gameHasFocus()) go.focus({ preventScroll: true });
   },
@@ -358,6 +240,7 @@ function choiceHtml(it: Item, i: number, numbered?: boolean): string {
 }
 export function choose(spec: Spec): Promise<string> {
   Menu = null;
+  G.hurry = false;
   const z = $('zone');
   z.dataset.mode = 'choose';
   z.classList.toggle('grow', !!spec.grow);
@@ -365,7 +248,7 @@ export function choose(spec: Spec): Promise<string> {
   $('dialog').style.height = '';
   const head =
     spec.label || spec.back
-      ? `<div class="zhead"><span class="lbl">${esc(spec.label ?? '')}</span>${spec.back ? `<button type="button" class="back-btn" data-k="back">${icon24('back')} ${esc(G.c.back)}</button>` : ''}</div>`
+      ? `<div class="zhead"><span class="lbl">${spec.labelIcon ?? ''}${esc(spec.label ?? '')}</span>${spec.back ? `<button type="button" class="back-btn" data-k="back">${icon24('back')} ${esc(G.c.back)}</button>` : ''}</div>`
       : '';
   z.onscroll = null;
   z.innerHTML =
@@ -428,9 +311,10 @@ const zoneButtons = () =>
   );
 
 /* ---------- the banner in the scene: whose turn, and what to do now ---------- */
-let Turn: 'me' | 'foe' | null = null;
+let Turn: MemberKey | 'foe' | null = null;
 let Step: string | null = null;
-export function setTurn(t: 'me' | 'foe' | null): void {
+/** Whose turn the banner names: a member, the enemies, or nobody. */
+export function setTurn(t: MemberKey | 'foe' | null): void {
   Turn = t;
   renderBanner();
 }
@@ -445,7 +329,7 @@ function renderBanner(): void {
     b.innerHTML = Step ? `<span>${esc(Step)}</span>` : '';
     return;
   }
-  b.innerHTML = `<b class="${Turn === 'foe' ? 'foe' : ''}">${esc(Turn === 'foe' ? G.c.labels.foeTurn : G.c.labels.yourTurn)}</b>${Step && Turn !== 'foe' ? `<span>${esc(Step)}</span>` : ''}`;
+  b.innerHTML = `<b class="${Turn === 'foe' ? 'foe' : ''}">${esc(Turn === 'foe' ? G.c.labels.foeTurn : G.c.labels.turnOf(G.c.members[Turn].name))}</b>${Step && Turn !== 'foe' ? `<span>${esc(Step)}</span>` : ''}`;
 }
 
 /* ---------- input: one place for keys and taps ---------- */
@@ -516,22 +400,16 @@ export function bindInput(): void {
       }
     }
   });
-  /* a tap anywhere in the game advances a waiting line */
+  /* a tap anywhere in the game advances a waiting line, or plays the rest of an animation at once */
   $('console').addEventListener('click', (e) => {
     if (
       (e.target as HTMLElement).closest(
-        '.sys, .intent, #howto, .zone, .foe, .room'
+        '.sys, .intent, #howto, .zone, .foe, .room, .pc'
       )
     )
       return;
-    if (Dlg.done) advance(true);
+    if (!advance(true)) G.hurry = true;
   });
-  ['pointerup', 'pointercancel', 'blur'].forEach((ev) =>
-    window.addEventListener(ev, () => {
-      Dlg.hold = false;
-      Dlg.speed = 1;
-    })
-  );
 }
 
 /* ---------- how to play ---------- */
@@ -564,28 +442,20 @@ export function stripHtml(): string {
     `${crownSvg(r.step === FIGHTS_PER_CHAPTER ? 'var(--boss-crown)' : 'var(--paper-3)')}</span>`
   );
 }
-export function renderStatus(): void {
+export function renderStatus(acting: MemberKey | null = null): void {
   const r = G.run;
   const c = G.c;
-  const save = G.host.save;
-  if (!r) {
-    const l = levelOf(save.xp);
-    const lo = LEVELS[l - 1];
-    const hi = LEVELS[l] ?? lo;
-    $('status').innerHTML =
-      `<span class="g">${esc(c.status.level(l))}</span><span class="g grow"><span class="bar xp" role="img" aria-label="${esc(c.status.xpAria(save.xp - lo, hi - lo))}"><i style="width:${hi > lo ? ((save.xp - lo) / (hi - lo)) * 100 : 100}%"></i></span></span>` +
-      `<span class="g">${esc(c.status.sheets(save.freed.length, G.qById.size))}</span>`;
+  const prog = G.host.progress;
+  if (r) {
+    renderParty(G.F ? G.F.order : ['hero', ...r.lineup], r, acting);
     return;
   }
-  const full = r.verve >= RULES.verveMax;
-  const combo = G.F && G.screen === 'battle' ? G.F.combo : 0;
+  const l = levelOf(prog.xp);
+  const lo = LEVELS[l - 1];
+  const hi = LEVELS[l] ?? lo;
   $('status').innerHTML =
-    `<span class="g grow">${esc(c.status.hp)} ${r.hp}/${r.maxHp}<span class="bar${r.hp <= r.maxHp / 4 ? ' low' : ''}" role="img" aria-label="${esc(c.status.hpAria(r.hp, r.maxHp))}"><i style="width:${(r.hp / r.maxHp) * 100}%"></i></span></span>` +
-    `<span class="g" role="img" aria-label="${esc(c.status.inkAria(r.ink, r.maxInk))}"><span class="pips">${Array.from({ length: r.maxInk }, (_, k) => `<span class="pip${k < r.ink ? '' : ' off'}"></span>`).join('')}</span></span>` +
-    `<span class="g vg" role="img" aria-label="${esc(c.status.verveAria(r.verve, RULES.verveMax))}">${icon24('verve').replace('<svg', '<svg width="16" height="16"')}<span class="bar verve${full ? ' full' : ''}"><i style="width:${(r.verve / RULES.verveMax) * 100}%"></i></span></span>` +
-    (combo >= 2
-      ? `<span class="combo${combo >= 3 ? ' hot' : ''}">x${combo}</span>`
-      : '');
+    `<span class="g">${esc(c.status.level(l))}</span><span class="g grow"><span class="bar xp" role="img" aria-label="${esc(c.status.xpAria(prog.xp - lo, hi - lo))}"><i style="width:${hi > lo ? ((prog.xp - lo) / (hi - lo)) * 100 : 100}%"></i></span></span>` +
+    `<span class="g">${esc(c.status.sheets(prog.freed.length, G.qById.size))}</span>`;
 }
 
 /** Replaces the set with a crossfade, so places and times of day change visibly. */
@@ -611,7 +481,7 @@ export function setScene(
 function anchorOf(who: Who): HTMLElement | null {
   const layer = $('layer');
   if (who === 'glose') return layer.querySelector('.actor.glose');
-  if (who === 'hero') return layer.querySelector('.actor.hero');
+  if (isMember(who)) return layer.querySelector(`.actor[data-k="${who}"]`);
   if (who && typeof who === 'object')
     return layer.querySelector(`.foe[data-uid="${who.uid}"] .art`);
   return null;

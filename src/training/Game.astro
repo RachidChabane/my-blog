@@ -6,25 +6,35 @@
  */
 import type { Locale } from '@/i18n/index';
 import questions from './data/questions.json';
-import { COPY, chapterCopy } from './i18n/copy';
-import { CHAPTERS } from './domain/rules';
+import { PAGE_COPY } from './i18n/page-copy';
+import { FOUNDATIONS, campaignOf } from './domain/campaigns';
 import { sheetLabel } from './domain/bank';
 
 export interface Props {
   lang: Locale;
+  /** The campaign's key; the page renders that campaign's bank. */
+  campaign?: string;
 }
 
-const { lang } = Astro.props;
-const c = COPY[lang];
-const groups = CHAPTERS.map((ch, i) => ({
+const { lang, campaign = FOUNDATIONS.key } = Astro.props;
+const c = PAGE_COPY[lang];
+const camp = campaignOf(campaign);
+const groups = camp.chapters.map((ch) => ({
   key: ch.domain,
-  name: chapterCopy(c, i).domain,
+  name: c.chapters[ch.domain].domain,
+  short: c.chapters[ch.domain].short,
   items: questions.filter((q) => q.domain === ch.domain),
 }));
 const total = questions.length;
 ---
 
-<section class="tg" id="tg" data-lang={lang} aria-labelledby="tg-title">
+<section
+  class="tg"
+  id="tg"
+  data-lang={lang}
+  data-campaign={camp.key}
+  aria-labelledby="tg-title"
+>
   <div class="tg-launch" id="tg-launch" data-page-only>
     <div class="tg-launch-art" aria-hidden="true">
       <span class="tg-card-stack"><i></i><i></i><i></i></span>
@@ -107,10 +117,9 @@ const total = questions.length;
           <span class="tg-n">{total}</span>
         </button>
         {
-          groups.map((g, i) => (
+          groups.map((g) => (
             <button type="button" data-f={g.key} aria-pressed="false">
-              {chapterCopy(c, i).short}{' '}
-              <span class="tg-n">{g.items.length}</span>
+              {g.short} <span class="tg-n">{g.items.length}</span>
             </button>
           ))
         }

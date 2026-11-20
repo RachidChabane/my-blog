@@ -1,45 +1,63 @@
-/** A fight: the presenter of the combat engine. It asks, animates and narrates; the engine decides. */
+/**
+ * A fight: the presenter of the combat engine. It asks, animates and narrates; the
+ * engine decides. Every action plays as a beat the eye can follow: who acts and what,
+ * the animation, the hit with its number and the bar draining, then the result line,
+ * held for its reading time.
+ */
 import type { Question } from '../../domain/bank';
 import { drawOptions } from '../../domain/options';
 import type { Draw } from '../../domain/options';
-import { shuffle } from '../../domain/random';
+import { pickOne, shuffle } from '../../domain/random';
+import type { Ev, Fight, Foe, Ref, Run } from '../../domain/engine';
 import {
+  act,
   alive,
-  attack,
-  enemyPhase,
   foeBy,
-  guard,
-  isFx,
+  foeTurn,
+  formatBlocked,
+  isKnown,
   itemBlock,
-  knowKey,
+  itemTarget,
   makeFight,
+  memberDone,
+  memberOf,
+  memberTurn,
+  nextSheet,
+  openingReveals,
+  outcome,
   powerBlock,
+  preview,
+  roundEnd,
+  roundStart,
   shielded,
+  skillBlock,
+  skillTarget,
   targetable,
   useItem,
   usePower,
-  weaponBlocked,
 } from '../../domain/engine';
-import type { Ev, Foe, Fx } from '../../domain/engine';
+import type { Affinity, Element } from '../../domain/elements';
+import { affinity } from '../../domain/elements';
+import { MOVES } from '../../domain/foes';
+import type { MemberKey, SkillKey } from '../../domain/party';
+import { MEMBERS, SKILLS } from '../../domain/party';
+import type { FormatKey, ItemKey, PowerKey } from '../../domain/rules';
 import {
+  FORMATS,
+  FORMAT_KEYS,
   ITEM_KEYS,
   POWER_COST,
   POWER_KEYS,
-  RULES,
-  WEAPONS,
-  WEAPON_KEYS,
 } from '../../domain/rules';
-import type { IntentKey, WeaponKey } from '../../domain/rules';
+import { sheetLabel } from '../../domain/bank';
 import { chapterCopy } from '../../i18n/copy';
-import type { IntentName } from '../../i18n/copy';
-import { G, $, esc, reduced, wait } from './state';
+import { G, $, beat, domainOf, esc } from './state';
 import {
   Zone,
-  blip,
+  advance,
   bubbleAt,
   choose,
-  foeArt,
-  foeName,
+  gameHasFocus,
   goButton,
   holdLine,
   menuKind,
@@ -47,616 +65,678 @@ import {
   renderStatus,
   say,
   sayOne,
-  sayText,
   setScene,
   setStep,
   setTurn,
   showLine,
-  gameHasFocus,
-  advance,
 } from './ui';
-import { icon24 } from './art';
-import { partyHtml, chapterChrome, setForStep } from './screens';
+import type { Who } from './ui';
+import { elIcon, icon24 } from './art';
+import {
+  actorEl,
+  cardEl,
+  clearDeltas,
+  foeArtEl,
+  foeCard,
+  foeEl,
+  foeName,
+  intentHelp,
+  memberName,
+  partyHtml,
+  resetPartyBars,
+  showDelta,
+  showDown,
+  showHp,
+  showShield,
+  showStatus,
+  showUnit,
+  statusLinesOf,
+  syncShown,
+  updateFoes,
+  who,
+} from './hud';
+import {
+  callout,
+  clearStills,
+  downFx,
+  fogFx,
+  missFx,
+  phaseFx,
+  playAct,
+  popNumber,
+  revealFx,
+  shieldFx,
+  statusFx,
+  stealFx,
+  upFx,
+  walkIn,
+} from './fx';
+import { blip } from './sound';
+import { chapterChrome, setForStep } from './screens';
 import { playCine } from './cine';
 
-/* ---------- intents ---------- */
-const INTENT_ICON: Record<IntentName, string> = {
-  hit: '<path d="M8 1l2 4 5-1-3 4 3 4-5-1-2 4-2-4-5 1 3-4-3-4 5 1z"/>',
-  big: '<path d="M8 0l2.4 4.4 5.6-1.2-3.6 4.8 3.6 4.8-5.6-1.2L8 16l-2.4-4.4L0 12.8l3.6-4.8L0 3.2l5.6 1.2z"/>',
-  charge: '<path d="M8 1l6 7h-4v7H6V8H2z"/>',
-  ink: '<path d="M8 1C8 1 3 8 3 11a5 5 0 0 0 10 0C13 8 8 1 8 1z"/>',
-  gag: '<rect x="1" y="6" width="14" height="4"/>',
-  tache:
-    '<circle cx="8" cy="8" r="5"/><circle cx="3" cy="3" r="1.6"/><circle cx="13.5" cy="12.5" r="1.4"/>',
-  back: '<path d="M7 2L1 8l6 6V10h8V6H7z"/>',
-  wave: '<path d="M0 11q2-4 4 0t4 0 4 0 4 0v3H0z"/><path d="M0 6q2-4 4 0t4 0 4 0 4 0" fill="none" stroke="currentColor" stroke-width="2"/>',
-  fog: '<path d="M1 5h10M4 9h11M1 13h9" stroke="currentColor" stroke-width="2.4" fill="none"/>',
-  special:
-    '<path d="M8 .5l2.2 4.8 5.3.6-3.9 3.6 1.1 5.2L8 12l-4.7 2.7 1.1-5.2L.5 5.9l5.3-.6z"/>',
-  stun: '<circle cx="5" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="11" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="2"/>',
-};
-export const icon16 = (k: IntentName) =>
-  `<svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">${INTENT_ICON[k]}</svg>`;
-const AREA: ReadonlySet<IntentKey> = new Set(['wave', 'fog']);
-const intentOf = (e: Foe): IntentName => (e.stun ? 'stun' : e.intent.k);
-const special = (e: Foe) =>
-  e.type === 'boss' ? chapterCopy(G.c, e.ch).boss.move : '';
-const intentLabel = (e: Foe) =>
-  G.c.intentLabel(intentOf(e), e.intent.n, special(e));
-const intentHelp = (e: Foe) =>
-  G.c.intentHelp(intentOf(e), e.intent.n, special(e));
+/* ---------- reading the stage ---------- */
+const run = () => G.run as Run;
+const fight = () => G.F as Fight;
+const spriteOf = (r: Ref): HTMLElement | null =>
+  r.side === 'foe' ? foeArtEl(r.uid) : actorEl(r.key);
+const nameOf = (r: Ref): string =>
+  r.side === 'foe' ? foeName(foeBy(fight(), r.uid) as Foe) : memberName(r.key);
+const whoOf = (r: Ref) =>
+  r.side === 'foe' ? { name: nameOf(r), you: false } : who(r.key);
+const elOfRef = (r: Ref): Element =>
+  r.side === 'foe'
+    ? (foeBy(fight(), r.uid) as Foe).el
+    : memberOf(run(), r.key).el;
 
-/* ---------- the foes on stage ---------- */
-const idleOf = (e: Foe) => (e.type === 'boss' ? 'idle-boss' : `idle-${e.type}`);
-function foeCard(e: Foe): string {
-  return (
-    `<button type="button" class="foe" data-uid="${e.uid}" tabindex="-1"><span class="intent" tabindex="0" role="button"></span>` +
-    `<span class="art ${idleOf(e)}">${foeArt(e)}</span><span class="plate"><span class="fname"></span><span class="fpv"><span class="hb"><i></i></span><span class="pvn"></span></span><span class="toks"></span></span><span class="shield" hidden></span></button>`
-  );
+/** The name of an action, as the banner and the dialogue announce it. */
+function actName(key: string, actor: string): string {
+  const c = G.c;
+  const [kind, a, b] = key.split(':');
+  if (kind === 'atk') return c.members[a as MemberKey].attack;
+  if (kind === 'skill') return c.skills[a as SkillKey].name;
+  if (kind === 'power') return c.powers[a as PowerKey].name;
+  if (kind === 'item') return c.items[a as ItemKey].name;
+  if (kind === 'move') return c.moves[b as keyof typeof c.moves].name;
+  if (kind === 'counter') return c.ev.counter(actor);
+  return c.actions.guard;
 }
-const foeEl = (uid: number) =>
-  $('layer').querySelector<HTMLElement>(`.foe[data-uid="${uid}"]`);
 
-export function updateFoes(): void {
+export function refresh(acting: MemberKey | null = null): void {
   const F = G.F;
   if (!F) return;
-  const box = $('layer').querySelector<HTMLElement>('.foes');
-  if (!box) return;
-  box.dataset.n = String(alive(F).length || 1);
-  for (const e of F.foes) {
-    const el = foeEl(e.uid);
-    if (!el) continue;
-    el.classList.toggle('gone', e.dead && !el.classList.contains('dying'));
-    const sh = shielded(F, e);
-    el.classList.toggle('shielded', sh);
-    el.classList.toggle(
-      'targeted',
-      !e.dead && G.sel === e.uid && menuKind() === 'weapons'
-    );
-    el.classList.toggle('sel', !e.dead && G.sel === e.uid);
-    const k = intentOf(e);
-    const it = el.querySelector('.intent') as HTMLElement;
-    it.className = `intent i-${k}${AREA.has(e.intent.k) && !e.stun ? ' area' : ''}`;
-    it.innerHTML = `${icon16(k)}<span>${esc(intentLabel(e))}</span>`;
-    it.setAttribute(
-      'aria-label',
-      G.c.intentAria(intentLabel(e), intentHelp(e))
-    );
-    (el.querySelector('.fname') as HTMLElement).textContent = foeName(e);
-    (el.querySelector('.hb i') as HTMLElement).style.width =
-      `${(e.pv / e.max) * 100}%`;
-    (el.querySelector('.pvn') as HTMLElement).textContent = `${e.pv}/${e.max}`;
-    (el.querySelector('.toks') as HTMLElement).innerHTML = e.sheets
-      .map(() => '<span></span>')
-      .join('');
-    const shield = el.querySelector('.shield') as HTMLElement;
-    shield.hidden = !sh;
-    shield.textContent = G.c.types.mask.name;
-    el.setAttribute(
-      'aria-label',
-      `${foeName(e)}, ${G.c.status.hpAria(e.pv, e.max)}, ${e.sheets.length}`
-    );
-  }
-  const field = G.root.getElementById('field');
-  if (field) {
-    field.hidden = !F.fog;
-    field.textContent = G.c.status.fog(F.fog);
-  }
-  $('scene').classList.toggle('fogged', F.fog > 0);
-}
-function renderActors(): void {
-  const r = G.run;
-  if (!r) return;
-  const c = G.c.chips;
-  const h: string[] = [];
-  const g: string[] = [];
-  if (r.st.guard) h.push(c.guard);
-  if (r.st.tache) h.push(c.tache(r.st.tache));
-  if (r.st.rature) h.push(c.rature);
-  if (r.strike) h.push(c.hint(r.strike));
-  if (r.tampon) h.push(c.tampon);
-  if (r.echo) g.push(c.echo);
-  if (r.st.gag) g.push(c.gag(r.st.gag));
-  const sh = G.root.getElementById('sts-hero');
-  const sg = G.root.getElementById('sts-glose');
-  if (sh)
-    sh.innerHTML = h.map((x) => `<span class="chip">${esc(x)}</span>`).join('');
-  if (sg)
-    sg.innerHTML = g.map((x) => `<span class="chip">${esc(x)}</span>`).join('');
-}
-export function refresh(): void {
-  updateFoes();
-  renderStatus();
-  renderActors();
+  updateFoes(F, run(), G.sel, menuKind() === 'formats');
+  renderStatus(acting);
 }
 
-/* ---------- effects: short, never blocking for long, instant under reduced motion ---------- */
-function anim(el: Element | null, cls: string, ms: number): Promise<void> {
-  if (!el) return wait(0);
-  el.classList.remove(cls);
-  void (el as HTMLElement).offsetWidth;
-  el.classList.add(cls);
-  return wait(ms).then(() => el.classList.remove(cls));
+/* ---------- playing events, one beat per action ---------- */
+interface BeatState {
+  lines: string[];
+  speaker: Who;
+  /** The one acting, and the name of the action, said again with the result. */
+  who: Ref | null;
+  name: string;
+  /** Element of the one acting, for the weak and resisted call-outs. */
+  el: Element | null;
+  act: string;
+  actor: string;
 }
-function centerIn(el: Element) {
-  const sc = $('scene').getBoundingClientRect();
-  const r = el.getBoundingClientRect();
-  return {
-    x: r.left - sc.left + r.width / 2,
-    y: r.top - sc.top + r.height / 2,
-    w: r.width,
-    h: r.height,
-  };
-}
-function pop(text: string, el: Element | null, cls = ''): void {
-  if (!el) return;
-  const c = centerIn(el);
-  const d = document.createElement('span');
-  d.className = `pop ${cls}`;
-  d.textContent = text;
-  d.style.left = `${c.x}px`;
-  d.style.top = `${Math.max(4, c.y - c.h / 2)}px`;
-  $('fx').appendChild(d);
-  setTimeout(() => d.remove(), 1050);
-}
-const gloseEl = () => $('layer').querySelector('.actor.glose');
-const heroEl = () => $('layer').querySelector('.actor.hero');
-const QUILL =
-  '<svg viewBox="0 0 24 24"><path d="M2 22L14 10C18 4 22 2 22 2S20 8 14 12L4 22Z" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/></svg>';
-const STAMP =
-  '<svg viewBox="0 0 24 24"><rect x="3" y="15" width="18" height="6" fill="var(--s-stamp)" stroke="var(--line)" stroke-width="1.5"/><rect x="9" y="4" width="6" height="11" fill="var(--s-wood)" stroke="var(--line)" stroke-width="1.5"/></svg>';
+const MAX_LINE = 118;
 
-/** Each weapon has its own gesture: a quill for the Duel, a thread for the Trident, a stamp for the Exam. */
-async function heroAttack(
-  w: WeaponKey,
-  target: HTMLElement | null
+async function flush(b: BeatState): Promise<void> {
+  if (!b.lines.length) return;
+  const chunks: string[] = [];
+  let cur = '';
+  for (const l of b.lines.filter(Boolean)) {
+    if (cur && (cur + ' ' + l).length > MAX_LINE) {
+      chunks.push(cur);
+      cur = l;
+    } else cur = cur ? `${cur} ${l}` : l;
+  }
+  if (cur) chunks.push(cur);
+  b.lines = [];
+  for (const [i, text] of chunks.entries())
+    await sayOne({
+      who: b.speaker,
+      text: i === 0 && b.name ? G.c.ev.result(b.name, text) : text,
+      bubble: false,
+    });
+  b.speaker = null;
+  b.name = '';
+}
+
+export async function play(
+  events: Ev[],
+  acting: MemberKey | null = null
 ): Promise<void> {
-  const h = heroEl();
-  const t = target?.querySelector('.art');
-  if (!h || !t || reduced()) return;
-  void anim(h, 'lunge', 380);
-  const a = centerIn(h);
-  const b = centerIn(t);
-  if (w === 'duel') {
-    const q = document.createElement('div');
-    q.className = 'proj';
-    q.innerHTML = QUILL;
-    q.style.left = `${a.x - 17}px`;
-    q.style.top = `${a.y - 30}px`;
-    $('fx').appendChild(q);
-    void q.offsetWidth;
-    q.classList.add('fly');
-    q.style.transform = `translate(${b.x - a.x}px, ${b.y - a.y + 30}px) rotate(40deg)`;
-    await wait(360);
-    q.remove();
-  } else if (w === 'trident') {
-    const sc = $('scene').getBoundingClientRect();
-    $('fx').insertAdjacentHTML(
-      'beforeend',
-      `<svg class="thread" viewBox="0 0 ${sc.width} ${sc.height}">${[-14, 0, 14].map((o) => `<path d="M${a.x} ${a.y - 20}Q${(a.x + b.x) / 2} ${Math.min(a.y, b.y) - 60 + o} ${b.x + o} ${b.y}"/>`).join('')}</svg>`
-    );
-    await wait(380);
-    $('fx').querySelector('.thread')?.remove();
-  } else {
-    const s = document.createElement('div');
-    s.className = 'stampfx';
-    s.innerHTML = STAMP;
-    s.style.left = `${b.x - 28}px`;
-    s.style.top = `${b.y - b.h / 2 - 20}px`;
-    $('fx').appendChild(s);
-    await wait(320);
-    setTimeout(() => s.remove(), 250);
-  }
-}
-async function bead(fromEl: Element | null, xp: number): Promise<void> {
-  const g = gloseEl();
-  if (!fromEl || !g) return;
-  pop(`+${xp} XP`, fromEl, 'good');
-  if (reduced()) return;
-  const a = centerIn(fromEl);
-  const b = centerIn(g);
-  const d = document.createElement('span');
-  d.className = 'bead';
-  d.style.left = `${a.x - 9}px`;
-  d.style.top = `${a.y - 9}px`;
-  $('fx').appendChild(d);
-  void d.offsetWidth;
-  d.style.transform = `translate(${b.x - a.x}px, ${b.y - a.y + b.h * 0.2}px) scale(.6)`;
-  await wait(560);
-  d.remove();
-}
-/** An area move is drawn across the whole party, so it reads as hitting both heroes. */
-async function areaWave(fromEl: Element | null): Promise<void> {
-  const party = $('layer').querySelector('.party');
-  if (!party) return;
-  const p = centerIn(party);
-  const f = fromEl ? centerIn(fromEl) : { x: p.x + 200, y: p.y };
-  const w = document.createElement('div');
-  w.className = 'wavefx';
-  w.style.left = `${Math.min(p.x, f.x) - 40}px`;
-  w.style.width = `${Math.abs(f.x - p.x) + 120}px`;
-  w.style.top = `${p.y - p.h / 2}px`;
-  w.style.height = `${p.h}px`;
-  $('fx').appendChild(w);
-  const zone = document.createElement('div');
-  zone.className = 'zonefx';
-  zone.style.left = `${p.x - p.w / 2 - 16}px`;
-  zone.style.top = `${p.y - p.h / 2 - 12}px`;
-  zone.style.width = `${p.w + 32}px`;
-  zone.style.height = `${p.h + 24}px`;
-  $('fx').appendChild(zone);
-  await wait(420);
-  setTimeout(() => {
-    w.remove();
-    zone.remove();
-  }, 400);
-}
-async function fx(ev: Fx): Promise<void> {
-  const F = G.F;
-  const el = 'uid' in ev ? foeEl(ev.uid) : null;
-  const art = el?.querySelector('.art') ?? null;
-  switch (ev.fx) {
-    case 'strike': {
-      if (ev.kind === 'crit' && art) {
-        blip('crit');
-        const c = centerIn(art);
-        const s = document.createElement('div');
-        s.className = 'critstamp';
-        s.textContent = G.c.lines.crit;
-        s.style.left = `${c.x}px`;
-        s.style.top = `${c.y}px`;
-        $('fx').appendChild(s);
-        setTimeout(() => s.remove(), 900);
-        void anim(gloseEl(), 'cheer', 500);
-        await wait(220);
-      } else blip(ev.kind === 'resist' ? 'clank' : 'free');
-      pop(
-        `-${ev.d}`,
-        art,
-        ev.kind === 'crit' ? 'big' : ev.kind === 'resist' ? 'gray' : ''
-      );
-      await Promise.all([
-        anim(
-          art,
-          ev.kind === 'crit' ? 'crit' : ev.kind === 'resist' ? 'clank' : 'hit',
-          420
-        ),
-        ev.sheet ? bead(art, ev.xp) : wait(0),
-      ]);
-      break;
-    }
-    case 'echo': {
-      blip('crit');
-      const from = art ? centerIn(art) : null;
-      for (const h of ev.hits) {
-        const t = foeEl(h.uid)?.querySelector('.art');
-        if (!t) continue;
-        const to = centerIn(t);
-        if (from && !reduced()) {
-          const ring = document.createElement('span');
-          ring.className = 'ripple';
-          ring.style.left = `${from.x}px`;
-          ring.style.top = `${from.y}px`;
-          ring.style.setProperty('--dx', `${to.x - from.x}px`);
-          ring.style.setProperty('--dy', `${to.y - from.y}px`);
-          $('fx').appendChild(ring);
-          setTimeout(() => ring.remove(), 600);
-        }
-        pop(`-${h.d}`, t);
-        void anim(t, 'hit', 420);
-      }
-      await wait(480);
-      break;
-    }
-    case 'counter':
-    case 'enemyHit': {
-      if (ev.fx === 'enemyHit') setTurn('foe');
-      await anim(
-        art,
-        ev.fx === 'enemyHit' && ev.big ? 'lunge-big' : 'attack',
-        450
-      );
-      if (ev.d === 0) {
-        pop('0', heroEl(), 'gray');
+  const F = fight();
+  const c = G.c;
+  const b: BeatState = {
+    lines: [],
+    speaker: null,
+    who: null,
+    name: '',
+    el: null,
+    act: '',
+    actor: '',
+  };
+  for (const e of events) {
+    switch (e.k) {
+      case 'act': {
+        await flush(b);
+        G.hurry = false;
+        clearDeltas();
+        clearStills();
+        const isPower = e.act.startsWith('power:');
+        const actor = isPower ? c.glose : nameOf(e.who);
+        b.act = e.act;
+        b.actor = actor;
+        b.who = e.who;
+        b.name = actName(e.act, actor);
+        b.speaker = isPower
+          ? 'glose'
+          : e.who.side === 'foe'
+            ? (foeBy(F, e.who.uid) as Foe)
+            : e.who.key;
+        b.el = isPower ? null : elOfRef(e.who);
+        if (e.who.side === 'foe') setTurn('foe');
+        showLine(
+          esc(c.ev.announce(actor, actName(e.act, actor))),
+          isPower
+            ? 'glose'
+            : e.who.side === 'foe'
+              ? (foeBy(F, e.who.uid) as Foe)
+              : e.who.key
+        );
+        spriteOf(e.who)?.classList.add('acting-now');
+        await beat(900);
+        spriteOf(e.who)?.classList.remove('acting-now');
         break;
       }
-      blip('hit');
-      void anim($('scene'), 'hurt', 450);
-      void anim(heroEl(), 'recoil', 420);
-      pop(`-${ev.d}`, heroEl(), ev.fx === 'enemyHit' && ev.big ? 'big' : '');
-      if (ev.fx === 'counter') {
-        const g = gloseEl();
-        g?.classList.add('hide');
-        setTimeout(() => g?.classList.remove('hide'), 900);
+      case 'fx': {
+        const from = b.act.startsWith('power:')
+          ? $('layer').querySelector('.actor.glose')
+          : spriteOf(e.from);
+        const to = e.to.map(spriteOf).filter((x): x is HTMLElement => !!x);
+        await playAct(e.act, actName(e.act, nameOf(e.from)), from, to);
+        break;
       }
-      break;
+      case 'dmg': {
+        const el = spriteOf(e.to);
+        const w = whoOf(e.to);
+        if (el) {
+          popNumber(el, `−${e.before - e.after}`, `hurt ${e.aff}`);
+          if (
+            e.aff !== 'neutral' &&
+            (e.cause === 'hit' || e.cause === 'counter')
+          )
+            callout(el, e.aff === 'weak' ? 'weak' : 'resist');
+        }
+        blip(e.cause === 'poison' || e.cause === 'burn' ? 'tick' : 'hurt');
+        if (e.cause === 'poison' || e.cause === 'burn') {
+          if (el) void statusFx(el, e.cause, 'tick');
+          b.lines.push(
+            c.ev.tick(
+              c.statuses[e.cause].name,
+              w,
+              e.before - e.after,
+              e.before,
+              e.after
+            )
+          );
+        } else {
+          b.lines.push(
+            [
+              c.ev.dmg(w, e.before - e.after, e.before, e.after),
+              e.aff !== 'neutral' && b.el && e.cause !== 'echo'
+                ? c.ev.aff(e.aff, b.el)
+                : '',
+              e.absorbed ? c.ev.absorbed(e.absorbed) : '',
+            ]
+              .filter(Boolean)
+              .join(' ')
+          );
+        }
+        showHp(e.to, e.after);
+        if (e.absorbed) showShield(e.to, e.shield);
+        refresh(acting);
+        showDelta(
+          e.to.side === 'foe' ? foeEl(e.to.uid) : cardEl(e.to.key),
+          e.before,
+          e.after,
+          'hurt'
+        );
+        await beat(700);
+        break;
+      }
+      case 'heal': {
+        const el = spriteOf(e.to);
+        if (el) popNumber(el, `+${e.n}`, 'heal');
+        if (e.cause === 'regen' && el) void statusFx(el, 'regen', 'tick');
+        blip('heal');
+        if (e.n > 0)
+          b.lines.push(c.ev.heal(whoOf(e.to), e.n, e.before, e.after));
+        showHp(e.to, e.after);
+        refresh(acting);
+        showDelta(
+          e.to.side === 'foe' ? foeEl(e.to.uid) : cardEl(e.to.key),
+          e.before,
+          e.after,
+          'heal'
+        );
+        await beat(500);
+        break;
+      }
+      case 'status': {
+        const el = spriteOf(e.to);
+        const w = whoOf(e.to);
+        if (el && e.change !== 'resist')
+          await statusFx(el, e.s, e.change === 'on' ? 'on' : 'off');
+        b.lines.push(
+          e.change === 'on'
+            ? e.s === 'guard'
+              ? c.ev.guard(w)
+              : c.ev.on(e.s, w, e.turns)
+            : e.change === 'wake'
+              ? c.ev.wake(w)
+              : e.change === 'resist'
+                ? c.ev.resist(e.s, w)
+                : c.ev.off(e.s, w)
+        );
+        if (e.change !== 'resist')
+          showStatus(e.to, e.s, e.change === 'on' ? e.turns : 0);
+        refresh(acting);
+        if (e.change === 'on' && !toldStatus) {
+          toldStatus = true;
+          await flush(b);
+          await say({ who: 'glose', text: c.lines.teachStatus });
+        }
+        break;
+      }
+      case 'shield': {
+        const el = spriteOf(e.to);
+        if (el) await shieldFx(el, e.change);
+        const w = whoOf(e.to);
+        b.lines.push(
+          e.change === 'on'
+            ? c.ev.shieldOn(w, e.points)
+            : e.change === 'break'
+              ? c.ev.shieldBreak(w)
+              : c.ev.shieldOff(w)
+        );
+        showShield(e.to, e.change === 'on' ? e.points : 0);
+        refresh(acting);
+        break;
+      }
+      case 'skip': {
+        await flush(b);
+        clearDeltas();
+        const el = spriteOf(e.who);
+        if (el) await statusFx(el, e.why, 'tick');
+        b.lines.push(c.ev.skip(e.why, whoOf(e.who)));
+        break;
+      }
+      case 'down': {
+        const el = spriteOf(e.who);
+        if (e.who.side === 'foe') {
+          const foe = foeBy(F, e.who.uid) as Foe;
+          const card = foeEl(foe.uid);
+          card?.classList.add('dying');
+          if (el) await downFx(el);
+          showDown(e.who);
+          card?.classList.remove('dying');
+          b.lines.push(
+            foe.kind === 'boss'
+              ? chapterCopy(c, foe.chapter.domain).boss.fall
+              : c.types[foe.kind].fall
+          );
+        } else {
+          if (el) await downFx(el);
+          b.lines.push(c.ev.down(who(e.who.key)));
+        }
+        refresh(acting);
+        break;
+      }
+      case 'up': {
+        showHp(e.who, e.hp);
+        refresh(acting);
+        const el = spriteOf(e.who);
+        if (el) await upFx(el);
+        b.lines.push(c.ev.up(whoOf(e.who), e.hp));
+        break;
+      }
+      case 'reveal': {
+        await flush(b);
+        const foe = foeBy(F, e.uid) as Foe;
+        refresh(acting);
+        const el = foeArtEl(e.uid);
+        if (el) await revealFx(el, e.el);
+        await sayOne({
+          who: e.how === 'hit' ? 'glose' : 'vigie',
+          text: c.ev.reveal(foeName(foe), e.el, e.how),
+          bubble: false,
+        });
+        break;
+      }
+      case 'phase': {
+        await flush(b);
+        const foe = foeBy(F, e.uid) as Foe;
+        const el = foeArtEl(e.uid);
+        refresh(acting);
+        if (el) await phaseFx(el);
+        $('scene').dataset.phase = String(e.phase);
+        await sayOne({
+          who: foe,
+          text:
+            chapterCopy(c, foe.chapter.domain).boss.phases[e.phase - 1] ?? '',
+          wait: true,
+          bubble: false,
+        });
+        break;
+      }
+      case 'summon': {
+        const foe = foeBy(F, e.uid) as Foe;
+        showUnit(foe);
+        $('layer')
+          .querySelector('.foes')
+          ?.insertAdjacentHTML('beforeend', foeCard(foe));
+        refresh(acting);
+        const el = foeArtEl(e.uid);
+        if (el) await walkIn(el);
+        b.lines.push(c.ev.summon(foeName(foe)));
+        break;
+      }
+      case 'fog':
+        await fogFx(e.turns > 0);
+        b.lines.push(e.turns > 0 ? c.ev.fog(e.turns) : c.ev.fogOff);
+        refresh(acting);
+        break;
+      case 'tokens':
+        if (e.after > e.before && b.act.startsWith('atk'))
+          b.lines.push(c.ev.tokens(e.after - e.before));
+        refresh(acting);
+        break;
+      case 'steal': {
+        const victim = spriteOf({ side: 'party', key: e.from });
+        const thief = b.who ? spriteOf(b.who) : null;
+        if (victim && thief) await stealFx(thief, victim);
+        b.lines.push(
+          e.item
+            ? c.ev.stealItem(b.actor, c.items[e.item].name)
+            : c.ev.stealTokens(b.actor, e.tokens)
+        );
+        refresh(acting);
+        break;
+      }
+      case 'miss': {
+        const el = spriteOf(e.who);
+        if (el) await missFx(el);
+        b.lines.push(c.ev.miss);
+        break;
+      }
+      case 'free':
+        blip('free');
+        b.lines.push(c.ev.free(sheetLabel(e.sheet), e.xp));
+        break;
+      case 'combo':
+        b.lines.push(c.ev.combo(e.n));
+        break;
+      case 'mix':
+        b.lines.push(c.ev.mix);
+        break;
+      case 'shift': {
+        const foe = foeBy(F, e.uid) as Foe;
+        const el = foeArtEl(e.uid);
+        refresh(acting);
+        if (el && isKnown(G.ctx, F, foe)) await revealFx(el, e.el);
+        b.lines.push(c.ev.shift(foeName(foe), e.el));
+        break;
+      }
+      case 'fizzle':
+        b.lines.push(c.ev.fizzle(foeName(foeBy(F, e.uid) as Foe)));
+        break;
+      case 'strike':
+        b.lines.push(c.ev.strike);
+        break;
+      case 'echo':
+        b.lines.push(b.act === 'power:echo' ? c.ev.echoReady : c.ev.echo);
+        break;
     }
-    case 'wave': {
-      setTurn('foe');
-      blip('boom');
-      await anim(art, 'attack', 300);
-      void anim($('scene'), 'quake', 500);
-      await areaWave(art);
-      void anim(heroEl(), 'recoil', 420);
-      void anim(gloseEl(), 'recoil', 420);
-      pop(`-${ev.d}`, heroEl(), 'big');
-      if (ev.ink) pop(`-${G.c.inkCost(ev.ink)}`, gloseEl(), 'gray');
-      break;
-    }
-    case 'fog':
-      setTurn('foe');
-      await anim(art, 'charge', 450);
-      $('scene').classList.add('fogged');
-      void anim($('scene'), 'fog-in', 700);
-      await wait(400);
-      break;
-    case 'charge':
-      await anim(art, 'charge', 550);
-      break;
-    case 'ink':
-    case 'gag':
-    case 'tache':
-    case 'steal':
-      await anim(art, 'attack', 450);
-      void anim(
-        ev.fx === 'tache' || ev.fx === 'steal' ? heroEl() : gloseEl(),
-        'shake',
-        400
-      );
-      break;
-    case 'heal':
-      await anim(art, 'retreat', 500);
-      pop(`+${RULES.heal}`, art, 'good');
-      break;
-    case 'heroHeal':
-      pop(`+${ev.n}`, heroEl(), 'good');
-      void anim(heroEl(), 'cheer', 400);
-      break;
-    case 'skip':
-      await anim(art, 'dizzy', 550);
-      break;
-    case 'die': {
-      if (!el || !art || !F) break;
-      const e = foeBy(F, ev.uid);
-      el.classList.add('dying');
-      art.classList.add(
-        e?.type === 'boss' || e?.type === 'grib'
-          ? 'die-melt'
-          : e?.type === 'fau'
-            ? 'die-run'
-            : e?.type === 'cut'
-              ? 'die-spin'
-              : e?.type === 'mask'
-                ? 'die-fade'
-                : 'die-runl'
-      );
-      await wait(800);
-      el.classList.remove('dying');
-      break;
-    }
-    case 'summon': {
-      if (!F) break;
-      const e = foeBy(F, ev.uid);
-      if (!e) break;
-      $('layer')
-        .querySelector('.foes')
-        ?.insertAdjacentHTML('beforeend', foeCard(e));
-      updateFoes();
-      await anim(foeEl(ev.uid)?.querySelector('.art') ?? null, 'walk-in', 650);
-      break;
-    }
-    case 'guard':
-      void anim(heroEl(), 'cheer', 400);
-      break;
   }
-  refresh();
-}
-export async function play(events: Ev[]): Promise<void> {
-  for (const ev of events) {
-    if (isFx(ev)) await fx(ev);
-    else
-      await sayOne({
-        who: ev.who === 'glose' ? 'glose' : (ev.who ?? null),
-        text: sayText(ev),
-      });
-  }
+  await flush(b);
+  syncShown(F, run());
+  refresh(acting);
   Zone.idle();
 }
 
+/* ---------- the stage: tapping enemies and party cards ---------- */
 function bindStage(): void {
-  const layer = $('layer');
-  layer.onclick = (e) => {
+  $('layer').onclick = (e) => {
     const F = G.F;
+    if (!F) return;
     const target = e.target as HTMLElement;
     const tag = target.closest<HTMLElement>('.intent');
-    if (tag && F) {
+    if (tag) {
       e.stopPropagation();
       const f = foeBy(F, Number(tag.closest<HTMLElement>('.foe')?.dataset.uid));
-      if (f) bubbleAt(tag, intentHelp(f), 'tip');
+      if (f)
+        bubbleAt(
+          tag,
+          [intentHelp(F, run(), f), ...statusLinesOf(f)].join(' '),
+          'tip'
+        );
       return;
     }
     const b = target.closest<HTMLElement>('.foe');
-    if (!b || !F) return;
+    if (!b) return;
     const f = foeBy(F, Number(b.dataset.uid));
-    if (!f || f.dead || menuKind() !== 'weapons') return;
+    if (!f || f.dead) return;
     e.stopPropagation();
+    if (menuKind() !== 'formats' && menuKind() !== 'skills') {
+      const sts = statusLinesOf(f);
+      if (sts.length) bubbleAt(b.querySelector('.art'), sts.join(' '), 'tip');
+      return;
+    }
     if (shielded(F, f)) {
       bubbleAt(b.querySelector('.art'), G.c.lines.shieldSay);
       return;
     }
     pickMenu(`target:${f.uid}`);
   };
+  $('status').onclick = (e) => {
+    const card = (e.target as HTMLElement).closest<HTMLElement>('.pc');
+    if (!card || !G.run) return;
+    e.stopPropagation();
+    const k = card.dataset.k as MemberKey;
+    const m = memberOf(G.run, k);
+    const c = G.c;
+    const head = `${memberName(k)} · ${c.elements[m.el].name} · ${c.roles[MEMBERS[k].role]}`;
+    const sts = statusLinesOf(m);
+    bubbleAt(
+      actorEl(k),
+      sts.length
+        ? `${head}. ${sts.join(' ')}`
+        : `${head}. ${c.passives[MEMBERS[k].passive].name} : ${c.passives[MEMBERS[k].passive].text}`,
+      'tip'
+    );
+  };
 }
 
 /* ---------- the fight loop ---------- */
 export type Outcome = 'win' | 'lose' | 'flee';
-let toldGuard = false;
+let toldStatus = false;
 let toldArea = false;
+let toldGuard = false;
+
+/** The default target: the enemy this member hits hardest, then the most hurt. */
+function bestTarget(k: MemberKey): number {
+  const F = fight();
+  const m = memberOf(run(), k);
+  const ts = targetable(F);
+  const score = (e: Foe) => {
+    const aff: Affinity = isKnown(G.ctx, F, e)
+      ? affinity(m.el, e.el)
+      : 'neutral';
+    return (aff === 'weak' ? 1000 : aff === 'resist' ? -1000 : 0) - e.hp;
+  };
+  return ts.slice().sort((a, b) => score(b) - score(a))[0].uid;
+}
 
 export async function battle(): Promise<Outcome> {
-  const run = G.run;
-  if (!run) return 'flee';
-  const F = (G.F = makeFight(G.ctx, run));
-  const cc = chapterCopy(G.c, run.ch);
-  G.sel = targetable(F)
-    .slice()
-    .sort((a, b) => a.pv - b.pv)[0].uid;
+  const r = run();
+  const F = (G.F = makeFight(G.ctx, r));
+  syncShown(F, r);
+  const c = G.c;
+  const cc = chapterCopy(c, domainOf(r.ch));
   G.screen = 'battle';
-  const stage = setForStep(run);
+  G.sel = null;
+  resetPartyBars();
+  const stage = setForStep(r);
   setScene(stage.html, {
     boss: F.isBoss,
     cls: F.isBoss ? 'boss-fight' : '',
     time: stage.time,
   });
+  $('scene').dataset.phase = '0';
   $('layer').innerHTML =
     `<div class="foes" data-n="1">${F.foes.map(foeCard).join('')}</div>` +
-    partyHtml();
+    partyHtml(F.order);
   bindStage();
   chapterChrome();
   refresh();
   $('layer')
     .querySelectorAll('.foe .art')
-    .forEach((a) => void anim(a, 'walk-in', 650));
+    .forEach((a) => void walkIn(a));
   const first = F.foes[0];
   if (F.isBoss) {
-    await playCine(`boss-${run.ch}`, { inline: true });
-    await say({ who: first, text: cc.boss.taunt, wait: true });
+    await playCine(`boss-${r.ch}`, { inline: true });
+    await say(
+      { who: first, text: cc.boss.taunt, wait: true },
+      { who: 'glose', text: cc.boss.mechanic, wait: true }
+    );
   } else {
-    const names = F.foes.map(foeName);
     await say(
       F.foes.length === 1
-        ? G.c.lines.appearsOne(
-            first.type === 'boss' ? cc.boss.a : G.c.types[first.type].a,
+        ? c.lines.appearsOne(
+            c.types[first.kind as keyof typeof c.types].a,
             F.elite
           )
-        : G.c.lines.appearsMany(names),
+        : c.lines.appearsMany(F.foes.map(foeName)),
       {
         who: first,
-        text: first.type === 'boss' ? '' : G.c.types[first.type].taunt,
+        text: first.kind === 'boss' ? '' : c.types[first.kind].taunt,
       }
     );
   }
   const save = G.host.save;
-  if (!save.taught && run.ch === 0 && run.step === 0) {
+  if (!save.taught) {
     await say(
-      { who: 'glose', text: G.c.lines.teachIntent, wait: true },
-      { who: 'glose', text: G.c.lines.teachWeapons, wait: true }
+      { who: 'glose', text: c.lines.teachIntent, wait: true },
+      { who: 'glose', text: c.lines.teachFormats, wait: true },
+      { who: 'glose', text: c.lines.teachElements, wait: true }
     );
     save.taught = true;
     G.host.persist();
   }
-  if (F.foes.some((e) => e.type === 'mask') && F.foes.length > 1)
-    await say({ who: 'glose', text: G.c.lines.maskWarn });
-  if (F.foes.some((e) => e.type === 'pil'))
-    await say({ who: 'glose', text: G.c.lines.pilWarn });
-  if (F.foes.some((e) => e.type === 'din'))
-    await say({ who: 'glose', text: G.c.lines.dinWarn });
+  if (F.foes.some((e) => e.taunts) && F.foes.length > 1)
+    await say({ who: 'glose', text: c.lines.maskWarn });
+  await play(openingReveals(G.ctx, F));
 
-  while (alive(F).length && run.hp > 0) {
-    F.turn++;
-    let actions = 1;
-    while (actions > 0 && alive(F).length && run.hp > 0) {
-      const out = await playerAction(actions);
-      if (out === 'flee') {
-        setTurn(null);
-        await say(G.c.lines.fled);
-        return 'flee';
+  for (;;) {
+    await play(roundStart(F, r));
+    for (const k of F.order) {
+      if (outcome(F, r)) break;
+      setTurn(k);
+      refresh(k);
+      const t = memberTurn(G.ctx, F, r, k);
+      await play(t.ev, k);
+      if (t.can && !outcome(F, r)) {
+        const out = await memberAction(k);
+        if (out === 'flee') {
+          setTurn(null);
+          await say(c.lines.fled);
+          return 'flee';
+        }
       }
-      if (out === 'second') {
-        actions++;
-        continue;
-      }
-      actions--;
+      await play(memberDone(r, k), k);
     }
-    if (!alive(F).length || run.hp <= 0) break;
+    if (outcome(F, r)) break;
     setTurn('foe');
-    const evs = enemyPhase(G.ctx, F, run);
-    await play(evs);
     refresh();
-    if (
-      !toldArea &&
-      evs.some((e) => isFx(e) && e.fx === 'wave') &&
-      run.hp > 0
-    ) {
-      toldArea = true;
-      await say({ who: 'glose', text: G.c.lines.teachArea });
+    for (const e of [...F.foes]) {
+      if (e.dead || outcome(F, r)) continue;
+      const evs = foeTurn(G.ctx, F, r, e);
+      await play(evs);
+      if (
+        !toldArea &&
+        evs.some(
+          (x) =>
+            x.k === 'act' &&
+            x.act.startsWith('move:') &&
+            MOVES[x.act.split(':')[2] as keyof typeof MOVES]?.reach === 'all'
+        )
+      ) {
+        toldArea = true;
+        await say({ who: 'glose', text: c.lines.teachArea });
+      }
     }
-    if (
-      !toldGuard &&
-      alive(F).some((e) => e.intent.k === 'big') &&
-      run.hp > 0
-    ) {
+    if (outcome(F, r)) break;
+    await play(roundEnd(G.ctx, F, r));
+    if (!toldGuard && alive(F).some((e) => e.intent?.move === 'big')) {
       toldGuard = true;
-      await say({ who: 'glose', text: G.c.lines.guardTip });
+      await say({ who: 'glose', text: c.lines.guardTip });
     }
   }
   setTurn(null);
-  return run.hp <= 0 ? 'lose' : 'win';
+  clearStills();
+  return outcome(F, r) === 'win' ? 'win' : 'lose';
 }
 
-function weaponItems(e: Foe) {
-  const F = G.F;
-  const kn = G.ctx.book.known(knowKey(e));
-  return WEAPON_KEYS.map((w) => {
+/* ---------- a member's turn ---------- */
+/** A menu that has been answered leaves the zone while its action plays. */
+function menuDone(): void {
+  Zone.go();
+  Zone.idle();
+}
+
+function formatItems(k: MemberKey, target: Foe) {
+  const F = fight();
+  const c = G.c;
+  return FORMAT_KEYS.map((f) => {
+    const p = preview(G.ctx, F, run(), k, { format: f }, target.uid);
     const tag =
-      kn[w] === 'crit'
-        ? `<span class="tag weak">${esc(G.c.weak)}</span>`
-        : kn[w] === 'resist'
-          ? `<span class="tag res">${esc(G.c.resist)}</span>`
-          : `<span class="tag">${esc(G.c.unknown)}</span>`;
+      p.aff === null
+        ? `<span class="tag unk">${esc(c.card.unknown)}</span>`
+        : p.aff === 'neutral'
+          ? ''
+          : `<span class="tag ${p.aff}">${esc(c.card.short[p.aff])}</span>`;
     return {
-      k: w,
-      cls: 'weapon',
-      dis: !!F && weaponBlocked(F, w),
-      why: G.c.fogBlocked,
-      html: `${esc(G.c.weapons[w].name)}<span class="c">${esc(G.c.dmg(WEAPONS[w].dmg))}</span><span class="d">${esc(G.c.weapons[w].options)}</span>${tag}`,
+      k: f,
+      cls: `fmt${p.aff ? ` aff-${p.aff}` : ''}`,
+      dis: formatBlocked(F, f),
+      why: c.blocked.fog,
+      html: `<span class="fn">${esc(c.formats[f].name)}</span><span class="d">${esc(c.formats[f].options)}</span><span class="fig"><span class="big">${esc(c.card.dmg(p.hits[0]?.d ?? 0))}</span>${tag}</span>`,
     };
   });
 }
 
-async function playerAction(
-  actions: number
-): Promise<'acted' | 'second' | 'flee'> {
-  const F = G.F;
-  const run = G.run;
-  if (!F || !run) return 'flee';
+async function memberAction(k: MemberKey): Promise<'acted' | 'flee'> {
+  const F = fight();
+  const r = run();
   const c = G.c;
+  const m = memberOf(r, k);
   for (;;) {
-    setTurn('me');
+    setTurn(k);
     const ts = targetable(F);
-    if (!ts.some((e) => e.uid === G.sel))
-      G.sel = ts.slice().sort((a, b) => a.pv - b.pv)[0].uid;
+    if (!ts.some((e) => e.uid === G.sel)) G.sel = bestTarget(k);
     const target = foeBy(F, G.sel as number) as Foe;
-    const full = run.verve >= RULES.verveMax;
+    const known = isKnown(G.ctx, F, target);
+    const aff = known ? affinity(m.el, target.el) : null;
     showLine(
-      c.lines.aim(esc(foeName(target)), ts.length > 1, actions > 1),
-      null
+      `${c.lines.aim(esc(foeName(target)), ts.length > 1)}${aff && aff !== 'neutral' ? ` <b class="affline ${aff}">${esc(c.ev.aff(aff, m.el))}</b>` : ''}`,
+      k
     );
     const pending = choose({
-      kind: 'weapons',
-      step: c.labels.pickWeapon,
+      kind: 'formats',
+      step: c.labels.pickFormat,
+      label: `${memberName(k)} · ${c.elements[m.el].name}`,
+      labelIcon: elIcon(m.el),
       layout: 'c3',
-      items: weaponItems(target),
+      items: formatItems(k, target),
       secondary: [
         {
-          k: 'glose',
-          html: `${icon24('glose')}${esc(c.actions.glose)}`,
-          dis: run.st.gag > 0,
-          why: c.lines.gagged(run.st.gag),
+          k: 'skills',
+          html: `${icon24('skills')}${esc(c.actions.skills)}`,
+          dis: !!m.st.silence,
+          why: c.blocked.silence,
         },
+        { k: 'glose', html: `${icon24('glose')}${esc(c.actions.glose)}` },
         { k: 'guard', html: `${icon24('garde')}${esc(c.actions.guard)}` },
         {
           k: 'bag',
-          html: `${icon24('sac')}${esc(c.actions.bag(run.items.length))}`,
-          dis: !run.items.length,
+          html: `${icon24('sac')}${esc(c.actions.bag(r.items.length))}`,
+          dis: !r.items.length,
           why: c.lines.bagEmpty,
-        },
-        {
-          k: 'verve',
-          cls: full ? 'ready' : '',
-          html: `${icon24('verve')}${esc(c.actions.verve)}`,
-          dis: !full,
-          why: c.status.verveAria(run.verve, RULES.verveMax),
         },
         { k: 'flee', html: `${icon24('fuir')}${esc(c.actions.flee)}` },
       ],
@@ -671,68 +751,52 @@ async function playerAction(
         return true;
       },
     });
-    updateFoes();
-    const k = await pending;
-    updateFoes();
-    if (k.startsWith('target:')) {
-      G.sel = Number(k.slice(7));
-      updateFoes();
+    refresh(k);
+    const pick = await pending;
+    refresh(k);
+    if (pick.startsWith('target:')) {
+      G.sel = Number(pick.slice(7));
       continue;
     }
-    if ((WEAPON_KEYS as readonly string[]).includes(k)) {
-      const w = k as WeaponKey;
-      const res = await doQuestion(target, w);
+    if ((FORMAT_KEYS as readonly string[]).includes(pick)) {
+      const f = pick as FormatKey;
+      const res = await question(k, target, f);
       if (res === 'back') continue;
       setStep(null);
-      await heroAttack(w, foeEl(target.uid));
-      await play(attack(G.ctx, F, run, target.uid, w, res));
+      await play(
+        act(
+          G.ctx,
+          F,
+          r,
+          k,
+          { kind: 'attack', format: f, target: target.uid },
+          res
+        ),
+        k
+      );
       G.host.refresh();
       return 'acted';
     }
-    if (k === 'glose') {
-      await gloseMenu();
+    if (pick === 'skills') {
+      const done = await skillMenu(k, target);
+      if (done) return 'acted';
       continue;
     }
-    if (k === 'guard') {
-      await play(guard(run));
-      return 'acted';
-    }
-    if (k === 'bag') {
-      await bagMenu();
+    if (pick === 'glose') {
+      await gloseMenu(k);
       continue;
     }
-    if (k === 'verve') {
-      const v = await choose({
-        kind: 'verve',
-        label: c.labels.verveFull,
-        back: true,
-        layout: 'c2',
-        items: [
-          {
-            k: 'plume',
-            html: `${esc(c.verve.plume.name)}<span class="d">${esc(c.verve.plume.text(foeName(target)))}</span>`,
-          },
-          {
-            k: 'second',
-            html: `${esc(c.verve.second.name)}<span class="d">${esc(c.verve.second.text)}</span>`,
-          },
-        ],
-      });
-      if (v === 'back') continue;
-      run.verve = 0;
-      renderStatus();
-      if (v === 'second') {
-        await say(c.verve.secondSay);
-        return 'second';
-      }
-      await heroAttack('exam', foeEl(target.uid));
-      await play(
-        attack(G.ctx, F, run, target.uid, 'exam', true, { plume: true })
-      );
+    if (pick === 'bag') {
+      await bagMenu(k);
+      continue;
+    }
+    if (pick === 'guard') {
+      menuDone();
+      await play(act(G.ctx, F, r, k, { kind: 'guard' }), k);
       return 'acted';
     }
-    if (k === 'flee') {
-      const r = await choose({
+    if (pick === 'flee') {
+      const yes = await choose({
         kind: 'confirm',
         label: c.labels.fleeAsk,
         layout: 'c2',
@@ -741,9 +805,159 @@ async function playerAction(
           { k: 'no', label: c.labels.fleeNo, back: true },
         ],
       });
-      if (r === 'yes') return 'flee';
+      if (yes === 'yes') return 'flee';
     }
   }
+}
+
+/** One line of what a skill will do, read before choosing it. */
+function skillFigure(k: MemberKey, s: SkillKey, target: Foe): string {
+  const F = fight();
+  const r = run();
+  const c = G.c;
+  const S = SKILLS[s];
+  if (S.format) {
+    const p = preview(
+      G.ctx,
+      F,
+      r,
+      k,
+      { format: S.format, skill: s },
+      target.uid
+    );
+    const d = p.hits[0]?.d ?? 0;
+    const fig = S.hits ? c.card.hits(d, S.hits) : c.card.dmg(d);
+    const aff =
+      p.aff === null
+        ? ` ${c.card.unknown}`
+        : p.aff !== 'neutral'
+          ? ` ${c.card.aff[p.aff]}`
+          : '';
+    return `${c.formats[S.format].options} · ${fig}${S.target === 'foes' ? ` ${c.card.all}` : aff}`;
+  }
+  const t = skillTarget(F, r, k, s);
+  if (S.revive) return t ? c.card.revive(memberName(t.key)) : '';
+  if (S.heal && t)
+    return c.card.heal(
+      Math.min(t.max - t.hp, Math.round(t.max * S.heal)),
+      memberName(t.key)
+    );
+  if (S.heal && S.target === 'party')
+    return c.card.healAll(Math.round(S.heal * 100));
+  if (S.shield && t)
+    return c.card.shield(
+      Math.round(memberOf(r, k).max * S.shield),
+      memberName(t.key)
+    );
+  if (S.status)
+    return `${c.statuses[S.status[0]].name} · ${c.status.turns(S.status[1])}`;
+  return '';
+}
+
+async function skillMenu(k: MemberKey, target: Foe): Promise<boolean> {
+  const F = fight();
+  const r = run();
+  const c = G.c;
+  const skills = MEMBERS[k].skills;
+  const why = (s: SkillKey) => {
+    const b = skillBlock(F, r, k, s);
+    return b === 'tokens'
+      ? c.blocked.tokens(SKILLS[s].cost)
+      : b
+        ? c.blocked[b]
+        : '';
+  };
+  const pick = await choose({
+    kind: 'skills',
+    label: c.labels.skillsOf(memberName(k)),
+    back: true,
+    grow: true,
+    layout: 'list',
+    items: skills.map((s) => ({
+      k: s,
+      cls: `skill${SKILLS[s].format ? ' off' : ''}`,
+      dis: !!skillBlock(F, r, k, s),
+      why: why(s),
+      html: `<span class="sn">${esc(c.skills[s].name)}<span class="c">${icon24('token')}${SKILLS[s].cost}</span></span><span class="fig">${esc(skillFigure(k, s, target))}</span><span class="d">${esc(c.skills[s].text)}</span>`,
+    })),
+  });
+  if (pick === 'back') return false;
+  const s = pick as SkillKey;
+  const S = SKILLS[s];
+  if (!S.format) {
+    menuDone();
+    await play(
+      act(G.ctx, F, r, k, { kind: 'skill', skill: s, target: target.uid }),
+      k
+    );
+    return true;
+  }
+  const res = await question(k, target, S.format, c.skills[s].name);
+  if (res === 'back') return false;
+  setStep(null);
+  await play(
+    act(G.ctx, F, r, k, { kind: 'skill', skill: s, target: target.uid }, res),
+    k
+  );
+  G.host.refresh();
+  return true;
+}
+
+async function gloseMenu(k: MemberKey): Promise<void> {
+  const F = fight();
+  const r = run();
+  const c = G.c;
+  const why = (p: PowerKey) => {
+    const b = powerBlock(F, r, p);
+    return b === 'tokens'
+      ? c.blocked.tokens(POWER_COST[p])
+      : b
+        ? c.blocked[b]
+        : '';
+  };
+  const pick = await choose({
+    kind: 'glose',
+    label: c.labels.powers,
+    back: true,
+    grow: true,
+    layout: 'list',
+    items: POWER_KEYS.map((p) => ({
+      k: p,
+      html: `${esc(c.powers[p].name)} <span class="c">${icon24('token')}${POWER_COST[p]}</span><span class="d">${esc(c.powers[p].text)}</span>`,
+      dis: !!powerBlock(F, r, p),
+      why: why(p),
+    })),
+  });
+  if (pick === 'back') return;
+  menuDone();
+  await play(usePower(F, r, pick as PowerKey), k);
+}
+
+async function bagMenu(k: MemberKey): Promise<void> {
+  const F = fight();
+  const r = run();
+  const c = G.c;
+  const kinds = ITEM_KEYS.filter((x) => r.items.includes(x));
+  const pick = await choose({
+    kind: 'bag',
+    label: c.labels.bag,
+    back: true,
+    grow: true,
+    layout: 'list',
+    items: kinds.map((key) => {
+      const b = itemBlock(F, r, key);
+      const t = itemTarget(F, r, key);
+      return {
+        k: key,
+        html: `${esc(c.items[key].name)} <span class="c">×${r.items.filter((x) => x === key).length}</span><span class="d">${esc(c.items[key].text)}${t ? ` → ${esc(memberName(t.key))}` : ''}</span>`,
+        dis: !!b,
+        why: b === 'tokens' ? '' : b ? c.blocked[b] : '',
+      };
+    }),
+  });
+  if (pick === 'back') return;
+  menuDone();
+  await play(useItem(F, r, pick as ItemKey), k);
 }
 
 /* ---------- the question ---------- */
@@ -752,7 +966,7 @@ interface Asked {
   draw: Draw;
   /** Positions in the draw struck out by a hint or an eraser. */
   removed: Set<number>;
-  /** A smudged word on one wrong option, while Tache lasts. */
+  /** A smudged word on one wrong option, while Smudge lasts. */
   ink: { pos: number; html: string } | null;
 }
 function inkOption(a: Asked): Asked['ink'] {
@@ -760,11 +974,11 @@ function inkOption(a: Asked): Asked['ink'] {
     .map((_, i) => i)
     .filter((i) => i !== a.draw.correct && !a.removed.has(i));
   if (!wrong.length) return null;
-  const pos = wrong[Math.floor(G.rng() * wrong.length)];
+  const pos = pickOne(wrong, G.rng);
   const t = a.q.options[a.draw.order[pos]];
   const words = [...t.matchAll(/[A-Za-zÀ-ÖØ-öø-ÿœŒ’'-]{5,}/g)];
   if (!words.length) return null;
-  const m = words[Math.floor(G.rng() * words.length)];
+  const m = pickOne(words, G.rng);
   const at = m.index ?? 0;
   return {
     pos,
@@ -779,7 +993,7 @@ function strikeOne(a: Asked): boolean {
   if (wrong.length < 2) return false;
   const legible = wrong.filter((i) => a.ink?.pos !== i);
   const pool = legible.length ? legible : wrong;
-  a.removed.add(pool[Math.floor(G.rng() * pool.length)]);
+  a.removed.add(pickOne(pool, G.rng));
   return true;
 }
 function scrollHint(): void {
@@ -796,22 +1010,31 @@ function scrollHint(): void {
   upd();
 }
 
-async function doQuestion(e: Foe, w: WeaponKey): Promise<boolean | 'back'> {
-  const F = G.F;
-  const run = G.run;
-  if (!F || !run) return 'back';
-  const q = G.qById.get(e.sheets[0]) as Question;
+async function question(
+  k: MemberKey,
+  e: Foe,
+  f: FormatKey,
+  skillName = ''
+): Promise<{ sheet: string; right: boolean } | 'back'> {
+  const F = fight();
+  const r = run();
+  const sheet = nextSheet(G.ctx, F, r);
+  const q = G.qById.get(sheet) as Question;
   const a: Asked = {
     q,
-    draw: drawOptions(q, WEAPONS[w].options, G.rng),
+    draw: drawOptions(q, FORMATS[f].options, G.rng),
     removed: new Set(),
     ink: null,
   };
-  if (run.st.tache) a.ink = inkOption(a);
-  while (run.strike > 0 && strikeOne(a)) run.strike--;
-  renderActors();
+  if (memberOf(r, k).st.smudge) a.ink = inkOption(a);
+  let struck = 0;
+  while (F.strike > 0 && strikeOne(a)) {
+    F.strike--;
+    struck++;
+  }
+  refresh(k);
   showLine(
-    `<span class="lvl">${esc(G.c.weapons[w].name)}</span>${esc(q.stem)}`,
+    `<span class="lvl">${esc(skillName || G.c.formats[f].name)}</span>${esc(q.stem)}`,
     e
   );
   const card = (pos: number) =>
@@ -822,7 +1045,7 @@ async function doQuestion(e: Foe, w: WeaponKey): Promise<boolean | 'back'> {
       cls: `ans${a.removed.has(pos) ? ' gone' : ''}`,
       html: `<span class="t">${card(pos)}</span>`,
     }));
-  const label = `${G.c.weapons[w].name} · ${foeName(e)}`;
+  const label = `${memberName(k)} · ${G.c.formats[f].options} · ${foeName(e)}`;
   if (F.mixNext) {
     F.mixNext = false;
     void choose({
@@ -833,7 +1056,7 @@ async function doQuestion(e: Foe, w: WeaponKey): Promise<boolean | 'back'> {
       layout: 'answers',
       items: items().map((x) => ({ ...x, dis: true })),
     });
-    await wait(1400);
+    await beat(1600);
     const order = shuffle(a.draw.order, G.rng);
     const remap = new Map(
       a.draw.order.map((idx, pos) => [pos, order.indexOf(idx)])
@@ -855,6 +1078,7 @@ async function doQuestion(e: Foe, w: WeaponKey): Promise<boolean | 'back'> {
   scrollHint();
   const pick = await pending;
   if (pick === 'back') {
+    F.strike += struck;
     return 'back';
   }
   const right = pick === `o${a.draw.correct}`;
@@ -866,16 +1090,15 @@ async function doQuestion(e: Foe, w: WeaponKey): Promise<boolean | 'back'> {
       b.setAttribute('aria-disabled', 'true');
     });
   blip(right ? 'ok' : 'clank');
-  await wait(250);
+  await beat(250);
   await explain(q, right);
-  /* back in the fixed dialogue box, only the verdict stays: the explanation was read above */
   showLine(
     `<b class="verdict ${right ? 'ok' : 'ko'}">${esc(right ? G.c.lines.verdictRight : G.c.lines.verdictWrong)}</b>`,
     'glose'
   );
   Zone.go();
   Zone.idle();
-  return right;
+  return { sheet, right };
 }
 
 /** The lesson: the explanation takes the stem's place and waits for Continue, under the marked options. */
@@ -900,61 +1123,4 @@ function explain(q: Question, right: boolean): Promise<void> {
   if (gameHasFocus()) go.focus({ preventScroll: true });
   z.querySelector('.choice.right')?.scrollIntoView({ block: 'nearest' });
   return done;
-}
-
-async function gloseMenu(): Promise<void> {
-  const F = G.F;
-  const run = G.run;
-  if (!F || !run) return;
-  const c = G.c;
-  const why = (k: (typeof POWER_KEYS)[number]) => {
-    const b = powerBlock(F, run, k);
-    return b === 'ink'
-      ? c.powerBlocked.ink(POWER_COST[k])
-      : b
-        ? c.powerBlocked[b]
-        : '';
-  };
-  const k = await choose({
-    kind: 'glose',
-    label: c.labels.powers,
-    back: true,
-    layout: 'c2',
-    items: POWER_KEYS.map((p) => ({
-      k: p,
-      html: `${esc(c.powers[p].name)} <span class="c">${esc(c.inkCost(POWER_COST[p]))}</span><span class="d">${esc(c.powers[p].text)}</span>`,
-      dis: !!powerBlock(F, run, p),
-      why: why(p),
-      cls: p === 'echo' ? 'area' : '',
-    })),
-  });
-  if (k === 'back') return;
-  const evs = usePower(F, run, k as (typeof POWER_KEYS)[number]);
-  refresh();
-  await play(evs);
-  refresh();
-}
-async function bagMenu(): Promise<void> {
-  const run = G.run;
-  if (!run) return;
-  const c = G.c;
-  const kinds = ITEM_KEYS.filter((k) => run.items.includes(k));
-  const k = await choose({
-    kind: 'bag',
-    label: c.labels.bag,
-    back: true,
-    layout: kinds.length > 2 ? 'c3' : kinds.length > 1 ? 'c2' : 'list',
-    items: kinds.map((key) => {
-      const b = itemBlock(run, key);
-      return {
-        k: key,
-        html: `${esc(c.items[key].name)} <span class="c">x${run.items.filter((x) => x === key).length}</span><span class="d">${esc(c.items[key].text)}</span>`,
-        dis: !!b,
-        why: b ? c.itemBlocked[b] : '',
-      };
-    }),
-  });
-  if (k === 'back') return;
-  await play(useItem(run, k as (typeof ITEM_KEYS)[number]));
-  refresh();
 }

@@ -1,0 +1,24 @@
+{
+  "v": 1,
+  "freed": ["aa-063"],
+  "review": {
+    "aa-068": 2,
+    "aa-014": 2,
+    "aa-013": 2,
+    "aa-067": 2,
+    "aa-037": 2,
+    "aa-058": 2,
+    "aa-033": 2,
+    "aa-064": 2,
+    "aa-021": 2,
+    "aa-034": 2
+  },
+  "xp": 8,
+  "beaten": [],
+  "perks": { "pv": 0, "ink": 0 },
+  "known": { "grib": { "duel": "crit" } },
+  "sound": true,
+  "soundAsked": true,
+  "taught": true,
+  "seen": ["intro", "chapter-0"]
+}
