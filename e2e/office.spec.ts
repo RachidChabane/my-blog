@@ -544,6 +544,7 @@ test.describe('going from one section to the next', () => {
     browserName,
   }) => {
     test.skip(browserName !== 'chromium', 'cross-document view transitions');
+    test.skip(!!process.env.CI, 'the CI browser runs no page transition');
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.addInitScript(() => {
