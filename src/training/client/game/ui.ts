@@ -174,8 +174,13 @@ function setLine(l: Line): void {
   el.scrollTop = 0;
   el.classList.toggle('dense', el.scrollHeight > el.clientHeight + 1);
 }
-const lineDelay = (text: string) =>
-  Math.min(3800, 1100 + 30 * text.length) / Dlg.speed;
+/* how long a line stays before it advances by itself: a pause to find it, then reading time */
+const READ_BASE_MS = 1600;
+const READ_MS_PER_CHAR = 60;
+const READ_MAX_MS = 9000;
+export const readingTime = (text: string) =>
+  Math.min(READ_MAX_MS, READ_BASE_MS + READ_MS_PER_CHAR * text.length);
+const lineDelay = (text: string) => readingTime(text) / Dlg.speed;
 
 export function sayOne(line: Line | string): Promise<void> {
   const l: Line = typeof line === 'string' ? { text: line } : line;

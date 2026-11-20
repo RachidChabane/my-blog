@@ -1202,25 +1202,37 @@ button {
   border-color: var(--focus);
   box-shadow: 0 0 0 3px var(--focus);
 }
+/* the target: four corner brackets framing the sprite, closing in and out */
 .foe.targeted .art::after {
+  --c: var(--focus);
+  --t: 4px;
+  --l: 14px;
   content: '';
   position: absolute;
   left: 50%;
-  top: 22%;
-  width: 74%;
-  aspect-ratio: 1.6;
-  transform: translate(-50%, 0);
-  border: 3px dashed var(--focus);
-  border-radius: 50%;
+  top: 50%;
+  height: calc(100% + 14px);
+  aspect-ratio: 1.12;
+  transform: translate(-50%, -50%);
   pointer-events: none;
-  animation: ring 2.4s linear infinite;
+  background:
+    linear-gradient(var(--c) 0 0) top left / var(--l) var(--t),
+    linear-gradient(var(--c) 0 0) top left / var(--t) var(--l),
+    linear-gradient(var(--c) 0 0) top right / var(--l) var(--t),
+    linear-gradient(var(--c) 0 0) top right / var(--t) var(--l),
+    linear-gradient(var(--c) 0 0) bottom left / var(--l) var(--t),
+    linear-gradient(var(--c) 0 0) bottom left / var(--t) var(--l),
+    linear-gradient(var(--c) 0 0) bottom right / var(--l) var(--t),
+    linear-gradient(var(--c) 0 0) bottom right / var(--t) var(--l);
+  background-repeat: no-repeat;
+  animation: aim 0.7s steps(3) infinite alternate;
 }
 .foe .art {
   position: relative;
 }
-@keyframes ring {
+@keyframes aim {
   to {
-    transform: translate(-50%, 0) rotate(360deg);
+    scale: 0.92;
   }
 }
 .foe.shielded .art svg {

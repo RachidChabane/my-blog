@@ -6,7 +6,15 @@
 import { CHAPTERS } from '../../domain/rules';
 import { chapterCopy, cineCopy } from '../../i18n/copy';
 import { G, $, esc, reduced, wait } from './state';
-import { blip, choose, setScene, setStep, setTurn, showLine } from './ui';
+import {
+  blip,
+  choose,
+  readingTime,
+  setScene,
+  setStep,
+  setTurn,
+  showLine,
+} from './ui';
 import { bossSvg, foeSvg, gloseSvg, heroSvg, icon24 } from './art';
 import { placeSvg, titleSet } from './sets';
 
@@ -173,7 +181,8 @@ export async function playCine(
     }
     $('scene').dataset.time = shot.time;
     setStep(copy.title);
-    showLine(esc(copy.shots[Math.min(s, copy.shots.length - 1)]), null);
+    const caption = copy.shots[Math.min(s, copy.shots.length - 1)];
+    showLine(esc(caption), null);
     if (shot.cls?.includes('quake') || shot.stage.includes(' drop'))
       blip('boom');
     const last = s === shots.length - 1;
@@ -191,7 +200,10 @@ export async function playCine(
     });
     const k = reduced()
       ? await pick
-      : await Promise.race([pick, wait(shot.ms).then(() => 'auto')]);
+      : await Promise.race([
+          pick,
+          wait(Math.max(shot.ms, readingTime(caption))).then(() => 'auto'),
+        ]);
     if (k === 'skip') break;
   }
   setStep(null);
