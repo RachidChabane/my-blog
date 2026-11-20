@@ -69,6 +69,8 @@ export interface OfficeStrings {
   drill: {
     description: string;
     intro: string;
+    /** Label of the link that opens the page with the game started. */
+    play: string;
     domainsLine: (n: number, code: string) => string;
     count: (questions: number, domains: number) => string;
     certifications: string;
@@ -219,7 +221,8 @@ const FR: OfficeStrings = {
   journal: { written: 'Écrit le', empty: 'Rien encore sur ce bureau.' },
   drill: {
     description:
-      'Entraînement aux examens Claude Certified Architect d’Anthropic, sous forme de jeu, avec les certifications de Rachid Chabane et le détail de l’examen CCA-F.',
+      'Entraînement aux examens Claude Certified Architect d’Anthropic, sous forme de jeu, avec les certifications de Rachid Chabane et le détail de l’examen CCAR-F.',
+    play: 'Jouer',
     intro:
       'Un entraînement aux examens Claude Certified Architect d’Anthropic, sous forme de jeu.',
     domainsLine: (n, code) =>
@@ -392,7 +395,8 @@ const EN: OfficeStrings = {
   journal: { written: 'Written on', empty: 'Nothing on this desk yet.' },
   drill: {
     description:
-      'Practice for Anthropic’s Claude Certified Architect exams, played as a game, with Rachid Chabane’s certifications and the outline of the CCA-F exam.',
+      'Practice for Anthropic’s Claude Certified Architect exams, played as a game, with Rachid Chabane’s certifications and the outline of the CCAR-F exam.',
+    play: 'Play',
     intro:
       'Practice for Anthropic’s Claude Certified Architect exams, played as a game.',
     domainsLine: (n, code) =>

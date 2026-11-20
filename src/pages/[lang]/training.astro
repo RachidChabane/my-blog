@@ -62,6 +62,12 @@ const jsonLd = {
     crew={crew('training')}
   />
   <div class="wrap page drill">
+    <a class="playlink" href={`${localePath(lang, 'training/')}#play`}>
+      {d.play}
+      <svg viewBox="0 0 24 24" aria-hidden="true"
+        ><path d="M6 4l14 8-14 8z" fill="currentColor"></path></svg
+      >
+    </a>
     <Game lang={lang}>
       <section class="sheet intro" style="--tape:var(--drill)">
         <p>{d.intro}</p>

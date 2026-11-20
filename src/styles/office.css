@@ -474,12 +474,10 @@ h3 {
     opacity 0.25s,
     transform 0.25s;
 }
-.pano svg:has(.rm:hover) .rm:not(:hover) .dim,
 .pano svg:has(.rm:focus-within) .rm:not(:focus-within) .dim,
 .pano .rm.off .dim {
   opacity: 0.36;
 }
-.pano .rm:hover .spot,
 .pano .rm:focus-within .spot,
 .pano .rm.on .spot {
   opacity: 0.22;
@@ -487,13 +485,11 @@ h3 {
 .pano .say {
   transform: translateY(8px);
 }
-.pano .rm:hover .say,
 .pano .rm:focus-within .say,
 .pano .rm.on .say {
   opacity: 1;
   transform: none;
 }
-.pano .rm:hover .cw,
 .pano .rm:focus-within .cw {
   animation: hop 0.34s ease-out infinite alternate;
 }
@@ -504,7 +500,6 @@ h3 {
   transform-box: fill-box;
   transform-origin: 50% 100%;
 }
-.pano .rm:hover .sage .hat,
 .pano .rm:focus-within .sage .hat {
   animation: hatpop 0.42s ease-out infinite alternate;
 }
@@ -513,7 +508,6 @@ h3 {
     transform: translateY(-3.6px) rotate(-14deg);
   }
 }
-.pano .rm:hover .sage .beard,
 .pano .rm:focus-within .sage .beard {
   animation: beardgo 0.42s ease-in-out infinite alternate;
 }
@@ -526,9 +520,34 @@ h3 {
   transform-box: fill-box;
   transform-origin: 50% -40%;
 }
-.pano .rm:hover .sg,
 .pano .rm:focus-within .sg {
   animation: swing 0.8s ease-in-out;
+}
+/* pointing at a stand lights it only where a pointer can hover: on a touch screen the
+   hover state sticks to the last stand touched and would dim the one now in view */
+@media (hover: hover) {
+  .pano svg:has(.rm:hover) .rm:not(:hover) .dim {
+    opacity: 0.36;
+  }
+  .pano .rm:hover .spot {
+    opacity: 0.22;
+  }
+  .pano .rm:hover .say {
+    opacity: 1;
+    transform: none;
+  }
+  .pano .rm:hover .cw {
+    animation: hop 0.34s ease-out infinite alternate;
+  }
+  .pano .rm:hover .sage .hat {
+    animation: hatpop 0.42s ease-out infinite alternate;
+  }
+  .pano .rm:hover .sage .beard {
+    animation: beardgo 0.42s ease-in-out infinite alternate;
+  }
+  .pano .rm:hover .sg {
+    animation: swing 0.8s ease-in-out;
+  }
 }
 .pano text {
   font-family: var(--display);
@@ -2944,6 +2963,30 @@ a.folder:hover {
 }
 
 /* training: the exam game, the certifications and the exam outline */
+.drill .playlink {
+  display: none;
+}
+/* in a stand preview on the home page the game is not mounted: one link opens it */
+.pano ~ .drill .playlink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 56px;
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  background: var(--drill);
+  color: #fff;
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.pano ~ .drill .playlink svg {
+  width: 22px;
+  height: 22px;
+}
 .drill > .tg {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

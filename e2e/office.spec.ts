@@ -249,6 +249,56 @@ test.describe('phone', () => {
     await noSideScroll(page);
   });
 
+  test('the stand in view stays lit when the last touch still hovers another stand', async ({
+    browser,
+    baseURL,
+  }) => {
+    // a touch screen: the browser reports that nothing can hover
+    const context = await browser.newContext({
+      viewport: PHONE,
+      hasTouch: true,
+      isMobile: true,
+      baseURL,
+    });
+    const page = await context.newPage();
+    await page.goto('/fr/');
+    const cdp = await context.newCDPSession(page);
+    await cdp.send('DOM.enable');
+    await cdp.send('CSS.enable');
+    const { root } = await cdp.send('DOM.getDocument');
+    const { nodeId } = await cdp.send('DOM.querySelector', {
+      nodeId: root.nodeId,
+      selector: '#pano .rm',
+    });
+    await cdp.send('CSS.forcePseudoState', {
+      nodeId,
+      forcedPseudoClasses: ['hover'],
+    });
+    await page.locator('#pano').evaluate((el) => {
+      el.scrollLeft = el.scrollWidth / 2;
+    });
+    const lit = page.locator('#pano .rm.on');
+    await expect(lit).toHaveCount(1);
+    await expect(page.locator('#pano .rm').first()).not.toHaveClass(/\bon\b/);
+    await expect(lit.locator('.dim')).toHaveCSS('opacity', '0');
+    await context.close();
+  });
+
+  test('the training stand offers Play, which opens the page with the game started', async ({
+    page,
+  }) => {
+    await page.goto('/fr/');
+    await page.locator('#pano').evaluate((el) => {
+      el.scrollLeft = el.scrollWidth;
+    });
+    const play = page.locator('a.playlink');
+    await expect(play).toBeVisible();
+    await play.click();
+    await expect(page).toHaveURL(/\/fr\/training\/$/);
+    await expect(page.locator('#tg-host')).toBeVisible();
+    await expect(page.locator('a.playlink')).toBeHidden();
+  });
+
   test('dots under the home drawing follow the stand in view', async ({
     page,
   }) => {

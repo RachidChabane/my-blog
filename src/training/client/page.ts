@@ -228,6 +228,11 @@ function setup(root: HTMLElement): void {
   );
 
   refresh();
+  /* a link from elsewhere on the site asks for the game already started */
+  if (location.hash === '#play') {
+    history.replaceState(history.state, '', location.pathname);
+    openGame();
+  }
 }
 
 function readStore(): string | null {
