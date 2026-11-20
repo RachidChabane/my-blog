@@ -485,7 +485,6 @@ test.describe('the 3D office', () => {
   test('comes back to the page of the nearest stand', async ({ page }) => {
     // The camera passage advances frame by frame. CI has no GPU and draws about
     // one frame per second, which puts the passage beyond any sane timeout.
-    test.skip(!!process.env.CI, 'needs hardware rendering');
     test.setTimeout(120_000);
     const html = page.locator('html');
     await page.goto('/fr/work/');
@@ -499,7 +498,6 @@ test.describe('the 3D office', () => {
   });
 
   test('the training door leads to the training page', async ({ page }) => {
-    test.skip(!!process.env.CI, 'needs hardware rendering');
     test.setTimeout(120_000);
     const html = page.locator('html');
     await page.goto('/fr/training/');
@@ -525,6 +523,14 @@ test.describe('the 3D office', () => {
 
 test.describe('going from one section to the next', () => {
   async function arrive(page: Page, href: string): Promise<string[]> {
+    // The page slides only once it has drawn and the slide that brought it is over.
+    await page.evaluate(async () => {
+      await (window as { __passage?: ViewTransition | null }).__passage
+        ?.finished;
+      await new Promise((drawn) =>
+        requestAnimationFrame(() => requestAnimationFrame(drawn))
+      );
+    });
     await page.locator(`a.sign[href="${href}"]`).click();
     await page.waitForURL(`**${href}`);
     return page.evaluate(() => {
@@ -549,12 +555,32 @@ test.describe('going from one section to the next', () => {
     await page.goto('/fr/radar/');
     expect(await arrive(page, '/fr/work/')).toEqual(['forward']);
     expect(await arrive(page, '/fr/blog/')).toEqual(['back']);
+  });
+
+  test('the ceiling and the floor stay while the room changes', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/fr/radar/');
     const kept = await page.evaluate(() =>
       ['.top', '#floor', '#main'].map(
         (q) => getComputedStyle(document.querySelector(q)!).viewTransitionName
       )
     );
     expect(kept).toEqual(['top', 'floor', 'room']);
+    const asked = await page.evaluate(() =>
+      Array.from(document.styleSheets)
+        .flatMap((sheet) => Array.from(sheet.cssRules))
+        .filter((rule) => rule instanceof CSSMediaRule)
+        .some(
+          (rule) =>
+            matchMedia(rule.conditionText).matches &&
+            Array.from(rule.cssRules).some((r) =>
+              r.cssText.startsWith('@view-transition')
+            )
+        )
+    );
+    expect(asked).toBe(true);
   });
 
   test('a visitor who asked for less motion gets a plain page change', async ({
