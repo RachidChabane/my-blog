@@ -485,6 +485,7 @@ test.describe('the 3D office', () => {
   test('comes back to the page of the nearest stand', async ({ page }) => {
     // The camera passage advances frame by frame. CI has no GPU and draws about
     // one frame per second, which puts the passage beyond any sane timeout.
+    test.skip(!!process.env.CI, 'needs hardware rendering');
     test.setTimeout(120_000);
     const html = page.locator('html');
     await page.goto('/fr/work/');
@@ -498,6 +499,7 @@ test.describe('the 3D office', () => {
   });
 
   test('the training door leads to the training page', async ({ page }) => {
+    test.skip(!!process.env.CI, 'needs hardware rendering');
     test.setTimeout(120_000);
     const html = page.locator('html');
     await page.goto('/fr/training/');
