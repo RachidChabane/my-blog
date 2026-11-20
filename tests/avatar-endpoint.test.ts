@@ -185,6 +185,8 @@ describe('OpenRouterLLMProvider', () => {
     expect(typeof sent.temperature).toBe('number');
     expect(typeof sent.model).toBe('string');
     expect(sent.messages[0].role).toBe('system');
+    // The reader waits on the first word: no hidden reasoning pass before it.
+    expect(sent.reasoning).toEqual({ effort: 'none' });
   });
 });
 

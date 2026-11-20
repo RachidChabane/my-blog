@@ -14,6 +14,11 @@ import {
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
 const DEFAULT_MODEL = 'qwen/qwen3.7-flash'; // low-cost model on OpenRouter; swappable at the seam
 const DEFAULT_TEMPERATURE = 0.2;
+/**
+ * The answer restates passages it was handed, so the model writes without a hidden
+ * reasoning pass: with one, nothing reaches the reader for tens of seconds.
+ */
+const REASONING = { effort: 'none' } as const;
 
 /** Localized refusal message for the idk branch. */
 export const IDK_MESSAGE: Record<Locale, string> = {
@@ -199,6 +204,7 @@ export class OpenRouterLLMProvider implements LLMProvider {
         ],
         stream: true,
         temperature: request.temperature ?? DEFAULT_TEMPERATURE,
+        reasoning: REASONING,
         // OpenRouter accounting: the final SSE chunk then carries a `usage`
         // object whose `cost` is the request's price in USD credits. Feeds the
         // monthly spend guardrail (see ./spend.ts).

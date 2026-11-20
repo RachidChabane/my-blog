@@ -576,6 +576,29 @@ async function ask(o: AskOptions): Promise<string> {
   return text;
 }
 
+/** Keys under the hands of a Clawd who is writing, in the units of its drawing. */
+const KEYBOARD =
+  '<g class="keys"><rect x="0.5" y="7.4" width="15" height="3" fill="#C9CDDA"/>' +
+  '<rect x="0.5" y="9.8" width="15" height="0.6" fill="#9AA3BD"/>' +
+  '<path d="M2 8.3h1.4M4.4 8.3h1.4M6.8 8.3h1.4M9.2 8.3h1.4M11.6 8.3h1.4M3.2 9.2h9.6" stroke="#5E6784" stroke-width="0.6"/></g>';
+
+/** The writer of the text, drawn again next to the answer they are working on. */
+function scribe(box: HTMLElement): Element | null {
+  const face = box.querySelector('.who svg');
+  if (!face) return null;
+  const copy = face.cloneNode(true) as Element;
+  copy.setAttribute('class', 'scribe');
+  copy.setAttribute('aria-hidden', 'true');
+  copy.removeAttribute('role');
+  copy.querySelector('title')?.remove();
+  copy.insertAdjacentHTML('beforeend', KEYBOARD);
+  return copy;
+}
+
+/**
+ * Asks about the text on the page. Its writer thinks until the first words come,
+ * then types while they arrive, and rests beside the answer once it is whole.
+ */
 function askHere(question: string): void {
   const q = question.trim();
   const log = $('log');
@@ -584,25 +607,35 @@ function askHere(question: string): void {
   const me = document.createElement('p');
   me.className = 'me';
   me.textContent = q;
+  const reply = document.createElement('div');
+  reply.className = 'reply thinking';
+  reply.setAttribute('aria-busy', 'true');
   const answer = document.createElement('p');
   answer.className = 'cl';
-  answer.textContent = '…';
-  log.append(me, answer);
+  answer.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>';
+  const writer = scribe(box);
+  if (writer) reply.append(writer);
+  reply.append(answer);
+  log.append(me, reply);
+  const settle = (text: string) => {
+    answer.textContent = text;
+    reply.className = 'reply';
+    reply.removeAttribute('aria-busy');
+  };
   // Naming the text keeps a general question ("sum it up") on this text's passages.
   const title = s2().querySelector('.sheet.text h1')?.textContent ?? '';
   ask({
     q: title ? `${q} (${title})` : q,
     persona: box.dataset.persona,
     scopeSlug: box.dataset.slug,
-    onText: (t) => (answer.textContent = t),
-  }).then(
-    (t) => (answer.textContent = t),
-    () => {
-      askCount++;
-      answer.textContent =
-        T.outOfTokens[Math.min(askCount, T.outOfTokens.length) - 1];
-    }
-  );
+    onText: (t) => {
+      reply.className = 'reply writing';
+      answer.textContent = t;
+    },
+  }).then(settle, () => {
+    askCount++;
+    settle(T.outOfTokens[Math.min(askCount, T.outOfTokens.length) - 1]);
+  });
 }
 
 /* ------------------------------------------------------------------ world */
