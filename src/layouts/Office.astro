@@ -10,13 +10,14 @@ import { themeInitScript } from '@/lib/theme';
 import { LOCALES, localePath } from '@/i18n/index';
 import type { Locale } from '@/i18n/index';
 import { who } from '@/office/draw';
+import { officeStrings } from '@/office/strings';
 import {
-  officeStrings,
+  ROOM_SECTIONS,
   SECTION_COLOR,
   SECTION_ORDER,
   SECTION_PATHS,
-} from '@/office/strings';
-import type { SectionKey } from '@/office/strings';
+} from '@/office/sections';
+import type { SectionKey } from '@/office/sections';
 
 export interface Props {
   title: string;
@@ -57,13 +58,6 @@ const hrefFor = (l: Locale) =>
   new URL(l === lang ? Astro.url.pathname : otherHref, site).href;
 /** Stand of the 3D office that matches this page. */
 const place = section === undefined || section === 'about' ? 'home' : section;
-const TAB_SECTIONS: SectionKey[] = [
-  'radar',
-  'blog',
-  'journal',
-  'work',
-  'library',
-];
 /** Sun and moon of the theme switch; the stylesheet shows the one in force. */
 const SUN =
   '<svg class="sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="4.5" fill="currentColor"/><path d="M10 1v3M10 16v3M1 10h3M16 10h3M3.6 3.6l2.1 2.1M14.3 14.3l2.1 2.1M3.6 16.4l2.1-2.1M14.3 5.7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
@@ -176,7 +170,7 @@ const clientStrings = {
                       href={localePath(lang, SECTION_PATHS[k])}
                       aria-current={k === section ? 'page' : undefined}
                     >
-                      {k === 'library' ? t.libraryShort : t.sections[k]}
+                      {t.short[k]}
                     </a>
                   ))
                 }
@@ -242,16 +236,14 @@ const clientStrings = {
         <footer class={`floor${reading ? '' : ' stroll'}`} id="floor">
           <nav class="tabs" id="tabs" aria-label="Sections">
             {
-              TAB_SECTIONS.map((k) => (
+              ROOM_SECTIONS.map((k) => (
                 <a
                   data-k={k}
                   style={`--c:${SECTION_COLOR[k]}`}
                   href={localePath(lang, SECTION_PATHS[k])}
                   aria-current={k === section ? 'page' : undefined}
                 >
-                  <span>
-                    {k === 'library' ? t.libraryShort : t.sections[k]}
-                  </span>
+                  <span>{t.short[k]}</span>
                 </a>
               ))
             }

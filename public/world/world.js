@@ -62,7 +62,10 @@ window.__boot3D = function () {
   var plants = [];
   function plant(x, z, s, sx, sz) { s = s || 1; cyl(0.26 * s, 0.5 * s, C.white, x, 0, z, null, 0.32 * s); ball(0.42 * s, C.green, x, 0.82 * s, z); ball(0.3 * s, C.green, x + 0.22 * s, 1.14 * s, z - 0.08); ball(0.27 * s, C.green, x - 0.2 * s, 1.1 * s, z + 0.1);
     solid(x - 0.4, x + 0.4, z - 0.4, z + 0.4); ground(x, z, 1.5 * s, 1.5 * s); plants.push({ x: sx === undefined ? x : sx, z: sz === undefined ? z - 1.0 : sz, faceTo: [x, z] }); }
-  function sign(text, color, x, y, z, ry, w) { var cv = canvasOf(1024, 256), c = cv.getContext('2d'); c.fillStyle = color; c.textBaseline = 'middle'; c.font = '800 190px "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif'; c.fillText(text, 8, 138);
+  // a painted sign; the lettering shrinks to fit the board, and `center` centres it on its position
+  function sign(text, color, x, y, z, ry, w, center) { var cv = canvasOf(1024, 256), c = cv.getContext('2d'), px = 190; c.fillStyle = color; c.textBaseline = 'middle';
+    do { c.font = '800 ' + px + 'px "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif'; px -= 10; } while (c.measureText(text).width > 1008 && px > 60);
+    if (center) { c.textAlign = 'center'; c.fillText(text, 512, 138); } else c.fillText(text, 8, 138);
     var m = new THREE.Mesh(new THREE.PlaneGeometry(w, w / 4), new THREE.MeshBasicMaterial({ map: texFrom(cv), transparent: true })); m.position.set(x, y, z); m.rotation.y = ry; scene.add(m); }
   function pendant(x, z, color) { box(0.03, 1.3, 0.03, C.navy, x, 3.1, z, null, true); cyl(0.42, 0.34, color, x, 2.78, z, null, 0.16); ball(0.12, 0xFFF1C2, x, 2.8, z).material = new THREE.MeshBasicMaterial({ color: lin(0xFFE6A8).multiplyScalar(3.2) }); }
   function rug(x1, x2, z1, z2, color) { box(x2 - x1, 0.03, z2 - z1, color, (x1 + x2) / 2, 0, (z1 + z2) / 2, null, true); }
@@ -501,6 +504,11 @@ window.__boot3D = function () {
   // the way out, and the two who watch it
   box(0.1, 2.7, 1.8, C.navy, -21.8, 0, 0.6, null, true); box(0.1, 2.5, 1.5, C.green, -21.76, 0, 0.6, null, true); ball(0.06, C.yellow, -21.68, 1.15, 1.15); box(0.08, 0.36, 1.2, C.green, -21.77, 2.82, 0.6, null, true); sign('Sortie', '#FFFFFF', -21.72, 3.0, 0.37, Math.PI / 2, 1.0);
   S.exit = spot(-20.3, 0.6, Math.PI / 2);
+  // the door to the training page, beside the way out
+  var TRAINING_DOOR = { x: -21.8, z: -4.0 };
+  box(0.1, 2.7, 1.8, C.navy, TRAINING_DOOR.x, 0, TRAINING_DOOR.z, null, true); var trainingDoor = box(0.1, 2.5, 1.5, 0xA8367A, TRAINING_DOOR.x + 0.04, 0, TRAINING_DOOR.z, null, true);
+  ball(0.06, C.yellow, TRAINING_DOOR.x + 0.12, 1.15, TRAINING_DOOR.z + 0.55); box(0.08, 0.42, 1.7, 0xA8367A, TRAINING_DOOR.x + 0.03, 2.8, TRAINING_DOOR.z, null, true);
+  sign('Entraînement', '#FFFFFF', TRAINING_DOOR.x + 0.08, 3.01, TRAINING_DOOR.z, Math.PI / 2, 1.6, true); solid(-22.2, -21.4, TRAINING_DOOR.z - 1.0, TRAINING_DOOR.z + 1.0);
   JOBS.guard = function (a) { if (Math.hypot(a.g.position.x - a.home.x, a.g.position.z - a.home.z) > 0.3) a.plan.push({ go: [a.home.x, a.home.z] }, { arrive: a.home }); act(a, 'guard', 600, 'monte la garde'); };
   var STILL = { social: 0, coffee: 0, coffeeRate: 0, energy: 1, tireRate: 0 };
   var guards = [hire('Verrou', 'guard', spot(-20.8, -1.1, Math.PI / 2), { wear: ['brows', 'cap'], tint: C.navy, size: 1.32 }, STILL), hire('Cadenas', 'guard', spot(-20.8, 2.3, Math.PI / 2), { wear: ['brows', 'cap'], tint: C.navy, size: 1.32 }, STILL)].filter(Boolean);
@@ -648,6 +656,7 @@ window.__boot3D = function () {
     { label: 'E · jeter', can: function () { return held === 'raw' && nearPt(5.6, 4.4, 1.3); }, run: function () { setHeld(null); sfx('drop'); } },
     { label: 'E · classer la feuille', can: function () { return held === 'stamped' && player.x > 18.8 && player.z < 3.5; }, run: function () { setHeld(null); fileSheet(); } },
     { label: 'E · consulter les archives', can: function () { return !held && player.x > 18.8 && player.z < 3.5; }, run: function () { openIndex(); } },
+    { label: 'E · s’entraîner', can: function () { return nearPt(TRAINING_DOOR.x + 2.6, TRAINING_DOOR.z, 1.8); }, run: toTraining },
     { label: 'E · lire', can: function () { return !held && player.z < -9.2 && POSTERS.some(function (d) { return nearPt(d[3], d[4], 2.2); }); },
       run: function () { for (var i = 0; i < POSTERS.length; i++) if (nearPt(POSTERS[i][3], POSTERS[i][4], 2.2)) { openReader(i); return; } } }
   ];
@@ -660,11 +669,14 @@ window.__boot3D = function () {
     function () { if (held === 'stamped') { setHeld(null); fileSheet(); } else if (held) say('Fais-la d’abord tamponner chez Tampon'); else openIndex(); }, 6);
   click(radarScreen, 'aller à la galerie radar', function () { goPlace('radar'); }, 9);
   click(note, 'lire le journal', function () { openReader('journal'); }, 6);
+  // the training stand has no room here: its door leaves for the page, the way the 2D button does from the nearest stand
+  function toTraining() { var p = PLACES.training; closeReader(); player.x = p[0]; player.z = p[1]; player.yaw = p[2]; window.Shell.to2D(); }
+  click(trainingDoor, 's’entraîner à l’examen', toTraining, 6);
   click(boardMesh, 'convoquer une réunion', function () { meeting.at = time; clawds.forEach(function (c) { if (c.role === 'writer') redo(c); }); say('Réunion de rédaction'); }, 7);
   click(shade, 'allumer ou éteindre', function () { lamp.intensity = lamp.intensity ? 0 : 1.0; sfx('take'); }, 5);
   var sayT = 0; function say(text) { promptEl.textContent = text; promptEl.classList.add('on'); sayT = 2.2; }
   function redo(a) { if (a.spot && a.spot.busy === a) a.spot.busy = null; a.plan.forEach(function (st) { if (st.arrive && st.arrive.busy === a) st.arrive.busy = null; }); a.plan = []; a.act = ''; emote(a, ''); carry(a, null); a.g.position.y = 0; if (a.spot && Math.hypot(a.spot.x - a.g.position.x, a.spot.z - a.g.position.z) > 0.4) a.spot = null; }
-  var CHIPS = { operator: ['Quoi de neuf ?', 'Le dernier brief ?'], writer: ['Sur quoi tu écris ?', 'Conseille-moi un article'], inspector: ['Comment tu vérifies ?', 'Tu refuses souvent ?'], courier: ['Tu vas où ?', 'Où sont les archives ?'],
+  var CHIPS = { operator: ['Quoi de neuf ?', 'Le dernier brief ?'], writer: ['Sur quoi tu écris ?', 'Conseille-moi un article'], inspector: ['Comment tu vérifies ?', 'Tu refuses souvent ?'], courier: ['Tu vas où ?', 'Où sont les archives ?', 'Où s’entraîner ?'],
     archivist: ['Trouve-moi un article sur les agents', 'Combien de textes ?'], gardener: ['Ça pousse bien ?'], barista: ['Un café ?'], janitor: ['Quoi de neuf dans le bureau ?'], curator: ['Quel cadre me conseilles-tu ?'] };
   var chats = {}, talkEl = document.getElementById('talk'), askInput = document.getElementById('askInput');
   function renderTalk() { talkEl.textContent = ''; if (!selected) return; (chats[selected.name] || []).forEach(function (m) { var el = document.createElement('p'); el.className = m.who; el.textContent = m.text; talkEl.appendChild(el); }); talkEl.scrollTop = talkEl.scrollHeight; }
@@ -694,6 +706,7 @@ window.__boot3D = function () {
     'Sur quoi tu écris ?': function () { return 'Le dernier article sorti d’ici : ' + titled(newest('blog')[0]) + '.'; },
     'Conseille-moi un article': function () { return 'Lis ' + titled(pick(newest('blog'))) + '. Il est accroché dans la galerie des articles.'; },
     'Tu vas où ?': function () { return 'Entre les bureaux, le tampon et les archives. Toute la journée.'; },
+    'Où s’entraîner ?': function () { return 'Derrière la porte « Entraînement », à côté de la sortie. Elle mène au jeu d’examen.'; },
     'Où sont les archives ?': function () { return 'Au mur des classeurs, là où travaille Classeur. Tout ce qui est publié finit là-bas.'; },
     'Combien de textes ?': function () { return WD.counts.articles + ' articles et ' + WD.counts.radar + ' briefs radar, tous classés.'; },
     'Ça pousse bien ?': function () { return 'Très bien, merci. J’arrose le matin, avant que le bureau s’agite.'; },
@@ -1031,7 +1044,7 @@ window.__boot3D = function () {
   } catch (e) { composer = null; renderer.outputEncoding = THREE.sRGBEncoding; renderer.toneMapping = THREE.ACESFilmicToneMapping; } }
   function fit() { var w = stage.clientWidth, h = stage.clientHeight, pr = renderer.getPixelRatio(); renderer.setSize(w, h, false); camera.aspect = w / h; baseFov = w / h < 0.8 ? 98 : w / h < 1.2 ? 80 : 58; camera.fov = baseFov; camera.updateProjectionMatrix();
     if (composer) { composer.setSize(w, h); fxaa.material.uniforms.resolution.value.set(1 / (w * pr), 1 / (h * pr)); } }
-  var cine = null, PLACES = { home: [-16.5, 0.6, -Math.PI / 2], radar: [-11, -1.4, 0], work: [-1.85, -1.2, 0], blog: [8.8, -1.4, 0], library: [17.0, 0.6, -Math.PI / 2], journal: [11.2, 0.9, Math.PI] };
+  var cine = null, PLACES = { home: [-16.5, 0.6, -Math.PI / 2], radar: [-11, -1.4, 0], work: [-1.85, -1.2, 0], blog: [8.8, -1.4, 0], library: [17.0, 0.6, -Math.PI / 2], journal: [11.2, 0.9, Math.PI], training: [TRAINING_DOOR.x + 3.6, TRAINING_DOOR.z, Math.PI / 2] };
   function shot(p, back, done) { var fx = -Math.sin(p[2]), fz = -Math.cos(p[2]), ax = Math.max(-20.6, Math.min(20.6, p[0] - fx * 10)), az = Math.max(-7.3, Math.min(6.3, p[1] - fz * 10));
     return { t: back ? 0 : -0.35, dur: back ? 1.35 : 1.9, back: !!back, done: done, e: back ? 1 : 0, ax: ax, az: az, bx: p[0], bz: p[1], yaw: p[2], pitch: back ? player.pitch : 0, dist: Math.hypot(p[0] - ax, p[1] - az) }; }
   window.World = {

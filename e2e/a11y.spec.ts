@@ -5,7 +5,15 @@ import AxeBuilder from '@axe-core/playwright';
  * Structural accessibility of each kind of page: WCAG 2 A and AA rules except
  * colour contrast, which the palette is checked for by eye in both themes.
  */
-const PAGES = ['/fr/', '/fr/blog/', '/fr/library/', '/fr/work/', '/fr/about/'];
+const PAGES = [
+  '/fr/',
+  '/fr/blog/',
+  '/fr/library/',
+  '/fr/work/',
+  '/fr/training/',
+  '/en/training/',
+  '/fr/about/',
+];
 
 for (const url of PAGES) {
   test(`no structural accessibility violation on ${url}`, async ({ page }) => {

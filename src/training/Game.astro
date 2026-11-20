@@ -1,0 +1,673 @@
+---
+/**
+ * The training game for the Claude Certified Architect exam: a launch card, the game
+ * console (loaded on Play, full screen on a phone, inline on a desktop) and every
+ * question of the bank as folded sheets, rendered here so readers and crawlers get them.
+ */
+import type { Locale } from '@/i18n/index';
+import questions from './data/questions.json';
+import { COPY, chapterCopy } from './i18n/copy';
+import { CHAPTERS } from './domain/rules';
+import { sheetLabel } from './domain/bank';
+
+export interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const c = COPY[lang];
+const groups = CHAPTERS.map((ch, i) => ({
+  key: ch.domain,
+  name: chapterCopy(c, i).domain,
+  items: questions.filter((q) => q.domain === ch.domain),
+}));
+const total = questions.length;
+---
+
+<section class="tg" id="tg" data-lang={lang} aria-labelledby="tg-title">
+  <div class="tg-launch" id="tg-launch">
+    <div class="tg-launch-art" aria-hidden="true">
+      <span class="tg-card-stack"><i></i><i></i><i></i></span>
+    </div>
+    <div class="tg-launch-body">
+      <h2 id="tg-title">{c.game}</h2>
+      <p class="tg-pitch">{c.pitch}</p>
+      <p class="tg-progress" id="tg-progress" data-total={total}>
+        {c.launch.progress(0, total)}
+      </p>
+      <span class="tg-bar" aria-hidden="true"><i id="tg-bar"></i></span>
+      <ul class="tg-domains">
+        {
+          groups.map((g) => (
+            <li data-domain={g.key} data-total={g.items.length}>
+              <span class="tg-dname">{g.name}</span>
+              <span class="tg-dn">{c.sheets.count(0, g.items.length)}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <button class="tg-play" id="tg-play" type="button">
+        <span id="tg-play-label">{c.play}</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"
+          ><path d="M6 4l14 8-14 8z" fill="currentColor"></path></svg
+        >
+      </button>
+    </div>
+  </div>
+
+  <div class="tg-host" id="tg-host" tabindex="-1" hidden></div>
+
+  <section class="tg-sheets" id="tg-sheets" aria-labelledby="tg-sheets-h">
+    <div class="tg-sheets-head">
+      <div class="tg-sheets-bar">
+        <h2 id="tg-sheets-h" tabindex="-1">{c.sheets.heading}</h2>
+        <button
+          class="tg-sheets-close"
+          id="tg-sheets-close"
+          type="button"
+          aria-label={c.sheets.close}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"
+            ><path
+              d="M5 5l14 14M19 5L5 19"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="square"
+              fill="none"></path></svg
+          >
+        </button>
+      </div>
+      <p class="tg-sheets-sum" id="tg-sheets-sum">
+        {c.sheets.sum(total, 0)}
+      </p>
+      <div class="tg-search">
+        <label for="tg-q">{c.sheets.search}</label>
+        <input
+          id="tg-q"
+          type="search"
+          autocomplete="off"
+          placeholder={c.sheets.placeholder}
+        />
+      </div>
+      <div
+        class="tg-filters"
+        id="tg-filters"
+        role="group"
+        aria-label={c.sheets.domains}
+      >
+        <button type="button" data-f="all" aria-pressed="true">
+          {c.sheets.all}
+          <span class="tg-n">{total}</span>
+        </button>
+        {
+          groups.map((g, i) => (
+            <button type="button" data-f={g.key} aria-pressed="false">
+              {chapterCopy(c, i).short}{' '}
+              <span class="tg-n">{g.items.length}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+    <p class="tg-empty" id="tg-empty" hidden>{c.sheets.empty}</p>
+    {
+      groups.map((g) => (
+        <section class="tg-group" data-domain={g.key}>
+          <h3>
+            {g.name}{' '}
+            <span class="tg-gcount" data-gcount={g.key}>
+              {c.sheets.count(0, g.items.length)}
+            </span>
+          </h3>
+          {g.items.map((q) => (
+            <details
+              class="tg-sheet"
+              id={`sheet-${q.id}`}
+              data-id={q.id}
+              data-domain={q.domain}
+              data-answer={q.answer}
+            >
+              <summary>
+                <span class="tg-id">{sheetLabel(q.id)}</span>
+                <span class="tg-stem">{q.stem[lang]}</span>
+                <span class="tg-marks">
+                  <span class="tg-freed" hidden>
+                    {c.sheets.freed}
+                  </span>
+                  <span class="tg-review" hidden>
+                    {c.sheets.review}
+                  </span>
+                </span>
+              </summary>
+              <ol class="tg-opts">
+                {q.options[lang].map((o, k) => (
+                  <li class={k === q.answer ? 'tg-ok' : undefined}>
+                    <span class="tg-opt">{o}</span>
+                    {k === q.answer && (
+                      <span class="tg-badge">{c.sheets.right}</span>
+                    )}
+                  </li>
+                ))}
+              </ol>
+              <p class="tg-why">
+                <b>{c.sheets.why}</b>{' '}
+                <span class="tg-why-t">{q.why[lang]}</span>
+              </p>
+            </details>
+          ))}
+        </section>
+      ))
+    }
+  </section>
+</section>
+
+<script>
+  import '@/training/client/page';
+</script>
+
+<style is:global>
+  html.tg-locked,
+  html.tg-locked body {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+</style>
+
+<style is:global>
+  /* Every selector here starts with .tg: global, so the 300 sheets carry no scoping attribute. */
+  /* .tg-sheets also leaves .tg when it slides over the game, so it carries the tokens too */
+  .tg,
+  .tg-sheets {
+    --tg-line: #171b2b;
+    --tg-paper: #fffdf8;
+    --tg-paper-2: #f3eee2;
+    --tg-paper-3: #e8e1cf;
+    --tg-ink: #171b2b;
+    --tg-ink-2: #4a5068;
+    --tg-go: #d77757;
+    --tg-ok: #26775a;
+    --tg-ok-soft: #cfe8dc;
+    --tg-hurt: #c23a24;
+    --tg-gold: #f2c230;
+    --tg-focus: #4f53d6;
+    color: var(--tg-ink);
+  }
+  .tg {
+    max-width: 960px;
+    margin: 24px auto 64px;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  :root[data-theme='dark'] .tg,
+  :root[data-theme='dark'] .tg-sheets {
+    --tg-line: #8a93b3;
+    --tg-paper: #1b2030;
+    --tg-paper-2: #252b3e;
+    --tg-paper-3: #2f364d;
+    --tg-ink: #ece8dc;
+    --tg-ink-2: #b4b9cd;
+    --tg-go: #e08563;
+    --tg-ok: #5fc796;
+    --tg-ok-soft: #1f3e33;
+    --tg-hurt: #ff7a60;
+    --tg-gold: #f2c94a;
+    --tg-focus: #a3a6ff;
+  }
+  .tg :focus-visible {
+    outline: 3px solid var(--tg-focus);
+    outline-offset: 2px;
+  }
+
+  /* the launch card */
+  .tg-launch {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 20px;
+    padding: 20px;
+    background: var(--tg-paper);
+    border: 3px solid var(--tg-line);
+    border-radius: 8px;
+    box-shadow: 4px 4px 0 #171b2b;
+  }
+  .tg-launch-art {
+    display: grid;
+    place-items: center;
+  }
+  .tg-card-stack {
+    position: relative;
+    width: 84px;
+    height: 104px;
+  }
+  .tg-card-stack i {
+    position: absolute;
+    inset: 0;
+    background: var(--tg-paper-2);
+    border: 3px solid var(--tg-line);
+    border-radius: 6px;
+  }
+  .tg-card-stack i:nth-child(1) {
+    transform: rotate(-9deg) translate(-6px, 4px);
+    background: var(--tg-gold);
+  }
+  .tg-card-stack i:nth-child(2) {
+    transform: rotate(6deg) translate(6px, 2px);
+    background: var(--tg-go);
+  }
+  .tg-card-stack i:nth-child(3) {
+    background:
+      linear-gradient(var(--tg-ink-2) 0 0) 12px 22px / 52px 4px no-repeat,
+      linear-gradient(var(--tg-ink-2) 0 0) 12px 36px / 40px 4px no-repeat,
+      linear-gradient(var(--tg-ink-2) 0 0) 12px 50px / 48px 4px no-repeat,
+      var(--tg-paper);
+  }
+  .tg-launch h2 {
+    margin: 0 0 6px;
+    font-size: 30px;
+    line-height: 1.1;
+  }
+  .tg-pitch {
+    margin: 0 0 12px;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  .tg-progress {
+    margin: 0 0 6px;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .tg-bar {
+    display: block;
+    height: 12px;
+    border: 2px solid var(--tg-line);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--tg-paper-2);
+    margin-bottom: 12px;
+  }
+  .tg-bar i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--tg-ok);
+  }
+  .tg-domains {
+    list-style: none;
+    margin: 0 0 16px;
+    padding: 0;
+    display: grid;
+    gap: 4px;
+    font-size: 15px;
+  }
+  .tg-domains li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 2px solid var(--tg-paper-3);
+    padding: 2px 0;
+  }
+  .tg-dn {
+    flex: none;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--tg-ink-2);
+  }
+  .tg-play {
+    min-height: 56px;
+    min-width: 180px;
+    padding: 8px 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: 3px solid var(--tg-line);
+    border-radius: 8px;
+    background: var(--tg-go);
+    color: #171b2b;
+    font: inherit;
+    font-size: 22px;
+    font-weight: 800;
+    box-shadow: 4px 4px 0 #171b2b;
+    cursor: pointer;
+  }
+  .tg-play svg {
+    width: 22px;
+    height: 22px;
+  }
+  .tg-play:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+
+  /* the game console: inline on a desktop, a full-screen overlay on a phone */
+  .tg-host {
+    display: block;
+    height: clamp(560px, calc(100dvh - 136px), 860px);
+    scroll-margin-top: 84px;
+  }
+  .tg-host[hidden] {
+    display: none;
+  }
+  .tg-host.is-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    height: auto;
+  }
+
+  /* the sheets */
+  .tg-sheets {
+    padding: 20px;
+    background: var(--tg-paper);
+    border: 3px solid var(--tg-line);
+    border-radius: 8px;
+    box-shadow: 4px 4px 0 #171b2b;
+  }
+  .tg-sheets h2 {
+    margin: 0 0 6px;
+    font-size: 28px;
+  }
+  .tg-sheets-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .tg-sheets-close {
+    display: none;
+  }
+  .tg-sheets-sum {
+    margin: 0 0 12px;
+    font-size: 17px;
+    color: var(--tg-ink-2);
+  }
+  .tg-search {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .tg-search label {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .tg-search input {
+    min-height: 48px;
+    font: inherit;
+    font-size: 17px;
+    padding: 8px 14px;
+    border: 3px solid var(--tg-line);
+    border-radius: 6px;
+    background: var(--tg-paper);
+    color: var(--tg-ink);
+  }
+  .tg-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .tg-filters button {
+    min-height: 44px;
+    padding: 6px 14px;
+    border: 3px solid var(--tg-line);
+    border-radius: 6px;
+    background: var(--tg-paper-2);
+    color: var(--tg-ink);
+    font: inherit;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .tg-filters button[aria-pressed='true'] {
+    background: var(--tg-ink);
+    color: var(--tg-paper);
+  }
+  .tg-n {
+    font-family: var(--mono);
+    font-size: 14px;
+  }
+  .tg-empty {
+    font-size: 17px;
+  }
+  .tg-group h3 {
+    margin: 22px 0 8px;
+    font-size: 21px;
+    line-height: 1.25;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+  }
+  .tg-gcount {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--tg-ink-2);
+  }
+  .tg-sheet {
+    border-top: 2px solid var(--tg-paper-3);
+  }
+  .tg-sheet summary {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 4px 12px;
+    align-items: start;
+    min-height: 48px;
+    padding: 10px 0;
+    cursor: pointer;
+    list-style: none;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  .tg-sheet summary::-webkit-details-marker {
+    display: none;
+  }
+  .tg-sheet summary::after {
+    content: '';
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    width: 9px;
+    height: 9px;
+    margin: 6px 4px 0;
+    border-right: 3px solid var(--tg-ink-2);
+    border-bottom: 3px solid var(--tg-ink-2);
+    transform: rotate(45deg);
+  }
+  .tg-sheet[open] summary::after {
+    transform: rotate(225deg);
+    margin-top: 10px;
+  }
+  .tg-id {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--tg-ink-2);
+    padding-top: 1px;
+  }
+  .tg-stem {
+    font-weight: 600;
+  }
+  .tg-sheet:not([open]) .tg-stem {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .tg-marks {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tg-marks:not(:has(span:not([hidden]))) {
+    display: none;
+  }
+  .tg-freed,
+  .tg-review {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    border: 2px solid currentColor;
+    border-radius: 4px;
+    padding: 0 6px;
+  }
+  .tg-freed {
+    color: var(--tg-ok);
+  }
+  .tg-review {
+    color: var(--tg-hurt);
+  }
+  .tg-opts {
+    margin: 0 0 10px;
+    padding-left: 28px;
+    display: grid;
+    gap: 6px;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  .tg-opts li {
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .tg-opts .tg-ok {
+    background: var(--tg-ok-soft);
+    border: 2px solid var(--tg-ok);
+  }
+  .tg-badge {
+    display: inline-block;
+    margin-left: 8px;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--tg-ok);
+  }
+  .tg-why {
+    margin: 0 0 14px;
+    font-size: 16px;
+    line-height: 1.45;
+    color: var(--tg-ink-2);
+  }
+  .tg-why b {
+    color: var(--tg-ink);
+  }
+
+  @media (max-width: 759px) {
+    .tg {
+      padding: 0 12px;
+      margin-top: 16px;
+    }
+    .tg-launch {
+      grid-template-columns: minmax(0, 1fr);
+      padding: 16px;
+    }
+    .tg-launch-art {
+      display: none;
+    }
+    .tg-launch h2 {
+      font-size: 26px;
+    }
+    .tg-pitch {
+      font-size: 16px;
+    }
+    .tg-play {
+      width: 100%;
+    }
+    .tg-sheets {
+      padding: 14px;
+    }
+    .tg-filters {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin: 0 -14px 8px;
+      padding: 0 14px 6px;
+    }
+    .tg-filters button {
+      flex: none;
+      white-space: nowrap;
+      border-radius: 22px;
+      border-width: 2px;
+      font-size: 15px;
+    }
+    /* inside the game, the sheets slide over it as a panel */
+    .tg-sheets.is-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 1001;
+      margin: 0;
+      padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      animation: tg-rise 0.22s ease-out;
+    }
+    .tg-sheets.is-panel .tg-sheets-head {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      padding: 8px 12px 0;
+      background: var(--tg-paper);
+      border-bottom: 3px solid var(--tg-line);
+    }
+    .tg-sheets.is-panel h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+    .tg-sheets.is-panel .tg-sheets-close {
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 3px solid var(--tg-line);
+      border-radius: 6px;
+      background: var(--tg-paper-2);
+      color: var(--tg-ink);
+      cursor: pointer;
+    }
+    .tg-sheets-close svg {
+      width: 20px;
+      height: 20px;
+    }
+    .tg-sheets.is-panel .tg-sheets-sum {
+      margin: 0 0 8px;
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .tg-sheets.is-panel .tg-search label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+    .tg-sheets.is-panel .tg-filters {
+      margin: 0 -12px;
+      padding: 0 12px 8px;
+    }
+    .tg-sheets.is-panel .tg-group,
+    .tg-sheets.is-panel .tg-empty {
+      padding: 0 12px;
+    }
+  }
+  @keyframes tg-rise {
+    from {
+      transform: translateY(100%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tg-sheets.is-panel {
+      animation: none;
+    }
+  }
+</style>

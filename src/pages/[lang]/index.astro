@@ -9,7 +9,8 @@ import Office from '@/layouts/Office.astro';
 import Rows from '@/components/office/Rows.astro';
 import { frieze } from '@/office/draw';
 import type { FriezeRoom } from '@/office/draw';
-import { officeStrings, SECTION_PATHS } from '@/office/strings';
+import { officeStrings } from '@/office/strings';
+import { FRIEZE_ORDER, SECTION_PATHS } from '@/office/sections';
 import { articleRows, journalRows, radarRows } from '@/office/view';
 
 export const getStaticPaths = (() =>
@@ -31,9 +32,7 @@ const projects = getPublishedProjects(projectEntries, lang);
 const lead = articles[0];
 const HOME_RADAR = 5;
 const HOME_ARTICLES = 5;
-const rooms: FriezeRoom[] = (
-  ['radar', 'blog', 'work', 'library', 'journal'] as const
-).map((key) => ({
+const rooms: FriezeRoom[] = FRIEZE_ORDER.map((key) => ({
   key,
   label: t.sections[key],
   href: localePath(lang, SECTION_PATHS[key]),
@@ -61,13 +60,13 @@ const jsonLd = {
   altHref={localePath(lang === 'fr' ? 'en' : 'fr')}
   jsonLd={jsonLd}
 >
-  <div class="pano" id="pano">
+  <div class="pano" id="pano" style={`--rooms:${rooms.length}`}>
     <div class="strip">
       <Fragment set:html={frieze(rooms, t.frieze.aria)} />
-      <div class="snaps"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="snaps">{rooms.map(() => <i />)}</div>
     </div>
     <div class="dots" aria-hidden="true">
-      <i class="on"></i><i></i><i></i><i></i><i></i>
+      {rooms.map((_, n) => <i class={n === 0 ? 'on' : undefined} />)}
     </div>
   </div>
   <div class="wrap home">

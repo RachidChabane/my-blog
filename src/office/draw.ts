@@ -6,12 +6,15 @@
  * The sprite follows the mascot's own grid: body 12x8, eyes 1x2, arms 2x2, four
  * legs 1x2.
  */
+import { SECTION_COLOR } from '@/office/sections';
+import type { RoomKey } from '@/office/sections';
 
 const BODY = '#D77757';
 const INK = '#171B2B';
 const NAVY = '#2B3154';
 const NIGHTCAP = '#C9C2F0';
 const LANTERN = '#F2C230';
+const DRILL = '#A8367A';
 
 export type Wear =
   | 'headset'
@@ -28,7 +31,9 @@ export type Wear =
   | 'brows'
   | 'beard'
   | 'wizard'
-  | 'nightcap';
+  | 'nightcap'
+  | 'headband'
+  | 'whistle';
 
 export interface ClawdLook {
   wear?: Wear[];
@@ -148,6 +153,12 @@ export const TEAM: Member[] = [
     wear: ['beard', 'wizard'],
   },
   {
+    name: 'Chrono',
+    role: { fr: 'entraînement', en: 'training' },
+    wear: ['headband', 'whistle'],
+    tint: DRILL,
+  },
+  {
     name: 'Verrou',
     role: { fr: 'garde', en: 'guard' },
     wear: ['brows', 'cap'],
@@ -208,6 +219,16 @@ export function clawd(look: ClawdLook = {}): string {
     s +=
       `<g class="hat"><path d="M2.5 1.2L8.6 -6.4L13.5 1.2Z" fill="#6C4BD8"/>${R(1, 0.6, 14, 1, '#6C4BD8')}` +
       `<path d="M8.4 -2.6l.5 1 1.1.1-.8.8.2 1.1-1-.6-1 .6.2-1.1-.8-.8 1.1-.1z" fill="#F2C230"/></g>`;
+  if (has('whistle'))
+    s +=
+      `<path d="M4.4 6.2L8 7.8L11.6 6.2" fill="none" stroke="#FFFFFF" stroke-width="0.4"/>` +
+      R(7, 7.3, 2.2, 1.2, '#C9CDDA') +
+      R(9.2, 7.5, 0.9, 0.7, '#9AA3BD');
+  if (has('headband'))
+    s +=
+      R(2, 0.8, 12, 1.4, '#FFFFFF') +
+      R(2, 1.3, 12, 0.4, tint) +
+      R(13.4, 1.6, 1.6, 1.6, '#FFFFFF');
   if (has('glasses'))
     s += `<g fill="none" stroke="${INK}" stroke-width="0.45"><rect x="4" y="2.4" width="3" height="3.2"/><rect x="9" y="2.4" width="3" height="3.2"/><path d="M7 3.6H9"/></g>`;
   if (has('visor'))
@@ -281,8 +302,6 @@ export function who(
   return clawd({ wear: m.wear, tint: m.tint, name: m.name, cls, ...extra });
 }
 
-export type RoomKey = 'radar' | 'blog' | 'work' | 'library' | 'journal';
-
 /** One Clawd at a stand: who, where along the room, how they are drawn. */
 type Post = [name: string, x: number, cls: string, extra?: Partial<ClawdLook>];
 
@@ -325,6 +344,10 @@ const SHIFTS: Record<RoomKey, { day: Post[]; night: Post[] }> = {
     night: [['Classeur', 84, '', { asleep: true }]],
   },
   journal: { day: [], night: [] },
+  training: {
+    day: [['Chrono', 246, 'd2']],
+    night: [['Chrono', 246, 'd3', { lantern: true }]],
+  },
 };
 
 /** What Glose wears once the lamps are low. */
@@ -347,26 +370,23 @@ export interface FriezeRoom {
   sayNight: string;
 }
 
-/** The office in elevation: five rooms of 380 units, each one a link. */
+/** Width of one room of the frieze, in drawing units. */
+const ROOM_W = 380;
+
+/** The office in elevation: one room of ROOM_W units per section, each one a link. */
 export function frieze(rooms: FriezeRoom[], ariaLabel: string): string {
-  const W = 380;
+  const W = ROOM_W;
+  const span = W * rooms.length;
   const R = rect;
   const v = (t: string) => `var(--${t})`;
-  const color: Record<RoomKey, string> = {
-    radar: v('radar'),
-    blog: v('art'),
-    work: v('ctrl'),
-    library: v('arch'),
-    journal: v('jrnl'),
-  };
   let s =
-    R(0, 0, W * 5, 36, v('ceil')) +
-    R(0, 46, W * 5, 190, v('wall')) +
-    R(0, 198, W * 5, 38, v('wains')) +
-    R(0, 232, W * 5, 4, INK) +
-    R(0, 236, W * 5, 64, v('floor'));
-  for (let y = 256; y < 300; y += 22) s += R(0, y, W * 5, 1.5, v('floor-d'));
-  for (let x = 30; x < W * 5; x += 95) {
+    R(0, 0, span, 36, v('ceil')) +
+    R(0, 46, span, 190, v('wall')) +
+    R(0, 198, span, 38, v('wains')) +
+    R(0, 232, span, 4, INK) +
+    R(0, 236, span, 64, v('floor'));
+  for (let y = 256; y < 300; y += 22) s += R(0, y, span, 1.5, v('floor-d'));
+  for (let x = 30; x < span; x += 95) {
     const odd = (x / 95) % 2 !== 0;
     s +=
       R(x, 236 + (odd ? 0 : 22), 1.5, 22, v('floor-d')) +
@@ -374,7 +394,7 @@ export function frieze(rooms: FriezeRoom[], ariaLabel: string): string {
   }
   rooms.forEach((room, i) => {
     const x = i * W;
-    const c = color[room.key];
+    const c = SECTION_COLOR[room.key];
     const k = room.key;
     s += '<g class="rm">';
     if (k !== 'library') s += R(x + 22, 62, W - 44, 136, c);
@@ -455,6 +475,23 @@ export function frieze(rooms: FriezeRoom[], ariaLabel: string): string {
         `<path d="M${x + 280} 150L${x + 290} 128H${x + 314}L${x + 324} 150Z" fill="#F2C230"/>` +
         R(x + 200, 196, 44, 8, '#FFFFFF') +
         R(x + 204, 191, 36, 5, '#BFE0FF');
+    if (k === 'training') {
+      s +=
+        R(x + 44, 76, 168, 100, '#C99562') +
+        R(x + 50, 82, 156, 88, '#12343A') +
+        R(x + 60, 92, 70, 5, '#FFFFFF') +
+        R(x + 60, 103, 120, 3, '#9AA3BD') +
+        ['A', 'B', 'C', 'D']
+          .map(
+            (l, n) =>
+              `<circle cx="${x + 76 + n * 36}" cy="140" r="13" fill="${n === 2 ? '#F2C230' : 'none'}" stroke="#FFFFFF" stroke-width="2.5"/>` +
+              `<text x="${x + 76 + n * 36}" y="145.5" text-anchor="middle" font-size="14" fill="${n === 2 ? INK : '#FFFFFF'}">${l}</text>`
+          )
+          .join('') +
+        `<g transform="translate(${x + 292} 104)"><circle r="28" fill="#FFFFFF" stroke="${INK}" stroke-width="4"/>${R(-4, -38, 8, 8, INK)}<path class="sweep" d="M-1.5 0V-21H1.5V0Z" fill="${DRILL}"/><circle r="3" fill="${INK}"/></g>` +
+        R(x + 150, 194, 44, 12, '#FFFFFF') +
+        R(x + 154, 188, 36, 6, '#F3EEE2');
+    }
     const stand = (posts: Post[], y: number) =>
       posts
         .map(
@@ -499,13 +536,13 @@ export function frieze(rooms: FriezeRoom[], ariaLabel: string): string {
       `<g class="sg"><rect x="${x + W / 2 - 74}" y="58" width="148" height="34" rx="4" fill="${v('pill')}"/>` +
       `<text x="${x + W / 2}" y="82" text-anchor="middle" font-size="20" fill="${v('pill-ink')}">${esc(room.label)}</text></g></a></g>`;
   });
-  s += R(0, 36, W * 5, 12, v('beam')) + R(0, 46, W * 5, 3, v('beam-d'));
-  for (let b = 0; b <= 5; b++)
-    s += R(Math.min(b * W, W * 5 - 10), 30, 10, 20, v('beam-d'));
+  s += R(0, 36, span, 12, v('beam')) + R(0, 46, span, 3, v('beam-d'));
+  for (let b = 0; b <= rooms.length; b++)
+    s += R(Math.min(b * W, span - 10), 30, 10, 20, v('beam-d'));
   s +=
     `<g class="walker">${who('Navette', 'walk', { x: 0, y: 238, w: 58, hold: '#F2C230' })}</g>` +
     `<g class="walker b">${who('Estafette', 'walk d2', { x: 0, y: 244, w: 58, hold: '#4F53D6' })}</g>`;
-  return `<svg viewBox="0 0 ${W * 5} 300" role="group" aria-label="${esc(ariaLabel)}">${s}</svg>`;
+  return `<svg viewBox="0 0 ${span} 300" style="--span:${span}" role="group" aria-label="${esc(ariaLabel)}">${s}</svg>`;
 }
 
 type Scene = [wall: string, draw: () => string];

@@ -6,6 +6,7 @@
 import { toggleTheme } from '@/lib/theme';
 import { parseSSE, SSE_EVENT } from '@/lib/avatar/protocol';
 import { takeFrames } from '@/lib/sse-frames';
+import { SECTION_PATHS } from '@/office/sections';
 
 interface Strings {
   left: string;
@@ -75,7 +76,6 @@ const READ_STEP = 2;
 const READ_KEY = 'rc-read';
 const WORDS_PER_MINUTE = 220;
 const PHONE = matchMedia('(max-width: 640px)');
-const TAB_COUNT = 5;
 const WORLD_VENDOR = [
   'three.min.js',
   'CopyShader.js',
@@ -87,14 +87,7 @@ const WORLD_VENDOR = [
   'UnrealBloomPass.js',
 ];
 /** Address of each stand of the world, relative to the locale. */
-const PLACE_PATH: Record<string, string> = {
-  home: '',
-  radar: 'radar/',
-  work: 'work/',
-  blog: 'blog/',
-  library: 'library/',
-  journal: 'journal/',
-};
+const PLACE_PATH: Record<string, string> = { home: '', ...SECTION_PATHS };
 
 const root = document.documentElement;
 const site = document.getElementById('site2d') as HTMLElement;
@@ -175,7 +168,7 @@ function placeRunner(): void {
   if (!floor) return;
   const tabs = Array.from(document.querySelectorAll('#tabs a'));
   const i = tabs.findIndex((a) => a.getAttribute('aria-current') === 'page');
-  const w = innerWidth / TAB_COUNT;
+  const w = innerWidth / Math.max(1, tabs.length);
   floor.style.setProperty('--tx', i < 0 ? '-70px' : `${w * i + w / 2 - 19}px`);
 }
 
@@ -183,11 +176,15 @@ function liveRoom(): void {
   const pano = $('pano');
   const strip = pano?.querySelector<HTMLElement>('.strip');
   if (!pano || !strip || !PHONE.matches) return;
+  const rooms = pano.querySelectorAll('.rm');
   const idx = Math.max(
     0,
-    Math.min(4, Math.round(pano.scrollLeft / (strip.offsetWidth / 5)))
+    Math.min(
+      rooms.length - 1,
+      Math.round(pano.scrollLeft / (strip.offsetWidth / rooms.length))
+    )
   );
-  pano.querySelectorAll('.rm').forEach((room, n) => {
+  rooms.forEach((room, n) => {
     room.classList.toggle('on', n === idx);
     room.classList.toggle('off', n !== idx);
   });
@@ -258,7 +255,9 @@ async function showStand(
       .parseFromString(html, 'text/html')
       .getElementById('main');
     if (!next) throw new Error('page');
-    next.querySelector('.room')?.remove();
+    next
+      .querySelectorAll('.room, [data-page-only]')
+      .forEach((el) => el.remove());
     const fresh = document.createDocumentFragment();
     for (const node of Array.from(next.childNodes))
       fresh.append(document.importNode(node, true));

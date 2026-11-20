@@ -1,5 +1,10 @@
 import { test, expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
+import {
+  FRIEZE_ORDER,
+  ROOM_SECTIONS,
+  SECTION_ORDER,
+} from '../src/office/sections';
 
 /**
  * The office site, end to end: every kind of page renders its content as HTML,
@@ -7,6 +12,9 @@ import type { Page } from '@playwright/test';
  */
 
 const PHONE = { width: 390, height: 780 };
+const SMALL_PHONE = { width: 360, height: 690 };
+/** Smallest comfortable touch target, in CSS pixels. */
+const TOUCH = 44;
 
 async function firstHref(page: Page, listUrl: string): Promise<string> {
   await page.goto(listUrl);
@@ -31,24 +39,16 @@ test.describe('pages', () => {
     await expect(page).toHaveURL(/\/(fr|en)\/$/);
   });
 
-  test('home shows the five stands and the newest article', async ({
-    page,
-  }) => {
+  test('home shows every stand and the newest article', async ({ page }) => {
     await page.goto('/fr/');
-    await expect(page.locator('#pano a')).toHaveCount(5);
+    await expect(page.locator('#pano a')).toHaveCount(FRIEZE_ORDER.length);
+    await expect(page.locator('#pano a[href="/fr/training/"]')).toHaveCount(1);
     await expect(page.locator('.lead h2 a')).toBeVisible();
     await page.locator('.lead h2 a').click();
     await expect(page.locator('article.sheet.text h1')).toBeVisible();
   });
 
-  for (const section of [
-    'radar',
-    'blog',
-    'journal',
-    'work',
-    'library',
-    'about',
-  ]) {
+  for (const section of SECTION_ORDER) {
     test(`${section} renders and marks its sign as current`, async ({
       page,
     }) => {
@@ -239,7 +239,7 @@ test.describe('phone', () => {
   }) => {
     await page.goto('/fr/blog/');
     await expect(page.locator('.signs')).toBeHidden();
-    await expect(page.locator('#tabs a')).toHaveCount(5);
+    await expect(page.locator('#tabs a')).toHaveCount(ROOM_SECTIONS.length);
     await expect(page.locator('#tabs a[data-k="blog"]')).toHaveAttribute(
       'aria-current',
       'page'
@@ -254,13 +254,13 @@ test.describe('phone', () => {
   }) => {
     await page.goto('/fr/');
     const dots = page.locator('#pano .dots i');
-    await expect(dots).toHaveCount(5);
+    await expect(dots).toHaveCount(FRIEZE_ORDER.length);
     await expect(page.locator('#pano .dots')).toBeVisible();
     await expect(dots.nth(0)).toHaveClass('on');
     await page.locator('#pano').evaluate((el) => {
       el.scrollLeft = el.scrollWidth;
     });
-    await expect(dots.nth(4)).toHaveClass('on');
+    await expect(dots.last()).toHaveClass('on');
     await expect(dots.nth(0)).not.toHaveClass('on');
     await noSideScroll(page);
   });
@@ -284,6 +284,134 @@ test.describe('phone', () => {
     const before = await size();
     await page.locator('#mText [data-act="bigger"]').click();
     expect(await size()).toBeGreaterThan(before);
+    await noSideScroll(page);
+  });
+});
+
+async function trainingTables(page: Page): Promise<void> {
+  const certs = page.locator('table:has(#cert-caption)');
+  await expect(certs.locator('tbody tr')).toHaveCount(3);
+  await expect(certs.locator('tbody th[scope="row"]')).toHaveCount(3);
+  await expect(certs.locator('thead th[scope="col"]')).toHaveCount(5);
+  await expect(
+    certs.locator('tbody th', {
+      hasText: 'Claude Certified Architect - Foundations',
+    })
+  ).toHaveCount(1);
+  await expect(certs.locator('a[href^="https://www.credly.com/"]')).toHaveCount(
+    2
+  );
+  await expect(certs.locator('tbody td', { hasText: '975/990' })).toHaveCount(
+    1
+  );
+  const exam = page.locator('table:has(#exam-caption)');
+  await expect(exam.locator('tbody th[scope="row"]')).toHaveCount(5);
+  await expect(exam.locator('tfoot td').last()).toHaveText('300');
+  await expect(page.locator('.drill .format')).toContainText('120');
+  await expect(page.locator('.drill .format')).toContainText('720');
+}
+
+test.describe('training', () => {
+  for (const lang of ['fr', 'en'] as const) {
+    test(`${lang}: the page lists the certifications and the exam domains`, async ({
+      page,
+    }) => {
+      const res = await page.goto(`/${lang}/training/`);
+      expect(res?.status()).toBe(200);
+      await expect(page.locator('.room h1')).toHaveText(
+        lang === 'fr' ? 'Entraînement' : 'Training'
+      );
+      await expect(page.locator('.signs a[data-k="training"]')).toHaveAttribute(
+        'aria-current',
+        'page'
+      );
+      await expect(page.locator('link[hreflang="fr"]')).toHaveAttribute(
+        'href',
+        /\/fr\/training\/$/
+      );
+      await trainingTables(page);
+      await expect(
+        page.locator('.drill tbody th', {
+          hasText:
+            lang === 'fr'
+              ? 'Gestion du contexte et fiabilité'
+              : 'Context Management & Reliability',
+        })
+      ).toHaveCount(1);
+      await noSideScroll(page);
+    });
+
+    test(`${lang}: on a small phone the tables fit or scroll in their own frame`, async ({
+      page,
+    }) => {
+      await page.setViewportSize(SMALL_PHONE);
+      await page.goto(`/${lang}/training/`);
+      await trainingTables(page);
+      await noSideScroll(page);
+      for (const frame of await page.locator('.drill .tablewrap').all()) {
+        const box = await frame.boundingBox();
+        expect(box!.x).toBeGreaterThanOrEqual(0);
+        expect(box!.x + box!.width).toBeLessThanOrEqual(SMALL_PHONE.width);
+      }
+    });
+  }
+});
+
+test.describe('phone bar at 360 px', () => {
+  test.use({ viewport: SMALL_PHONE });
+
+  for (const lang of ['fr', 'en'] as const) {
+    test(`${lang}: every tab is a whole touch target and the courier carries the current one`, async ({
+      page,
+    }) => {
+      await page.goto(`/${lang}/training/`);
+      const tabs = page.locator('#tabs a');
+      await expect(tabs).toHaveCount(ROOM_SECTIONS.length);
+      const boxes = [];
+      for (const tab of await tabs.all()) {
+        const cell = (await tab.boundingBox())!;
+        const label = (await tab.locator('span').boundingBox())!;
+        expect(cell.width).toBeGreaterThanOrEqual(TOUCH);
+        expect(cell.height).toBeGreaterThanOrEqual(TOUCH);
+        expect(label.x).toBeGreaterThanOrEqual(cell.x - 0.5);
+        expect(label.x + label.width).toBeLessThanOrEqual(
+          cell.x + cell.width + 0.5
+        );
+        boxes.push(cell);
+      }
+      for (let i = 1; i < boxes.length; i++)
+        expect(boxes[i].x).toBeGreaterThanOrEqual(
+          boxes[i - 1].x + boxes[i - 1].width - 0.5
+        );
+      const current = page.locator('#tabs a[data-k="training"]');
+      await expect(current).toHaveAttribute('aria-current', 'page');
+      const cell = (await current.boundingBox())!;
+      const runner = (await page.locator('#runner').boundingBox())!;
+      expect(
+        Math.abs(runner.x + runner.width / 2 - (cell.x + cell.width / 2))
+      ).toBeLessThan(4);
+      await noSideScroll(page);
+    });
+  }
+
+  test('the last stand of the drawing is the training one, reached by swiping', async ({
+    page,
+  }) => {
+    await page.goto('/en/');
+    const dots = page.locator('#pano .dots i');
+    await expect(dots).toHaveCount(FRIEZE_ORDER.length);
+    await page.locator('#pano').evaluate((el) => {
+      el.scrollLeft = el.scrollWidth;
+    });
+    await expect(dots.last()).toHaveClass('on');
+    await expect(page.locator('#pano .rm').last()).toHaveClass(/\bon\b/);
+    await expect(page.locator('#tabs a[data-k="training"]')).toHaveAttribute(
+      'aria-current',
+      'page'
+    );
+    await trainingTables(page);
+    await expect(page.locator('#main .game')).toHaveCount(0);
+    await expect(page).toHaveURL(/\/en\/$/);
     await noSideScroll(page);
   });
 });
@@ -316,6 +444,20 @@ test.describe('the 3D office', () => {
     await expect(html).not.toHaveClass(/in3d/, { timeout: 30_000 });
     await expect(page).toHaveURL(/\/fr\/work\/$/);
     await expect(page.locator('.room h1')).toBeVisible();
+  });
+
+  test('the training door leads to the training page', async ({ page }) => {
+    test.skip(!!process.env.CI, 'needs hardware rendering');
+    test.setTimeout(120_000);
+    const html = page.locator('html');
+    await page.goto('/fr/training/');
+    await page.locator('#door').click();
+    await expect(html).toHaveClass(/in3d/, { timeout: 60_000 });
+    await expect(html).not.toHaveClass(/cine/, { timeout: 30_000 });
+    await page.locator('#flat').click();
+    await expect(html).not.toHaveClass(/in3d/, { timeout: 30_000 });
+    await expect(page).toHaveURL(/\/fr\/training\/$/);
+    await expect(page.locator('.room h1')).toHaveText('Entraînement');
   });
 
   test('its walls and sheets are fed by the site content', async ({

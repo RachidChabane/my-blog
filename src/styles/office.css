@@ -70,6 +70,7 @@ img {
   --ctrl: #d4472f;
   --jrnl: #1f3fd1;
   --arch: #2b3154;
+  --drill: #a8367a;
   --clawd: #d77757;
   --link: #1f3fd1;
   --sky: #bfe0ff;
@@ -108,6 +109,7 @@ img {
     --ctrl: #db553c;
     --jrnl: #3d5cf0;
     --arch: #3a4270;
+    --drill: #b03c7c;
     --link: #9db0ff;
     --sky: #18224a;
     --sun: #efe7bf;
@@ -141,6 +143,7 @@ img {
   --ctrl: #db553c;
   --jrnl: #3d5cf0;
   --arch: #3a4270;
+  --drill: #b03c7c;
   --link: #9db0ff;
   --sky: #18224a;
   --sun: #efe7bf;
@@ -440,7 +443,7 @@ h3 {
 }
 .pano .strip {
   position: relative;
-  min-width: 1180px;
+  min-width: calc(var(--rooms) * 196px);
 }
 .pano svg {
   display: block;
@@ -1405,7 +1408,7 @@ a.ref.on {
     transform: translateX(-60px);
   }
   to {
-    transform: translateX(1960px);
+    transform: translateX(calc(var(--span) * 1px + 60px));
   }
 }
 .sweep {
@@ -1479,7 +1482,7 @@ a.ref.on {
   }
   .pano .strip {
     min-width: 0;
-    width: 1720px;
+    width: calc(var(--rooms) * 344px);
   }
   .next {
     grid-template-columns: 1fr;
@@ -2137,7 +2140,8 @@ a.folder:hover {
   }
   .tabs {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
     height: var(--floor-h);
     position: relative;
     z-index: 4;
@@ -2156,9 +2160,10 @@ a.folder:hover {
     color: #fff;
     font-family: var(--display);
     font-weight: 800;
-    font-size: 12px;
+    font-size: clamp(11px, 3.1vw, 12px);
     line-height: 1;
-    padding: 6px 7px 7px;
+    padding: 6px 4px 7px;
+    max-width: 100%;
     border-radius: 5px;
     box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
     white-space: nowrap;
@@ -2379,7 +2384,7 @@ a.folder:hover {
     scroll-snap-type: x mandatory;
   }
   .pano .strip {
-    width: calc(5 * (100vw - 64px));
+    width: calc(var(--rooms) * (100vw - 64px));
     margin-inline: 32px;
   }
   .pano .snaps i {
@@ -2935,4 +2940,70 @@ a.folder:hover {
   .cl .glow {
     animation: none;
   }
+}
+
+/* training: the exam game, the certifications and the exam outline */
+.drill .intro p {
+  margin: 0;
+  font-size: 1.1em;
+  line-height: 1.5;
+}
+.drill .intro p + p {
+  margin-top: 0.5em;
+  color: var(--ink-2);
+}
+.drill .prose h2 {
+  margin-top: 0;
+}
+.drill .tablewrap {
+  margin: 0;
+}
+.drill caption {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  padding-bottom: 10px;
+}
+.drill tbody th,
+.drill tfoot th {
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+  font-weight: 700;
+  border-bottom: 1px solid var(--rule);
+  padding: 9px 12px 9px 0;
+  vertical-align: top;
+}
+.drill tfoot th,
+.drill tfoot td {
+  border-top: 2px solid var(--ink);
+  border-bottom: 0;
+}
+.drill .num {
+  text-align: right;
+  white-space: nowrap;
+}
+.drill td:last-child,
+.drill th:last-child {
+  padding-right: 0;
+}
+.drill .format {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 0 0 18px;
+}
+.drill .format span {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.drill .tablewrap:focus-visible {
+  outline: 3px solid var(--art);
+  outline-offset: 4px;
 }

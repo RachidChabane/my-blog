@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import matter from 'gray-matter';
 import { clawd, crew, frieze, projectScene, TEAM, who } from '@/office/draw';
-import { officeStrings, SECTION_ORDER, SECTION_PATHS } from '@/office/strings';
+import { officeStrings } from '@/office/strings';
+import {
+  FRIEZE_ORDER,
+  ROOM_SECTIONS,
+  SECTION_ORDER,
+  SECTION_PATHS,
+} from '@/office/sections';
 import {
   mergeRows,
   monthOf,
@@ -50,7 +56,7 @@ describe('office drawings', () => {
 
   it('links each room of the frieze to its section', () => {
     const svg = frieze(
-      (['radar', 'blog', 'work', 'library', 'journal'] as const).map((key) => ({
+      FRIEZE_ORDER.map((key) => ({
         key,
         label: key,
         href: `/fr/${key}/`,
@@ -59,14 +65,20 @@ describe('office drawings', () => {
       })),
       'office'
     );
-    for (const key of ['radar', 'blog', 'work', 'library', 'journal'])
-      expect(svg).toContain(`href="/fr/${key}/"`);
+    for (const key of FRIEZE_ORDER) expect(svg).toContain(`href="/fr/${key}/"`);
+    expect(svg.match(/<g class="rm">/g)).toHaveLength(FRIEZE_ORDER.length);
     expect(svg).toContain('class="say when-night"');
     expect(svg).not.toContain('class="say when-day"');
   });
 
   it('keeps the same Clawds at a desk by day and by night', () => {
-    for (const room of ['radar', 'blog', 'work', 'library'] as const) {
+    for (const room of [
+      'radar',
+      'blog',
+      'work',
+      'library',
+      'training',
+    ] as const) {
       const [day, night] = crew(room).split('<span class="when-night">');
       const names = (html: string) =>
         [...html.matchAll(/aria-label="([^"]+)"/g)].map((m) => m[1]);
@@ -187,7 +199,19 @@ describe('office copy', () => {
       for (const key of SECTION_ORDER) {
         expect(SECTION_PATHS[key]).toMatch(/\/$/);
         expect(officeStrings(lang).sections[key]).toBeTruthy();
+        expect(officeStrings(lang).short[key]).toBeTruthy();
       }
+  });
+
+  it('gives every section with a tab a stand in the drawing, and the reverse', () => {
+    expect([...FRIEZE_ORDER].sort()).toEqual([...ROOM_SECTIONS].sort());
+    expect(ROOM_SECTIONS).toEqual(SECTION_ORDER.filter((k) => k !== 'about'));
+  });
+
+  it('has the training stand, with a day line in both locales', () => {
+    expect(SECTION_PATHS.training).toBe('training/');
+    for (const lang of ['fr', 'en'] as const)
+      expect(officeStrings(lang).frieze.say.training).toBeTruthy();
   });
 
   it('says tokens, in both locales, when the budget is spent', () => {
