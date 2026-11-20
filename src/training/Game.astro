@@ -25,13 +25,19 @@ const total = questions.length;
 ---
 
 <section class="tg" id="tg" data-lang={lang} aria-labelledby="tg-title">
-  <div class="tg-launch" id="tg-launch">
+  <div class="tg-launch" id="tg-launch" data-page-only>
     <div class="tg-launch-art" aria-hidden="true">
       <span class="tg-card-stack"><i></i><i></i><i></i></span>
     </div>
     <div class="tg-launch-body">
       <h2 id="tg-title">{c.game}</h2>
       <p class="tg-pitch">{c.pitch}</p>
+      <button class="tg-play" id="tg-play" type="button">
+        <span id="tg-play-label">{c.play}</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"
+          ><path d="M6 4l14 8-14 8z" fill="currentColor"></path></svg
+        >
+      </button>
       <p class="tg-progress" id="tg-progress" data-total={total}>
         {c.launch.progress(0, total)}
       </p>
@@ -46,18 +52,19 @@ const total = questions.length;
           ))
         }
       </ul>
-      <button class="tg-play" id="tg-play" type="button">
-        <span id="tg-play-label">{c.play}</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true"
-          ><path d="M6 4l14 8-14 8z" fill="currentColor"></path></svg
-        >
-      </button>
     </div>
   </div>
 
-  <div class="tg-host" id="tg-host" tabindex="-1" hidden></div>
+  <div class="tg-host" id="tg-host" tabindex="-1" hidden data-page-only></div>
 
-  <section class="tg-sheets" id="tg-sheets" aria-labelledby="tg-sheets-h">
+  <slot />
+
+  <section
+    class="tg-sheets"
+    id="tg-sheets"
+    aria-labelledby="tg-sheets-h"
+    data-page-only
+  >
     <div class="tg-sheets-head">
       <div class="tg-sheets-bar">
         <h2 id="tg-sheets-h" tabindex="-1">{c.sheets.heading}</h2>
@@ -316,6 +323,7 @@ const total = questions.length;
     color: var(--tg-ink-2);
   }
   .tg-play {
+    margin-bottom: 18px;
     min-height: 56px;
     min-width: 180px;
     padding: 8px 24px;

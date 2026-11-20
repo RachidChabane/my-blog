@@ -62,114 +62,113 @@ const jsonLd = {
     crew={crew('training')}
   />
   <div class="wrap page drill">
-    <section class="sheet intro" style="--tape:var(--drill)">
-      <p>{d.intro}</p>
-      <p>{d.domainsLine(domains.length, examData.code)}</p>
-    </section>
-    <div class="game" data-page-only>
-      <Game lang={lang} />
-    </div>
-    <section
-      class="sheet prose"
-      style="--tape:var(--art)"
-      aria-labelledby="certifications"
-    >
-      <h2 id="certifications">{d.certifications}</h2>
-      <div
-        class="tablewrap"
-        tabindex="0"
-        role="region"
-        aria-labelledby="cert-caption"
+    <Game lang={lang}>
+      <section class="sheet intro" style="--tape:var(--drill)">
+        <p>{d.intro}</p>
+        <p>{d.domainsLine(domains.length, examData.code)}</p>
+      </section>
+      <section
+        class="sheet prose"
+        style="--tape:var(--art)"
+        aria-labelledby="certifications"
       >
-        <table>
-          <caption id="cert-caption">{d.certCaption}</caption>
-          <thead>
-            <tr>
-              <th scope="col">{d.certCols.title}</th>
-              <th scope="col">{d.certCols.issuer}</th>
-              <th scope="col">{d.certCols.date}</th>
-              <th scope="col">{d.certCols.score}</th>
-              <th scope="col">{d.certCols.proof}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              certs.map((c) => (
-                <tr>
-                  <th scope="row">{c.title}</th>
-                  <td>{c.issuer}</td>
-                  <td>
-                    <time datetime={c.datetime}>{c.date}</time>
-                  </td>
-                  <td>{c.score}</td>
-                  <td>
-                    {c.proof && (
-                      <a href={c.proof.href} rel="noopener">
-                        {d.proofLink(c.proof.host)}
-                      </a>
-                    )}
-                  </td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </div>
-    </section>
-    <section
-      class="sheet prose"
-      style="--tape:var(--drill)"
-      aria-labelledby="exam"
-    >
-      <h2 id="exam">{d.exam}</h2>
-      <p class="format">
-        <b>{examData.name}</b>
-        <span>
-          {
-            d.format(
-              examData.questionCount,
-              examData.minutes,
-              examData.passScore,
-              examData.maxScore
-            )
-          }
-        </span>
-      </p>
-      <div
-        class="tablewrap"
-        tabindex="0"
-        role="region"
-        aria-labelledby="exam-caption"
+        <h2 id="certifications">{d.certifications}</h2>
+        <div
+          class="tablewrap"
+          tabindex="0"
+          role="region"
+          aria-labelledby="cert-caption"
+        >
+          <table class="certs">
+            <caption id="cert-caption">{d.certCaption}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{d.certCols.title}</th>
+                <th scope="col">{d.certCols.issuer}</th>
+                <th scope="col">{d.certCols.date}</th>
+                <th scope="col">{d.certCols.score}</th>
+                <th scope="col">{d.certCols.proof}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                certs.map((c) => (
+                  <tr>
+                    <th scope="row">{c.title}</th>
+                    <td data-label={d.certCols.issuer}>{c.issuer}</td>
+                    <td data-label={d.certCols.date}>
+                      <time datetime={c.datetime}>{c.date}</time>
+                    </td>
+                    <td data-label={d.certCols.score}>{c.score}</td>
+                    <td data-label={d.certCols.proof}>
+                      {c.proof && (
+                        <a href={c.proof.href} rel="noopener">
+                          {d.proofLink(c.proof.host)}
+                        </a>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section
+        class="sheet prose"
+        style="--tape:var(--drill)"
+        aria-labelledby="exam"
       >
-        <table>
-          <caption id="exam-caption">{d.examCaption(examData.code)}</caption>
-          <thead>
-            <tr>
-              <th scope="col">{d.examCols.domain}</th>
-              <th scope="col" class="num">{d.examCols.weight}</th>
-              <th scope="col" class="num">{d.examCols.inGame}</th>
-            </tr>
-          </thead>
-          <tbody>
+        <h2 id="exam">{d.exam}</h2>
+        <p class="format">
+          <b>{examData.name}</b>
+          <span>
             {
-              domains.map((row) => (
-                <tr>
-                  <th scope="row">{row.name}</th>
-                  <td class="num">{pct(row.weight)}</td>
-                  <td class="num">{row.questions}</td>
-                </tr>
-              ))
+              d.format(
+                examData.questionCount,
+                examData.minutes,
+                examData.passScore,
+                examData.maxScore
+              )
             }
-          </tbody>
-          <tfoot>
-            <tr>
-              <th scope="row">{d.total}</th>
-              <td class="num">{pct(totalWeight)}</td>
-              <td class="num">{questions.length}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </section>
+          </span>
+        </p>
+        <div
+          class="tablewrap"
+          tabindex="0"
+          role="region"
+          aria-labelledby="exam-caption"
+        >
+          <table>
+            <caption id="exam-caption">{d.examCaption(examData.code)}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{d.examCols.domain}</th>
+                <th scope="col" class="num">{d.examCols.weight}</th>
+                <th scope="col" class="num">{d.examCols.inGame}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                domains.map((row) => (
+                  <tr>
+                    <th scope="row">{row.name}</th>
+                    <td class="num">{pct(row.weight)}</td>
+                    <td class="num">{row.questions}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <th scope="row">{d.total}</th>
+                <td class="num">{pct(totalWeight)}</td>
+                <td class="num">{questions.length}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+    </Game>
   </div>
 </Office>

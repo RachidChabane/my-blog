@@ -2944,6 +2944,11 @@ a.folder:hover {
 }
 
 /* training: the exam game, the certifications and the exam outline */
+.drill > .tg {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 26px;
+}
 .drill .intro p {
   margin: 0;
   font-size: 1.1em;
@@ -3003,6 +3008,51 @@ a.folder:hover {
   font-family: var(--mono);
   font-size: 13px;
   color: var(--ink-2);
+}
+/* phone: one certification per block, every field on its own labelled line */
+@media (max-width: 640px) {
+  .drill .certs thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .drill .certs,
+  .drill .certs caption,
+  .drill .certs tbody,
+  .drill .certs tr,
+  .drill .certs th,
+  .drill .certs td {
+    display: block;
+  }
+  .drill .certs tr {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .drill .certs tbody th {
+    border: 0;
+    padding: 0 0 6px;
+  }
+  .drill .certs td {
+    display: flex;
+    gap: 10px;
+    border: 0;
+    padding: 2px 0;
+  }
+  .drill .certs td::before {
+    content: attr(data-label);
+    flex: 0 0 92px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    padding-top: 3px;
+  }
+  .drill .certs td:empty {
+    display: none;
+  }
 }
 .drill .tablewrap:focus-visible {
   outline: 3px solid var(--art);

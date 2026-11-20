@@ -323,6 +323,30 @@ test.describe('training game', () => {
     expect(errors).toEqual([]);
   });
 
+  test('phone: Play is on the first screen and each certification shows its date and score', async ({
+    page,
+  }) => {
+    await page.setViewportSize(PHONE);
+    await page.goto('/fr/training/');
+    const play = (await page.locator('#tg-play').boundingBox())!;
+    expect(play.y + play.height).toBeLessThanOrEqual(PHONE.height);
+    const pro = page.locator('table.certs tbody tr').first();
+    await expect(pro).toContainText('15 octobre 2026');
+    await expect(pro).toContainText('925/1000');
+    await expect(page.locator('table.certs tbody tr').nth(1)).toContainText(
+      '4 juillet 2026'
+    );
+    for (const cell of await pro.locator('td:not(:empty)').all()) {
+      const box = (await cell.boundingBox())!;
+      expect(box.x).toBeGreaterThanOrEqual(0);
+      expect(box.x + box.width).toBeLessThanOrEqual(PHONE.width);
+    }
+    // the tables come before the 300 sheets
+    const exam = (await page.locator('#exam').boundingBox())!;
+    const sheets = (await page.locator('#tg-sheets').boundingBox())!;
+    expect(exam.y).toBeLessThan(sheets.y);
+  });
+
   test('every question is in the page, folded, in the page language', async ({
     request,
   }) => {
