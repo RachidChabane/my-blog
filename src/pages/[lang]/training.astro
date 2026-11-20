@@ -62,14 +62,17 @@ const jsonLd = {
     crew={crew('training')}
   />
   <div class="wrap page drill">
-    <a class="playlink" href={`${localePath(lang, 'training/')}#play`}>
+    <a
+      class="playlink standonly"
+      href={`${localePath(lang, 'training/')}#play`}
+    >
       {d.play}
-      <svg viewBox="0 0 24 24" aria-hidden="true"
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"
         ><path d="M6 4l14 8-14 8z" fill="currentColor"></path></svg
       >
     </a>
     <Game lang={lang}>
-      <section class="sheet intro" style="--tape:var(--drill)">
+      <section class="sheet intro standonly" style="--tape:var(--drill)">
         <p>{d.intro}</p>
         <p>{d.domainsLine(domains.length, examData.code)}</p>
       </section>
@@ -83,10 +86,9 @@ const jsonLd = {
           class="tablewrap"
           tabindex="0"
           role="region"
-          aria-labelledby="cert-caption"
+          aria-labelledby="certifications"
         >
-          <table class="certs">
-            <caption id="cert-caption">{d.certCaption}</caption>
+          <table class="certs" aria-labelledby="certifications">
             <thead>
               <tr>
                 <th scope="col">{d.certCols.title}</th>
@@ -125,10 +127,10 @@ const jsonLd = {
         style="--tape:var(--drill)"
         aria-labelledby="exam"
       >
-        <h2 id="exam">{d.exam}</h2>
+        <h2 id="exam">{examData.name}</h2>
         <p class="format">
-          <b>{examData.name}</b>
           <span>
+            {examData.code} ·{' '}
             {
               d.format(
                 examData.questionCount,
@@ -143,10 +145,9 @@ const jsonLd = {
           class="tablewrap"
           tabindex="0"
           role="region"
-          aria-labelledby="exam-caption"
+          aria-labelledby="exam"
         >
-          <table>
-            <caption id="exam-caption">{d.examCaption(examData.code)}</caption>
+          <table class="domains" aria-labelledby="exam">
             <thead>
               <tr>
                 <th scope="col">{d.examCols.domain}</th>

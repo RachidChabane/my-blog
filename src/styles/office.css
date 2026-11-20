@@ -2963,10 +2963,14 @@ a.folder:hover {
 }
 
 /* training: the exam game, the certifications and the exam outline */
-.drill .playlink {
+/* shown only in the stand preview on the home page, where the game and its card are not
+   mounted: one link opens it, and two lines say what the stand is */
+.drill .standonly {
   display: none;
 }
-/* in a stand preview on the home page the game is not mounted: one link opens it */
+.pano ~ .drill .standonly {
+  display: block;
+}
 .pano ~ .drill .playlink {
   display: flex;
   align-items: center;
@@ -3006,14 +3010,6 @@ a.folder:hover {
 }
 .drill .tablewrap {
   margin: 0;
-}
-.drill caption {
-  text-align: left;
-  font-family: var(--mono);
-  font-size: 12.5px;
-  letter-spacing: 0.04em;
-  color: var(--ink-2);
-  padding-bottom: 10px;
 }
 .drill tbody th,
 .drill tfoot th {
@@ -3062,7 +3058,6 @@ a.folder:hover {
     clip-path: inset(50%);
   }
   .drill .certs,
-  .drill .certs caption,
   .drill .certs tbody,
   .drill .certs tr,
   .drill .certs th,

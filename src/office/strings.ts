@@ -74,7 +74,6 @@ export interface OfficeStrings {
     domainsLine: (n: number, code: string) => string;
     count: (questions: number, domains: number) => string;
     certifications: string;
-    certCaption: string;
     certCols: {
       title: string;
       issuer: string;
@@ -83,8 +82,6 @@ export interface OfficeStrings {
       proof: string;
     };
     proofLink: (host: string) => string;
-    exam: string;
-    examCaption: (code: string) => string;
     examCols: { domain: string; weight: string; inGame: string };
     total: string;
     format: (n: number, minutes: number, pass: number, max: number) => string;
@@ -228,8 +225,7 @@ const FR: OfficeStrings = {
     domainsLine: (n, code) =>
       `Les questions couvrent les ${n} domaines de l’examen ${code}.`,
     count: (q, d) => `${q} questions · ${d} domaines`,
-    certifications: 'Certifications',
-    certCaption: 'Certifications de Rachid Chabane',
+    certifications: 'Mes certifications',
     certCols: {
       title: 'Certification',
       issuer: 'Organisme',
@@ -238,8 +234,6 @@ const FR: OfficeStrings = {
       proof: 'Justificatif',
     },
     proofLink: (host) => `Badge sur ${host}`,
-    exam: 'L’examen',
-    examCaption: (code) => `Domaines de l’examen ${code}`,
     examCols: {
       domain: 'Domaine',
       weight: 'Poids dans l’examen',
@@ -402,8 +396,7 @@ const EN: OfficeStrings = {
     domainsLine: (n, code) =>
       `The questions cover the ${n} domains of the ${code} exam.`,
     count: (q, d) => `${q} questions · ${d} domains`,
-    certifications: 'Certifications',
-    certCaption: 'Certifications held by Rachid Chabane',
+    certifications: 'My certifications',
     certCols: {
       title: 'Certification',
       issuer: 'Issuer',
@@ -412,8 +405,6 @@ const EN: OfficeStrings = {
       proof: 'Proof',
     },
     proofLink: (host) => `Badge on ${host}`,
-    exam: 'The exam',
-    examCaption: (code) => `Domains of the ${code} exam`,
     examCols: {
       domain: 'Domain',
       weight: 'Weight in the exam',

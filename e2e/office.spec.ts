@@ -339,7 +339,7 @@ test.describe('phone', () => {
 });
 
 async function trainingTables(page: Page): Promise<void> {
-  const certs = page.locator('table:has(#cert-caption)');
+  const certs = page.locator('table.certs');
   await expect(certs.locator('tbody tr')).toHaveCount(3);
   await expect(certs.locator('tbody th[scope="row"]')).toHaveCount(3);
   await expect(certs.locator('thead th[scope="col"]')).toHaveCount(5);
@@ -354,7 +354,7 @@ async function trainingTables(page: Page): Promise<void> {
   await expect(certs.locator('tbody td', { hasText: '975/990' })).toHaveCount(
     1
   );
-  const exam = page.locator('table:has(#exam-caption)');
+  const exam = page.locator('table.domains');
   await expect(exam.locator('tbody th[scope="row"]')).toHaveCount(5);
   await expect(exam.locator('tfoot td').last()).toHaveText('300');
   await expect(page.locator('.drill .format')).toContainText('120');
