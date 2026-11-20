@@ -42,7 +42,7 @@ function speakerOf(who: Who): Speaker | null {
     return {
       name: foeName(who),
       art: foeArt(who),
-      bg: bossColor(who.chapter.boss.key),
+      bg: bossColor(who.chapter.domain),
       ink: 'var(--on-hat)',
     };
   return {
@@ -87,6 +87,13 @@ function setLine(l: Line): void {
   el.classList.remove('dense');
   el.scrollTop = 0;
   el.classList.toggle('dense', el.scrollHeight > el.clientHeight + 1);
+  el.onscroll = showMore;
+  showMore();
+}
+/** A line longer than the box shows a cue until it is scrolled to its end. */
+function showMore(): void {
+  const el = $('dialog');
+  $('dlg-more').hidden = el.scrollHeight - el.scrollTop - el.clientHeight < 8;
 }
 /* how long a line stays before it advances by itself: a pause to find it, then reading time */
 const READ_BASE_MS = 1600;

@@ -136,6 +136,49 @@ function puddle(cx: number, w: number): string {
   return `<ellipse cx="${cx}" cy="200" rx="${w}" ry="10" fill="${V('b5-puddle')}" opacity=".85"/>`;
 }
 
+/** A wall monitor showing a line graph; dark when unlit. */
+function graphScreen(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  lit = true
+): string {
+  const frame = R(x - 3, y - 3, w + 6, h + 6, V('line'));
+  if (!lit) return frame + R(x, y, w, h, V('s-shadow'));
+  const pts = Array.from(
+    { length: 6 },
+    (_, i) =>
+      `${x + 4 + (i * (w - 8)) / 5},${y + h - 6 - (((i + x) * 7) % (h - 12))}`
+  ).join(' ');
+  return (
+    frame +
+    R(x, y, w, h, V('s-screen')) +
+    R(x + 4, y + h - 5, w - 8, 1, V('s-ink-soft')) +
+    `<polyline points="${pts}" fill="none" stroke="${V('s-glow')}" stroke-width="2"/>`
+  );
+}
+/** A round dial with its needle at `deg` degrees from straight up. */
+function dial(cx: number, cy: number, r: number, deg: number): string {
+  const a = (deg * Math.PI) / 180;
+  return (
+    `<circle cx="${cx}" cy="${cy}" r="${r + 3}" fill="${V('s-metal-d')}"/>` +
+    `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${V('s-paper')}"/>` +
+    `<path d="M${cx - r * 0.7} ${cy + r * 0.7}A${r * 0.8} ${r * 0.8} 0 0 1 ${cx} ${cy - r * 0.8}" fill="none" stroke="${V('s-led')}" stroke-width="2"/>` +
+    `<path d="M${cx} ${cy - r * 0.8}A${r * 0.8} ${r * 0.8} 0 0 1 ${cx + r * 0.7} ${cy + r * 0.7}" fill="none" stroke="${V('s-stamp')}" stroke-width="2"/>` +
+    `<path d="M${cx} ${cy}L${cx + Math.sin(a) * r * 0.75} ${cy - Math.cos(a) * r * 0.75}" stroke="${V('line')}" stroke-width="2.4"/>`
+  );
+}
+/** A shipping crate, stamped once it has cleared release. */
+function crate(x: number, y: number, stamped: boolean): string {
+  return (
+    R(x, y, 34, 28, V('s-wood-d')) +
+    R(x + 3, y + 3, 28, 22, V('s-wood')) +
+    `<path d="M${x + 3} ${y + 3}L${x + 31} ${y + 25}" stroke="${V('s-wood-d')}" stroke-width="3"/>` +
+    (stamped ? R(x + 18, y + 6, 10, 8, V('s-stamp')) : '')
+  );
+}
+
 type Place = (restored: boolean) => string;
 const KITS: Record<string, [Place, Place, Place]> = {
   agentic_architecture: [
@@ -342,6 +385,521 @@ const KITS: Record<string, [Place, Place, Place]> = {
           (restored
             ? R(188, 66, 24, 8, V('s-brass'))
             : `<path class="drip" d="M200 90q4 8 0 11q-4 -3 0 -11z" fill="${V('b5-puddle')}"/>`),
+        null
+      ),
+  ],
+  integration_reliability: [
+    () =>
+      room(
+        V('s-wall-4'),
+        [30, 120, 210]
+          .map(
+            (x, i) =>
+              screen(x, 48, 64, 40, 2) +
+              `<text x="${x + 32}" y="84" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="${V('s-led')}">${['A07', 'B12', 'C03'][i]}</text>`
+          )
+          .join('') +
+          R(10, 126, 380, 10, V('s-wood')) +
+          R(16, 136, 368, 46, V('s-wood-d')) +
+          [70, 160, 250]
+            .map(
+              (x) =>
+                R(x, 140, 26, 16, V('s-paper')) +
+                R(x + 4, 144, 18, 2, V('s-ink-soft'))
+            )
+            .join('') +
+          R(330, 104, 22, 22, V('s-metal-d')) +
+          R(334, 96, 14, 10, V('s-paper')),
+        null
+      ),
+    () =>
+      room(
+        V('s-wall-4'),
+        R(130, 40, 140, 64, V('line')) +
+          R(136, 46, 128, 52, V('s-screen')) +
+          `<text x="200" y="86" text-anchor="middle" font-family="monospace" font-size="36" font-weight="700" fill="${V('s-led')}">042</text>` +
+          [30, 110, 190, 270, 350]
+            .map(
+              (x) =>
+                R(x, 126, 6, 56, V('s-brass')) +
+                R(x - 4, 178, 14, 4, V('s-brass-d')) +
+                `<circle cx="${x + 3}" cy="126" r="5" fill="${V('s-brass')}"/>`
+            )
+            .join('') +
+          `<path d="M33 134q40 18 80 0t80 0 80 0 80 0" stroke="${V('s-stamp')}" stroke-width="4" fill="none"/>` +
+          R(40, 60, 46, 60, V('s-paper')) +
+          R(46, 68, 34, 4, V('s-ink-soft')) +
+          R(46, 78, 26, 4, V('s-ink-soft')) +
+          R(46, 88, 30, 4, V('s-ink-soft')),
+        null
+      ),
+    (restored) =>
+      room(
+        V('s-wall-4'),
+        R(84, 36, 232, 136, V('s-metal-d')) +
+          R(90, 42, 220, 124, V('s-screen')) +
+          [58, 78, 98, 118, 138, 158]
+            .map((y, i) => {
+              const calm = restored || i === 4;
+              const d = calm
+                ? `M120 ${y - 4}H300`
+                : `M120 ${y - 4}` +
+                  Array.from(
+                    { length: 9 },
+                    (_, k) =>
+                      `L${140 + k * 20} ${y - 4 + (k % 2 ? -6 : 6) * (((k + i) % 3) + 1) * 0.5}`
+                  ).join('');
+              return (
+                `<rect class="${calm ? '' : 'blink'}" x="98" y="${y - 8}" width="8" height="8" fill="${calm ? V('s-led') : V('s-stamp')}"/>` +
+                `<path d="${d}" fill="none" stroke="${calm ? V('s-led') : V('s-stamp')}" stroke-width="2"/>`
+              );
+            })
+            .join('') +
+          banner(30, V('b6-cloud'), restored) +
+          banner(330, V('b6-cloud'), restored),
+        null
+      ),
+  ],
+  agent_architecture: [
+    () =>
+      room(
+        V('s-wall-3'),
+        [10, 150]
+          .map(
+            (x) =>
+              desk(x, 100) +
+              screen(x + 30, 110, 40, 26, 2) +
+              R(x + 46, 136, 8, 4, V('s-metal-d'))
+          )
+          .join('') +
+          desk(290, 100) +
+          screen(320, 110, 40, 26, 2) +
+          plant(262),
+        [300, 40]
+      ),
+    () =>
+      room(
+        V('s-wall-3'),
+        Array.from(
+          { length: 5 },
+          (_, i) =>
+            R(6 + i * 78, 96, 74, 86, V('s-shade-d')) +
+            R(10 + i * 78, 100, 66, 82, V('s-shade')) +
+            R(14 + i * 78, 140, 58, 6, V('s-wood')) +
+            screen(28 + i * 78, 112, 30, 22, 1)
+        ).join('') +
+          lamp(120, 30) +
+          lamp(280, 30),
+        null
+      ),
+    (restored) => {
+      const boxes = [
+        [110, 52],
+        [230, 52],
+        [170, 100],
+        [110, 140],
+        [230, 140],
+      ].map(([x, y], i) =>
+        restored ? [x, y] : [x + ((i * 23) % 30) - 12, y + ((i * 17) % 20) - 8]
+      );
+      const links = [
+        [0, 2],
+        [1, 2],
+        [2, 3],
+        [2, 4],
+        [0, 1],
+      ];
+      return room(
+        V('s-wall-3'),
+        R(90, 36, 220, 140, V('s-paper')) +
+          R(84, 30, 232, 8, V('s-wood')) +
+          links
+            .map(([a, b], i) => {
+              const [ax, ay] = boxes[a];
+              const [bx, by] = boxes[b];
+              return restored
+                ? `<path d="M${ax + 20} ${ay + 10}L${bx + 20} ${by + 10}" stroke="${V('s-ink-soft')}" stroke-width="3"/>`
+                : `<path d="M${ax + 20} ${ay + 10}C${ax + 90 - i * 30} ${ay - 30} ${bx - 60 + i * 20} ${by + 50} ${bx + 20} ${by + 10}" fill="none" stroke="${V('b7-body')}" stroke-width="3"/>`;
+            })
+            .join('') +
+          boxes
+            .map(
+              ([x, y]) =>
+                R(x, y, 40, 20, V('s-book-b')) +
+                R(x + 6, y + 8, 28, 3, V('s-paper'))
+            )
+            .join('') +
+          banner(30, V('b7-body'), restored) +
+          banner(330, V('b7-body'), restored),
+        null
+      );
+    },
+  ],
+  observability: [
+    () =>
+      room(
+        V('s-wall-1'),
+        [20, 108, 196]
+          .map((x) => graphScreen(x, 44, 76, 46) + graphScreen(x, 100, 76, 40))
+          .join('') +
+          desk(40, 220) +
+          R(110, 128, 36, 12, V('s-metal-d')) +
+          R(170, 128, 36, 12, V('s-metal-d')),
+        [306, 46]
+      ),
+    () =>
+      room(
+        V('s-wall-1'),
+        [14, 144, 274]
+          .map(
+            (x, p) =>
+              R(x - 3, 41, 118, 116, V('line')) +
+              R(x, 44, 112, 110, V('s-screen')) +
+              Array.from({ length: 12 }, (_, i) =>
+                R(
+                  x + 6,
+                  50 + i * 8.6,
+                  20 + (((i + p) * 37) % 80),
+                  3,
+                  (i + p) % 7 === 3
+                    ? V('s-stamp')
+                    : (i + p) % 3
+                      ? V('s-glow')
+                      : V('s-led')
+                )
+              ).join('')
+          )
+          .join(''),
+        null
+      ),
+    (restored) =>
+      room(
+        V('s-wall-1'),
+        [96, 168, 240]
+          .map(
+            (x, i) =>
+              graphScreen(x, 44, 60, 44, restored || i === 1) +
+              graphScreen(x, 100, 60, 44, restored)
+          )
+          .join('') +
+          (restored
+            ? ''
+            : `<rect class="blink" x="176" y="52" width="44" height="28" fill="${V('s-shadow')}"/>`) +
+          `<rect x="0" y="0" width="400" height="240" fill="${V('boss-shade')}" opacity="${restored ? 0 : 0.35}"/>` +
+          banner(30, V('b8-hood'), restored) +
+          banner(330, V('b8-hood'), restored),
+        null
+      ),
+  ],
+  evaluation: [
+    () =>
+      room(
+        V('s-wall-5'),
+        desk(30, 200) +
+          R(50, 128, 160, 12, V('s-wood-d')) +
+          ['s-book-a', 's-book-b', 's-book-c', 's-book-d', 's-led', 's-glow']
+            .map(
+              (c, i) =>
+                R(58 + i * 24, 92, 12, 36, V('s-paper')) +
+                R(
+                  58 + i * 24,
+                  92 + ((i * 11) % 20),
+                  12,
+                  36 - ((i * 11) % 20),
+                  V(c)
+                ) +
+                `<path d="M${64 + i * 24} 104l3 4-3 4-3-4z" fill="${V('s-paper')}"/>`
+            )
+            .join('') +
+          cabinet(300, 106, 64, 2),
+        [296, 40]
+      ),
+    () =>
+      room(
+        V('s-wall-5'),
+        Array.from(
+          { length: 5 },
+          (_, i) =>
+            cabinet(14 + i * 76, 60, 68, 4, 's-metal') +
+            Array.from({ length: 4 }, (_, k) =>
+              R(14 + i * 76 + 22, 68 + k * 26, 24, 6, V('s-paper'))
+            ).join('')
+        ).join('') + R(0, 50, SW, 6, V('s-metal-d')),
+        null
+      ),
+    (restored) =>
+      room(
+        V('s-wall-5'),
+        R(84, 34, 232, 140, V('s-metal-d')) +
+          R(90, 40, 220, 128, V('s-screen')) +
+          [0, 1, 2, 3, 4]
+            .map(
+              (i) =>
+                R(100, 52 + i * 22, 14, 14, V('s-paper')) +
+                R(
+                  122,
+                  54 + i * 22,
+                  restored ? 150 : 40 + ((i * 67) % 150),
+                  10,
+                  V(['s-led', 's-glow', 'b9-ruler', 's-book-a', 's-book-d'][i])
+                )
+            )
+            .join('') +
+          (restored
+            ? ''
+            : `<path d="M290 150l10-14 10 14M300 136v24" stroke="${V('s-stamp')}" stroke-width="3" fill="none"/>`) +
+          banner(30, V('b9-body'), restored) +
+          banner(330, V('b9-body'), restored),
+        null
+      ),
+  ],
+  guardrails_security: [
+    () =>
+      room(
+        V('s-wall-2'),
+        R(20, 66, 110, 116, V('s-metal-d')) +
+          R(26, 72, 98, 110, V('s-metal')) +
+          R(34, 82, 82, 40, V('s-window')) +
+          R(30, 128, 90, 6, V('s-wood')) +
+          R(146, 96, 16, 86, V('s-metal-d')) +
+          R(162, 116, 220, 12, V('s-paper')) +
+          [0, 1, 2, 3, 4, 5]
+            .map((i) => R(172 + i * 36, 116, 18, 12, V('s-stamp')))
+            .join('') +
+          R(132, 132, 12, 20, V('s-screen')) +
+          `<rect class="blink" x="135" y="136" width="6" height="4" fill="${V('s-led')}"/>` +
+          R(135, 144, 6, 4, V('s-paper')),
+        [300, 40]
+      ),
+    () =>
+      room(
+        V('s-wall-2'),
+        door(30, true) +
+          door(330, false) +
+          R(140, 44, 120, 14, V('s-metal-d')) +
+          R(140, 44, 16, 138, V('s-metal-d')) +
+          R(244, 44, 16, 138, V('s-metal-d')) +
+          R(186, 34, 28, 10, V('s-metal')) +
+          `<rect class="blink" x="194" y="36" width="12" height="6" fill="${V('s-led')}"/>` +
+          [76, 100, 124, 148]
+            .map(
+              (y) =>
+                `<path d="M158 ${y}H242" stroke="${V('s-glow')}" stroke-width="2" stroke-dasharray="6 4" opacity=".8"/>`
+            )
+            .join(''),
+        null
+      ),
+    (restored) =>
+      room(
+        V('s-wall-2'),
+        R(120, 48, 160, 132, V('s-metal-d')) +
+          R(130, 58, 140, 112, V('s-shadow')) +
+          [0, 1, 2]
+            .map((r) =>
+              [0, 1, 2, 3, 4]
+                .map((k) =>
+                  restored || (r + k) % 3 === 0
+                    ? `<g transform="translate(${146 + k * 26} ${72 + r * 32})"><circle r="5" fill="none" stroke="${V('s-brass')}" stroke-width="3"/><path d="M0 5v12M0 13h4M0 17h3" stroke="${V('s-brass')}" stroke-width="3"/></g>`
+                    : ''
+                )
+                .join('')
+            )
+            .join('') +
+          (restored
+            ? R(130, 58, 140, 112, V('s-metal')) +
+              `<circle cx="200" cy="114" r="24" fill="none" stroke="${V('s-metal-d')}" stroke-width="6"/>` +
+              `<path d="M200 90v48M176 114h48" stroke="${V('s-metal-d')}" stroke-width="5"/>` +
+              R(252, 104, 10, 20, V('s-brass'))
+            : `<path d="M280 48l60 -12v156l-60 -12z" fill="${V('s-metal')}"/>` +
+              `<g transform="translate(70 196) rotate(30)"><circle r="5" fill="none" stroke="${V('s-brass')}" stroke-width="3"/><path d="M0 5v12" stroke="${V('s-brass')}" stroke-width="3"/></g>`) +
+          banner(30, V('b10-coat'), restored),
+        null
+      ),
+  ],
+  debugging_incidents: [
+    () =>
+      room(
+        V('s-wall-4'),
+        R(20, 146, 150, 14, V('s-shade')) +
+          R(20, 140, 40, 10, V('s-paper')) +
+          R(60, 142, 110, 12, V('s-book-b')) +
+          R(24, 160, 6, 22, V('s-metal-d')) +
+          R(160, 160, 6, 22, V('s-metal-d')) +
+          `<circle cx="200" cy="70" r="24" fill="${V('s-metal-d')}"/><circle cx="200" cy="70" r="20" fill="${V('s-paper')}"/>` +
+          `<path d="M200 70V54M200 70H212" stroke="${V('line')}" stroke-width="3"/>` +
+          R(280, 130, 100, 8, V('s-wood')) +
+          R(286, 138, 88, 44, V('s-wood-d')) +
+          R(300, 84, 44, 46, V('s-metal-d')) +
+          R(306, 90, 32, 10, V('s-screen')) +
+          R(312, 110, 20, 18, V('s-paper')) +
+          R(314, 120, 16, 8, V('el-cafe')) +
+          `<path class="steam" d="M318 106q-3 -4 0 -8M326 106q-3 -4 0 -8" stroke="${V('s-paper')}" stroke-width="2" fill="none"/>`,
+        null
+      ),
+    () =>
+      room(
+        V('s-wall-4'),
+        R(20, 38, 360, 124, V('s-metal-d')) +
+          Array.from({ length: 32 }, (_, i) => {
+            const c = (i * 7) % 5;
+            return `<rect class="${c === 0 ? 'blink' : ''}" x="${28 + (i % 8) * 44}" y="${46 + Math.floor(i / 8) * 28}" width="38" height="22" fill="${c < 2 ? V('s-stamp') : c < 4 ? V('s-book-c') : V('s-led')}"/>`;
+          }).join(''),
+        null
+      ),
+    (restored) =>
+      room(
+        V('s-wall-4'),
+        R(190, 26, 20, 10, V('s-metal-d')) +
+          `<circle class="${restored ? '' : 'blink'}" cx="200" cy="44" r="10" fill="${restored ? V('s-led') : V('b11-beacon')}"/>` +
+          graphScreen(140, 64, 120, 54, true) +
+          R(50, 140, 300, 10, V('s-wood')) +
+          R(60, 150, 280, 4, V('s-wood-d')) +
+          R(70, 150, 8, 32, V('s-wood-d')) +
+          R(322, 150, 8, 32, V('s-wood-d')) +
+          [96, 160, 224, 288]
+            .map((x) => R(x, 124, 22, 16, V('s-shade-d')))
+            .join('') +
+          `<rect x="0" y="0" width="400" height="240" fill="${restored ? V('s-led') : V('b11-beacon')}" opacity=".12"/>` +
+          banner(20, V('b11-case'), restored) +
+          banner(336, V('b11-case'), restored),
+        null
+      ),
+  ],
+  fleet_operations: [
+    () =>
+      room(
+        V('s-wall-3'),
+        R(0, 34, SW, 10, V('s-book-c')) +
+          Array.from(
+            { length: 20 },
+            (_, i) =>
+              `<path d="M${i * 20} 44l10 -10h8l-10 10z" fill="${V('line')}"/>`
+          ).join('') +
+          [16, 112, 208, 304]
+            .map(
+              (x) =>
+                R(x, 150, 76, 6, V('s-metal-d')) +
+                R(x + 6, 156, 4, 26, V('s-metal-d')) +
+                R(x + 66, 156, 4, 26, V('s-metal-d')) +
+                R(x + 24, 120, 28, 26, V('s-metal')) +
+                R(x + 36, 110, 2, 10, V('s-metal-d')) +
+                R(x + 34, 106, 6, 4, V('s-led')) +
+                R(x + 29, 128, 5, 5, V('s-screen')) +
+                R(x + 42, 128, 5, 5, V('s-screen')) +
+                R(x + 32, 146, 12, 4, V('s-metal-d'))
+            )
+            .join('') +
+          lamp(100, 50) +
+          lamp(300, 50),
+        null
+      ),
+    () =>
+      room(
+        V('s-wall-3'),
+        R(0, 148, SW, 12, V('s-metal-d')) +
+          Array.from(
+            { length: 13 },
+            (_, i) =>
+              `<circle cx="${10 + i * 32}" cy="166" r="6" fill="${V('s-metal')}"/>`
+          ).join('') +
+          R(0, 172, SW, 4, V('s-metal-d')) +
+          [30, 130, 230, 330]
+            .map(
+              (x, i) =>
+                R(x, 120, 40, 28, V('s-wood')) +
+                R(x + 16, 120, 8, 28, V('s-paper')) +
+                `<circle cx="${x + 20}" cy="80" r="12" fill="${i === 2 ? V('s-stamp') : V('s-led')}"/>` +
+                (i === 2
+                  ? `<path d="M${x + 14} 74l12 12M${x + 26} 74l-12 12" stroke="${V('s-paper')}" stroke-width="3"/>`
+                  : `<path d="M${x + 13} 80l5 5 9-10" stroke="${V('s-paper')}" stroke-width="3" fill="none"/>`) +
+                R(x + 19, 92, 2, 28, V('s-metal-d'))
+            )
+            .join(''),
+        null
+      ),
+    (restored) =>
+      room(
+        V('s-wall-3'),
+        R(116, 36, 168, 146, V('s-metal-d')) +
+          R(124, 44, 152, 138, V('s-metal')) +
+          [0, 1, 2, 3, 4, 5, 6, 7]
+            .map((i) => R(124, 54 + i * 16, 152, 2, V('s-metal-d')))
+            .join('') +
+          R(124, 44, 152, 8, V('s-book-c')) +
+          (restored
+            ? crate(20, 154, true) +
+              crate(56, 154, true) +
+              crate(38, 126, true) +
+              crate(310, 154, true) +
+              crate(346, 154, true) +
+              crate(328, 126, true)
+            : `<g transform="rotate(-12 60 170)">${crate(40, 156, false)}</g>` +
+              crate(150, 160, false) +
+              `<g transform="rotate(18 330 160)">${crate(310, 146, false)}</g>` +
+              `<g transform="rotate(-6 250 180)">${crate(232, 166, false)}</g>`) +
+          banner(30, V('b12-a'), restored) +
+          banner(330, V('b12-b'), restored),
+        null
+      ),
+  ],
+  cost_latency: [
+    () =>
+      room(
+        V('s-wall-2'),
+        [
+          [60, 70, 20],
+          [130, 70, 230],
+          [200, 70, 70],
+          [60, 130, 300],
+          [130, 130, 40],
+          [200, 130, 110],
+        ]
+          .map(([x, y, d]) => dial(x, y, 24, d))
+          .join('') +
+          R(250, 60, 10, 122, V('s-pipe')) +
+          R(250, 60, 30, 10, V('s-pipe')),
+        [300, 40]
+      ),
+    () =>
+      room(
+        V('s-wall-2'),
+        [44, 96, 148]
+          .map(
+            (y) =>
+              R(10, y + 30, 380, 6, V('s-wood')) +
+              Array.from(
+                { length: 11 },
+                (_, i) =>
+                  R(18 + i * 34, y, 28, 30, V('s-wood-d')) +
+                  R(22 + i * 34, y + 8, 20, 10, V('s-paper')) +
+                  R(25 + i * 34, y + 12, 14, 2, V('s-ink-soft'))
+              ).join('')
+          )
+          .join(''),
+        null
+      ),
+    (restored) =>
+      room(
+        V('s-wall-2'),
+        R(150, 32, 100, 16, V('s-metal-d')) +
+          R(144, 36, 6, 8, V('s-metal')) +
+          R(250, 36, 6, 8, V('s-metal')) +
+          (restored
+            ? `<path d="M164 48H236V84l-6 6-6-6-6 6-6-6-6 6-6-6-6 6-6-6-6 6-6-6-6 6-6-6Z" fill="${V('s-paper')}"/>` +
+              [56, 64, 72]
+                .map((y) => R(172, y, 56, 3, V('s-ink-soft')))
+                .join('')
+            : R(164, 48, 72, 134, V('s-paper')) +
+              `<path d="M164 182q-20 18 -80 14q60 -4 80 -14z" fill="${V('s-paper')}"/>` +
+              `<path d="M236 182c30 10 60 4 80 14h-80z" fill="${V('s-paper')}"/>` +
+              Array.from({ length: 14 }, (_, i) =>
+                R(172, 56 + i * 9, 30 + ((i * 13) % 26), 3, V('s-ink-soft'))
+              ).join('') +
+              R(172, 172, 56, 4, V('s-stamp'))) +
+          desk(20, 100) +
+          R(40, 112, 50, 28, V('b13-case')) +
+          R(46, 116, 38, 10, V('b13-lcd')) +
+          banner(330, V('b13-case'), restored),
         null
       ),
   ],

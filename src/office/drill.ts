@@ -3,6 +3,7 @@
  * the exam, with the number of questions the game has for each domain.
  */
 import type { Locale } from '@/i18n/index';
+import type { Exam } from '@/training/domain/exams';
 
 export interface Certification {
   title: string;
@@ -11,23 +12,6 @@ export interface Certification {
   date: string;
   proof?: string;
   score?: string;
-}
-
-export interface ExamDomain {
-  key: string;
-  name: Record<Locale, string>;
-  /** Share of the exam, between 0 and 1. */
-  weight: number;
-}
-
-export interface Exam {
-  code: string;
-  name: string;
-  questionCount: number;
-  minutes: number;
-  passScore: number;
-  maxScore: number;
-  domains: ExamDomain[];
 }
 
 export interface CertificationRow {
@@ -44,8 +28,8 @@ export interface CertificationRow {
 export interface DomainRow {
   key: string;
   name: string;
-  /** Weight in whole percent. */
-  weight: number;
+  /** Weight in whole percent, when the exam guide gives it. */
+  weight: number | null;
   questions: number;
 }
 
@@ -85,10 +69,10 @@ export function certificationRows(
   }));
 }
 
-/** Each exam domain with its weight and the questions the game holds for it. */
+/** Each exam domain with its weight, when known, and the questions the game holds for it. */
 export function domainRows(
   exam: Exam,
-  questions: { domain: string }[],
+  questions: readonly { domain: string }[],
   lang: Locale
 ): DomainRow[] {
   const counts = new Map(exam.domains.map((d) => [d.key, 0]));
@@ -101,7 +85,7 @@ export function domainRows(
   return exam.domains.map((d) => ({
     key: d.key,
     name: d.name[lang],
-    weight: Math.round(d.weight * 100),
+    weight: d.weight === undefined ? null : Math.round(d.weight * 100),
     questions: counts.get(d.key) ?? 0,
   }));
 }

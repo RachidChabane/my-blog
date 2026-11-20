@@ -3,7 +3,7 @@
  * Every action of a fight has its own short phrase (a timbre and a motif), keyed by
  * the same id as its animation and its name.
  */
-import type { BossKey, MoveKey, TypeKey } from '../../domain/foes';
+import type { MoveKey, TypeKey } from '../../domain/foes';
 import { G } from './state';
 
 /** A phrase: a waveform, notes as [frequency, seconds], an optional slide and noise burst. */
@@ -294,25 +294,32 @@ const PARTY: Record<string, Phrase> = {
 };
 
 /* ---------- enemies: a timbre per kind, a motif per move ---------- */
-const TIMBRE: Record<
-  TypeKey | BossKey,
-  { wave: OscillatorType; base: number }
-> = {
-  grib: { wave: 'triangle', base: 196 },
-  fau: { wave: 'square', base: 233 },
-  mask: { wave: 'sine', base: 175 },
-  spam: { wave: 'square', base: 311 },
-  cut: { wave: 'sawtooth', base: 262 },
-  deca: { wave: 'sine', base: 147 },
-  pil: { wave: 'triangle', base: 277 },
-  din: { wave: 'sawtooth', base: 131 },
-  kettle: { wave: 'square', base: 349 },
-  loop: { wave: 'sawtooth', base: 110 },
-  dispatcher: { wave: 'square', base: 98 },
-  allowall: { wave: 'sawtooth', base: 123 },
-  offschema: { wave: 'triangle', base: 92 },
-  leak: { wave: 'square', base: 82 },
-};
+/** A timbre per enemy kind, and per boss by the domain of its chapter. */
+const TIMBRE: Record<TypeKey | string, { wave: OscillatorType; base: number }> =
+  {
+    grib: { wave: 'triangle', base: 196 },
+    fau: { wave: 'square', base: 233 },
+    mask: { wave: 'sine', base: 175 },
+    spam: { wave: 'square', base: 311 },
+    cut: { wave: 'sawtooth', base: 262 },
+    deca: { wave: 'sine', base: 147 },
+    pil: { wave: 'triangle', base: 277 },
+    din: { wave: 'sawtooth', base: 131 },
+    kettle: { wave: 'square', base: 349 },
+    agentic_architecture: { wave: 'sawtooth', base: 110 },
+    tool_design_mcp: { wave: 'square', base: 98 },
+    claude_code: { wave: 'sawtooth', base: 123 },
+    prompt_engineering: { wave: 'triangle', base: 92 },
+    context_management: { wave: 'square', base: 82 },
+    integration_reliability: { wave: 'sawtooth', base: 139 },
+    agent_architecture: { wave: 'square', base: 117 },
+    observability: { wave: 'sine', base: 87 },
+    evaluation: { wave: 'triangle', base: 104 },
+    guardrails_security: { wave: 'sawtooth', base: 156 },
+    debugging_incidents: { wave: 'square', base: 185 },
+    fleet_operations: { wave: 'triangle', base: 131 },
+    cost_latency: { wave: 'sine', base: 165 },
+  };
 /** Each move's motif: intervals over the base, note length, slide, noise. */
 const MOTIF: Record<
   MoveKey,
@@ -336,6 +343,10 @@ const MOTIF: Record<
   shift: { steps: [1, 1.19, 1.41, 1.68, 2], len: 0.05, slide: 1.2 },
   overflow: { steps: [2, 1.5, 1, 0.75], len: 0.12, noise: 0.3 },
   spill: { steps: [1.5, 1.2, 1, 0.8], len: 0.1, slide: 0.8, noise: 0.25 },
+  unlog: { steps: [2, 1.5, 1, 0.5], len: 0.09, slide: 0.5 },
+  refit: { steps: [1, 1.33, 1, 1.33], len: 0.07 },
+  bill: { steps: [3, 2.5, 3], len: 0.05, noise: 0.05 },
+  timeout: { steps: [2, 2, 2, 0.5], len: 0.11, noise: 0.35 },
 };
 export function movePhrase(kind: string, move: MoveKey): Phrase {
   const t = TIMBRE[kind as keyof typeof TIMBRE] ?? TIMBRE.grib;

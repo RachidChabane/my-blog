@@ -3,11 +3,12 @@
  * travels to the target and how, and what the impact shows. One recipe per action id,
  * so no two actions share an animation; fx.ts plays them.
  */
-import type { BossKey, MoveKey, TypeKey } from '../../domain/foes';
+import type { MoveKey, TypeKey } from '../../domain/foes';
 import { MOVES } from '../../domain/foes';
 import type { MemberKey, SkillKey } from '../../domain/party';
 import type { ItemKey, PowerKey } from '../../domain/rules';
 import type { PropKey } from './art';
+import { bossColor, isBossLook } from './art';
 
 export type Motion =
   | 'lunge'
@@ -267,7 +268,8 @@ export const PARTY_RECIPES: Record<
 };
 
 /* ---------- enemies: each kind throws its own thing, each move moves it its own way ---------- */
-type Kind = TypeKey | BossKey;
+/** An enemy kind, or a boss by the domain of its chapter. */
+type Kind = TypeKey | string;
 const KIND_MOTION: Record<Kind, Motion> = {
   grib: 'wobble',
   fau: 'slide',
@@ -278,11 +280,19 @@ const KIND_MOTION: Record<Kind, Motion> = {
   pil: 'dash',
   din: 'stomp',
   kettle: 'squash',
-  loop: 'whirl',
-  dispatcher: 'flicker',
-  allowall: 'loom',
-  offschema: 'pulse',
-  leak: 'drip',
+  agentic_architecture: 'whirl',
+  tool_design_mcp: 'flicker',
+  claude_code: 'loom',
+  prompt_engineering: 'pulse',
+  context_management: 'drip',
+  integration_reliability: 'whirl',
+  agent_architecture: 'flicker',
+  observability: 'drip',
+  evaluation: 'pulse',
+  guardrails_security: 'loom',
+  debugging_incidents: 'stomp',
+  fleet_operations: 'slide',
+  cost_latency: 'squash',
 };
 const KIND_PROP: Record<Kind, PropKey> = {
   grib: 'blob',
@@ -294,11 +304,19 @@ const KIND_PROP: Record<Kind, PropKey> = {
   pil: 'hand',
   din: 'note',
   kettle: 'steam',
-  loop: 'loop',
-  dispatcher: 'plug',
-  allowall: 'key',
-  offschema: 'scroll',
-  leak: 'wave',
+  agentic_architecture: 'loop',
+  tool_design_mcp: 'plug',
+  claude_code: 'key',
+  prompt_engineering: 'scroll',
+  context_management: 'wave',
+  integration_reliability: 'retry',
+  agent_architecture: 'baton',
+  observability: 'ghostlog',
+  evaluation: 'gauge',
+  guardrails_security: 'needle',
+  debugging_incidents: 'siren',
+  fleet_operations: 'branch',
+  cost_latency: 'coin',
 };
 const MOVE_PATH: Record<MoveKey, Path> = {
   hit: 'line',
@@ -319,6 +337,10 @@ const MOVE_PATH: Record<MoveKey, Path> = {
   shift: 'line',
   overflow: 'drop',
   spill: 'drop',
+  unlog: 'line',
+  refit: 'line',
+  bill: 'boomerang',
+  timeout: 'low',
 };
 const MOVE_IMPACT: Record<MoveKey, Impact> = {
   hit: { burst: { glyph: 'star', color: c('hurt'), n: 5 }, shake: 4 },
@@ -362,7 +384,20 @@ const MOVE_IMPACT: Record<MoveKey, Impact> = {
     tint: c('st-poison'),
     shake: 5,
   },
+  unlog: { burst: { glyph: 'dot', color: c('fog'), n: 8 }, tint: c('fog') },
+  refit: { burst: { glyph: 'plus', color: c('gold'), n: 5 }, stamp: 'refit' },
+  bill: { burst: { glyph: 'bang', color: c('gold'), n: 4 }, stamp: 'bill' },
+  timeout: {
+    burst: { glyph: 'star', color: c('hurt'), n: 10 },
+    shake: 14,
+    tint: c('hurt'),
+    stamp: 'timeout',
+  },
 };
+
+/** A boss's own moves ring in its colour; the other enemies' in gold. */
+const ringColor = (k: Kind): string =>
+  isBossLook(k) ? bossColor(k) : c('gold');
 
 /** The recipe of an enemy's move. Moves that reach the whole party travel as a wave. */
 export function moveRecipe(kind: string, move: MoveKey): Recipe {
@@ -375,7 +410,7 @@ export function moveRecipe(kind: string, move: MoveKey): Recipe {
       : reach === 'self' || reach === 'field'
         ? move === 'fog'
           ? { kind: 'wave', color: c('fog') }
-          : { kind: 'rings', color: c('gold'), count: 2 }
+          : { kind: 'rings', color: ringColor(k), count: 2 }
         : { kind: 'fly', prop, path: MOVE_PATH[move] };
   return {
     actor: KIND_MOTION[k] ?? 'wobble',

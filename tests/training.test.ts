@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import questions from '@/training/data/questions.json';
-import exam from '@/training/data/exam.json';
+import { BANKS, bankOf } from '@/training/data/banks';
+import { EXAMS, FOUNDATIONS_EXAM } from '@/training/domain/exams';
+import { sheetLabel } from '@/training/domain/bank';
 import v1Save from './fixtures/training-save-v1.json';
 import { drawOptions } from '@/training/domain/options';
 import { seededRng } from '@/training/domain/random';
@@ -15,7 +16,9 @@ import {
   BOSSES,
   BOSS_HP_SHARE,
   BOSS_KEYS,
+  DARK_FACTOR,
   MOVES,
+  TUNED_FACTOR,
   TYPES,
   TYPE_KEYS,
 } from '@/training/domain/foes';
@@ -53,7 +56,9 @@ import {
   roundEnd,
   skillBlock,
   standing,
+  isDark,
   targetable,
+  tunedTo,
   useItem,
   usePower,
 } from '@/training/domain/engine';
@@ -78,7 +83,7 @@ import {
   serializeSave,
 } from '@/training/domain/save';
 import type { SaveData } from '@/training/domain/save';
-import { COPY } from '@/training/i18n/copy';
+import { COPY, cineCopy, storyOf } from '@/training/i18n/copy';
 import { PAGE_COPY } from '@/training/i18n/page-copy';
 import {
   PARTY_RECIPES,
@@ -86,29 +91,67 @@ import {
   recipeSignature,
 } from '@/training/client/game/fx-recipes';
 import { phraseOf } from '@/training/client/game/sound';
-import { LIVE, campaign, ctxFor } from './training-sim';
+import { DEV_PRO, DEV_PRO_BANK, LIVE, campaign, ctxFor } from './training-sim';
+import { CAMPAIGNS, DEVELOPER_PROFESSIONAL } from '@/training/domain/campaigns';
 import {
   CURVE,
   buildCampaign,
   recruitAt,
   recruitsOfBeaten,
 } from '@/training/domain/campaign';
-import type { CampaignSpec } from '@/training/domain/campaign';
-import eightSpec from './fixtures/campaign-eight-domains.json';
 
+const questions = bankOf(FOUNDATIONS_EXAM.key);
 const ids = new Set(questions.map((q) => q.id));
-const domains = new Set(exam.domains.map((d) => d.key));
 
-describe('question bank', () => {
-  it('has unique ids, known domains, four options and a valid answer', () => {
-    expect(ids.size).toBe(questions.length);
-    for (const q of questions) {
-      expect(domains.has(q.domain)).toBe(true);
-      expect(q.options.fr).toHaveLength(4);
-      expect(q.options.en).toHaveLength(4);
-      expect(q.answer).toBeGreaterThanOrEqual(0);
-      expect(q.answer).toBeLessThan(4);
-    }
+describe('question banks', () => {
+  for (const exam of EXAMS)
+    describe(exam.name, () => {
+      const bank = bankOf(exam.key);
+      const domains = exam.domains.map((d) => d.key);
+      it('has unique ids, known domains, four options and a valid answer, in both languages', () => {
+        expect(new Set(bank.map((q) => q.id)).size).toBe(bank.length);
+        for (const q of bank) {
+          expect(domains, q.id).toContain(q.domain);
+          for (const l of ['fr', 'en'] as const) {
+            expect(q.options[l], q.id).toHaveLength(4);
+            expect(q.stem[l].trim(), q.id).not.toBe('');
+            expect(q.why[l].trim(), q.id).not.toBe('');
+            expect(
+              q.options[l].every((o) => o.trim() !== ''),
+              q.id
+            ).toBe(true);
+          }
+          expect(Number.isInteger(q.answer)).toBe(true);
+          expect(q.answer).toBeGreaterThanOrEqual(0);
+          expect(q.answer).toBeLessThan(4);
+        }
+      });
+      it('ships the game shape only, and questions for every domain', () => {
+        for (const q of bank)
+          expect(Object.keys(q).sort(), q.id).toEqual([
+            'answer',
+            'domain',
+            'id',
+            'options',
+            'stem',
+            'why',
+          ]);
+        for (const d of domains)
+          expect(
+            bank.some((q) => q.domain === d),
+            d
+          ).toBe(true);
+      });
+      it('labels every sheet with its domain and number', () => {
+        const labels = bank.map(sheetLabel);
+        expect(new Set(labels).size).toBe(bank.length);
+        for (const l of labels) expect(l).toMatch(/^[A-Z]{2}-\d{3}$/);
+      });
+    });
+  it('keeps one bank per exam, and no question in two banks', () => {
+    expect(Object.keys(BANKS).sort()).toEqual(EXAMS.map((e) => e.key).sort());
+    const all = Object.values(BANKS).flatMap((b) => b.map((q) => q.id));
+    expect(new Set(all).size).toBe(all.length);
   });
 });
 
@@ -465,6 +508,10 @@ describe('no dead turn', () => {
       'silence',
       'poison',
       'area',
+      'bill',
+      'timeout',
+      'unlog',
+      'refit',
     ];
     for (let seed = 1; seed <= 60; seed++) {
       const { ctx, run, F } = setup({
@@ -740,6 +787,128 @@ describe('bosses', () => {
   });
 });
 
+describe('the boss mechanics of the eight-domain campaign', () => {
+  const at = (key: string) =>
+    DEV_PRO.chapters.findIndex((c) => c.boss.key === key);
+  const bossFight = (key: string, seed = 5) => {
+    const ch = at(key);
+    const { save, ctx } = ctxFor(seed, emptyProgress(), DEV_PRO_BANK);
+    const allies = ALLY_KEYS.filter((k) => DEV_PRO.joins[k].ch <= ch).slice(-2);
+    const run = newRun(DEV_PRO, ch, {
+      level: 5,
+      recruits: allies,
+      lineup: allies,
+    });
+    run.step = FIGHTS_PER_CHAPTER;
+    const F = makeFight(ctx, run);
+    const boss = F.foes[0] as Foe;
+    const hit = (format: 'duel' | 'trident' | 'exam', right = true) =>
+      act(
+        ctx,
+        F,
+        run,
+        'hero',
+        { kind: 'attack', format, target: boss.uid },
+        {
+          sheet: DEV_PRO_BANK[DEV_PRO.chapters[ch].domain].find(
+            (id) => !F.asked.has(id)
+          ) as string,
+          right,
+        }
+      );
+    const toPhase = (share: number, format: 'duel' | 'trident' | 'exam') => {
+      boss.hp = Math.floor(boss.max * share);
+      return hit(format);
+    };
+    return { save, ctx, run, F, boss, hit, toPhase };
+  };
+  const dmgTo = (evs: Ev[], uid: number) =>
+    dmgOf(evs).find((e) => e.to.side === 'foe' && e.to.uid === uid)?.d ?? 0;
+
+  it('the Untraced goes off the radar past 60%: hidden, half damage, until a 4-option answer traces it', () => {
+    const { ctx, F, run, boss, hit, toPhase } = bossFight('dark');
+    const before = dmgTo(hit('trident'), boss.uid);
+    toPhase(0.6, 'trident');
+    expect(boss.phase).toBe(1);
+    expect(isDark(boss)).toBe(true);
+    boss.st = {};
+    const dark = dmgTo(hit('trident'), boss.uid);
+    expect(dark).toBeLessThan(before);
+    expect(dark).toBe(Math.max(1, Math.floor(before * DARK_FACTOR)));
+    expect(boss.st.traced).toBeUndefined();
+    const traced = hit('exam');
+    expect(
+      traced.some(
+        (e) => e.k === 'status' && e.s === 'traced' && e.change === 'on'
+      )
+    ).toBe(true);
+    expect(isDark(boss)).toBe(false);
+    expect(dmgTo(hit('trident'), boss.uid)).toBe(before);
+    boss.intent = { move: 'unlog', targets: [] };
+    foeTurn(ctx, F, run, boss);
+    expect(isDark(boss)).toBe(true);
+  });
+  it('the Untraced is traced by a radar sweep too, and a sweep stays possible while it is dark', () => {
+    const { F, run, boss, toPhase } = bossFight('dark');
+    toPhase(0.6, 'trident');
+    F.revealed.add(boss.uid);
+    run.tokens = run.maxTokens;
+    expect(skillBlock(F, run, 'vigie', 'balayage')).toBeNull();
+  });
+  it('the Shifting Benchmark fits itself to the last format: that format deals half until another lands', () => {
+    const { ctx, F, run, boss, hit, toPhase } = bossFight('overfit');
+    const full = dmgTo(hit('trident'), boss.uid);
+    toPhase(0.5, 'duel');
+    expect(boss.phase).toBe(1);
+    const tune = hit('trident');
+    expect(tune.some((e) => e.k === 'tune' && e.format === 'trident')).toBe(
+      true
+    );
+    expect(tunedTo(boss)).toBe('trident');
+    const p = preview(ctx, F, run, 'hero', { format: 'trident' }, boss.uid);
+    const fitted = dmgTo(hit('trident'), boss.uid);
+    expect(fitted).toBe(p.hits[0].d);
+    expect(fitted).toBe(Math.max(1, Math.floor(full * TUNED_FACTOR)));
+    hit('exam');
+    expect(tunedTo(boss)).toBe('exam');
+    expect(dmgTo(hit('trident'), boss.uid)).toBe(full);
+  });
+  it('the Meter bills tokens, then counts down to a timeout that a right Duel winds back', () => {
+    const { ctx, F, run, boss, hit, toPhase } = bossFight('meter');
+    run.tokens = 5;
+    boss.intent = { move: 'bill', targets: ['hero'] };
+    foeTurn(ctx, F, run, boss);
+    expect(run.tokens).toBe(3);
+    const start = toPhase(0.5, 'trident');
+    expect(start.some((e) => e.k === 'clock' && e.change === 'start')).toBe(
+      true
+    );
+    expect(boss.st.clock).toBe(3);
+    boss.atk = 0.01;
+    const turn = () => {
+      foeTurn(ctx, F, run, boss);
+      roundEnd(ctx, F, run);
+    };
+    turn();
+    turn();
+    expect(boss.st.clock).toBe(1);
+    expect(boss.intent?.move).toBe('timeout');
+    const back = hit('duel');
+    expect(back.some((e) => e.k === 'clock' && e.change === 'back')).toBe(true);
+    expect(boss.st.clock).toBe(2);
+    expect(boss.intent?.move).not.toBe('timeout');
+    hit('trident');
+    expect(boss.st.clock).toBe(2);
+    turn();
+    expect(boss.intent?.move).toBe('timeout');
+    const out = foeTurn(ctx, F, run, boss);
+    expect(
+      out.filter((e) => e.k === 'dmg' && e.to.side === 'party').length
+    ).toBe(standing(F, run).length);
+    expect(boss.st.clock).toBe(3);
+  });
+});
+
 describe('the difficulty curve', () => {
   const SEEDS = 16;
   const stats = (k: number) => {
@@ -795,15 +964,10 @@ describe('the difficulty curve', () => {
   });
 });
 
-describe('a campaign of eight domains', () => {
-  const spec = eightSpec as CampaignSpec;
-  const camp = buildCampaign(spec);
-  const bank = Object.fromEntries(
-    spec.domains.map((d) => [
-      d,
-      Array.from({ length: 40 }, (_, i) => `${d}-${i}`),
-    ])
-  );
+describe('the eight-domain campaign (Developer - Professional)', () => {
+  const spec = DEVELOPER_PROFESSIONAL;
+  const camp = DEV_PRO;
+  const bank = DEV_PRO_BANK;
   it('gets one chapter per domain, each with its rooms and a boss of at least two phases', () => {
     expect(camp.chapters.map((c) => c.domain)).toEqual(spec.domains);
     for (const c of camp.chapters) {
@@ -890,6 +1054,31 @@ describe('a campaign of eight domains', () => {
       return (evs.find((e) => e.k === 'free') as { xp: number }).xp;
     };
     expect(xpOf(camp)).toBeLessThan(xpOf({ ...camp, xpShare: 1 }));
+  });
+  it('uses each boss mechanic once, the three new ones included', () => {
+    const keys = camp.chapters.map((c) => c.boss.key);
+    expect(new Set(keys).size).toBe(keys.length);
+    expect(keys).toEqual(expect.arrayContaining(['dark', 'overfit', 'meter']));
+    expect([...BOSS_KEYS].sort()).toEqual(
+      [
+        ...new Set(
+          CAMPAIGNS.flatMap((c) => c.chapters.map((ch) => ch.boss.key))
+        ),
+      ].sort()
+    );
+  });
+  it('a 75% player wins most chapters at the first try, and a 50% player finishes', () => {
+    const SEEDS = 16;
+    const p75 = Array.from({ length: SEEDS }, (_, s) =>
+      campaign(s + 1, 2 / 3, { camp })
+    );
+    const firsts = camp.chapters.map(
+      (_, ch) => p75.filter((r) => r.attempts[ch] === 1).length / SEEDS
+    );
+    expect(firsts.reduce((a, b) => a + b, 0) / firsts.length).toBeGreaterThan(
+      0.75
+    );
+    expect(firsts.filter((f) => f >= 0.5)).toHaveLength(firsts.length);
   });
   it('is played to the end by the simulated players, harder chapter after chapter', () => {
     const SEEDS = 8;
@@ -996,6 +1185,52 @@ describe('save format', () => {
     expect(s.campaigns[LIVE.key].freed).toEqual(v1Save.freed);
     expect(s.campaigns[LIVE.key].review).toEqual(v1Save.review);
   });
+  it('keeps the two exams apart: playing one never changes the other', () => {
+    const devIds = new Set(bankOf(DEV_PRO.key).map((q) => q.id));
+    const both = [...shelves, { camp: DEV_PRO, ids: devIds }];
+    const s = loadSave(
+      (k) => (k === SAVE_KEY_V1 ? JSON.stringify(v1Save) : null),
+      both,
+      LIVE
+    );
+    const foundations = serializeSave({ ...s, campaigns: { ...s.campaigns } });
+    const dev = progressOf(s, DEV_PRO.key);
+    const book = bookFor(dev, () => {});
+    const devId = [...devIds][0];
+    book.free(devId);
+    book.review([...devIds][1], false);
+    book.learn('grib');
+    dev.beaten.push(DEV_PRO.chapters[0].domain);
+    dev.xp = 120;
+    const back = parseSave(serializeSave(s), both, LIVE);
+    expect(back.campaigns[LIVE.key]).toEqual(
+      JSON.parse(foundations).campaigns[LIVE.key]
+    );
+    expect(back.campaigns[LIVE.key].freed).not.toContain(devId);
+    expect(back.campaigns[DEV_PRO.key].freed).toEqual([devId]);
+    expect(back.campaigns[DEV_PRO.key].beaten).toEqual([
+      DEV_PRO.chapters[0].domain,
+    ]);
+    const fromFoundationsPage = parseSave(serializeSave(s), shelves, LIVE);
+    expect(fromFoundationsPage.campaigns[DEV_PRO.key].freed).toEqual([devId]);
+    const fromDevPage = parseSave(
+      serializeSave(s),
+      [{ camp: DEV_PRO, ids: devIds }],
+      LIVE
+    );
+    expect(fromDevPage.campaigns[LIVE.key].freed).toEqual(v1Save.freed);
+  });
+  it('drops ids of the other exam from a campaign’s progress', () => {
+    const devIds = new Set(bankOf(DEV_PRO.key).map((q) => q.id));
+    const s = emptySave();
+    progressOf(s, DEV_PRO.key).freed = ['aa-001', [...devIds][0]];
+    const back = parseSave(
+      serializeSave(s),
+      [{ camp: DEV_PRO, ids: devIds }],
+      LIVE
+    );
+    expect(back.campaigns[DEV_PRO.key].freed).toEqual([[...devIds][0]]);
+  });
   it('tells which stored saves must never be written over', () => {
     expect(readable(null)).toBe(true);
     expect(readable(JSON.stringify(v1Save))).toBe(true);
@@ -1043,14 +1278,19 @@ describe('every action looks and sounds its own way', () => {
     for (const t of TYPE_KEYS)
       for (const m of [...TYPES[t].pattern, 'hit' as MoveKey])
         out.add(`move:${t}:${m}`);
-    for (const b of BOSS_KEYS) {
-      for (const p of BOSSES[b])
-        for (const m of [...p.pattern, 'hit' as MoveKey])
-          out.add(`move:${b}:${m}`);
-      for (const p of BOSSES[b])
-        for (const t of p.summon ?? [])
-          for (const m of TYPES[t].pattern) out.add(`move:${t}:${m}`);
-    }
+    for (const camp of CAMPAIGNS)
+      for (const ch of camp.chapters) {
+        for (const p of ch.boss.phases)
+          for (const m of [
+            ...p.pattern,
+            'hit',
+            ...(p.clock ? ['timeout'] : []),
+          ] as MoveKey[])
+            out.add(`move:${ch.domain}:${m}`);
+        for (const p of ch.boss.phases)
+          for (const t of p.summon ?? [])
+            for (const m of TYPES[t].pattern) out.add(`move:${t}:${m}`);
+      }
     return [...out];
   };
   it('has a recipe for every action, and no two recipes alike', () => {
@@ -1116,14 +1356,61 @@ describe('copy', () => {
         expect(c.statuses[s as keyof typeof STATUS].help).toBeTruthy();
       for (const m of Object.keys(MOVES))
         expect(c.moves[m as MoveKey].name).toBeTruthy();
-      for (const k of ALLY_KEYS)
-        expect(c.cines[`join-${k}`].shots).toHaveLength(3);
-      expect(c.titles.length).toBe(LEVELS.length);
-      LIVE.chapters.forEach((ch) =>
-        expect(c.chapters[ch.domain].boss.phases).toHaveLength(
-          ch.boss.phases.length - 1
-        )
-      );
+      for (const camp of CAMPAIGNS) {
+        const story = storyOf(c, camp.key);
+        const domains = camp.chapters.map((ch) => ch.domain);
+        for (const k of ALLY_KEYS)
+          expect(
+            cineCopy(c, story, `join-${k}`, domains, 1).shots
+          ).toHaveLength(3);
+        expect(story.titles.length).toBe(LEVELS.length);
+        expect(Object.keys(story.chapters).sort()).toEqual([...domains].sort());
+        camp.chapters.forEach((ch) => {
+          const cc = story.chapters[ch.domain];
+          expect(cc.boss.phases, ch.domain).toHaveLength(
+            ch.boss.phases.length - 1
+          );
+          expect(cc.short.length, ch.domain).toBeLessThanOrEqual(13);
+          expect(cc.places.every((p) => p.length > 0)).toBe(true);
+        });
+      }
     }
+  });
+  it('tells each campaign its own numbers: sheets in its bank, bosses in its chapters', () => {
+    for (const camp of CAMPAIGNS) {
+      const sheets = bankOf(camp.key).length;
+      const n = camp.chapters.length;
+      const domains = camp.chapters.map((ch) => ch.domain);
+      const fr = storyOf(COPY.fr, camp.key);
+      const en = storyOf(COPY.en, camp.key);
+      expect(fr.titleNew(sheets)).toContain(String(sheets));
+      expect(en.intro(sheets, n).shots.join(' ')).toContain(String(sheets));
+      expect(
+        cineCopy(COPY.en, en, 'intro', domains, sheets).shots[1]
+      ).toContain(['five', 'eight'][n === 5 ? 0 : 1]);
+      expect(COPY.fr.lines.allWon(n)).toContain(n === 5 ? 'cinq' : 'huit');
+    }
+  });
+  it('writes no em-dash in either language', () => {
+    const texts: string[] = [];
+    const walk = (x: unknown): void => {
+      if (typeof x === 'string') texts.push(x);
+      else if (typeof x === 'function') {
+        for (const args of [
+          [1, 2],
+          ['X', 2, 'tick'],
+          ['X', 'Y'],
+        ])
+          try {
+            const out = (x as (...a: unknown[]) => unknown)(...args);
+            walk(out);
+          } catch {
+            /* other arguments */
+          }
+      } else if (x && typeof x === 'object') Object.values(x).forEach(walk);
+    };
+    walk(COPY);
+    walk(PAGE_COPY);
+    expect(texts.filter((t) => t.includes('\u2014'))).toEqual([]);
   });
 });

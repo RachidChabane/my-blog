@@ -312,7 +312,7 @@ function shotsOf(id: string): Shot[] {
   const i = Number(n);
   const C = chapters()[i];
   const domain = C.domain;
-  const cc = chapterCopy(G.c, domain);
+  const cc = chapterCopy(G.s, domain);
   if (kind === 'chapter')
     return [
       {
@@ -330,8 +330,7 @@ function shotsOf(id: string): Shot[] {
         time: 'night',
         cls: 'boss',
         stage:
-          actor(bossSvg(C.boss.key), 'c-boss silhouette') +
-          card(cc.places[2], ''),
+          actor(bossSvg(domain), 'c-boss silhouette') + card(cc.places[2], ''),
         ms: 2200,
       },
     ];
@@ -341,8 +340,7 @@ function shotsOf(id: string): Shot[] {
         set: placeSvg(domain, 2),
         time: 'night',
         cls: 'boss lights-out',
-        stage:
-          actor(bossSvg(C.boss.key), 'c-boss drop') + card(cc.boss.name, ''),
+        stage: actor(bossSvg(domain), 'c-boss drop') + card(cc.boss.name, ''),
         ms: 2600,
       },
     ];
@@ -351,7 +349,7 @@ function shotsOf(id: string): Shot[] {
       set: placeSvg(domain, 2),
       time: 'night',
       cls: 'boss',
-      stage: actor(bossSvg(C.boss.key), 'c-boss fall') + cards(8, 'burst'),
+      stage: actor(bossSvg(domain), 'c-boss fall') + cards(8, 'burst'),
       ms: 2200,
     },
     {
@@ -395,8 +393,10 @@ export async function playCine(
   }
   const copy = cineCopy(
     G.c,
+    G.s,
     id,
-    chapters().map((x) => x.domain)
+    chapters().map((x) => x.domain),
+    G.qById.size
   );
   const shots = shotsOf(id);
   const keep = inline
@@ -470,8 +470,10 @@ export async function replayMenu(): Promise<void> {
         html: `${icon24('film')}<span>${esc(
           cineCopy(
             G.c,
+            G.s,
             x,
-            chapters().map((y) => y.domain)
+            chapters().map((y) => y.domain),
+            G.qById.size
           ).title
         )}</span>`,
         cls: 'reward',

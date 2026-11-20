@@ -9,7 +9,16 @@ import type { Affinity, Element } from './elements';
 import { AFFINITY_FACTOR, ELEMENTS, affinity } from './elements';
 import type { MoveKey, TypeKey } from './foes';
 import type { Campaign, ChapterRules } from './campaign';
-import { BOSS_SLEEP, MOVES, PACK_HP, SPECIAL_MOVES, TYPES } from './foes';
+import {
+  BOSS_SLEEP,
+  CLOCK_WINDBACK,
+  DARK_FACTOR,
+  MOVES,
+  PACK_HP,
+  SPECIAL_MOVES,
+  TUNED_FACTOR,
+  TYPES,
+} from './foes';
 import type { AllyKey, MemberKey, SkillKey } from './party';
 import { MEMBERS, PASSIVE, SKILLS, statsOf } from './party';
 import type { Rng } from './random';
@@ -83,6 +92,8 @@ export interface Foe extends Unit {
   pi: number;
   intent: Intent | null;
   taunts: boolean;
+  /** The format a boss that fits itself to the party is fitted to. */
+  tuned: FormatKey | null;
 }
 
 export interface Run {
@@ -192,7 +203,15 @@ export type Ev =
   | { k: 'shift'; uid: number; el: Element }
   | { k: 'fizzle'; uid: number; move: MoveKey }
   | { k: 'strike'; n: number }
-  | { k: 'echo' };
+  | { k: 'echo' }
+  | { k: 'tune'; uid: number; format: FormatKey }
+  | {
+      k: 'clock';
+      uid: number;
+      /** Turns left before it times out. */
+      n: number;
+      change: 'start' | 'tick' | 'back' | 'reset';
+    };
 
 /* ---------- reading the state ---------- */
 export const alive = (F: Fight): Foe[] => F.foes.filter((e) => !e.dead);
@@ -226,7 +245,15 @@ export const formatBlocked = (F: Fight, f: FormatKey): boolean =>
   F.fog > 0 && f === 'duel';
 /** The id of an enemy's move, for its animation, sound and name: per type, per boss. */
 export const moveAct = (e: Foe, m: MoveKey): ActKey =>
-  `move:${e.kind === 'boss' ? e.chapter.boss.key : e.kind}:${m}`;
+  `move:${e.kind === 'boss' ? e.chapter.domain : e.kind}:${m}`;
+
+/** An enemy out of sight: its next move is hidden and it takes a share of the damage. */
+export const isDark = (e: Foe): boolean =>
+  !!phaseOf(e)?.dark && !e.dead && !e.st.traced;
+/** The format this enemy is fitted to, when its phase fits itself to the party. */
+export const tunedTo = (e: Foe): FormatKey | null =>
+  phaseOf(e)?.tunes ? e.tuned : null;
+const isFoe = (u: Unit): u is Foe => 'uid' in u;
 
 /* ---------- damage: one function for the promise and the blow ---------- */
 export interface Blow {
@@ -251,13 +278,24 @@ export function blow(
   let x = atk * power * AFFINITY_FACTOR[aff];
   if (from.st.burn) x *= BURN_FACTOR;
   if (to.st.guard) x *= GUARD_FACTOR;
+  if (isFoe(to) && isDark(to)) x *= DARK_FACTOR;
   return { d: Math.max(1, Math.floor(x) - cutOf(to)), aff };
 }
 
-/** Power of a member's blow: the format's, times the skill's share and the Élan boon. */
-function memberPower(F: Fight, run: Run, f: FormatKey, share = 1): number {
+/**
+ * Power of a member's blow on a target: the format's, times the skill's share and the
+ * Élan boon, and a share of it in the format the target is fitted to.
+ */
+function memberPower(
+  F: Fight,
+  run: Run,
+  f: FormatKey,
+  to: Foe,
+  share = 1
+): number {
   const focus = run.boons.crit && !F.focusUsed ? RULES.boonFocus : 1;
-  return FORMATS[f].power * share * focus;
+  const tuned = tunedTo(to) === f ? TUNED_FACTOR : 1;
+  return FORMATS[f].power * share * focus * tuned;
 }
 
 export interface Preview {
@@ -279,16 +317,16 @@ export function preview(
   const m = memberOf(run, key);
   const s = act.skill ? SKILLS[act.skill] : null;
   const targets = s?.target === 'foes' ? targetable(F) : [foeBy(F, uid) as Foe];
-  const power = memberPower(F, run, act.format, s?.share ?? 1);
   const first = targets[0];
   const known = targets.every((e) => isKnown(ctx, F, e));
+  const power = (e: Foe) => memberPower(F, run, act.format, e, s?.share ?? 1);
   const hits = targets.flatMap((e) => {
-    const b = blow(m.atk, power, m.el, m, known ? e : neutralTwin(m.el, e));
+    const b = blow(m.atk, power(e), m.el, m, known ? e : neutralTwin(m.el, e));
     return Array.from({ length: s?.hits ?? 1 }, () => ({ uid: e.uid, d: b.d }));
   });
   return {
     hits,
-    aff: known ? blow(m.atk, power, m.el, m, first).aff : null,
+    aff: known ? blow(m.atk, power(first), m.el, m, first).aff : null,
   };
 }
 /** A copy of the target with an element neutral to the attacker, to price an unknown. */
@@ -467,6 +505,7 @@ function makeFoe(
       pi: 0,
       intent: null,
       taunts: false,
+      tuned: null,
     };
   }
   const T = TYPES[kind];
@@ -490,6 +529,7 @@ function makeFoe(
     pi: 0,
     intent: null,
     taunts: !!T.taunts,
+    tuned: null,
   };
 }
 
@@ -508,6 +548,10 @@ function checkPhase(ctx: Ctx, F: Fight, run: Run, e: Foe, ev: Ev[]): void {
   if (P.fog) {
     F.fog = RULES.fogTurns + 1;
     ev.push({ k: 'fog', turns: F.fog });
+  }
+  if (P.clock) {
+    e.st.clock = P.clock;
+    ev.push({ k: 'clock', uid: e.uid, n: P.clock, change: 'start' });
   }
   for (const t of P.summon ?? []) {
     const add = makeFoe(t, e.chapter, { pack: true });
@@ -535,8 +579,9 @@ function pickTargets(F: Fight, run: Run, ctx: Ctx, n = 1): MemberKey[] {
 }
 export function planIntent(ctx: Ctx, F: Fight, run: Run, e: Foe): void {
   const p = patternOf(e);
-  const move = p[e.pi % p.length];
+  let move = p[e.pi % p.length];
   e.pi++;
+  if (e.st.clock === 1) move = 'timeout';
   const M = MOVES[move];
   e.intent = {
     move,
@@ -694,7 +739,7 @@ function turnStart(
   return true;
 }
 function turnEnd(u: Member | Foe, ev: Ev[]): void {
-  for (const s of ['silence', 'smudge', 'taunt', 'steady'] as const)
+  for (const s of ['silence', 'smudge', 'taunt', 'steady', 'traced'] as const)
     if (u.st[s] && --(u.st[s] as number) <= 0) {
       delete u.st[s];
       if (s !== 'steady' && u.hp > 0)
@@ -779,7 +824,8 @@ export function skillBlock(
   if (run.tokens < S.cost) return 'tokens';
   const party = standing(F, run);
   if (S.target === 'down' && !allyTarget(F, run, 'down')) return 'nobody';
-  if (S.reveal && alive(F).every((e) => F.revealed.has(e.uid))) return 'known';
+  if (S.reveal && alive(F).every((e) => F.revealed.has(e.uid) && !isDark(e)))
+    return 'known';
   if (S.heal && !S.status) {
     const t = S.target === 'self' ? m : allyTarget(F, run, 'hurt');
     if (!t || (t.hp >= t.max && !(S.cleanse && badCount(t)))) return 'full';
@@ -837,15 +883,19 @@ export function act(
   }
   const targets = S?.target === 'foes' ? targetable(F) : [target];
   ev.push({ k: 'fx', act, from: who, to: targets.map((e) => foeRef(e.uid)) });
-  const power = memberPower(F, run, format, S?.share ?? 1);
+  const powers = new Map(
+    targets.map((e) => [e.uid, memberPower(F, run, format, e, S?.share ?? 1)])
+  );
   F.focusUsed = true;
   let first = 0;
   for (const e of targets) {
+    const power = powers.get(e.uid) as number;
     if (S?.breaks && e.shield > 0) {
       e.shield = 0;
       delete e.st.shield;
       ev.push({ k: 'shield', to: foeRef(e.uid), points: 0, change: 'break' });
     }
+    const wasDark = isDark(e);
     for (let h = 0; h < (S?.hits ?? 1) && !e.dead; h++) {
       const b = blow(m.atk, power, m.el, m, e);
       if (!first) first = b.d;
@@ -858,6 +908,7 @@ export function act(
     }
     if (S?.status && !e.dead)
       applyStatus(F, run, e, S.status[0], S.status[1], ev);
+    if (!e.dead) counterMechanics(ctx, F, run, e, format, wasDark, ev);
   }
   if (F.echo) {
     F.echo = false;
@@ -877,7 +928,12 @@ export function act(
           run,
           x,
           {
-            d: Math.max(1, Math.floor(first * RULES.echoShare)),
+            d: Math.max(
+              1,
+              Math.floor(
+                first * RULES.echoShare * (isDark(x) ? DARK_FACTOR : 1)
+              )
+            ),
             aff: 'neutral',
           },
           'echo',
@@ -887,6 +943,38 @@ export function act(
   }
   free(ctx, F, run, m, format, answer.sheet, ev);
   return ev;
+}
+
+/**
+ * What a right answer does to a boss mechanic besides the blow: every option shown
+ * traces an enemy out of sight, a fitted enemy fits itself to the new format, and a Duel
+ * winds a countdown back.
+ */
+function counterMechanics(
+  ctx: Ctx,
+  F: Fight,
+  run: Run,
+  e: Foe,
+  format: FormatKey,
+  /** Out of sight before the blow: the phase it just entered is not traced by it. */
+  wasDark: boolean,
+  ev: Ev[]
+): void {
+  if (wasDark && isDark(e) && format === 'exam')
+    applyStatus(F, run, e, 'traced', STATUS.traced.turns, ev);
+  if (phaseOf(e)?.tunes && e.tuned !== format) {
+    e.tuned = format;
+    ev.push({ k: 'tune', uid: e.uid, format });
+  }
+  const start = phaseOf(e)?.clock;
+  if (start && e.st.clock && format === 'duel' && e.st.clock < start) {
+    e.st.clock = Math.min(start, e.st.clock + CLOCK_WINDBACK);
+    ev.push({ k: 'clock', uid: e.uid, n: e.st.clock, change: 'back' });
+    if (e.intent?.move === 'timeout') {
+      e.pi = Math.max(0, e.pi - 1);
+      planIntent(ctx, F, run, e);
+    }
+  }
 }
 
 function free(
@@ -961,11 +1049,13 @@ function support(F: Fight, run: Run, m: Member, s: SkillKey, ev: Ev[]): void {
             : [];
   if (S.reveal) {
     ev.push({ k: 'fx', act, from, to: alive(F).map((e) => foeRef(e.uid)) });
-    for (const e of alive(F))
+    for (const e of alive(F)) {
       if (!F.revealed.has(e.uid)) {
         F.revealed.add(e.uid);
         ev.push({ k: 'reveal', uid: e.uid, el: e.el, how: 'scan' });
       }
+      if (isDark(e)) applyStatus(F, run, e, 'traced', STATUS.traced.turns, ev);
+    }
     return;
   }
   ev.push({ k: 'fx', act, from, to: targets.map((t) => memberRef(t.key)) });
@@ -1110,8 +1200,24 @@ export function foeTurn(ctx: Ctx, F: Fight, run: Run, e: Foe): Ev[] {
   const times = actionsOf(e);
   for (let i = 0; i < times && !e.dead && standing(F, run).length; i++)
     doMove(ctx, F, run, e, ev);
+  if (!e.dead) tickClock(e, ev);
   turnEnd(e, ev);
   return ev;
+}
+
+/** A countdown loses a turn each time its bearer acts, and starts again once it times out. */
+function tickClock(e: Foe, ev: Ev[]): void {
+  const start = phaseOf(e)?.clock;
+  if (!start || !e.st.clock) return;
+  e.st.clock--;
+  const reset = e.st.clock <= 0;
+  if (reset) e.st.clock = start;
+  ev.push({
+    k: 'clock',
+    uid: e.uid,
+    n: e.st.clock,
+    change: reset ? 'reset' : 'tick',
+  });
 }
 
 function doMove(ctx: Ctx, F: Fight, run: Run, e: Foe, ev: Ev[]): void {
@@ -1145,6 +1251,7 @@ function doMove(ctx: Ctx, F: Fight, run: Run, e: Foe, ev: Ev[]): void {
       if (M.status && t.hp > 0)
         applyStatus(F, run, t, M.status[0], M.status[1], ev);
       if (move === 'steal' && t.hp > 0) steal(run, t, ev);
+      if (M.drain && t.hp > 0) drain(run, t, M.drain, ev);
     }
     if (move === 'shuffle') {
       F.mixNext = true;
@@ -1155,7 +1262,12 @@ function doMove(ctx: Ctx, F: Fight, run: Run, e: Foe, ev: Ev[]): void {
   if (M.reach === 'self') {
     ev.push({ k: 'fx', act, from, to: [from] });
     if (M.shield) giveShield(e, Math.round(e.max * M.shield), from, ev);
+    if (M.heal) heal(e, Math.round(e.max * M.heal), 'mend', ev, from);
     if (move === 'allow') cleanse(e, from, ev);
+    if (move === 'unlog' && e.st.traced) {
+      delete e.st.traced;
+      ev.push({ k: 'status', to: from, s: 'traced', turns: 0, change: 'cure' });
+    }
     if (move === 'shift') {
       const i = ELEMENTS.indexOf(e.el);
       e.el = ELEMENTS[(i + 1) % ELEMENTS.length];
@@ -1183,7 +1295,12 @@ function steal(run: Run, t: Member, ev: Ev[]): void {
     ev.push({ k: 'steal', from: t.key, item, tokens: 0 });
     return;
   }
-  const n = Math.min(run.tokens, RULES.stealTokens);
+  drain(run, t, RULES.stealTokens, ev);
+}
+
+/** Tokens taken from the party, as many as it has up to `max`. */
+function drain(run: Run, t: Member, max: number, ev: Ev[]): void {
+  const n = Math.min(run.tokens, max);
   if (!n) return;
   const before = run.tokens;
   run.tokens -= n;

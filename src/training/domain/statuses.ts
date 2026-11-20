@@ -15,6 +15,8 @@ export const STATUS_KEYS = [
   'regen',
   'taunt',
   'steady',
+  'traced',
+  'clock',
 ] as const;
 export type StatusKey = (typeof STATUS_KEYS)[number];
 export type Statuses = Partial<Record<StatusKey, number>>;
@@ -48,6 +50,10 @@ export const STATUS: Record<StatusKey, StatusRule> = {
   regen: { bad: false, clock: 'start', tick: -0.1, turns: 3 },
   taunt: { bad: false, clock: 'end', turns: 2 },
   steady: { bad: false, clock: 'end', turns: 2 },
+  /* an enemy out of sight is traced, for these turns: its moves show and it takes full damage */
+  traced: { bad: false, clock: 'end', turns: 2 },
+  /* a countdown run by its bearer: turns left before it times out, set by its phase */
+  clock: { bad: false, clock: 'end', turns: 0 },
 };
 
 /** A burnt bearer deals this share of its damage. */

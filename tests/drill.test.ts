@@ -4,14 +4,17 @@ import {
   certificationRows,
   domainRows,
 } from '@/office/drill';
-import type { Certification, Exam } from '@/office/drill';
+import type { Certification } from '@/office/drill';
 import { officeStrings } from '@/office/strings';
 import certifications from '@/training/data/certifications.json';
-import exam from '@/training/data/exam.json';
-import questions from '@/training/data/questions.json';
+import { bankOf } from '@/training/data/banks';
+import {
+  DEVELOPER_PROFESSIONAL_EXAM,
+  FOUNDATIONS_EXAM,
+} from '@/training/domain/exams';
 
 const MONTHS = officeStrings('fr').months;
-const EXAM = exam as Exam;
+const EXAM = FOUNDATIONS_EXAM;
 
 describe('training page data', () => {
   it('writes a day date out and keeps a year as it is', () => {
@@ -54,9 +57,19 @@ describe('training page data', () => {
   });
 
   it('places every question of the game in a domain, weights summing to the whole exam', () => {
+    const questions = bankOf(EXAM.key);
     const rows = domainRows(EXAM, questions, 'fr');
     expect(rows.reduce((n, r) => n + r.questions, 0)).toBe(questions.length);
-    expect(rows.reduce((n, r) => n + r.weight, 0)).toBe(100);
+    expect(rows.reduce((n, r) => n + (r.weight ?? 0), 0)).toBe(100);
     expect(rows.every((r) => r.name.length > 0)).toBe(true);
+  });
+
+  it('gives no weight to the domains of an exam whose guide does not state them', () => {
+    const exam = DEVELOPER_PROFESSIONAL_EXAM;
+    const questions = bankOf(exam.key);
+    const rows = domainRows(exam, questions, 'en');
+    expect(rows.map((r) => r.weight)).toEqual(exam.domains.map(() => null));
+    expect(rows.reduce((n, r) => n + r.questions, 0)).toBe(questions.length);
+    expect(rows.every((r) => r.questions > 0)).toBe(true);
   });
 });

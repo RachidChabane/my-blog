@@ -5,7 +5,7 @@
 import { idsByDomain } from '../../domain/bank';
 import { seededRng } from '../../domain/random';
 import { bookFor } from '../../domain/save';
-import { COPY } from '../../i18n/copy';
+import { COPY, storyOf } from '../../i18n/copy';
 import type { GameHost } from '../host';
 import css from './game.css?raw';
 import type { MoveKey } from '../../domain/foes';
@@ -38,7 +38,7 @@ function markup(): string {
     </section>
     <section class="dialog narr" id="dialog" aria-live="polite">
       <div class="face" id="dlg-face"></div>
-      <div class="body"><span class="tab" id="dlg-who"></span><div class="txt" id="dlg-txt"></div></div>
+      <div class="body"><span class="tab" id="dlg-who"></span><div class="txt" id="dlg-txt"></div><span class="more" id="dlg-more" aria-hidden="true" hidden><b>${esc(c.scrollHint)} ↓</b></span></div>
       <span class="prog" id="dlg-prog"></span>
     </section>
     <section class="side" aria-label="${esc(c.yourSide)}">
@@ -82,6 +82,7 @@ export function mountGame(host: HTMLElement, api: GameHost): void {
   G.root = root;
   G.host = api;
   G.c = COPY[api.lang];
+  G.s = storyOf(G.c, api.campaign.key);
   G.rng = seededRng(Date.now());
   G.qById = new Map(api.questions.map((q) => [q.id, q]));
   G.ctx = {

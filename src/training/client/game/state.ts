@@ -3,13 +3,15 @@ import type { Question } from '../../domain/bank';
 import type { ChapterRules } from '../../domain/campaign';
 import type { Ctx, Fight, Run } from '../../domain/engine';
 import type { Rng } from '../../domain/random';
-import type { Copy } from '../../i18n/copy';
+import type { Copy, StoryCopy } from '../../i18n/copy';
 import type { GameHost } from '../host';
 
 export interface GameState {
   root: ShadowRoot;
   host: GameHost;
   c: Copy;
+  /** The story of the campaign being played. */
+  s: StoryCopy;
   rng: Rng;
   ctx: Ctx;
   qById: Map<string, Question>;

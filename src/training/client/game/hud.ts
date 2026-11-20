@@ -9,9 +9,11 @@ import {
   actionsOf,
   alive,
   intentDamage,
+  isDark,
   isKnown,
   memberOf,
   shielded,
+  tunedTo,
 } from '../../domain/engine';
 import { MOVES, SPECIAL_MOVES } from '../../domain/foes';
 import type { MemberKey } from '../../domain/party';
@@ -101,10 +103,10 @@ export function showDown(to: Ref): void {
 /* ---------- names ---------- */
 export const foeName = (e: Foe): string =>
   e.kind === 'boss'
-    ? chapterCopy(G.c, e.chapter.domain).boss.name
+    ? chapterCopy(G.s, e.chapter.domain).boss.name
     : G.c.types[e.kind].name;
 export const foeArt = (e: Foe): string =>
-  e.kind === 'boss' ? bossSvg(e.chapter.boss.key) : foeSvg(e.kind);
+  e.kind === 'boss' ? bossSvg(e.chapter.domain) : foeSvg(e.kind);
 export const memberName = (k: MemberKey): string => G.c.members[k].name;
 export const who = (k: MemberKey) => ({
   name: memberName(k),
@@ -161,6 +163,7 @@ function intentText(
     };
   if (e.st.stun)
     return { icon: moveIcon('stun'), html: esc(G.c.statuses.stun.name) };
+  if (isDark(e)) return { icon: moveIcon('unlog'), html: `<b>?</b>` };
   const m = e.intent?.move ?? 'hit';
   const mv = e.st.silence && SPECIAL_MOVES.has(m) ? 'hit' : m;
   const M = MOVES[mv];
@@ -190,6 +193,7 @@ function intentText(
 export function intentHelp(F: Fight, run: Run, e: Foe): string {
   if (e.st.sleep) return G.c.statuses.sleep.help;
   if (e.st.stun) return G.c.statuses.stun.help;
+  if (isDark(e)) return G.c.status.hiddenHelp;
   const m = e.intent?.move ?? 'hit';
   const mv = e.st.silence && SPECIAL_MOVES.has(m) ? 'hit' : m;
   const k = e.intent?.targets[0];
@@ -226,7 +230,11 @@ export function updateFoes(
     el.classList.toggle('asleep', !!viewOf(e).st.sleep);
     const it = el.querySelector('.intent') as HTMLElement;
     const t = intentText(F, run, e);
-    it.className = `intent i-${e.intent?.move ?? 'hit'}${MOVES[e.intent?.move ?? 'hit'].reach === 'all' ? ' area' : ''}`;
+    const dark = isDark(e);
+    el.classList.toggle('dark', dark);
+    it.className = dark
+      ? 'intent i-hidden'
+      : `intent i-${e.intent?.move ?? 'hit'}${MOVES[e.intent?.move ?? 'hit'].reach === 'all' ? ' area' : ''}`;
     it.innerHTML = `${t.icon}<span>${t.html}</span>`;
     it.setAttribute('aria-label', intentHelp(F, run, e));
     (el.querySelector('.fname') as HTMLElement).textContent = foeName(e);
@@ -243,8 +251,14 @@ export function updateFoes(
     if (!pvn.classList.contains('delta')) pvn.textContent = `${v.hp}/${e.max}`;
     setBar(el.querySelector('.hb') as HTMLElement, v.hp, e.max);
     const tag = el.querySelector('.shield-tag') as HTMLElement;
-    tag.hidden = !sh;
-    tag.textContent = G.c.types.mask.name;
+    const tuned = tunedTo(e);
+    tag.hidden = !sh && !tuned;
+    tag.classList.toggle('tuned', !sh && !!tuned);
+    tag.textContent = sh
+      ? G.c.types.mask.name
+      : tuned
+        ? G.c.status.tuned(G.c.formats[tuned].name)
+        : '';
     el.setAttribute(
       'aria-label',
       G.c.status.foeAria(

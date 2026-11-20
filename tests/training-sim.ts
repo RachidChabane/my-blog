@@ -2,7 +2,7 @@
  * A simulated player for the training game: it plays whole campaigns with the real rules
  * and a fixed share of the answers known, so the difficulty curve can be measured.
  */
-import questions from '@/training/data/questions.json';
+import { bankOf } from '@/training/data/banks';
 import { idsByDomain } from '@/training/domain/bank';
 import type { Ctx, Fight, Foe, Member, Run } from '@/training/domain/engine';
 import {
@@ -12,6 +12,7 @@ import {
   allyTarget,
   fightXp,
   foeTurn,
+  isDark,
   isKnown,
   itemBlock,
   makeFight,
@@ -29,13 +30,18 @@ import {
   skillBlock,
   standing,
   targetable,
+  tunedTo,
   useItem,
   usePower,
 } from '@/training/domain/engine';
 import { MOVES } from '@/training/domain/foes';
 import type { Campaign } from '@/training/domain/campaign';
 import { recruitAt } from '@/training/domain/campaign';
-import { CAMPAIGNS } from '@/training/domain/campaigns';
+import {
+  DEVELOPER_PROFESSIONAL,
+  FOUNDATIONS,
+  campaignOf,
+} from '@/training/domain/campaigns';
 import { affinity, weaknessOf } from '@/training/domain/elements';
 import type { AllyKey, MemberKey, SkillKey } from '@/training/domain/party';
 import { MEMBERS, SKILLS, lineupWith } from '@/training/domain/party';
@@ -56,18 +62,24 @@ import {
 import type { Progress } from '@/training/domain/save';
 import { bookFor, emptyProgress } from '@/training/domain/save';
 
-/** The live campaign, and its bank as question ids per domain. */
-export const LIVE = CAMPAIGNS[0];
-export const LIVE_BANK = idsByDomain(
-  questions.map((q) => ({
-    id: q.id,
-    domain: q.domain,
-    stem: '',
-    why: '',
-    options: q.options.en,
-    answer: q.answer,
-  }))
-);
+/** A campaign's bank as question ids per domain. */
+export const bankIdsOf = (camp: Campaign): Ctx['bank'] =>
+  idsByDomain(
+    bankOf(camp.key).map((q) => ({
+      id: q.id,
+      domain: q.domain,
+      stem: '',
+      why: '',
+      options: q.options.en,
+      answer: q.answer,
+    }))
+  );
+/** The first campaign, and its bank. */
+export const LIVE = campaignOf(FOUNDATIONS.key);
+export const LIVE_BANK = bankIdsOf(LIVE);
+/** The second campaign, eight chapters long, and its bank. */
+export const DEV_PRO = campaignOf(DEVELOPER_PROFESSIONAL.key);
+export const DEV_PRO_BANK = bankIdsOf(DEV_PRO);
 
 export function ctxFor(
   seed = 1,
@@ -101,15 +113,23 @@ const ratio = (F: Fight, run: Run) => {
   return ms.reduce((s, m) => s + m.hp, 0) / ms.reduce((s, m) => s + m.max, 0);
 };
 
-/** The format a player of skill `k` picks: the one with the best expected damage, safer when hurt. */
-function formatFor(k: number, m: Member, F: Fight): FormatKey {
+/**
+ * The format a player of skill `k` picks: the one with the best expected damage, safer
+ * when hurt. It reads the boss mechanics the way the screen shows them: an enemy out of
+ * sight calls for every option shown, a fitted format is worth half, and a countdown
+ * about to run out calls for a Duel.
+ */
+function formatFor(k: number, m: Member, F: Fight, e: Foe): FormatKey {
   const hurt = m.hp / m.max < 0.35;
   const options = (['duel', 'trident', 'exam'] as FormatKey[]).filter(
     (f) => !(F.fog > 0 && f === 'duel')
   );
+  if (isDark(e) && options.includes('exam') && !hurt) return 'exam';
+  if ((e.st.clock ?? 9) <= 2 && options.includes('duel')) return 'duel';
   const score = (f: FormatKey) => {
     const p = rightRate(k, FORMATS[f].options);
-    return p * FORMATS[f].power - (1 - p) * (hurt ? 6 : 1.5);
+    const fit = tunedTo(e) === f ? 0.5 : 1;
+    return p * FORMATS[f].power * fit - (1 - p) * (hurt ? 6 : 1.5);
   };
   return options.sort((a, b) => score(b) - score(a))[0];
 }
@@ -128,6 +148,7 @@ function bestTarget(ctx: Ctx, F: Fight, m: Member): Foe {
 function threatened(F: Fight, k: MemberKey): boolean {
   return alive(F).some(
     (e) =>
+      !isDark(e) &&
       e.intent &&
       (e.intent.move === 'big' || MOVES[e.intent.move].reach === 'all') &&
       (e.intent.targets.includes(k) || MOVES[e.intent.move].reach === 'all')
@@ -179,7 +200,10 @@ function turn(
   if (standing(F, run).some((x) => x.st.sleep) && can('desherbage'))
     return void support('desherbage');
   if (F.round % 3 === 1 && can('bouture')) return void support('bouture');
-  if (alive(F).some((e) => !F.revealed.has(e.uid)) && can('balayage'))
+  if (
+    alive(F).some((e) => !F.revealed.has(e.uid) || isDark(e)) &&
+    can('balayage')
+  )
     return void support('balayage');
   if (threatened(F, k) && m.hp / m.max < 0.3) {
     act(ctx, F, run, k, { kind: 'guard' });
@@ -208,7 +232,7 @@ function turn(
   }
   const format = skillPick
     ? (SKILLS[skillPick].format as FormatKey)
-    : formatFor(skill, m, F);
+    : formatFor(skill, m, F, e);
   const n = FORMATS[format].options - F.strike;
   F.strike = 0;
   const right = ctx.rng() < rightRate(skill, Math.max(1, n));
@@ -297,7 +321,11 @@ export function campaign(
 ): CampaignLog {
   const camp = o.camp ?? LIVE;
   const maxAttempts = o.maxAttempts ?? 15;
-  const { save, ctx } = ctxFor(seed, emptyProgress(), o.bank ?? LIVE_BANK);
+  const { save, ctx } = ctxFor(
+    seed,
+    emptyProgress(),
+    o.bank ?? bankIdsOf(camp)
+  );
   const out: CampaignLog = {
     attempts: [],
     fights: [],

@@ -759,6 +759,18 @@ export async function revealFx(on: Element, el: El): Promise<void> {
   gone(n);
 }
 /** A boss's phase change: the screen flashes, the boss swells, the room shakes. */
+/** A boss fits itself to the format that hit it: a gauge snaps onto it. */
+export async function tuneFx(on: Element): Promise<void> {
+  const p = ptOf(on);
+  if (reduced()) {
+    still(`<b>${esc(G.c.stamps.refit)}</b>`, p, 'call tune');
+    return;
+  }
+  await Promise.all([
+    burst(p, 'plus', 'var(--gold)', 6),
+    stampWord({ ...p, y: p.y - p.h / 4 }, 'refit'),
+  ]);
+}
 export async function phaseFx(on: Element): Promise<void> {
   blip('boom');
   if (reduced()) {

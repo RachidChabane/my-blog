@@ -1,0 +1,255 @@
+---
+/**
+ * The training pages, one per exam: the exam game, the exam outline and, on the first
+ * exam's page (the training stand itself), the certifications held.
+ */
+import type { GetStaticPaths } from 'astro';
+import { LOCALES, localePath } from '@/i18n/index';
+import type { Locale } from '@/i18n/index';
+import Office from '@/layouts/Office.astro';
+import Room from '@/components/office/Room.astro';
+import Game from '@/training/Game.astro';
+import { crew } from '@/office/draw';
+import { officeStrings } from '@/office/strings';
+import { certificationRows, domainRows } from '@/office/drill';
+import type { Certification } from '@/office/drill';
+import certifications from '@/training/data/certifications.json';
+import { bankOf } from '@/training/data/banks';
+import { EXAMS, FOUNDATIONS_EXAM, examPath } from '@/training/domain/exams';
+import type { Exam } from '@/training/domain/exams';
+import { PAGE_COPY } from '@/training/i18n/page-copy';
+
+export const getStaticPaths = (() =>
+  LOCALES.flatMap((lang) =>
+    EXAMS.map((exam) => ({
+      params: { lang, exam: exam.slug || undefined },
+      props: { exam },
+    }))
+  )) satisfies GetStaticPaths;
+
+const lang = Astro.params.lang as Locale;
+const { exam } = Astro.props as { exam: Exam };
+const t = officeStrings(lang);
+const d = t.drill;
+const copy = PAGE_COPY[lang].campaigns[exam.key];
+const questions = bankOf(exam.key);
+const isStand = exam.key === FOUNDATIONS_EXAM.key;
+const certs = isStand
+  ? certificationRows(certifications as Certification[], t.months)
+  : [];
+const domains = domainRows(exam, questions, lang);
+const weighted = domains.every((row) => row.weight !== null);
+const totalWeight = domains.reduce((sum, row) => sum + (row.weight ?? 0), 0);
+const percent = new Intl.NumberFormat(lang, { style: 'percent' });
+const pct = (whole: number) => percent.format(whole / 100);
+const path = examPath(exam);
+const title = isStand
+  ? `${t.sections.training} · Rachid Chabane`
+  : `${t.sections.training} · ${exam.short} · Rachid Chabane`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: isStand ? t.sections.training : `${t.sections.training} · ${exam.name}`,
+  description: copy.description,
+  inLanguage: lang,
+  url: new URL(localePath(lang, path), Astro.site).href,
+  ...(isStand
+    ? {
+        about: {
+          '@type': 'Person',
+          name: 'Rachid Chabane',
+          hasCredential: certs.map((c) => ({
+            '@type': 'EducationalOccupationalCredential',
+            name: c.title,
+            recognizedBy: { '@type': 'Organization', name: c.issuer },
+            dateCreated: c.datetime,
+            ...(c.proof ? { url: c.proof.href } : {}),
+          })),
+        },
+      }
+    : {}),
+};
+---
+
+<Office
+  title={title}
+  description={copy.description}
+  lang={lang}
+  section="training"
+  altHref={localePath(lang === 'fr' ? 'en' : 'fr', path)}
+  jsonLd={jsonLd}
+>
+  <Room
+    section="training"
+    title={t.sections.training}
+    count={d.count(questions.length, domains.length)}
+    crew={crew('training')}
+  />
+  <div class="wrap page drill">
+    <a class="playlink standonly" href={`${localePath(lang, path)}#play`}>
+      {d.play}
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"
+        ><path d="M6 4l14 8-14 8z" fill="currentColor"></path></svg
+      >
+    </a>
+    <Game lang={lang} campaign={exam.key}>
+      <nav slot="switch" class="tg-switch" aria-label={d.exams} data-page-only>
+        {
+          EXAMS.map((e) => (
+            <a
+              href={localePath(lang, examPath(e))}
+              aria-current={e.key === exam.key ? 'page' : undefined}
+            >
+              {e.short}
+            </a>
+          ))
+        }
+      </nav>
+      <section class="sheet intro standonly" style="--tape:var(--drill)">
+        <p>{PAGE_COPY[lang].intro}</p>
+        {isStand && <p>{copy.outline(questions.length, domains.length)}</p>}
+      </section>
+      {
+        isStand && (
+          <section
+            class="sheet prose"
+            style="--tape:var(--art)"
+            aria-labelledby="certifications"
+          >
+            <h2 id="certifications">{d.certifications}</h2>
+            <div
+              class="tablewrap"
+              tabindex="0"
+              role="region"
+              aria-labelledby="certifications"
+            >
+              <table class="certs" aria-labelledby="certifications">
+                <thead>
+                  <tr>
+                    <th scope="col">{d.certCols.title}</th>
+                    <th scope="col">{d.certCols.issuer}</th>
+                    <th scope="col">{d.certCols.date}</th>
+                    <th scope="col">{d.certCols.score}</th>
+                    <th scope="col">{d.certCols.proof}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {certs.map((c) => (
+                    <tr>
+                      <th scope="row">{c.title}</th>
+                      <td data-label={d.certCols.issuer}>{c.issuer}</td>
+                      <td data-label={d.certCols.date}>
+                        <time datetime={c.datetime}>{c.date}</time>
+                      </td>
+                      <td data-label={d.certCols.score}>{c.score}</td>
+                      <td data-label={d.certCols.proof}>
+                        {c.proof && (
+                          <a href={c.proof.href} rel="noopener">
+                            {d.proofLink(c.proof.host)}
+                          </a>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )
+      }
+      <section
+        class="sheet prose"
+        style="--tape:var(--drill)"
+        aria-labelledby="exam"
+      >
+        <h2 id="exam">{exam.name}</h2>
+        <p class="format">
+          <span>
+            {
+              exam.code &&
+              exam.questionCount &&
+              exam.minutes &&
+              exam.passScore &&
+              exam.maxScore
+                ? `${exam.code} · ${d.format(
+                    exam.questionCount,
+                    exam.minutes,
+                    exam.passScore,
+                    exam.maxScore
+                  )}`
+                : copy.outline(questions.length, domains.length)
+            }
+          </span>
+        </p>
+        <div
+          class="tablewrap"
+          tabindex="0"
+          role="region"
+          aria-labelledby="exam"
+        >
+          <table class="domains" aria-labelledby="exam">
+            <thead>
+              <tr>
+                <th scope="col">{d.examCols.domain}</th>
+                {
+                  weighted && (
+                    <th scope="col" class="num">
+                      {d.examCols.weight}
+                    </th>
+                  )
+                }
+                <th scope="col" class="num">{d.examCols.inGame}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                domains.map((row) => (
+                  <tr>
+                    <th scope="row">{row.name}</th>
+                    {weighted && <td class="num">{pct(row.weight ?? 0)}</td>}
+                    <td class="num">{row.questions}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <th scope="row">{d.total}</th>
+                {weighted && <td class="num">{pct(totalWeight)}</td>}
+                <td class="num">{questions.length}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+    </Game>
+  </div>
+</Office>
+
+<style>
+  .tg-switch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tg-switch a {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 6px 12px;
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+  }
+  .tg-switch a[aria-current='page'] {
+    background: var(--drill);
+    color: #fff;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+</style>

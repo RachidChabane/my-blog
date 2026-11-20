@@ -25,6 +25,10 @@ export const MOVE_KEYS = [
   'shift',
   'overflow',
   'spill',
+  'unlog',
+  'refit',
+  'bill',
+  'timeout',
 ] as const;
 export type MoveKey = (typeof MOVE_KEYS)[number];
 
@@ -42,6 +46,8 @@ export interface MoveRule {
   readonly shield?: number;
   /** How many members it reaches when it is not everyone. */
   readonly count?: number;
+  /** Tokens taken from the party. */
+  readonly drain?: number;
 }
 
 export const MOVES: Record<MoveKey, MoveRule> = {
@@ -63,6 +69,10 @@ export const MOVES: Record<MoveKey, MoveRule> = {
   shift: { reach: 'self' },
   overflow: { reach: 'one', status: ['sleep', 2], count: 2 },
   spill: { reach: 'all', power: 0.4, status: ['poison', 3] },
+  unlog: { reach: 'self' },
+  refit: { reach: 'self', heal: 0.08 },
+  bill: { reach: 'one', power: 0.6, drain: 2 },
+  timeout: { reach: 'all', power: 1.3 },
 };
 
 /** Moves a silenced enemy cannot use: it falls back to a plain hit. */
@@ -81,6 +91,9 @@ export const SPECIAL_MOVES: ReadonlySet<MoveKey> = new Set([
   'shift',
   'overflow',
   'spill',
+  'unlog',
+  'refit',
+  'bill',
 ]);
 
 /* ---------- the nine kinds of evil Clawd ---------- */
@@ -172,6 +185,21 @@ export interface Phase {
   readonly summon?: readonly TypeKey[];
   /** The field effect set when the phase starts. */
   readonly fog?: boolean;
+  /**
+   * Out of sight: its next move is not shown and it takes a share of the damage
+   * (DARK_FACTOR), until a right answer with every option shown traces it.
+   */
+  readonly dark?: boolean;
+  /**
+   * Fits itself to the last format that hit it: that format then deals a share of its
+   * damage (TUNED_FACTOR) until another one lands.
+   */
+  readonly tunes?: boolean;
+  /**
+   * Starts a countdown of this many of its turns; at zero it times out (a heavy blow on
+   * everyone) and starts again. A right Duel answer against it winds the clock back.
+   */
+  readonly clock?: number;
 }
 
 export const BOSS_KEYS = [
@@ -180,6 +208,9 @@ export const BOSS_KEYS = [
   'allowall',
   'offschema',
   'leak',
+  'dark',
+  'overfit',
+  'meter',
 ] as const;
 export type BossKey = (typeof BOSS_KEYS)[number];
 
@@ -249,6 +280,40 @@ export const BOSSES: Record<BossKey, readonly Phase[]> = {
       pattern: ['spill', 'hit', 'charge', 'big', 'area'],
     },
   ],
+  /* goes dark past 60%: hidden moves, half damage, until an Exam answer traces it */
+  dark: [
+    {
+      from: 1,
+      el: 'courant',
+      pattern: ['hit', 'smudge', 'area', 'charge', 'big'],
+    },
+    {
+      from: 0.6,
+      el: 'courant',
+      pattern: ['unlog', 'big', 'hit', 'area', 'big'],
+      dark: true,
+    },
+  ],
+  /* past half health it fits itself to the last format that hit it */
+  overfit: [
+    { from: 1, el: 'papier', pattern: ['hit', 'area', 'charge', 'big'] },
+    {
+      from: 0.5,
+      el: 'papier',
+      pattern: ['refit', 'hit', 'area', 'charge', 'big'],
+      tunes: true,
+    },
+  ],
+  /* bills tokens, then runs a countdown that a Duel answer winds back */
+  meter: [
+    { from: 1, el: 'cafe', pattern: ['bill', 'hit', 'area', 'bill', 'big'] },
+    {
+      from: 0.5,
+      el: 'cafe',
+      pattern: ['bill', 'hit', 'area', 'hit'],
+      clock: 3,
+    },
+  ],
 };
 
 /** Share of the curve's boss health a boss keeps for itself: summons carry the rest. */
@@ -258,7 +323,17 @@ export const BOSS_HP_SHARE: Record<BossKey, number> = {
   allowall: 1,
   offschema: 1,
   leak: 1,
+  dark: 1.15,
+  overfit: 1.2,
+  meter: 1,
 };
+
+/** Share of the damage an enemy out of sight takes. */
+export const DARK_FACTOR = 0.5;
+/** Share of the damage the format an enemy is fitted to deals. */
+export const TUNED_FACTOR = 0.5;
+/** Turns a right Duel answer adds back to a countdown, up to its start. */
+export const CLOCK_WINDBACK = 1;
 
 /**
  * The order in which the kinds of enemy are met across a campaign, whatever its length.

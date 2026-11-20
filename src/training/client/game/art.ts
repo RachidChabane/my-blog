@@ -3,7 +3,7 @@
  * Every colour is a theme token of game.css, so both themes come from one drawing.
  */
 import type { Element } from '../../domain/elements';
-import type { BossKey, MoveKey, TypeKey } from '../../domain/foes';
+import type { MoveKey, TypeKey } from '../../domain/foes';
 import type { MemberKey } from '../../domain/party';
 import type { DoorKey } from '../../domain/run';
 import type { StatusKey } from '../../domain/statuses';
@@ -233,10 +233,10 @@ export function foeSvg(type: TypeKey): string {
   return svg(foeInner(type), '-4 -4 24 18');
 }
 
-/* ---------- five bosses, one per exam domain ---------- */
-const BOSS_ART: Record<BossKey, () => string> = {
+/* ---------- the bosses: one look per chapter, keyed by the chapter's domain ---------- */
+const BOSS_ART: Record<string, () => string> = {
   // The Endless Loop: a ring-shaped body chasing its own arrow
-  loop: () =>
+  agentic_architecture: () =>
     `<circle cx="10" cy="9" r="7.5" fill="none" stroke="${V('b1-body')}" stroke-width="4"/>` +
     `<path d="M15 2.5L19 1.5L17.6 5.6Z" fill="${V('b1-body')}"/>` +
     R(-1, 7, 3, 2, V('b1-body')) +
@@ -250,7 +250,7 @@ const BOSS_ART: Record<BossKey, () => string> = {
     `<path d="M8 12.4q2 1.4 4 0" stroke="${V('en-eye')}" stroke-width=".6" fill="none"/>` +
     `<path class="spin" d="M10 4.5a4.5 4.5 0 1 1 -4.5 4.5" stroke="${V('b1-trace')}" stroke-width=".8" fill="none"/>`,
   // The Allow-All: a grinning doorman, padlock sprung open, a ring of every key
-  allowall: () =>
+  claude_code: () =>
     R(3, 3, 14, 13, V('b2-coat')) +
     R(1, 7, 2, 5, V('b2-coat')) +
     R(17, 7, 2, 5, V('b2-coat')) +
@@ -275,7 +275,7 @@ const BOSS_ART: Record<BossKey, () => string> = {
     R(19.2, 17.2, 1.2, 0.6, V('s-brass')) +
     R(20.4, 17.8, 1.2, 0.6, V('s-brass')),
   // Sir Off-Schema: a robed scholar under a teetering tower of prose, spiral eyes
-  offschema: () =>
+  prompt_engineering: () =>
     R(3, 4, 14, 12, V('b3-robe')) +
     R(1, 8, 2, 4, V('b3-robe')) +
     R(17, 8, 2, 4, V('b3-robe')) +
@@ -292,7 +292,7 @@ const BOSS_ART: Record<BossKey, () => string> = {
     R(8, 12, 4, 4, V('b3-face')) +
     `<path d="M-2 10l2 -2M-2 8l2 2M21 12l1.6 -1.6M21 10.4l1.6 1.6" stroke="${V('b3-face')}" stroke-width=".6"/>`,
   // The Blind Dispatcher: a switchboard operator, blindfolded, plug in hand
-  dispatcher: () =>
+  tool_design_mcp: () =>
     R(3, 4, 14, 12, V('b4-robe')) +
     R(1, 9, 2, 4, V('b4-robe')) +
     R(17, 7, 2, 4, V('b4-robe')) +
@@ -312,7 +312,7 @@ const BOSS_ART: Record<BossKey, () => string> = {
     R(21.8, -0.6, 0.6, 1.2, V('s-brass')) +
     R(23, -0.6, 0.6, 1.2, V('s-brass')),
   // The Memory Leak: a leaking tank with a valve and a spreading puddle
-  leak: () =>
+  context_management: () =>
     `<ellipse cx="10" cy="18.6" rx="10" ry="1.6" fill="${V('b5-puddle')}"/>` +
     R(3, 2, 14, 15, V('b5-tank')) +
     R(3, 6, 14, 1, V('s-metal-d')) +
@@ -326,16 +326,201 @@ const BOSS_ART: Record<BossKey, () => string> = {
     R(17, 8, 4, 2, V('s-pipe')) +
     R(-1, 9, 4, 2, V('s-pipe')) +
     `<path class="drip" d="M20.6 10.4q.8 1.6 0 2.2q-.8-.6 0-2.2z" fill="${V('b5-puddle')}"/><path d="M6 17v1.6M14 17v1.4" stroke="${V('b5-puddle')}" stroke-width="1"/>`,
+  // The Retry Storm: a storm cloud raining request arrows, a 429 plate on its belly
+  integration_reliability: () =>
+    R(2, 4, 16, 9, V('b6-cloud')) +
+    R(4, 1, 7, 3, V('b6-cloud')) +
+    R(10, -1, 6, 5, V('b6-cloud')) +
+    R(0, 6, 2, 5, V('b6-cloud')) +
+    R(18, 5, 2, 5, V('b6-cloud')) +
+    R(-2, 4, 2, 2, V('b6-cloud')) +
+    R(20, 3, 2, 2, V('b6-cloud')) +
+    R(5, 13, 2, 3, V('b6-cloud')) +
+    R(13, 13, 2, 3, V('b6-cloud')) +
+    R(5.6, 4.6, 2.6, 2, V('en-eye')) +
+    R(11.8, 4.6, 2.6, 2, V('en-eye')) +
+    R(6.6, 5.2, 1, 1.4, V('en-pupil')) +
+    R(12.4, 5.2, 1, 1.4, V('en-pupil')) +
+    `<path d="M5 3.6l3.6 1M15 3.6l-3.6 1" stroke="${V('en-pupil')}" stroke-width=".7"/>` +
+    R(5, 8, 10, 4, V('s-paper')) +
+    `<text x="10" y="11.2" text-anchor="middle" font-family="monospace" font-weight="800" font-size="3.6" fill="${V('s-stamp')}">429</text>` +
+    `<g fill="${V('b6-bolt')}"><path d="M1 15h1v2.4h1L1.5 19.6L0 17.4h1z"/><path d="M9.5 15h1v2.4h1L10 19.6L8.5 17.4h1z"/><path d="M18 15h1v2.4h1L18.5 19.6L17 17.4h1z"/></g>` +
+    `<path d="M16 -1l-2 3h2l-2 3" stroke="${V('b6-bolt')}" stroke-width=".8" fill="none"/>`,
+  // The Swamped Lead: a headset and four arms, a clipboard in every hand
+  agent_architecture: () =>
+    R(4, 2, 12, 13, V('b7-body')) +
+    R(6, 15, 2, 4, V('b7-body')) +
+    R(12, 15, 2, 4, V('b7-body')) +
+    `<g stroke="${V('b7-body')}" stroke-width="1.4"><path d="M4 5L0 2M4 11L0 13M16 5L20 2M16 11L20 13"/></g>` +
+    [
+      [-4, -2],
+      [-4, 10],
+      [19, -2],
+      [19, 10],
+    ]
+      .map(
+        ([x, y]) =>
+          R(x, y, 5, 6, V('b7-board')) +
+          R(x + 1.5, y - 0.6, 2, 1.2, V('s-brass')) +
+          R(x + 1, y + 2, 3, 0.5, V('s-ink-soft')) +
+          R(x + 1, y + 3.4, 2.4, 0.5, V('s-ink-soft'))
+      )
+      .join('') +
+    `<path d="M3.6 4a6.4 5 0 0 1 12.8 0" stroke="${V('s-cable')}" stroke-width=".9" fill="none"/>` +
+    R(3, 3.6, 1.6, 3, V('s-cable')) +
+    R(15.4, 3.6, 1.6, 3, V('s-cable')) +
+    `<path d="M4 6.4q0 3.4 3.4 3.6" stroke="${V('s-cable')}" stroke-width=".5" fill="none"/>` +
+    R(7, 9.4, 1.4, 1.2, V('s-cable')) +
+    R(6.4, 5, 2.2, 2.2, V('en-eye')) +
+    R(11.4, 5, 2.2, 2.2, V('en-eye')) +
+    R(7.2, 5.8, 1, 1.2, V('en-pupil')) +
+    R(12.2, 5.8, 1, 1.2, V('en-pupil')) +
+    `<path d="M10 11.6q1.4 -1 2.8 0" stroke="${V('en-pupil')}" stroke-width=".6" fill="none"/>` +
+    `<path class="drip" d="M15 0q.9 1.6 0 2.2q-.9-.6 0-2.2z" fill="${V('b5-puddle')}"/>`,
+  // The Untraced: a hooded shape whose dashed outline fades out, only the eyes lit
+  observability: () =>
+    `<path d="M3 13V6Q3 -1 10 -1.4Q17 -1 17 6V13Z" fill="${V('b8-hood')}"/>` +
+    R(3, 13, 14, 2, V('b8-hood')) +
+    `<g fill="${V('b8-hood')}"><rect x="3" y="15" width="14" height="1.6" opacity=".7"/><rect x="4" y="16.6" width="12" height="1.4" opacity=".45"/><rect x="5" y="18" width="10" height="1.2" opacity=".2"/></g>` +
+    `<g fill="${V('b8-hood')}" opacity=".6"><rect x="0" y="6" width="3" height="4"/><rect x="17" y="6" width="3" height="4"/></g>` +
+    `<path d="M5 3.4Q10 -0.6 15 3.4V10H5Z" fill="${V('boss-shade')}"/>` +
+    `<path d="M3 13V6Q3 -1 10 -1.4Q17 -1 17 6V13" fill="none" stroke="${V('b8-glow')}" stroke-width=".5" stroke-dasharray="1.4 1.6"/>` +
+    R(6.4, 5, 2.4, 1.4, V('b8-glow')) +
+    R(11.2, 5, 2.4, 1.4, V('b8-glow')) +
+    R(7.2, 5.2, 0.8, 1, V('en-pupil')) +
+    R(12, 5.2, 0.8, 1, V('en-pupil')) +
+    `<g fill="${V('b8-glow')}"><rect x="-2" y="12" width="1" height="1" opacity=".7"/><rect x="-3.4" y="14" width="1" height="1" opacity=".45"/><rect x="21" y="11" width="1" height="1" opacity=".6"/><rect x="22.4" y="13.4" width="1" height="1" opacity=".3"/></g>`,
+  // The Shifting Benchmark: a scoreboard for a head, riding a sliding ruler
+  evaluation: () =>
+    R(1, -4, 18, 9, V('b9-body')) +
+    R(2, -3, 16, 7, V('s-screen')) +
+    R(3.5, 0, 2, 3, V('s-led')) +
+    R(6.5, -2, 2, 5, V('b9-ruler')) +
+    R(9.5, 1, 2, 2, V('s-stamp')) +
+    R(12.5, -1.4, 2, 4.4, V('s-glow')) +
+    `<path d="M15.4 0l1.4 -1.6l1 1.6" stroke="${V('s-led')}" stroke-width=".5" fill="none"/>` +
+    R(4, 5, 12, 9, V('b9-body')) +
+    R(1, 7, 3, 2, V('b9-body')) +
+    R(16, 7, 3, 2, V('b9-body')) +
+    R(6, 6.4, 2.2, 2.2, V('en-eye')) +
+    R(11.8, 6.4, 2.2, 2.2, V('en-eye')) +
+    R(6.8, 7.2, 1, 1.2, V('en-pupil')) +
+    R(12.6, 7.2, 1, 1.2, V('en-pupil')) +
+    `<path d="M7.4 11.4q2.6 1.4 5.2 -.6" stroke="${V('en-pupil')}" stroke-width=".6" fill="none"/>` +
+    R(6, 14, 2, 3, V('b9-body')) +
+    R(12, 14, 2, 3, V('b9-body')) +
+    R(-1, 17, 22, 2.4, V('b9-ruler')) +
+    [1, 4, 7, 10, 13, 16, 19]
+      .map((x, i) => R(x, 17, 0.5, i % 2 ? 0.8 : 1.4, V('en-pupil')))
+      .join('') +
+    `<path d="M-2 18.2l-1.6 0M-3.6 18.2l1 -1M-3.6 18.2l1 1M22 18.2h1.6M23.6 18.2l-1 -1M23.6 18.2l-1 1" stroke="${V('b9-ruler')}" stroke-width=".6"/>`,
+  // The Prompt Injector: a long coat, a folded note slipped through the bars, a ribbon of marks
+  guardrails_security: () =>
+    `<path d="M3 15c-3 1-5 -1-8 1" stroke="${V('b10-note')}" stroke-width="1.6" fill="none"/>` +
+    `<path d="M3 15c-3 1-5 -1-8 1" stroke="${V('en-pupil')}" stroke-width=".5" stroke-dasharray=".6 .8" fill="none"/>` +
+    `<path d="M4 3H15L17 18H2Z" fill="${V('b10-coat')}"/>` +
+    `<path d="M4 3L2.4 0.4L6 2ZM15 3L16.6 0.4L13 2Z" fill="${V('b10-coat')}"/>` +
+    R(5, 3.6, 9, 5, V('b2-face')) +
+    R(3.6, 2, 11.8, 1.6, V('en-pupil')) +
+    R(5, -0.4, 9, 2.4, V('en-pupil')) +
+    R(6, 5, 2.4, 1.2, V('en-eye')) +
+    R(10.8, 5, 2.4, 1.2, V('en-eye')) +
+    R(7.2, 5.4, 1, 0.8, V('en-pupil')) +
+    R(12, 5.4, 1, 0.8, V('en-pupil')) +
+    `<path d="M7.4 7.4q2.2 .8 4.4 -.6" stroke="${V('en-pupil')}" stroke-width=".5" fill="none"/>` +
+    `<path d="M9.4 9V18" stroke="${V('en-pupil')}" stroke-width=".4"/>` +
+    R(1, 8, 2, 4, V('b10-coat')) +
+    R(15, 8, 6, 1.8, V('b10-coat')) +
+    R(5, 18, 2, 1.6, V('en-pupil')) +
+    R(12, 18, 2, 1.6, V('en-pupil')) +
+    R(20, -1, 1, 20, V('s-metal-d')) +
+    R(23, -1, 1, 20, V('s-metal-d')) +
+    R(19.4, -1.6, 5.2, 1, V('s-metal-d')) +
+    `<path d="M20.6 6.6l3.6 -.8l.4 2.8l-3.6 .8Z" fill="${V('b10-note')}" stroke="${V('en-pupil')}" stroke-width=".25"/>`,
+  // The 3 a.m. Page: a pager with a face on its screen and a red beacon turning on top
+  debugging_incidents: () =>
+    `<path class="spin" d="M10 0L3 -6M10 0L17 -6" stroke="${V('b11-beacon')}" stroke-width=".8" opacity=".55"/>` +
+    R(7.6, -3, 4.8, 3.4, V('b11-beacon')) +
+    R(8.4, -2.4, 1.2, 1.2, V('s-paper')) +
+    R(6.6, 0.4, 6.8, 1.4, V('s-metal-d')) +
+    R(2, 1.8, 16, 13, V('b11-case')) +
+    R(18, 4, 1.4, 6, V('s-metal-d')) +
+    R(4, 3.6, 12, 6, V('s-screen')) +
+    R(5.6, 4.8, 2.4, 1.6, V('en-eye')) +
+    R(12, 4.8, 2.4, 1.6, V('en-eye')) +
+    R(6.4, 5.2, 0.8, 1.2, V('en-pupil')) +
+    R(12.8, 5.2, 0.8, 1.2, V('en-pupil')) +
+    `<text x="10" y="9" text-anchor="middle" font-family="monospace" font-weight="800" font-size="2.2" fill="${V('b11-beacon')}">3:00</text>` +
+    R(5, 11.4, 2.4, 1.6, V('s-metal')) +
+    R(8.8, 11.4, 2.4, 1.6, V('s-metal')) +
+    R(12.6, 11.4, 2.4, 1.6, V('b11-beacon')) +
+    R(0, 7, 2, 4, V('b11-case')) +
+    R(-1, 10, 2, 2, V('b11-case')) +
+    R(5, 14.8, 2, 4, V('b11-case')) +
+    R(13, 14.8, 2, 4, V('b11-case')),
+  // The Rogue Merge: two heads from two branches, fused along a zig-zag seam
+  fleet_operations: () =>
+    R(1, -1, 8, 6, V('b12-a')) +
+    R(11, -2, 8, 6, V('b12-b')) +
+    R(3, 5, 14, 10, V('b12-a')) +
+    `<path d="M10 5L11.6 7L9 9L11.6 11L9 13L10 15H17V5Z" fill="${V('b12-b')}"/>` +
+    `<path d="M10 5L11.6 7L9 9L11.6 11L9 13L10 15" stroke="${V('en-pupil')}" stroke-width=".5" fill="none"/>` +
+    R(0, 7, 3, 2, V('b12-a')) +
+    R(17, 7, 3, 2, V('b12-b')) +
+    R(5, 15, 2, 4, V('b12-a')) +
+    R(13, 15, 2, 4, V('b12-b')) +
+    R(2.4, 0.6, 2, 2, V('en-eye')) +
+    R(6, 0.6, 2, 2, V('en-eye')) +
+    R(3, 1.2, 0.9, 1.2, V('en-pupil')) +
+    R(6.6, 1.2, 0.9, 1.2, V('en-pupil')) +
+    R(12.4, -0.4, 2, 2, V('en-eye')) +
+    R(16, -0.4, 2, 2, V('en-eye')) +
+    R(13.2, 0.2, 0.9, 1.2, V('en-pupil')) +
+    R(16.8, 0.2, 0.9, 1.2, V('en-pupil')) +
+    `<path d="M3 4q2 -.8 4 0M13 3q2 .8 4 0" stroke="${V('en-pupil')}" stroke-width=".5" fill="none"/>` +
+    `<g stroke="${V('s-paper')}" stroke-width=".5" fill="none"><path d="M5 -3.6v-3M5 -5q0 -1.4 1.6 -2"/><path d="M15 -4.6v-3M15 -6q0 -1.4 -1.6 -2"/></g>` +
+    `<g fill="${V('s-paper')}"><circle cx="5" cy="-3.2" r=".6"/><circle cx="6.8" cy="-7.2" r=".6"/><circle cx="15" cy="-4.2" r=".6"/><circle cx="13.2" cy="-8.2" r=".6"/></g>`,
+  // The Meter: a taxi meter for a body, digits for a face, a coin slot and an hourglass
+  cost_latency: () =>
+    R(6.6, -2, 6.8, 3, V('b13-case')) +
+    R(7.6, -1.2, 4.8, 1.4, V('b6-bolt')) +
+    R(2, 1, 16, 15, V('b13-case')) +
+    R(3.6, 2.6, 12.8, 5, V('b13-lcd')) +
+    `<text x="10" y="6.4" text-anchor="middle" font-family="monospace" font-weight="800" font-size="3.4" fill="${V('b13-digit')}">$9.99</text>` +
+    R(5.4, 8.8, 2.4, 2, V('en-eye')) +
+    R(12.2, 8.8, 2.4, 2, V('en-eye')) +
+    R(6.2, 9.4, 1, 1.4, V('en-pupil')) +
+    R(13, 9.4, 1, 1.4, V('en-pupil')) +
+    R(7.6, 12.6, 4.8, 1.6, V('s-metal-d')) +
+    R(8.2, 13.2, 3.6, 0.5, V('en-pupil')) +
+    R(0, 8, 2, 3, V('b13-case')) +
+    R(18, 8, 3, 2, V('b13-case')) +
+    `<path d="M20 5.6h4M20 13h4M20.6 5.6l2.8 3.6l-2.8 3.8M23.4 5.6l-2.8 3.6l2.8 3.8" stroke="${V('s-brass')}" stroke-width=".7" fill="none"/>` +
+    `<path d="M21 6.4h2l-1 1.6ZM20.8 12.4h2.4l-1.2 -1.4Z" fill="${V('b9-ruler')}"/>` +
+    R(5, 16, 2, 3, V('b13-case')) +
+    R(13, 16, 2, 3, V('b13-case')),
 };
-const BOSS_COLOR: Record<BossKey, string> = {
-  loop: 'b1-body',
-  allowall: 'b2-coat',
-  offschema: 'b3-robe',
-  dispatcher: 'b4-robe',
-  leak: 'b5-tank',
+const BOSS_COLOR: Record<string, string> = {
+  agentic_architecture: 'b1-body',
+  claude_code: 'b2-coat',
+  prompt_engineering: 'b3-robe',
+  tool_design_mcp: 'b4-robe',
+  context_management: 'b5-tank',
+  integration_reliability: 'b6-cloud',
+  agent_architecture: 'b7-body',
+  observability: 'b8-hood',
+  evaluation: 'b9-body',
+  guardrails_security: 'b10-coat',
+  debugging_incidents: 'b11-case',
+  fleet_operations: 'b12-a',
+  cost_latency: 'b13-case',
 };
-export const bossSvg = (k: BossKey) => svg(BOSS_ART[k](), '-5 -11 30 32');
-export const bossColor = (k: BossKey) => V(BOSS_COLOR[k]);
+/** The boss of the chapter of this domain. */
+export const bossSvg = (domain: string) =>
+  svg(BOSS_ART[domain](), '-5 -11 30 32');
+export const bossColor = (domain: string) => V(BOSS_COLOR[domain]);
+/** Whether a kind of enemy is a boss, named by its chapter's domain. */
+export const isBossLook = (kind: string): boolean => kind in BOSS_ART;
 
 /* ---------- interface icons ---------- */
 const ICON = {
@@ -581,6 +766,10 @@ const ST_ICON: Record<StatusKey, string> = {
     '<rect x="6.5" y="1" width="3" height="9"/><rect x="6.5" y="12" width="3" height="3"/>',
   steady:
     '<path d="M8 1v12M3 9c0 3 2 5 5 5s5-2 5-5M5 4h6" fill="none" stroke="currentColor" stroke-width="2"/>',
+  traced:
+    '<circle cx="10" cy="6" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.2 8.8L4.4 11.6" stroke="currentColor" stroke-width="2.6"/><rect x="0" y="14" width="2" height="2"/><rect x="4" y="14" width="2" height="2"/><rect x="8" y="14" width="2" height="2"/><rect x="12" y="14" width="2" height="2"/>',
+  clock:
+    '<circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 4v4.4l3 2" fill="none" stroke="currentColor" stroke-width="2"/>',
 };
 export const stIcon = (s: StatusKey) =>
   `<svg class="sti" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">${ST_ICON[s]}</svg>`;
@@ -610,6 +799,12 @@ const MOVE_ICON: Record<MoveKey | 'stun' | 'sleep-state', string> = {
     '<path d="M4 1h8l-1 5H5z"/><path d="M8 7c0 0-4 4-4 6a4 4 0 0 0 8 0c0-2-4-6-4-6z"/>',
   stun: ST_ICON.stun,
   'sleep-state': ST_ICON.sleep,
+  unlog:
+    '<path d="M1 8q7-7 14 0q-7 7-14 0z"/><circle cx="8" cy="8" r="2" fill="var(--chip-bg, #fff)"/><path d="M2 15L15 2" stroke="var(--chip-bg, #fff)" stroke-width="3.4"/><path d="M2 15L15 2" stroke="currentColor" stroke-width="1.6"/>',
+  refit:
+    '<circle cx="8" cy="8" r="5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="6.5" y="6.5" width="3" height="3"/><path d="M8 0v4M8 12v4M0 8h4M12 8h4" stroke="currentColor" stroke-width="2"/>',
+  bill: '<path d="M3 1h10v14l-1.7-1.4-1.6 1.4-1.7-1.4-1.6 1.4-1.7-1.4L3 15z"/><path d="M5 5h6M5 8h6M5 11h3" stroke="var(--chip-bg, #fff)" stroke-width="1.4"/>',
+  timeout: '<path d="M2 1h12v2h-1.4l-3.6 5 3.6 5H14v2H2v-2h1.4L7 8 3.4 3H2z"/>',
 };
 export const moveIcon = (k: keyof typeof MOVE_ICON) =>
   `<svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">${MOVE_ICON[k]}</svg>`;
@@ -642,6 +837,14 @@ export const PROPS = {
   loop: `<path d="M4 12a8 8 0 1 0 8-8" fill="none" stroke="${V('b1-trace')}" stroke-width="3"/><path d="M12 0l5 4-5 4z" fill="${V('b1-trace')}"/>`,
   scroll: `<path d="M5 3h12v18H5z" fill="${V('b3-face')}" stroke="${V('line')}" stroke-width="1.2"/><path d="M7 7h8M7 10h8M7 13h6M7 16h8" stroke="${V('s-ink-soft')}" stroke-width="1.2"/>`,
   wave: `<path d="M1 14q3-6 6 0t6 0 6 0 4 0" fill="none" stroke="${V('b5-puddle')}" stroke-width="3"/>`,
+  retry: `<path d="M19 9A8 8 0 1 0 20 15" fill="none" stroke="${V('b6-cloud')}" stroke-width="3.4"/><path d="M19 9A8 8 0 1 0 20 15" fill="none" stroke="${V('b6-bolt')}" stroke-width="1.6"/><path d="M15 9h7V2z" fill="${V('b6-bolt')}" stroke="${V('line')}" stroke-width="1"/>`,
+  baton: `<rect x="5" y="4" width="14" height="18" fill="${V('b7-board')}" stroke="${V('line')}" stroke-width="1.4"/><rect x="9" y="2" width="6" height="4" fill="${V('s-brass')}" stroke="${V('line')}" stroke-width="1"/><path d="M8 10h8M8 14h8M8 18h5" stroke="${V('b7-body')}" stroke-width="1.6"/>`,
+  ghostlog: `<path d="M5 2h14v20H5z" fill="${V('b8-hood')}" opacity=".55" stroke="${V('b8-glow')}" stroke-width="1.4" stroke-dasharray="2 2"/><path d="M8 7h8M8 11h6M8 15h8" stroke="${V('b8-glow')}" stroke-width="1.6"/><path d="M8 19h3" stroke="${V('b8-glow')}" stroke-width="1.6" opacity=".4"/>`,
+  gauge: `<path d="M3 17a9 9 0 0 1 18 0z" fill="${V('s-paper')}" stroke="${V('line')}" stroke-width="1.4"/><path d="M5 17a7 7 0 0 1 4-6.3" fill="none" stroke="${V('s-led')}" stroke-width="2"/><path d="M15 10.7a7 7 0 0 1 4 6.3" fill="none" stroke="${V('s-stamp')}" stroke-width="2"/><path d="M12 17l5-8" stroke="${V('b9-body')}" stroke-width="2.2"/><rect x="2" y="19" width="20" height="3" fill="${V('b9-ruler')}"/>`,
+  needle: `<path d="M21 3q2 10-9 12t-10 6" fill="none" stroke="${V('b10-note')}" stroke-width="1.4" stroke-dasharray="2 1.4"/><path d="M3 21L19 5" stroke="${V('line')}" stroke-width="3.4"/><path d="M3 21L19 5" stroke="${V('blade')}" stroke-width="1.8"/><circle cx="20" cy="4" r="2" fill="none" stroke="${V('blade')}" stroke-width="1.4"/>`,
+  siren: `<path d="M5 9l-4-4M19 9l4-4M12 5V0" stroke="${V('b11-beacon')}" stroke-width="2"/><path d="M6 19v-6a6 6 0 0 1 12 0v6z" fill="${V('b11-beacon')}" stroke="${V('line')}" stroke-width="1.4"/><rect x="8" y="11" width="2.4" height="4" fill="${V('s-paper')}"/><rect x="3" y="19" width="18" height="4" fill="${V('b11-case')}" stroke="${V('line')}" stroke-width="1.4"/>`,
+  branch: `<path d="M6 21V4M6 15q0-6 12-8" fill="none" stroke="${V('line')}" stroke-width="3.4"/><path d="M6 21V4" stroke="${V('b12-a')}" stroke-width="2"/><path d="M6 15q0-6 12-8" fill="none" stroke="${V('b12-b')}" stroke-width="2"/><circle cx="6" cy="4" r="3" fill="${V('b12-a')}" stroke="${V('line')}" stroke-width="1.2"/><circle cx="6" cy="20" r="3" fill="${V('b12-a')}" stroke="${V('line')}" stroke-width="1.2"/><circle cx="18" cy="7" r="3" fill="${V('b12-b')}" stroke="${V('line')}" stroke-width="1.2"/>`,
+  coin: `<circle cx="12" cy="12" r="9" fill="${V('gold')}" stroke="${V('line')}" stroke-width="1.6"/><circle cx="12" cy="12" r="6" fill="none" stroke="${V('s-brass-d')}" stroke-width="1.2"/><path d="M12 7v10M14.4 9.4q-2.4-1.6-4 0t1.6 2.6 1.6 2.6-4 0" fill="none" stroke="${V('s-brass-d')}" stroke-width="1.4"/>`,
 } as const;
 export type PropKey = keyof typeof PROPS;
 export const propSvg = (k: PropKey) =>

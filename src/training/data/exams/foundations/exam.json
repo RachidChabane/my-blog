@@ -1,6 +1,9 @@
 {
-  "code": "CCAR-F",
+  "key": "CCAR-F",
+  "slug": "",
   "name": "Claude Certified Architect - Foundations",
+  "short": "Architect - Foundations",
+  "code": "CCAR-F",
   "questionCount": 60,
   "minutes": 120,
   "passScore": 720,
@@ -8,6 +11,7 @@
   "domains": [
     {
       "key": "agentic_architecture",
+      "label": "AA",
       "name": {
         "en": "Agentic Architecture & Orchestration",
         "fr": "Architecture agentique et orchestration"
@@ -16,6 +20,7 @@
     },
     {
       "key": "tool_design_mcp",
+      "label": "TD",
       "name": {
         "en": "Tool Design & MCP Integration",
         "fr": "Conception d'outils et intégration MCP"
@@ -24,6 +29,7 @@
     },
     {
       "key": "claude_code",
+      "label": "CC",
       "name": {
         "en": "Claude Code Configuration & Workflows",
         "fr": "Configuration et workflows de Claude Code"
@@ -32,6 +38,7 @@
     },
     {
       "key": "prompt_engineering",
+      "label": "PE",
       "name": {
         "en": "Prompt Engineering & Structured Output",
         "fr": "Ingénierie des prompts et sorties structurées"
@@ -40,6 +47,7 @@
     },
     {
       "key": "context_management",
+      "label": "CM",
       "name": {
         "en": "Context Management & Reliability",
         "fr": "Gestion du contexte et fiabilité"

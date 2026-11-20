@@ -1,28 +1,31 @@
 ---
 /**
- * The training game for the Claude Certified Architect exam: a launch card, the game
- * console (loaded on Play, full screen on a phone, inline on a desktop) and every
- * question of the bank as folded sheets, rendered here so readers and crawlers get them.
+ * The training game for one exam: a launch card, the game console (loaded on Play, full
+ * screen on a phone, inline on a desktop) and every question of the exam's bank as folded
+ * sheets, rendered here so readers and crawlers get them. The `switch` slot sits above
+ * the launch card.
  */
 import type { Locale } from '@/i18n/index';
-import questions from './data/questions.json';
+import { bankOf } from './data/banks';
 import { PAGE_COPY } from './i18n/page-copy';
-import { FOUNDATIONS, campaignOf } from './domain/campaigns';
+import { campaignOf } from './domain/campaigns';
 import { sheetLabel } from './domain/bank';
 
 export interface Props {
   lang: Locale;
   /** The campaign's key; the page renders that campaign's bank. */
-  campaign?: string;
+  campaign: string;
 }
 
-const { lang, campaign = FOUNDATIONS.key } = Astro.props;
+const { lang, campaign } = Astro.props;
 const c = PAGE_COPY[lang];
 const camp = campaignOf(campaign);
+const exam = c.campaigns[camp.key];
+const questions = bankOf(camp.key);
 const groups = camp.chapters.map((ch) => ({
   key: ch.domain,
-  name: c.chapters[ch.domain].domain,
-  short: c.chapters[ch.domain].short,
+  name: exam.chapters[ch.domain].domain,
+  short: exam.chapters[ch.domain].short,
   items: questions.filter((q) => q.domain === ch.domain),
 }));
 const total = questions.length;
@@ -35,6 +38,7 @@ const total = questions.length;
   data-campaign={camp.key}
   aria-labelledby="tg-title"
 >
+  <slot name="switch" />
   <div class="tg-launch" id="tg-launch" data-page-only>
     <div class="tg-launch-art" aria-hidden="true">
       <span class="tg-card-stack"><i></i><i></i><i></i></span>
@@ -103,7 +107,7 @@ const total = questions.length;
           id="tg-q"
           type="search"
           autocomplete="off"
-          placeholder={c.sheets.placeholder}
+          placeholder={exam.placeholder}
         />
       </div>
       <div
@@ -144,7 +148,7 @@ const total = questions.length;
               data-answer={q.answer}
             >
               <summary>
-                <span class="tg-id">{sheetLabel(q.id)}</span>
+                <span class="tg-id">{sheetLabel(q)}</span>
                 <span class="tg-stem">{q.stem[lang]}</span>
                 <span class="tg-marks">
                   <span class="tg-freed" hidden>

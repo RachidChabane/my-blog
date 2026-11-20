@@ -7,12 +7,18 @@
 import type { Locale } from '@/i18n/index';
 import type { Affinity, Element } from '../domain/elements';
 import type { MoveKey, TypeKey } from '../domain/foes';
+import { MOVES } from '../domain/foes';
 import type { MemberKey, PassiveKey, Role, SkillKey } from '../domain/party';
 import type { BoonKey, FormatKey, ItemKey, PowerKey } from '../domain/rules';
 import type { DoorKey } from '../domain/run';
 import type { StatusKey } from '../domain/statuses';
+import type { AllyKey } from '../domain/party';
+import { DEVELOPER_PROFESSIONAL_EXAM, FOUNDATIONS_EXAM } from '../domain/exams';
 import type { ChapterName, PageCopy } from './page-copy';
+import { countWord } from './copy-numbers';
 import { PAGE_COPY } from './page-copy';
+import { DEVELOPER_PROFESSIONAL_STORY } from './stories/developer-professional';
+import { FOUNDATIONS_STORY } from './stories/foundations';
 
 /** Someone named in a line: their name, and whether it is the player. */
 export interface Who {
@@ -46,6 +52,21 @@ export interface CineCopy {
   shots: string[];
 }
 
+/** The words of one campaign: its chapters, its level titles and its scenes. */
+export interface StoryCopy {
+  /** Glose's first line, for a player with nothing freed yet. */
+  titleNew: (sheets: number) => string;
+  mapFirst: string;
+  intro: (sheets: number, domains: number) => CineCopy;
+  ending: (domains: number) => CineCopy;
+  /** The scene where each ally is met; the last shot (Copy.joined) says who they are. */
+  joins: Record<AllyKey, CineCopy>;
+  /** The title of each level, from the first. */
+  titles: string[];
+  /** Keyed by exam domain. */
+  chapters: Record<string, ChapterCopy>;
+}
+
 export interface MemberCopy {
   name: string;
   /** Their basic attack. */
@@ -72,11 +93,13 @@ export interface Copy {
   elements: Record<Element, { name: string; to: string }>;
   roles: Record<Role, string>;
   members: Record<MemberKey, MemberCopy>;
+  /** Who an ally is, said as they join the party. */
+  joined: Record<AllyKey, string>;
   passives: Record<PassiveKey, { name: string; text: string }>;
   skills: Record<SkillKey, { name: string; text: string }>;
   statuses: Record<StatusKey, { name: string; help: string }>;
-  /** Keyed by exam domain. */
-  chapters: Record<string, ChapterCopy>;
+  /** Keyed by campaign. */
+  stories: Record<string, StoryCopy>;
   types: Record<TypeKey, FoeCopy>;
   moves: Record<
     MoveKey,
@@ -87,7 +110,6 @@ export interface Copy {
   items: Record<ItemKey, { name: string; text: string }>;
   boons: Record<BoonKey, { name: string; text: string }>;
   doors: Record<DoorKey, { name: string; text: string }>;
-  titles: string[];
   /** Short words stamped on the scene by the animations. */
   stamps: Record<string, string>;
   card: {
@@ -132,6 +154,12 @@ export interface Copy {
     fog: (n: number) => string;
     turns: (n: number) => string;
     unknownEl: string;
+    /** The tag of an enemy out of sight, whose next move is not shown. */
+    hidden: string;
+    hiddenHelp: string;
+    /** The format a boss is fitted to, on its card and on the format picker. */
+    tuned: (format: string) => string;
+    tunedShort: string;
     down: string;
   };
   actions: {
@@ -187,10 +215,8 @@ export interface Copy {
     speedHelp: string;
   };
   lines: {
-    titleNew: string;
     titleBack: string;
-    mapFirst: string;
-    mapAll: string;
+    mapAll: (bosses: number) => string;
     mapAt: (short: string, f: number, total: number) => string;
     lockedTip: (boss: string) => string;
     roomAria: (
@@ -205,7 +231,7 @@ export interface Copy {
     bossDoor: (boss: string) => string;
     bossWaits: string;
     chapterWon: (next: string) => string;
-    allWon: string;
+    allWon: (bosses: number) => string;
     cafe: string;
     cafeGlose: (hp: number, tokens: number) => string;
     chestPlain: string;
@@ -293,10 +319,15 @@ export interface Copy {
     echo: string;
     echoReady: string;
     guard: (w: Who) => string;
+    tune: (name: string, format: string) => string;
+    clock: (
+      name: string,
+      n: number,
+      change: 'start' | 'tick' | 'back' | 'reset'
+    ) => string;
   };
   howto: { title: string; items: string[]; close: string };
   legend: Partial<Record<MoveKey, string>>;
-  cines: Record<string, CineCopy>;
   cineTitles: {
     chapter: (i: number, short: string) => string;
     fall: (boss: string) => string;
@@ -346,6 +377,14 @@ const frStatus: Copy['statuses'] = {
   steady: {
     name: 'Aplomb',
     help: 'Vient d’être étourdi : ne peut pas l’être de nouveau tout de suite.',
+  },
+  traced: {
+    name: 'Tracé',
+    help: 'Repéré : son prochain coup s’affiche et il encaisse les dégâts en entier.',
+  },
+  clock: {
+    name: 'Compte à rebours',
+    help: 'Tours avant son timeout, une frappe lourde sur toute l’équipe. Un bon Duel le fait reculer d’un tour.',
   },
 };
 const frYou = (w: Who, verb: [string, string]) =>
@@ -499,103 +538,21 @@ const fr: Copy = {
       text: 'Relève un équipier à terre avec 50 % des PV.',
     },
   },
+  joined: {
+    vigie:
+      'Vigie rejoint l’équipe. Élément Courant, contrôle : elle voit venir les coups.',
+    navette:
+      'Navette rejoint l’équipe. Élément Courant, vitesse : deux coups quand les autres en donnent un.',
+    moka: 'Moka rejoint l’équipe. Élément Café, soins : ses tasses remettent debout.',
+    tampon:
+      'Tampon rejoint l’équipe. Élément Papier, défense : rien ne passe sans son visa.',
+    arrosoir:
+      'Arrosoir rejoint l’équipe. Élément Café, soutien : il fait repousser ce qui flétrit.',
+  },
   statuses: frStatus,
-  chapters: {
-    agentic_architecture: {
-      ...PAGE_COPY.fr.chapters.agentic_architecture,
-      places: ['La salle de contrôle', 'Le couloir des workers', 'L’arène'],
-      intro:
-        'Architecture agentique et orchestration. Ici, des agents se passent le travail. Garde le fil de qui fait quoi.',
-      boss: {
-        name: 'La Boucle Sans Fin',
-        a: 'La Boucle Sans Fin',
-        taunt: 'Je rappelle. Je rappelle. Je rappelle.',
-        fall: 'La Boucle Sans Fin trouve enfin sa condition d’arrêt.',
-        mechanic:
-          'Une boucle sans condition d’arrêt. Sous la moitié de ses PV, elle agira deux fois par tour : un étourdissement, c’est sa condition d’arrêt.',
-        phases: [
-          'La Boucle s’emballe : deux actions par tour. Étourdis-la pour la couper.',
-        ],
-      },
-    },
-    tool_design_mcp: {
-      ...PAGE_COPY.fr.chapters.tool_design_mcp,
-      places: [
-        'La salle des machines',
-        'Le panneau de connexions',
-        'Le standard',
-      ],
-      intro:
-        'Conception d’outils et intégration MCP. Un bon tool se choisit à sa description. Lis-les bien.',
-      boss: {
-        name: 'Le Répartiteur Aveugle',
-        a: 'Le Répartiteur Aveugle',
-        taunt: 'Quel tool ? Le premier venu fera l’affaire.',
-        fall: 'Le Répartiteur Aveugle retire son bandeau et lit enfin les descriptions.',
-        mechanic:
-          'Il coupe la parole à l’un de vous. Sous la moitié de ses PV, il branche deux outils qui le protègent : débranche-les d’abord.',
-        phases: [
-          'Le Répartiteur branche deux outils au hasard : un Masque et un Coupe-fil le protègent.',
-        ],
-      },
-    },
-    claude_code: {
-      ...PAGE_COPY.fr.chapters.claude_code,
-      places: [
-        'L’atelier du terminal',
-        'Le couloir des permissions',
-        'La chambre forte',
-      ],
-      intro:
-        'Configuration et workflows de Claude Code. CLAUDE.md, hooks, permissions : chaque réglage compte.',
-      boss: {
-        name: 'Le Tout-Permis',
-        a: 'Le Tout-Permis',
-        taunt: 'Pourquoi demander ? J’ai déjà tout accepté.',
-        fall: 'Le Tout-Permis se retrouve enfin derrière une liste blanche.',
-        mechanic:
-          'Sous la moitié de ses PV, il s’accorde tous les droits : un bouclier à chaque « Tout autoriser ». Le Silence lui retire ce droit.',
-        phases: [
-          'Le Tout-Permis s’accorde tous les droits. Réduis-le au silence avant son prochain « Tout autoriser ».',
-        ],
-      },
-    },
-    prompt_engineering: {
-      ...PAGE_COPY.fr.chapters.prompt_engineering,
-      places: ['Les rayonnages', 'La salle de lecture', 'Le scriptorium'],
-      intro:
-        'Ingénierie des prompts et sorties structurées. Des consignes claires, des exemples, un schéma qui tient.',
-      boss: {
-        name: 'Sire Hors-Format',
-        a: 'Sire Hors-Format',
-        taunt:
-          'Un schéma ? Je réponds comme je veux, dans l’ordre que je veux.',
-        fall: 'Sire Hors-Format rentre enfin dans le schéma.',
-        mechanic:
-          'Il mélange les réponses pendant que tu lis. Sous la moitié de ses PV, il change d’élément tous les deux tours : garde une équipe variée.',
-        phases: [
-          'Sire Hors-Format sort du schéma : son élément va changer tous les deux tours.',
-        ],
-      },
-    },
-    context_management: {
-      ...PAGE_COPY.fr.chapters.context_management,
-      places: ['Les archives', 'Le long rayon', 'La cave inondée'],
-      intro:
-        'Gestion du contexte et fiabilité. Ce qui entre dans la fenêtre, ce qui en sort, et ce qui fuit.',
-      boss: {
-        name: 'La Fuite Mémoire',
-        a: 'La Fuite Mémoire',
-        taunt: 'Ton contexte ? Il coule déjà chez moi.',
-        fall: 'La Fuite Mémoire est colmatée. Il n’en reste qu’une flaque.',
-        mechanic:
-          'Trois phases. Elle vole, puis déborde (brouillard, sommeil), puis se répand (poison sur tous). Garde de quoi soigner et réveiller.',
-        phases: [
-          'La Fuite déborde : le brouillard monte, et ses vagues endorment.',
-          'La Fuite se répand partout : son poison touche toute l’équipe.',
-        ],
-      },
-    },
+  stories: {
+    [FOUNDATIONS_EXAM.key]: FOUNDATIONS_STORY.fr,
+    [DEVELOPER_PROFESSIONAL_EXAM.key]: DEVELOPER_PROFESSIONAL_STORY.fr,
   },
   types: {
     grib: {
@@ -725,6 +682,25 @@ const fr: Copy = {
       name: 'Fuite',
       help: (n) => `Zone : ${n} PV chacun et poison 3 tours.`,
     },
+    unlog: {
+      name: 'Hors radar',
+      help: () =>
+        'Coupera ses logs : il passera hors radar et effacera sa trace.',
+    },
+    refit: {
+      name: 'Recalage',
+      help: () => 'Se recalera sur toi et regagnera un peu de PV.',
+    },
+    bill: {
+      name: 'Facture',
+      help: (n, w) =>
+        `Frappera ${w} (${n} PV) et facturera ${MOVES.bill.drain} jetons.`,
+    },
+    timeout: {
+      name: 'Timeout',
+      help: (n) =>
+        `Zone : touchera toute l’équipe, jusqu’à ${n} PV chacun. Un bon Duel le repousse d’un tour.`,
+    },
   },
   formats: {
     duel: { name: 'Duel', options: '2 choix' },
@@ -773,23 +749,6 @@ const fr: Copy = {
     coffre: { name: 'Coffre', text: 'Un coffre sans gardien.' },
     boss: { name: 'Le chef', text: '' },
   },
-  titles: [
-    'Stagiaire',
-    'Lecteur de docs',
-    'Rédacteur de prompts',
-    'Bricoleur de tools',
-    'Dompteur d’agents',
-    'Gardien du contexte',
-    'Architecte junior',
-    'Architecte',
-    'Architecte confirmé',
-    'Architecte en chef',
-    'Architecte principal',
-    'Architecte expert',
-    'Architecte émérite',
-    'Maître architecte',
-    'Légende du classeur',
-  ],
   stamps: {
     stampHit: 'CLAC',
     visa: 'VISA',
@@ -801,6 +760,9 @@ const fr: Copy = {
     resist: 'RÉSISTE',
     miss: 'RATÉ',
     phase: 'PHASE',
+    refit: 'RECALÉ',
+    bill: 'FACTURE',
+    timeout: 'TIMEOUT',
   },
   card: {
     dmg: (n) => `−${n}`,
@@ -845,6 +807,11 @@ const fr: Copy = {
     fog: (n) => `Brouillard ${n}`,
     turns: (n) => `${n} tour${n > 1 ? 's' : ''}`,
     unknownEl: 'élément inconnu',
+    hidden: 'Hors radar',
+    hiddenHelp:
+      'Hors radar : son prochain coup est invisible et il n’encaisse que la moitié des dégâts. Une bonne réponse à 4 choix le trace 2 tours.',
+    tuned: (f) => `Calé sur ${f}`,
+    tunedShort: '½',
     down: 'À terre',
   },
   actions: {
@@ -901,14 +868,10 @@ const fr: Copy = {
       'Normale laisse le temps de tout lire. Rapide raccourcit les animations et les pauses.',
   },
   lines: {
-    titleNew:
-      'Les Clawds m’ont volé mes 300 fiches de révision. Tu m’aides à les reprendre ?',
     titleBack:
       'Te revoilà. Mon classeur se souvient de chaque fiche que tu as libérée.',
-    mapFirst:
-      'Commence par l’architecture agentique. Les autres chapitres s’ouvriront ensuite.',
-    mapAll:
-      'Les cinq chefs sont tombés. Rejoue un chapitre pour libérer les fiches qui restent.',
+    mapAll: (n) =>
+      `Les ${countWord('fr', n)} chefs sont tombés. Rejoue un chapitre pour libérer les fiches qui restent.`,
     mapAt: (s, f, t) => `${s}, c’est par là. ${f} fiches libérées sur ${t}.`,
     lockedTip: (b) => `Fermé tant que ${b} tient debout.`,
     roomAria: (i, d, f, t, locked) =>
@@ -919,8 +882,8 @@ const fr: Copy = {
     bossDoor: (b) => `Derrière cette porte : ${b}. Respire, et lis bien.`,
     bossWaits: 'Le chef attend derrière la porte.',
     chapterWon: (n) => `Chapitre gagné. ${n} s’ouvre sur la carte.`,
-    allWon:
-      'Les cinq chefs sont tombés. Mon classeur n’a jamais été aussi complet.',
+    allWon: (n) =>
+      `Les ${countWord('fr', n)} chefs sont tombés. Mon classeur n’a jamais été aussi complet.`,
     cafe: 'Moka pose des tasses fumantes sur le comptoir.',
     cafeGlose: (hp, t) =>
       `Ah, Moka. Toujours là quand il faut. +${hp} PV pour l’équipe, +${t} jetons.`,
@@ -1038,11 +1001,23 @@ const fr: Copy = {
       'L’écho est prêt : la prochaine bonne réponse résonnera sur les autres.',
     guard: (w) =>
       `${frYou(w, ['te mets', 'se met'])} en garde : dégâts divisés par deux jusqu’au prochain tour.`,
+    tune: (n, f) =>
+      `${n} se cale sur le ${f} : ce format ne fait plus que moitié. Change de format.`,
+    clock: (n, t, change) =>
+      change === 'start'
+        ? `${n} lance un compte à rebours : timeout dans ${t} tours.`
+        : change === 'back'
+          ? `Réponse rapide : le compte à rebours recule, timeout dans ${t} tours.`
+          : change === 'reset'
+            ? `Le compteur de ${n} repart : timeout dans ${t} tours.`
+            : t === 1
+              ? `${n} : timeout au prochain tour !`
+              : `${n} : timeout dans ${t} tours.`,
   },
   howto: {
     title: 'Comment jouer',
     items: [
-      'Chaque Clawd garde des fiches de l’examen. À ton tour, choisis combien de réponses voir, puis la bonne : la fiche est libérée et l’ennemi perd des PV.',
+      'Chaque Clawd garde des fiches de révision. À ton tour, choisis combien de réponses voir, puis la bonne : la fiche est libérée et l’ennemi perd des PV.',
       '<b>2 choix</b> frappent ×2, <b>3 choix</b> ×3, <b>4 choix</b> ×4, comme le jour J. Le chiffre sur la carte est la perte exacte de l’ennemi. Une erreur : il riposte, et la fiche passe « à revoir ».',
       '<b>Éléments</b> : l’Encre bat le Papier, le Papier bat le Café, le Café bat le Courant, le Courant bat l’Encre (×2). Contre son propre élément : moitié. Un coup faible ou résisté révèle l’élément.',
       '<b>L’équipe</b> : tes équipiers jouent chacun leur tour. Leurs talents et les pouvoirs de Glose coûtent des jetons. Le Trident rend 1 jeton, l’Examen 2, la Garde 1.',
@@ -1065,64 +1040,6 @@ const fr: Copy = {
     steal: 'Larcin',
     mend: 'Rafistolage',
     shield: 'Bouclier',
-  },
-  cines: {
-    intro: {
-      title: 'Le vol des fiches',
-      shots: [
-        'La nuit tombe sur les archives. Glose range ses 300 fiches pour l’examen.',
-        'Des Clawds maléfiques surgissent et dispersent les fiches dans cinq domaines.',
-        'Il faut les reprendre, une bonne réponse à la fois. Et chercher de l’aide dans les bureaux.',
-      ],
-    },
-    ending: {
-      title: 'Le classeur complet',
-      shots: [
-        'Le dernier chef tombe. L’aube passe par la fenêtre.',
-        'Toute l’équipe range les fiches avec Glose : cinq domaines, cinq chefs vaincus.',
-        'Il reste à revoir les fiches marquées. Le jour de l’examen, tu les reconnaîtras.',
-      ],
-    },
-    'join-vigie': {
-      title: 'Vigie',
-      shots: [
-        'Dans la salle de contrôle, Vigie ne quitte pas l’écran radar des yeux. Des points rouges s’y déplacent.',
-        '« Je les suis depuis le début. Ils se passent tes fiches d’un agent à l’autre. Je viens avec toi. »',
-        'Vigie rejoint l’équipe. Élément Courant, contrôle : elle voit venir les coups.',
-      ],
-    },
-    'join-navette': {
-      title: 'Navette',
-      shots: [
-        'Une silhouette traverse le panneau de connexions au pas de course, des fiches plein les bras.',
-        'Navette freine net : « Ces fiches sont à toi ? Je les ai reprises à un Coupe-fil. »',
-        'Navette rejoint l’équipe. Élément Courant, vitesse : deux coups quand les autres en donnent un.',
-      ],
-    },
-    'join-moka': {
-      title: 'Moka',
-      shots: [
-        'Dans l’atelier du terminal, Moka fait mousser le lait derrière la machine à café, comme à chaque pause.',
-        '« Je vous ai assez servis derrière le comptoir. Cette fois, je prends le thermos et je viens avec vous. »',
-        'Moka rejoint l’équipe. Élément Café, soins : ses tasses remettent debout.',
-      ],
-    },
-    'join-tampon': {
-      title: 'Tampon',
-      shots: [
-        'Au guichet de la salle de lecture, Tampon tamponne. Clac. Clac. Refusé.',
-        '« Ce prompt n’a pas de schéma : refusé. Toi, en revanche, tu passes. »',
-        'Tampon rejoint l’équipe. Élément Papier, défense : rien ne passe sans son visa.',
-      ],
-    },
-    'join-arrosoir': {
-      title: 'Arrosoir',
-      shots: [
-        'Au fond des archives, Arrosoir taille un ficus qui déborde des étagères.',
-        '« Le contexte, c’est comme une plante : on garde ce qui pousse, on coupe le reste. »',
-        'Arrosoir rejoint l’équipe. Élément Café, soutien : il fait repousser ce qui flétrit.',
-      ],
-    },
   },
   cineTitles: {
     chapter: (i, s) => `Chapitre ${i} · ${s}`,
@@ -1167,6 +1084,14 @@ const enStatus: Copy['statuses'] = {
   steady: {
     name: 'Steady',
     help: 'Was just stunned: cannot be stunned again right away.',
+  },
+  traced: {
+    name: 'Traced',
+    help: 'Spotted: its next move shows and it takes full damage.',
+  },
+  clock: {
+    name: 'Countdown',
+    help: 'Turns before its timeout, a heavy blow on the whole party. A right Duel winds it back a turn.',
   },
 };
 const enYou = (w: Who, verb: [string, string]) =>
@@ -1323,98 +1248,21 @@ const en: Copy = {
       text: 'Gets a fallen teammate back up with 50% HP.',
     },
   },
+  joined: {
+    vigie:
+      'Vigie joins the party. Current element, control: she sees the blows coming.',
+    navette:
+      'Navette joins the party. Current element, speed: two hits while the others land one.',
+    moka: 'Moka joins the party. Coffee element, healer: her cups get you back on your feet.',
+    tampon:
+      'Tampon joins the party. Paper element, defender: nothing gets through without his visa.',
+    arrosoir:
+      'Arrosoir joins the party. Coffee element, support: he makes what wilts grow back.',
+  },
   statuses: enStatus,
-  chapters: {
-    agentic_architecture: {
-      ...PAGE_COPY.en.chapters.agentic_architecture,
-      places: ['The control room', 'The workers’ corridor', 'The arena'],
-      intro:
-        'Agentic architecture and orchestration. Agents hand work to each other here. Keep track of who does what.',
-      boss: {
-        name: 'The Endless Loop',
-        a: 'The Endless Loop',
-        taunt: 'I call again. I call again. I call again.',
-        fall: 'The Endless Loop finally finds its stop condition.',
-        mechanic:
-          'A loop with no stop condition. Below half its HP it acts twice a turn: a stun is its stop condition.',
-        phases: [
-          'The Loop speeds up: two actions a turn. Stun it to break it.',
-        ],
-      },
-    },
-    tool_design_mcp: {
-      ...PAGE_COPY.en.chapters.tool_design_mcp,
-      places: ['The machine room', 'The patch panel', 'The switchboard'],
-      intro:
-        'Tool design and MCP integration. A good tool is picked by its description. Read them well.',
-      boss: {
-        name: 'The Blind Dispatcher',
-        a: 'The Blind Dispatcher',
-        taunt: 'Which tool? Any tool will do.',
-        fall: 'The Blind Dispatcher takes off the blindfold and finally reads the descriptions.',
-        mechanic:
-          'It cuts one of you off. Below half its HP it plugs in two tools that protect it: unplug them first.',
-        phases: [
-          'The Dispatcher plugs in two tools at random: a Mask and a Snipper protect it.',
-        ],
-      },
-    },
-    claude_code: {
-      ...PAGE_COPY.en.chapters.claude_code,
-      places: [
-        'The terminal workshop',
-        'The permissions corridor',
-        'The vault',
-      ],
-      intro:
-        'Claude Code configuration and workflows. CLAUDE.md, hooks, permissions: every setting counts.',
-      boss: {
-        name: 'The Allow-All',
-        a: 'The Allow-All',
-        taunt: 'Why ask? I already said yes to everything.',
-        fall: 'The Allow-All is finally put behind an allowlist.',
-        mechanic:
-          'Below half its HP it grants itself every right: a shield with each “Allow all”. Silence takes that right away.',
-        phases: [
-          'The Allow-All grants itself every right. Silence it before its next “Allow all”.',
-        ],
-      },
-    },
-    prompt_engineering: {
-      ...PAGE_COPY.en.chapters.prompt_engineering,
-      places: ['The stacks', 'The reading room', 'The scriptorium'],
-      intro:
-        'Prompt engineering and structured output. Clear instructions, examples, a schema that holds.',
-      boss: {
-        name: 'Sir Off-Schema',
-        a: 'Sir Off-Schema',
-        taunt: 'A schema? I answer however I like, in whatever order I like.',
-        fall: 'Sir Off-Schema finally fits the schema.',
-        mechanic:
-          'He shuffles the answers while you read. Below half his HP he changes element every other turn: keep a varied party.',
-        phases: [
-          'Sir Off-Schema breaks the schema: his element will change every other turn.',
-        ],
-      },
-    },
-    context_management: {
-      ...PAGE_COPY.en.chapters.context_management,
-      places: ['The archives', 'The long shelf', 'The flooded cellar'],
-      intro:
-        'Context management and reliability. What goes into the window, what comes out, and what leaks.',
-      boss: {
-        name: 'The Memory Leak',
-        a: 'The Memory Leak',
-        taunt: 'Your context? It is already leaking into me.',
-        fall: 'The Memory Leak is plugged. Only a puddle is left.',
-        mechanic:
-          'Three phases. It steals, then overflows (fog, sleep), then spills (poison on everyone). Keep something to heal and to wake.',
-        phases: [
-          'The Leak overflows: the fog rises, and its waves put you to sleep.',
-          'The Leak spills everywhere: its poison reaches the whole party.',
-        ],
-      },
-    },
+  stories: {
+    [FOUNDATIONS_EXAM.key]: FOUNDATIONS_STORY.en,
+    [DEVELOPER_PROFESSIONAL_EXAM.key]: DEVELOPER_PROFESSIONAL_STORY.en,
   },
   types: {
     grib: {
@@ -1529,6 +1377,25 @@ const en: Copy = {
       name: 'Spill',
       help: (n) => `Area: ${n} HP each and poison for 3 turns.`,
     },
+    unlog: {
+      name: 'Off the radar',
+      help: () =>
+        'Will cut its logs: it goes off the radar and wipes its trace.',
+    },
+    refit: {
+      name: 'Refit',
+      help: () => 'Will fit itself to you and win back a little HP.',
+    },
+    bill: {
+      name: 'Invoice',
+      help: (n, w) =>
+        `Will hit ${w} (${n} HP) and bill ${MOVES.bill.drain} tokens.`,
+    },
+    timeout: {
+      name: 'Timeout',
+      help: (n) =>
+        `Area: will hit the whole party, up to ${n} HP each. A right Duel pushes it back a turn.`,
+    },
   },
   formats: {
     duel: { name: 'Duel', options: '2 options' },
@@ -1574,23 +1441,6 @@ const en: Copy = {
     coffre: { name: 'Chest', text: 'An unguarded chest.' },
     boss: { name: 'The boss', text: '' },
   },
-  titles: [
-    'Intern',
-    'Docs reader',
-    'Prompt writer',
-    'Tool tinkerer',
-    'Agent tamer',
-    'Context keeper',
-    'Junior architect',
-    'Architect',
-    'Senior architect',
-    'Chief architect',
-    'Principal architect',
-    'Expert architect',
-    'Distinguished architect',
-    'Master architect',
-    'Binder legend',
-  ],
   stamps: {
     stampHit: 'THUD',
     visa: 'VISA',
@@ -1602,6 +1452,9 @@ const en: Copy = {
     resist: 'RESISTED',
     miss: 'MISS',
     phase: 'PHASE',
+    refit: 'REFIT',
+    bill: 'BILLED',
+    timeout: 'TIMEOUT',
   },
   card: {
     dmg: (n) => `−${n}`,
@@ -1645,6 +1498,11 @@ const en: Copy = {
     fog: (n) => `Fog ${n}`,
     turns: (n) => `${n} turn${n > 1 ? 's' : ''}`,
     unknownEl: 'unknown element',
+    hidden: 'Off the radar',
+    hiddenHelp:
+      'Off the radar: its next move is hidden and it takes only half damage. A right answer with 4 options traces it for 2 turns.',
+    tuned: (f) => `Fitted to ${f}`,
+    tunedShort: '½',
     down: 'Down',
   },
   actions: {
@@ -1701,13 +1559,9 @@ const en: Copy = {
       'Normal leaves time to read everything. Fast shortens animations and pauses.',
   },
   lines: {
-    titleNew:
-      'The Clawds stole my 300 revision cards. Will you help me get them back?',
     titleBack: 'You are back. My binder remembers every card you freed.',
-    mapFirst:
-      'Start with agentic architecture. The other chapters open after it.',
-    mapAll:
-      'All five bosses have fallen. Replay a chapter to free the cards still out there.',
+    mapAll: (n) =>
+      `All ${countWord('en', n)} bosses have fallen. Replay a chapter to free the cards still out there.`,
     mapAt: (s, f, t) => `${s} is this way. ${f} cards freed out of ${t}.`,
     lockedTip: (b) => `Closed while ${b} still stands.`,
     roomAria: (i, d, f, t, locked) =>
@@ -1718,7 +1572,8 @@ const en: Copy = {
     bossDoor: (b) => `Behind this door: ${b}. Breathe, and read carefully.`,
     bossWaits: 'The boss is waiting behind the door.',
     chapterWon: (n) => `Chapter won. ${n} opens on the map.`,
-    allWon: 'All five bosses have fallen. My binder has never been so full.',
+    allWon: (n) =>
+      `All ${countWord('en', n)} bosses have fallen. My binder has never been so full.`,
     cafe: 'Moka sets steaming cups on the counter.',
     cafeGlose: (hp, t) =>
       `Ah, Moka. Always there when needed. +${hp} HP for the party, +${t} tokens.`,
@@ -1833,11 +1688,23 @@ const en: Copy = {
       'The echo is set: the next right answer will ring through the others.',
     guard: (w) =>
       `${enYou(w, ['take', 'takes'])} guard: half damage until the next turn.`,
+    tune: (n, f) =>
+      `${n} fits itself to the ${f}: that format now deals half. Switch formats.`,
+    clock: (n, t, change) =>
+      change === 'start'
+        ? `${n} starts a countdown: timeout in ${t} turns.`
+        : change === 'back'
+          ? `Quick answer: the countdown winds back, timeout in ${t} turns.`
+          : change === 'reset'
+            ? `${n}'s meter starts over: timeout in ${t} turns.`
+            : t === 1
+              ? `${n}: timeout next turn!`
+              : `${n}: timeout in ${t} turns.`,
   },
   howto: {
     title: 'How to play',
     items: [
-      'Each Clawd keeps exam cards. On your turn, pick how many answers to see, then the right one: the card is freed and the enemy loses HP.',
+      'Each Clawd keeps revision cards. On your turn, pick how many answers to see, then the right one: the card is freed and the enemy loses HP.',
       '<b>2 options</b> hit ×2, <b>3 options</b> ×3, <b>4 options</b> ×4, as on exam day. The figure on the card is exactly what the enemy loses. A mistake: it strikes back, and the card is marked “to review”.',
       '<b>Elements</b>: Ink beats Paper, Paper beats Coffee, Coffee beats Current, Current beats Ink (×2). Against its own element: half. A weak or resisted hit shows the element.',
       '<b>The party</b>: your teammates each play their turn. Their skills and Glose’s powers cost tokens. The Trident gives 1 token back, the Exam 2, Guard 1.',
@@ -1861,64 +1728,6 @@ const en: Copy = {
     mend: 'Patch-up',
     shield: 'Shield',
   },
-  cines: {
-    intro: {
-      title: 'The stolen cards',
-      shots: [
-        'Night falls on the archives. Glose files away his 300 cards for the exam.',
-        'Wicked Clawds burst in and scatter the cards across five domains.',
-        'They must be won back, one right answer at a time. And help is down the corridors.',
-      ],
-    },
-    ending: {
-      title: 'The full binder',
-      shots: [
-        'The last boss falls. Dawn comes through the window.',
-        'The whole party files the cards with Glose: five domains, five bosses beaten.',
-        'The cards marked to review are left. On exam day, you will know them.',
-      ],
-    },
-    'join-vigie': {
-      title: 'Vigie',
-      shots: [
-        'In the control room, Vigie never takes her eyes off the radar screen. Red dots are moving on it.',
-        '“I have tracked them from the start. They pass your cards from one agent to the next. I am coming with you.”',
-        'Vigie joins the party. Current element, control: she sees the blows coming.',
-      ],
-    },
-    'join-navette': {
-      title: 'Navette',
-      shots: [
-        'Someone sprints across the patch panel, arms full of cards.',
-        'Navette skids to a halt: “Are these yours? I took them back from a Snipper.”',
-        'Navette joins the party. Current element, speed: two hits while the others land one.',
-      ],
-    },
-    'join-moka': {
-      title: 'Moka',
-      shots: [
-        'In the terminal workshop, Moka froths milk behind the coffee machine, as at every break.',
-        '“I have served you from behind the counter long enough. This time I am taking the thermos and coming with you.”',
-        'Moka joins the party. Coffee element, healer: her cups get you back on your feet.',
-      ],
-    },
-    'join-tampon': {
-      title: 'Tampon',
-      shots: [
-        'At the reading room desk, Tampon stamps. Clack. Clack. Rejected.',
-        '“That prompt has no schema: rejected. You, on the other hand, pass.”',
-        'Tampon joins the party. Paper element, defender: nothing gets through without his visa.',
-      ],
-    },
-    'join-arrosoir': {
-      title: 'Arrosoir',
-      shots: [
-        'Deep in the archives, Arrosoir prunes a fig tree spilling over the shelves.',
-        '“Context is like a plant: keep what grows, cut the rest.”',
-        'Arrosoir joins the party. Coffee element, support: he makes what wilts grow back.',
-      ],
-    },
-  },
   cineTitles: {
     chapter: (i, s) => `Chapter ${i} · ${s}`,
     fall: (b) => `The fall: ${b}`,
@@ -1926,19 +1735,41 @@ const en: Copy = {
   },
 };
 
+/** The story of a campaign. */
+export function storyOf(c: Copy, campaign: string): StoryCopy {
+  const story = c.stories[campaign];
+  if (!story) throw new Error(`no story for ${campaign}`);
+  return story;
+}
+
+/** The copy of a domain's chapter in a campaign's story. */
+export function chapterCopy(story: StoryCopy, domain: string): ChapterCopy {
+  const ch = story.chapters[domain];
+  if (!ch) throw new Error(`no chapter copy for ${domain}`);
+  return ch;
+}
+
 /**
- * Chapter scenes are built from the chapter's own copy: entry, boss entrance, boss
- * defeat. `domains` are the campaign's, in chapter order.
+ * The words of a scene: the opening and the ending, an ally's arrival, or a chapter's
+ * own scenes built from its copy (entry, boss entrance, boss defeat). `domains` are the
+ * campaign's, in chapter order; `sheets` is the size of its bank.
  */
 export function cineCopy(
   c: Copy,
+  story: StoryCopy,
   id: string,
-  domains: readonly string[]
+  domains: readonly string[],
+  sheets: number
 ): CineCopy {
-  if (c.cines[id]) return c.cines[id];
+  if (id === 'intro') return story.intro(sheets, domains.length);
+  if (id === 'ending') return story.ending(domains.length);
   const [kind, n] = id.split('-');
+  if (kind === 'join') {
+    const scene = story.joins[n as AllyKey];
+    return { ...scene, shots: [...scene.shots, c.joined[n as AllyKey]] };
+  }
   const i = Number(n);
-  const ch = chapterCopy(c, domains[i]);
+  const ch = chapterCopy(story, domains[i]);
   if (kind === 'chapter')
     return {
       title: c.cineTitles.chapter(i + 1, ch.short),
@@ -1948,9 +1779,5 @@ export function cineCopy(
     return { title: ch.boss.name, shots: [ch.boss.taunt, ch.boss.mechanic] };
   return { title: c.cineTitles.fall(ch.boss.name), shots: [ch.boss.fall] };
 }
-
-/** The copy of a domain's chapter. */
-export const chapterCopy = (c: Copy, domain: string): ChapterCopy =>
-  c.chapters[domain];
 
 export const COPY: Record<Locale, Copy> = { fr, en };

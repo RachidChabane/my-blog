@@ -33,8 +33,11 @@ import {
   skillBlock,
   skillTarget,
   targetable,
+  isDark,
+  tunedTo,
   useItem,
   usePower,
+  foeRef,
 } from '../../domain/engine';
 import type { Affinity, Element } from '../../domain/elements';
 import { affinity } from '../../domain/elements';
@@ -108,6 +111,7 @@ import {
   shieldFx,
   statusFx,
   stealFx,
+  tuneFx,
   upFx,
   walkIn,
 } from './fx';
@@ -367,7 +371,7 @@ export async function play(
           card?.classList.remove('dying');
           b.lines.push(
             foe.kind === 'boss'
-              ? chapterCopy(c, foe.chapter.domain).boss.fall
+              ? chapterCopy(G.s, foe.chapter.domain).boss.fall
               : c.types[foe.kind].fall
           );
         } else {
@@ -408,7 +412,7 @@ export async function play(
         await sayOne({
           who: foe,
           text:
-            chapterCopy(c, foe.chapter.domain).boss.phases[e.phase - 1] ?? '',
+            chapterCopy(G.s, foe.chapter.domain).boss.phases[e.phase - 1] ?? '',
           wait: true,
           bubble: false,
         });
@@ -456,7 +460,9 @@ export async function play(
       }
       case 'free':
         blip('free');
-        b.lines.push(c.ev.free(sheetLabel(e.sheet), e.xp));
+        b.lines.push(
+          c.ev.free(sheetLabel(G.qById.get(e.sheet) as Question), e.xp)
+        );
         break;
       case 'combo':
         b.lines.push(c.ev.combo(e.n));
@@ -481,6 +487,25 @@ export async function play(
       case 'echo':
         b.lines.push(b.act === 'power:echo' ? c.ev.echoReady : c.ev.echo);
         break;
+      case 'tune': {
+        const foe = foeBy(F, e.uid) as Foe;
+        const el = foeArtEl(e.uid);
+        refresh(acting);
+        blip(`move:${foe.chapter.domain}:refit`);
+        if (el) await tuneFx(el);
+        b.lines.push(c.ev.tune(foeName(foe), c.formats[e.format].name));
+        break;
+      }
+      case 'clock': {
+        const foe = foeBy(F, e.uid) as Foe;
+        showStatus(foeRef(e.uid), 'clock', e.n);
+        refresh(acting);
+        const el = foeArtEl(e.uid);
+        if (el)
+          await statusFx(el, 'clock', e.change === 'tick' ? 'tick' : 'on');
+        b.lines.push(c.ev.clock(foeName(foe), e.n, e.change));
+        break;
+      }
     }
   }
   await flush(b);
@@ -567,7 +592,7 @@ export async function battle(): Promise<Outcome> {
   const F = (G.F = makeFight(G.ctx, r));
   syncShown(F, r);
   const c = G.c;
-  const cc = chapterCopy(c, domainOf(r.ch));
+  const cc = chapterCopy(G.s, domainOf(r.ch));
   G.screen = 'battle';
   G.sel = null;
   resetPartyBars();
@@ -662,7 +687,10 @@ export async function battle(): Promise<Outcome> {
     }
     if (outcome(F, r)) break;
     await play(roundEnd(G.ctx, F, r));
-    if (!toldGuard && alive(F).some((e) => e.intent?.move === 'big')) {
+    if (
+      !toldGuard &&
+      alive(F).some((e) => !isDark(e) && e.intent?.move === 'big')
+    ) {
       toldGuard = true;
       await say({ who: 'glose', text: c.lines.guardTip });
     }
@@ -690,12 +718,13 @@ function formatItems(k: MemberKey, target: Foe) {
         : p.aff === 'neutral'
           ? ''
           : `<span class="tag ${p.aff}">${esc(c.card.short[p.aff])}</span>`;
+    const tuned = tunedTo(target) === f;
     return {
       k: f,
-      cls: `fmt${p.aff ? ` aff-${p.aff}` : ''}`,
+      cls: `fmt${p.aff ? ` aff-${p.aff}` : ''}${tuned ? ' tuned' : ''}`,
       dis: formatBlocked(F, f),
       why: c.blocked.fog,
-      html: `<span class="fn">${esc(c.formats[f].name)}</span><span class="d">${esc(c.formats[f].options)}</span><span class="fig"><span class="big">${esc(c.card.dmg(p.hits[0]?.d ?? 0))}</span>${tag}</span>`,
+      html: `<span class="fn">${esc(c.formats[f].name)}</span><span class="d">${esc(c.formats[f].options)}</span><span class="fig"><span class="big">${esc(c.card.dmg(p.hits[0]?.d ?? 0))}</span>${tag}${tuned ? `<span class="tag tuned" title="${esc(c.status.tuned(c.formats[f].name))}">${esc(c.status.tunedShort)}</span>` : ''}</span>`,
     };
   });
 }
@@ -1045,7 +1074,8 @@ async function question(
       cls: `ans${a.removed.has(pos) ? ' gone' : ''}`,
       html: `<span class="t">${card(pos)}</span>`,
     }));
-  const label = `${memberName(k)} · ${G.c.formats[f].options} · ${foeName(e)}`;
+  /* the enemy is named in the question box, which it asks */
+  const label = `${memberName(k)} · ${G.c.formats[f].options}`;
   if (F.mixNext) {
     F.mixNext = false;
     void choose({

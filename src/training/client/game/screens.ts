@@ -100,7 +100,11 @@ export async function titleScreen(): Promise<void> {
     return titleScreen();
   }
   showLine(
-    esc(prog.freed.length || prog.xp ? c.lines.titleBack : c.lines.titleNew),
+    esc(
+      prog.freed.length || prog.xp
+        ? c.lines.titleBack
+        : G.s.titleNew(G.qById.size)
+    ),
     'glose'
   );
   if (!save.soundAsked) {
@@ -212,42 +216,43 @@ export async function mapScreen(): Promise<void> {
   }
   G.host.refresh();
   setScene('', { time: '' });
-  setWhere(c.page.game, esc(c.titles[levelOf(prog.xp) - 1]));
+  setWhere(c.page.game, esc(G.s.titles[levelOf(prog.xp) - 1]));
   renderStatus();
   let sel = chapters().findIndex(
     (ch, i) => chapterOpen(i) && !prog.beaten.includes(ch.domain)
   );
   if (sel < 0) sel = 0;
-  $('layer').innerHTML = `<div class="bldg">${chapters()
-    .map((ch, i) => {
-      const open = chapterOpen(i);
-      const beaten = prog.beaten.includes(ch.domain);
-      const f = freedIn(ch.domain);
-      const tot = (G.ctx.bank[ch.domain] ?? []).length;
-      const cc = chapterCopy(c, domainOf(i));
-      return (
-        `<button type="button" class="room${open ? '' : ' locked'}" data-room="${i}" aria-label="${esc(c.lines.roomAria(i + 1, cc.domain, f, tot, !open))}">${placeSvg(ch.domain, 0)}` +
-        (beaten
-          ? `<span class="crown" aria-hidden="true">${crownSvg()}</span>`
-          : !open
-            ? `<span class="lock" aria-hidden="true">${lockSvg()}</span>`
-            : '') +
-        `<span class="lab"><b><span class="no">${i + 1}</span><span class="nm">${esc(cc.short)}</span></b><span class="p"><span class="hb"><i style="width:${tot ? (f / tot) * 100 : 0}%"></i></span>${f}/${tot}</span></span></button>`
-      );
-    })
-    .join(
-      ''
-    )}<div class="room total" aria-hidden="true"><span class="lab"><b>${prog.freed.length}/${total()}</b><span class="p">${esc(c.titles[levelOf(prog.xp) - 1])}</span></span></div></div>`;
+  $('layer').innerHTML =
+    `<div class="bldg" style="--floors:${Math.ceil((chapters().length + 1) / 2)}">${chapters()
+      .map((ch, i) => {
+        const open = chapterOpen(i);
+        const beaten = prog.beaten.includes(ch.domain);
+        const f = freedIn(ch.domain);
+        const tot = (G.ctx.bank[ch.domain] ?? []).length;
+        const cc = chapterCopy(G.s, domainOf(i));
+        return (
+          `<button type="button" class="room${open ? '' : ' locked'}" data-room="${i}" aria-label="${esc(c.lines.roomAria(i + 1, cc.domain, f, tot, !open))}">${placeSvg(ch.domain, 0)}` +
+          (beaten
+            ? `<span class="crown" aria-hidden="true">${crownSvg()}</span>`
+            : !open
+              ? `<span class="lock" aria-hidden="true">${lockSvg()}</span>`
+              : '') +
+          `<span class="lab"><b><span class="no">${i + 1}</span><span class="nm">${esc(cc.short)}</span></b><span class="p"><span class="hb"><i style="width:${tot ? (f / tot) * 100 : 0}%"></i></span>${f}/${tot}</span></span></button>`
+        );
+      })
+      .join(
+        ''
+      )}<div class="room total" aria-hidden="true"><span class="lab"><b>${prog.freed.length}/${total()}</b><span class="p">${esc(G.s.titles[levelOf(prog.xp) - 1])}</span></span></div></div>`;
   const all = prog.beaten.length === chapters().length;
   const lineFor = (i: number) => {
-    const cc = chapterCopy(c, domainOf(i));
+    const cc = chapterCopy(G.s, domainOf(i));
     return `<b>${esc(c.status.chapterTag(i + 1))} · ${esc(cc.domain)}</b>. ${esc(c.lines.mapAt(cc.short, freedIn(chapters()[i].domain), (G.ctx.bank[chapters()[i].domain] ?? []).length))}`;
   };
   showLine(
     all
-      ? esc(c.lines.mapAll)
+      ? esc(c.lines.mapAll(chapters().length))
       : !prog.freed.length && !prog.xp
-        ? esc(c.lines.mapFirst)
+        ? esc(G.s.mapFirst)
         : lineFor(sel),
     'glose'
   );
@@ -264,12 +269,16 @@ export async function mapScreen(): Promise<void> {
     G.root
       .querySelectorAll<HTMLElement>('.room[data-room]')
       .forEach((r) => r.classList.toggle('sel', Number(r.dataset.room) === i));
+    /* a building taller than the scene scrolls to the chosen room */
+    G.root
+      .querySelector<HTMLElement>(`.room[data-room="${i}"]`)
+      ?.scrollIntoView({ block: 'nearest' });
     const b = $('zone').querySelector<HTMLElement>('[data-k="enter"]');
     if (!b) return;
     const open = chapterOpen(i);
     b.innerHTML = open
-      ? go(c.actions.enter(chapterCopy(c, domainOf(i)).short))
-      : esc(c.actions.locked(chapterCopy(c, domainOf(i - 1)).boss.name));
+      ? go(c.actions.enter(chapterCopy(G.s, domainOf(i)).short))
+      : esc(c.actions.locked(chapterCopy(G.s, domainOf(i - 1)).boss.name));
     if (open) b.removeAttribute('aria-disabled');
     else b.setAttribute('aria-disabled', 'true');
     if (speak) showLine(lineFor(i), 'glose');
@@ -286,7 +295,7 @@ export async function mapScreen(): Promise<void> {
     if (!chapterOpen(i))
       bubbleAt(
         r.querySelector('.lab'),
-        c.lines.lockedTip(chapterCopy(c, domainOf(i - 1)).boss.name),
+        c.lines.lockedTip(chapterCopy(G.s, domainOf(i - 1)).boss.name),
         'tip'
       );
   };
@@ -339,7 +348,7 @@ export async function mapScreen(): Promise<void> {
 export function chapterChrome(): void {
   const r = G.run;
   if (!r) return;
-  const cc = chapterCopy(G.c, domainOf(r.ch));
+  const cc = chapterCopy(G.s, domainOf(r.ch));
   setWhere(
     cc.short,
     `${stripHtml()}<span>${r.step === FIGHTS_PER_CHAPTER ? esc(G.c.status.bossStep) : `${r.step + 1}/${FIGHTS_PER_CHAPTER + 1}`}</span>`
@@ -470,7 +479,7 @@ async function chapterLoop(): Promise<void> {
   const prog = G.host.progress;
   for (;;) {
     const r = G.run as Run;
-    const cc = chapterCopy(c, domainOf(r.ch));
+    const cc = chapterCopy(G.s, domainOf(r.ch));
     G.screen = 'doors';
     G.F = null;
     const place = placeOfStep(r.step);
@@ -613,8 +622,8 @@ async function afterBoss(r: Run): Promise<void> {
     who: 'glose',
     text:
       nxt && !allDone
-        ? c.lines.chapterWon(chapterCopy(c, domainOf(r.ch + 1)).short)
-        : c.lines.allWon,
+        ? c.lines.chapterWon(chapterCopy(G.s, domainOf(r.ch + 1)).short)
+        : c.lines.allWon(chapters().length),
     wait: true,
   });
   if (allDone && firstWin) await playCine('ending');
@@ -700,7 +709,7 @@ async function tally(won: boolean): Promise<void> {
   );
   const cards = F.freedHere.map((id) => G.qById.get(id)).filter((q) => !!q);
   $('layer').innerHTML =
-    `<div class="wcards">${cards.map((q, i) => `<div class="wcard back" data-i="${i}">${esc(sheetLabel(q.id))}</div>`).join('')}</div>` +
+    `<div class="wcards">${cards.map((q, i) => `<div class="wcard back" data-i="${i}">${esc(sheetLabel(q))}</div>`).join('')}</div>` +
     partyHtml(inParty(r));
   renderStatus();
   if (!cards.length) await say({ text: c.lines.tallyNone, wait: true });
@@ -718,7 +727,7 @@ async function tally(won: boolean): Promise<void> {
     const q = cards[i];
     await sayOne({
       wait: true,
-      html: c.lines.tallyCard(esc(sheetLabel(q.id)), esc(q.options[q.answer])),
+      html: c.lines.tallyCard(esc(sheetLabel(q)), esc(q.options[q.answer])),
     });
     card.classList.remove('cur');
   }
@@ -739,9 +748,9 @@ async function levelUp(l: number): Promise<void> {
   blip('level');
   $('fx').insertAdjacentHTML(
     'beforeend',
-    `<div class="fanfare"><span class="sparks" aria-hidden="true">${'<i></i>'.repeat(8)}</span><b>${esc(c.lines.levelName(l))}</b><span>${esc(c.titles[l - 1])}</span></div>`
+    `<div class="fanfare"><span class="sparks" aria-hidden="true">${'<i></i>'.repeat(8)}</span><b>${esc(c.lines.levelName(l))}</b><span>${esc(G.s.titles[l - 1])}</span></div>`
   );
-  showLine(esc(c.lines.levelUp(l, c.titles[l - 1])), 'glose');
+  showLine(esc(c.lines.levelUp(l, G.s.titles[l - 1])), 'glose');
   const pvCapped = prog.perks.pv >= RULES.maxPerks;
   const inkCapped = maxTokensOf(prog.perks) >= RULES.tokensCap;
   const k = (await choose({

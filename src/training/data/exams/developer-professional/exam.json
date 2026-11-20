@@ -1,0 +1,72 @@
+{
+  "key": "developer-professional",
+  "slug": "developer-professional",
+  "name": "Claude Certified Developer - Professional",
+  "short": "Developer - Professional",
+  "domains": [
+    {
+      "key": "integration_reliability",
+      "label": "IR",
+      "name": {
+        "en": "Production Integration, Reliability, and Knowledge Grounding",
+        "fr": "Intégration en production, fiabilité et grounding"
+      }
+    },
+    {
+      "key": "agent_architecture",
+      "label": "AG",
+      "name": {
+        "en": "Advanced Agent Architecture and Orchestration",
+        "fr": "Architecture d’agents avancée et orchestration"
+      }
+    },
+    {
+      "key": "observability",
+      "label": "OB",
+      "name": {
+        "en": "Observability and Production Monitoring",
+        "fr": "Observabilité et monitoring en production"
+      }
+    },
+    {
+      "key": "evaluation",
+      "label": "EV",
+      "name": {
+        "en": "Evaluation Engineering and Quality Assurance",
+        "fr": "Ingénierie des evals et assurance qualité"
+      }
+    },
+    {
+      "key": "guardrails_security",
+      "label": "GS",
+      "name": {
+        "en": "Runtime Guardrails and Production Security",
+        "fr": "Guardrails à l’exécution et sécurité en production"
+      }
+    },
+    {
+      "key": "debugging_incidents",
+      "label": "DI",
+      "name": {
+        "en": "Advanced Debugging and Incident Response",
+        "fr": "Debugging avancé et réponse aux incidents"
+      }
+    },
+    {
+      "key": "fleet_operations",
+      "label": "FO",
+      "name": {
+        "en": "Agent Fleet Operations for Software Delivery",
+        "fr": "Opérer une flotte d’agents pour la livraison logicielle"
+      }
+    },
+    {
+      "key": "cost_latency",
+      "label": "CL",
+      "name": {
+        "en": "Cost and Latency Optimization at Scale",
+        "fr": "Optimisation des coûts et de la latence à l’échelle"
+      }
+    }
+  ]
+}

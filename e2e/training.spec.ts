@@ -1,5 +1,146 @@
 import { test, expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+
+/** The second exam's bank, as the page must render it. */
+const bankOf = (exam: string) =>
+  JSON.parse(
+    readFileSync(`src/training/data/exams/${exam}/questions.json`, 'utf8')
+  ) as {
+    id: string;
+    stem: Record<string, string>;
+    options: Record<string, string[]>;
+    answer: number;
+  }[];
+/** The longest stem and the longest set of options of both banks, in one language. */
+const longest = (lang: 'fr' | 'en') => {
+  const all = [...bankOf('foundations'), ...bankOf('developer-professional')];
+  const by = (f: (q: (typeof all)[number]) => number) =>
+    all.reduce((a, q) => (f(q) > f(a) ? q : a));
+  return {
+    stem: by((q) => q.stem[lang].length).stem[lang],
+    options: by((q) => q.options[lang].join('').length).options[lang],
+  };
+};
+
+/** Every stem of each bank, in one language. */
+const stemsOf = (lang: 'fr' | 'en') =>
+  ['foundations', 'developer-professional'].map((exam) =>
+    bankOf(exam).map((q) => q.stem[lang])
+  );
+/** Room a phone 640 px tall may scroll a typical question by: one line. */
+const ONE_LINE = 24;
+
+/**
+ * A typical question reads at once: for each bank, the median of the heights its stems
+ * need fits the question box on a 690 px phone and on a desktop, and needs at most one
+ * line of scrolling below that.
+ */
+async function checkMedianFits(page: Page, lang: 'fr' | 'en'): Promise<void> {
+  const over = await page.locator('#tg-host').evaluate((host, banks) => {
+    const r = host.shadowRoot as ShadowRoot;
+    const d = r.getElementById('dialog') as HTMLElement;
+    const t = r.getElementById('dlg-txt') as HTMLElement;
+    const keep = t.innerHTML;
+    const lvl = t.querySelector('.lvl')?.outerHTML ?? '';
+    const out = banks.map((stems) => {
+      const need = stems
+        .map((stem) => {
+          t.innerHTML = lvl + stem;
+          return d.scrollHeight;
+        })
+        .sort((a, b) => a - b);
+      return need[Math.floor(need.length / 2)] - d.clientHeight;
+    });
+    t.innerHTML = keep;
+    d.dispatchEvent(new Event('scroll'));
+    return out;
+  }, stemsOf(lang));
+  const allowed = page.viewportSize()!.height >= 690 ? 0 : ONE_LINE;
+  for (const o of over) expect(o).toBeLessThanOrEqual(allowed);
+}
+
+/**
+ * The answer step with the longest stem and options of both banks put in its place:
+ * the arena stays on screen, the dialogue box keeps its size and says there is more,
+ * the last option can be scrolled to, and the layout rules hold. The question on
+ * screen is put back afterwards.
+ */
+async function checkLongest(page: Page, lang: 'fr' | 'en'): Promise<void> {
+  const L = longest(lang);
+  const before = await page.locator('#tg-host').evaluate((host, L) => {
+    const r = host.shadowRoot as ShadowRoot;
+    const d = r.getElementById('dialog') as HTMLElement;
+    const t = r.getElementById('dlg-txt') as HTMLElement;
+    const h = d.getBoundingClientRect().height;
+    const keep = {
+      txt: t.innerHTML,
+      opts: [...r.querySelectorAll('#zone button.ans .t')].map(
+        (e) => e.innerHTML
+      ),
+    };
+    t.innerHTML = (t.querySelector('.lvl')?.outerHTML ?? '') + L.stem;
+    r.querySelectorAll('#zone button.ans .t').forEach((e, i) => {
+      e.textContent = L.options[i % L.options.length];
+    });
+    d.dispatchEvent(new Event('scroll'));
+    (window as unknown as { tgKeep: typeof keep }).tgKeep = keep;
+    return h;
+  }, L);
+  const state = await page.locator('#tg-host').evaluate((host) => {
+    const r = host.shadowRoot as ShadowRoot;
+    const box = (sel: string) =>
+      r.querySelector(sel)?.getBoundingClientRect() ?? new DOMRect();
+    const d = r.getElementById('dialog') as HTMLElement;
+    const z = r.getElementById('zone') as HTMLElement;
+    const last = [...z.querySelectorAll('button.ans')].pop() as HTMLElement;
+    z.scrollTop = z.scrollHeight;
+    const lb = last.getBoundingClientRect();
+    const zb = z.getBoundingClientRect();
+    return {
+      dialog: d.getBoundingClientRect().height,
+      more:
+        !(r.getElementById('dlg-more') as HTMLElement).hidden ===
+        d.scrollHeight > d.clientHeight + 8,
+      scene: box('#scene').height,
+      target: box('.foe.sel .art svg').height,
+      party: r.querySelectorAll('.party .actor').length,
+      lastShown: lb.bottom <= zb.bottom + 1 && lb.top >= zb.top - 1,
+      inView: zb.bottom <= innerHeight + 1,
+    };
+  });
+  expect(state.dialog).toBeCloseTo(before, 0);
+  expect(state.more).toBe(true);
+  expect(state.scene).toBeGreaterThanOrEqual(120);
+  expect(state.target).toBeGreaterThan(30);
+  expect(state.party).toBeGreaterThan(0);
+  expect(state.lastShown).toBe(true);
+  expect(state.inView).toBe(true);
+  await checkLayout(page);
+  await page.locator('#tg-host').evaluate((host) => {
+    const r = host.shadowRoot as ShadowRoot;
+    const keep = (
+      window as unknown as { tgKeep: { txt: string; opts: string[] } }
+    ).tgKeep;
+    (r.getElementById('dlg-txt') as HTMLElement).innerHTML = keep.txt;
+    r.querySelectorAll('#zone button.ans .t').forEach((e, i) => {
+      e.innerHTML = keep.opts[i];
+    });
+    (r.getElementById('zone') as HTMLElement).scrollTop = 0;
+  });
+}
+
+const devBank: {
+  id: string;
+  stem: Record<string, string>;
+  options: Record<string, string[]>;
+  answer: number;
+}[] = JSON.parse(
+  readFileSync(
+    'src/training/data/exams/developer-professional/questions.json',
+    'utf8'
+  )
+);
 
 /**
  * The training game, end to end, on a phone (full screen) and a desktop (inline), in
@@ -28,13 +169,17 @@ const SKIP = new Set([
   'no',
 ]);
 
-/** The campaign the page plays, as its progress is keyed in the save. */
+/** The campaign the training page plays, as its progress is keyed in the save. */
 const CAMPAIGN = 'CCAR-F';
+/** The second exam: its campaign key, its page and the size of its bank. */
+const DEV = 'developer-professional';
+const DEV_PATH = 'training/developer-professional/';
+const DEV_SHEETS = 172;
 const SETTINGS = ['sound', 'soundAsked', 'taught', 'speed'];
 
 type Save = Record<string, unknown>;
-/** A save of this version: the settings, and the progress of the page's campaign. */
-const save = (extra: Save = {}): Save => {
+/** A save of this version: the settings, and the progress of one campaign. */
+const save = (extra: Save = {}, campaign = CAMPAIGN): Save => {
   const pick = (keep: boolean) =>
     Object.fromEntries(
       Object.entries(extra).filter(([k]) => SETTINGS.includes(k) === keep)
@@ -47,7 +192,7 @@ const save = (extra: Save = {}): Save => {
     speed: 'normal',
     ...pick(true),
     campaigns: {
-      [CAMPAIGN]: {
+      [campaign]: {
         freed: [],
         review: {},
         xp: 0,
@@ -85,7 +230,8 @@ async function openGame(
   page: Page,
   lang: 'fr' | 'en',
   stored: Save | null,
-  key = SAVE_KEY
+  key = SAVE_KEY,
+  path = 'training/'
 ): Promise<string[]> {
   const errors: string[] = [];
   page.on('console', (m) => {
@@ -103,7 +249,7 @@ async function openGame(
     },
     [key, stored ? JSON.stringify(stored) : '', String(NOW)]
   );
-  await page.goto(`/${lang}/training/`);
+  await page.goto(`/${lang}/${path}`);
   await page.locator('#tg-play').click();
   await expect(page.locator('#zone button').first()).toBeVisible();
   return errors;
@@ -202,14 +348,14 @@ async function playUntil(
   throw new Error(`not reached; menu: ${(await keys(page)).join(',')}`);
 }
 
-/** The stored save, its settings and the page's campaign progress side by side. */
-const stored2 = (page: Page) =>
+/** The stored save, its settings and one campaign's progress side by side. */
+const stored2 = (page: Page, campaign = CAMPAIGN) =>
   page.evaluate(
     ([k, camp]) => {
       const s = JSON.parse(localStorage.getItem(k) ?? '{}');
       return { ...s, ...(s.campaigns?.[camp] ?? {}) };
     },
-    [SAVE_KEY, CAMPAIGN]
+    [SAVE_KEY, campaign]
   );
 /** Taps Continue until `done` holds. */
 async function tapUntil(
@@ -257,6 +403,16 @@ async function checkLayout(page: Page): Promise<void> {
       );
       if (own && parseFloat(getComputedStyle(el).fontSize) < 14)
         bad.push(`text ${el.className} ${getComputedStyle(el).fontSize}`);
+      // a line of text that does not fit its box is cut off
+      const cs = getComputedStyle(el);
+      if (
+        own &&
+        cs.overflowX !== 'visible' &&
+        cs.overflowX !== 'auto' &&
+        cs.overflowX !== 'scroll' &&
+        el.scrollWidth > el.clientWidth + 1
+      )
+        bad.push(`text clipped: ${el.textContent?.trim().slice(0, 40)}`);
     });
     // content stays inside its party chip and its choice card
     const inside = (outer: Element, sel: string, what: string) => {
@@ -283,7 +439,9 @@ async function checkLayout(page: Page): Promise<void> {
       Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
       Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
     const boss = !!root.querySelector('#scene.boss-fight');
-    const minBoss = innerHeight >= 690 ? 110 : 90;
+    /* the answer step keeps a compact arena: the boss is smaller there, still recognisable */
+    const answering = !!root.querySelector('#console.answering');
+    const minBoss = answering ? 72 : innerHeight >= 690 ? 110 : 90;
     /* the sprite as drawn: its box scaled to the viewBox, centred */
     const drawn = (svg: SVGSVGElement): DOMRect => {
       const r = svg.getBoundingClientRect();
@@ -778,5 +936,213 @@ test.describe('training game', () => {
       expect(html).not.toMatch(/<details class="tg-sheet[^>]* open/);
       expect(html.match(/class="tg-ok"/g)).toHaveLength(300);
     }
+  });
+
+  for (const size of [PHONE, { width: 360, height: 640 }, DESKTOP])
+    for (const lang of ['fr', 'en'] as const)
+      test(`${size.width}x${size.height}, ${lang}: the arena stays on screen while the longest question is asked`, async ({
+        page,
+      }) => {
+        await page.setViewportSize(size);
+        const errors = await openGame(page, lang, save());
+        await playUntil(page, (ks) => ks.includes('enter'));
+        await tap(page, 'enter');
+        await playUntil(page, (ks) => ks.includes('exam'), 'none');
+        await tap(page, 'exam');
+        await expect(page.locator('#zone button.ans')).toHaveCount(4);
+        await expect(page.locator('#scene')).toBeVisible();
+        await expect(page.locator('.foe.sel')).toBeVisible();
+        await checkMedianFits(page, lang);
+        await checkLongest(page, lang);
+        await answer(page, true);
+        await tapUntil(
+          page,
+          async () => (await page.locator('.foe .pvn.delta').count()) > 0
+        );
+        await expect(page.locator('#scene')).toBeVisible();
+        expect(errors).toEqual([]);
+      });
+
+  test.describe('the second exam', () => {
+    /** The domains of an exam's page, in chapter order. */
+    const domainsOf = (page: Page, path: string) =>
+      page.request
+        .get(`/fr/${path}`)
+        .then((r) => r.text())
+        .then((html) => [
+          ...new Set(
+            [...html.matchAll(/data-domain="([a-z_]+)"/g)].map((m) => m[1])
+          ),
+        ]);
+
+    for (const size of [PHONE, { width: 360, height: 640 }])
+      for (const lang of ['fr', 'en'] as const)
+        test(`${size.width}x${size.height}, ${lang}: each exam page shows the switcher and Play on the first screen, and the switcher works both ways`, async ({
+          page,
+        }) => {
+          await page.setViewportSize(size);
+          await page.goto(`/${lang}/training/`);
+          const sw = page.locator('nav.tg-switch');
+          const first = async () => {
+            for (const el of [sw, page.locator('#tg-play')]) {
+              const b = (await el.boundingBox())!;
+              expect(b.y + b.height).toBeLessThanOrEqual(size.height);
+              expect(b.x + b.width).toBeLessThanOrEqual(size.width);
+            }
+            for (const a of await sw.locator('a').all()) {
+              const b = (await a.boundingBox())!;
+              expect(b.height).toBeGreaterThanOrEqual(44);
+            }
+          };
+          await first();
+          await expect(sw.locator('a[aria-current="page"]')).toHaveText(
+            'Architect - Foundations'
+          );
+          await expect(page.locator('table.certs')).toHaveCount(1);
+          await sw
+            .locator('a', { hasText: 'Developer - Professional' })
+            .click();
+          await expect(page).toHaveURL(new RegExp(`/${lang}/${DEV_PATH}$`));
+          await first();
+          await expect(sw.locator('a[aria-current="page"]')).toHaveText(
+            'Developer - Professional'
+          );
+          await expect(page.locator('#tg-progress')).toContainText(
+            `0 / ${DEV_SHEETS}`
+          );
+          await expect(page.locator('table.certs')).toHaveCount(0);
+          await expect(page.locator('#exam')).toHaveText(
+            'Claude Certified Developer - Professional'
+          );
+          await expect(page.locator('table.domains thead th')).toHaveCount(2);
+          await expect(page.locator('table.domains tbody tr')).toHaveCount(8);
+          const over = await page.evaluate(
+            () => document.documentElement.scrollWidth - window.innerWidth
+          );
+          expect(over).toBeLessThanOrEqual(0);
+          await sw.locator('a', { hasText: 'Architect - Foundations' }).click();
+          await expect(page).toHaveURL(new RegExp(`/${lang}/training/$`));
+          await expect(page.locator('#tg-progress')).toContainText('/ 300');
+        });
+
+    test('every question of the second bank is in its page, folded, in the page language', async ({
+      request,
+    }) => {
+      const norm = (x: string) =>
+        x
+          .replace(/&#39;/g, "'")
+          .replace(/&quot;/g, '"')
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>');
+      for (const lang of ['fr', 'en'] as const) {
+        const html = norm(
+          await (await request.get(`/${lang}/${DEV_PATH}`)).text()
+        );
+        expect(html.match(/<details class="tg-sheet/g)).toHaveLength(
+          devBank.length
+        );
+        expect(html).not.toMatch(/<details class="tg-sheet[^>]* open/);
+        for (const q of devBank) {
+          expect(html, q.id).toContain(`data-id="${q.id}"`);
+          expect(html, q.id).toContain(q.stem[lang]);
+          expect(html, q.id).toContain(q.options[lang][q.answer]);
+        }
+        const foundations = await (
+          await request.get(`/${lang}/training/`)
+        ).text();
+        expect(foundations).not.toContain(`data-id="${devBank[0].id}"`);
+      }
+    });
+
+    test('phone, English: a fight in the second campaign, its progress kept apart from the first', async ({
+      page,
+    }) => {
+      await page.setViewportSize(PHONE);
+      const foundations = save({ freed: ['aa-001'], xp: 12 }).campaigns as Save;
+      const both = { ...save({}, DEV), campaigns: { ...foundations } };
+      const errors = await openGame(page, 'en', both, SAVE_KEY, DEV_PATH);
+      await expect(dlg(page)).toContainText(`${DEV_SHEETS}`);
+      await playUntil(page, (ks) => ks.includes('start'));
+      await tap(page, 'start');
+      await playUntil(page, (ks) => ks.includes('enter'));
+      await expect(page.locator('#zone [data-k="enter"]')).toContainText(
+        'Integration'
+      );
+      await checkLayout(page);
+      await tap(page, 'enter');
+      await winFirstFight(page, 'trident');
+      const dev = await stored2(page, DEV);
+      expect(dev.freed.length).toBeGreaterThan(0);
+      expect(dev.freed.every((id: string) => id.startsWith('dp-'))).toBe(true);
+      const kept = await stored2(page, CAMPAIGN);
+      expect(kept.freed).toEqual(['aa-001']);
+      expect(kept.xp).toBe(12);
+      await page.locator('#quit').click();
+      await expect(page.locator('#tg-progress')).toContainText(
+        `${dev.freed.length} / ${DEV_SHEETS}`
+      );
+      await page.goto('/en/training/');
+      await expect(page.locator('#tg-progress')).toContainText('1 / 300');
+      await expect(page.locator('#tg-play-label')).toHaveText('Resume');
+      expect(errors).toEqual([]);
+    });
+
+    test('phone, French: the Untraced goes off the radar, and a 4-option answer traces it', async ({
+      page,
+    }) => {
+      test.setTimeout(420_000);
+      await page.setViewportSize(PHONE);
+      const domains = await domainsOf(page, DEV_PATH);
+      const ch = domains.indexOf('observability');
+      const errors = await openGame(
+        page,
+        'fr',
+        save(
+          {
+            beaten: domains.slice(0, ch),
+            xp: 900,
+            perks: { pv: 3, ink: 2 },
+            recruits: ['vigie', 'navette'],
+            lineup: ['vigie', 'navette'],
+            seen: ['intro', 'join-vigie', 'join-navette'],
+          },
+          DEV
+        ),
+        SAVE_KEY,
+        DEV_PATH
+      );
+      await playUntil(page, (ks) => ks.includes('enter'));
+      await tap(page, 'enter');
+      await playUntil(
+        page,
+        async (ks) =>
+          ks.includes('exam') &&
+          (await page.locator('#scene.boss-fight').count()) > 0,
+        'exam',
+        1500
+      );
+      await checkLayout(page);
+      await page.setViewportSize({ width: 360, height: 640 });
+      await checkLayout(page);
+      await page.setViewportSize(PHONE);
+      await playUntil(
+        page,
+        async () => (await page.locator('.foe.boss.dark').count()) > 0,
+        'trident',
+        1500
+      );
+      await expect(page.locator('.foe.boss .intent.i-hidden')).toBeVisible();
+      await checkLayout(page);
+      await playUntil(
+        page,
+        async () =>
+          (await page.locator('.foe.boss .chip.st-traced').count()) > 0,
+        'exam',
+        1500
+      );
+      await expect(page.locator('.foe.boss.dark')).toHaveCount(0);
+      expect(errors).toEqual([]);
+    });
   });
 });

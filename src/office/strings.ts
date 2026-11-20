@@ -67,11 +67,8 @@ export interface OfficeStrings {
   project: { code: string; others: string; enlarge: string };
   journal: { written: string; empty: string };
   drill: {
-    description: string;
-    intro: string;
     /** Label of the link that opens the page with the game started. */
     play: string;
-    domainsLine: (n: number, code: string) => string;
     count: (questions: number, domains: number) => string;
     certifications: string;
     certCols: {
@@ -83,6 +80,8 @@ export interface OfficeStrings {
     };
     proofLink: (host: string) => string;
     examCols: { domain: string; weight: string; inGame: string };
+    /** Label of the links between the exams' pages. */
+    exams: string;
     total: string;
     format: (n: number, minutes: number, pass: number, max: number) => string;
   };
@@ -217,13 +216,7 @@ const FR: OfficeStrings = {
   },
   journal: { written: 'Écrit le', empty: 'Rien encore sur ce bureau.' },
   drill: {
-    description:
-      'Entraînement aux examens Claude Certified Architect d’Anthropic, sous forme de jeu, avec les certifications de Rachid Chabane et le détail de l’examen CCAR-F.',
     play: 'Jouer',
-    intro:
-      'Un entraînement aux examens Claude Certified Architect d’Anthropic, sous forme de jeu.',
-    domainsLine: (n, code) =>
-      `Les questions couvrent les ${n} domaines de l’examen ${code}.`,
     count: (q, d) => `${q} questions · ${d} domaines`,
     certifications: 'Mes certifications',
     certCols: {
@@ -234,6 +227,7 @@ const FR: OfficeStrings = {
       proof: 'Justificatif',
     },
     proofLink: (host) => `Badge sur ${host}`,
+    exams: 'Examens',
     examCols: {
       domain: 'Domaine',
       weight: 'Poids dans l’examen',
@@ -388,13 +382,7 @@ const EN: OfficeStrings = {
   },
   journal: { written: 'Written on', empty: 'Nothing on this desk yet.' },
   drill: {
-    description:
-      'Practice for Anthropic’s Claude Certified Architect exams, played as a game, with Rachid Chabane’s certifications and the outline of the CCAR-F exam.',
     play: 'Play',
-    intro:
-      'Practice for Anthropic’s Claude Certified Architect exams, played as a game.',
-    domainsLine: (n, code) =>
-      `The questions cover the ${n} domains of the ${code} exam.`,
     count: (q, d) => `${q} questions · ${d} domains`,
     certifications: 'My certifications',
     certCols: {
@@ -405,6 +393,7 @@ const EN: OfficeStrings = {
       proof: 'Proof',
     },
     proofLink: (host) => `Badge on ${host}`,
+    exams: 'Exams',
     examCols: {
       domain: 'Domain',
       weight: 'Weight in the exam',
