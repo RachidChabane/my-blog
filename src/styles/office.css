@@ -1258,52 +1258,23 @@ a.ref.on {
   background: #fff;
   color: #171b2b;
 }
-/* the writer beside the answer: thinking until the first words, then typing */
-.ask .log .reply {
-  justify-self: start;
-  max-width: 100%;
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-}
-.ask .log .reply .cl {
-  min-width: 0;
-}
-.ask .log .reply.thinking .cl {
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-}
-.ask .scribe {
-  flex: none;
-  width: 54px;
-  height: auto;
+/* the writer answering: thinks, takes a laptop out, types, puts it away (typist.ts) */
+.ask .who svg {
   overflow: visible;
 }
-@media (max-width: 640px) {
-  .ask .scribe {
-    width: 42px;
-  }
-  .ask .log .reply {
-    gap: 8px;
-  }
-}
-.ask .scribe .la,
-.ask .scribe .lb,
-.ask .scribe .eyes,
-.ask .scribe .arm {
-  transform-box: fill-box;
-}
-.ask .scribe .keys {
+.ask .who .side,
+.ask .who .feet,
+.ask .who .laptop > * {
   display: none;
 }
-.ask .reply.writing .scribe .keys {
-  display: inline;
+.ask .who .eyes rect {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
 }
-.ask .reply.thinking .scribe .eyes {
+.ask .who [data-pose='ponder'] .eyes {
   animation: ponder 2.4s steps(1) infinite;
 }
-.ask .reply.thinking .scribe .lb {
+.ask .who [data-pose='ponder'] .lb {
   animation: tap 0.5s steps(2) infinite alternate;
 }
 @keyframes ponder {
@@ -1315,39 +1286,95 @@ a.ref.on {
     transform: translate(-0.7px, -0.8px);
   }
 }
-.ask .reply.writing .scribe {
-  animation: bob 0.24s steps(2) infinite alternate;
+.ask .who [data-pose='reach'] .al,
+.ask .who [data-pose='pocket'] .al {
+  transform: translate(1px, 2px);
 }
-.ask .reply.writing .scribe .eyes {
+.ask .who [data-pose='reach'] .ar,
+.ask .who [data-pose='pocket'] .ar {
+  transform: translateY(-1.5px);
+}
+.ask .who [data-pose='reach'] .eyes rect:last-child {
+  transform: scaleY(0.3);
+}
+.ask .who [data-pose='lift'] .al {
+  transform: translateY(-2px);
+}
+.ask .who [data-pose='lift'] .shut {
+  display: inline;
+  transform: translate(-2.4px, -0.4px);
+}
+.ask .who [data-pose='open'] .al {
+  transform: translate(0.5px, -3.5px);
+}
+.ask .who [data-pose='open'] .edge {
+  display: inline;
+}
+.ask .who [data-pose='swing'] .al {
+  transform: translateX(-1px);
+}
+.ask .who [data-pose='swing'] .shut {
+  display: inline;
+  transform: translate(-4px, 3.6px);
+}
+.ask .who [data-pose='set'] .al {
+  transform: translate(-0.5px, 3.5px);
+}
+.ask .who [data-pose='set'] .open,
+.ask .who [data-pose='settle'] .open,
+.ask .who [data-pose='jump'] .open,
+.ask .who [data-pose^='type'] .open,
+.ask .who [data-pose='close'] .open {
+  display: inline;
+}
+.ask .who [data-pose='jump'] {
+  translate: 0 -5px;
+}
+.ask .who [data-pose='jump'] .laptop {
+  transform: translateY(1.4px);
+}
+.ask .who [data-pose='jump'] .al {
+  transform: translate(1px, -4.5px);
+}
+.ask .who [data-pose='jump'] .ar {
+  transform: translate(-1px, -4.5px);
+}
+.ask .who [data-pose='jump'] .side,
+.ask .who [data-pose^='type'] .side,
+.ask .who [data-pose^='type'] .feet {
+  display: inline;
+}
+.ask .who [data-pose^='type'] .ar {
+  display: none;
+}
+.ask .who [data-pose^='type'] .eyes,
+.ask .who [data-pose^='type'] .face {
   animation: none;
-  transform: translateY(0.9px);
+  transform: translateX(-3px);
 }
-.ask .reply.writing .scribe .al {
-  transform: translate(3px, 1.6px);
-  animation: keystroke-l 0.16s steps(2) infinite alternate;
+.ask .who [data-pose='type-a'] .al {
+  transform: translate(-0.5px, 2.5px);
 }
-.ask .reply.writing .scribe .ar {
-  transform: translate(-3px, 1.6px);
-  animation: keystroke-r 0.16s steps(2) 0.08s infinite alternate;
+.ask .who [data-pose='type-b'] .al {
+  transform: translateY(0.5px);
 }
-@keyframes bob {
-  to {
-    translate: 0 -1.5px;
-  }
+.ask .who [data-pose='type-c'] .al {
+  transform: translate(-0.5px, 4px);
 }
-@keyframes keystroke-l {
-  to {
-    transform: translate(3.6px, 0.2px);
-  }
+.ask .who [data-pose='close'] .al {
+  transform: translate(-1px, 3px);
 }
-@keyframes keystroke-r {
-  to {
-    transform: translate(-3.6px, 0.2px);
-  }
+.ask .who [data-pose='hold'] .al {
+  transform: translate(-1px, 1px);
+}
+.ask .who [data-pose='hold'] .shut {
+  display: inline;
+  transform: translate(-3.6px, 4.4px);
 }
 .ask .dots {
   display: inline-flex;
   gap: 5px;
+  padding: 6px 2px;
 }
 .ask .dots i {
   width: 7px;
@@ -1375,11 +1402,10 @@ a.ref.on {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ask .scribe,
-  .ask .scribe *,
+  .ask .who [data-pose='ponder'] .eyes,
+  .ask .who [data-pose='ponder'] .lb,
   .ask .dots i {
-    animation: none !important;
-    transition: none;
+    animation: none;
   }
 }
 .next {

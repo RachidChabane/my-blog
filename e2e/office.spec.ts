@@ -209,7 +209,7 @@ test.describe('agent', () => {
     await expect(page.locator('#log .cl')).toHaveText('Bonjour, voici.');
   });
 
-  test('the writer thinks until the first words, types while they come, then rests', async ({
+  test('the writer thinks until the first words, then types on its laptop while they come', async ({
     page,
   }) => {
     const frame = (event: string, data: object) =>
@@ -241,12 +241,13 @@ test.describe('agent', () => {
     await page.goto(href);
     await page.fill('#qaInput', 'De quoi parle ce texte ?');
     await page.keyboard.press('Enter');
-    const turn = page.locator('#log .reply');
-    await expect(turn).toHaveClass(/thinking/);
-    await expect(turn).toHaveAttribute('aria-busy', 'true');
-    await expect(turn.locator('.dots')).toBeVisible();
-    await expect(turn.locator('svg.scribe')).toBeVisible();
-    await expect(turn.locator('svg.scribe .keys')).toBeHidden();
+    const answer = page.locator('#log p.cl');
+    const writer = page.locator('.ask .who svg');
+    await expect(page.locator('.ask svg')).toHaveCount(1);
+    await expect(writer).toHaveAttribute('data-pose', 'ponder');
+    await expect(answer).toHaveAttribute('aria-busy', 'true');
+    await expect(answer.locator('.dots')).toBeVisible();
+    await expect(writer.locator('.laptop .open')).toBeHidden();
     const feed = (chunk: string | null) =>
       page.evaluate(
         (c) =>
@@ -254,18 +255,19 @@ test.describe('agent', () => {
         chunk
       );
     await feed(frame('sources', { citations: [] }));
-    await expect(turn).toHaveClass(/thinking/);
+    await expect(writer).toHaveAttribute('data-pose', 'ponder');
     await feed(frame('token', { text: 'Bonjour, ' }));
-    await expect(turn).toHaveClass(/writing/);
-    await expect(turn.locator('p.cl')).toHaveText('Bonjour, ');
-    await expect(turn.locator('svg.scribe .keys')).toBeVisible();
+    await expect(answer).toHaveText('Bonjour, ');
+    // The suite runs with reduced motion: the writer goes straight to its laptop.
+    await expect(writer).toHaveAttribute('data-pose', 'type-a');
+    await expect(writer.locator('.laptop .open')).toBeVisible();
     await feed(frame('token', { text: 'voici.' }));
     await feed(frame('done', { finishReason: 'grounded' }));
     await feed(null);
-    await expect(turn).toHaveClass('reply');
-    await expect(turn).not.toHaveAttribute('aria-busy');
-    await expect(turn.locator('p.cl')).toHaveText('Bonjour, voici.');
-    await expect(turn.locator('svg.scribe .keys')).toBeHidden();
+    await expect(answer).toHaveText('Bonjour, voici.');
+    await expect(answer).not.toHaveAttribute('aria-busy');
+    await expect(writer).toHaveAttribute('data-pose', '');
+    await expect(writer.locator('.laptop .open')).toBeHidden();
   });
 
   test('when the day’s budget is spent the Clawd says so, then insists', async ({

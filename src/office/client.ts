@@ -7,6 +7,8 @@ import { toggleTheme } from '@/lib/theme';
 import { parseSSE, SSE_EVENT } from '@/lib/avatar/protocol';
 import { takeFrames } from '@/lib/sse-frames';
 import { SECTION_PATHS } from '@/office/sections';
+import { typist } from '@/office/typist';
+import type { Typist } from '@/office/typist';
 
 interface Strings {
   left: string;
@@ -576,28 +578,42 @@ async function ask(o: AskOptions): Promise<string> {
   return text;
 }
 
-/** Keys under the hands of a Clawd who is writing, in the units of its drawing. */
-const KEYBOARD =
-  '<g class="keys"><rect x="0.5" y="7.4" width="15" height="3" fill="#C9CDDA"/>' +
-  '<rect x="0.5" y="9.8" width="15" height="0.6" fill="#9AA3BD"/>' +
-  '<path d="M2 8.3h1.4M4.4 8.3h1.4M6.8 8.3h1.4M9.2 8.3h1.4M11.6 8.3h1.4M3.2 9.2h9.6" stroke="#5E6784" stroke-width="0.6"/></g>';
+/** What a Clawd needs to answer at its laptop, added to its drawing once. */
+const LAPTOP_GREY = '#9499A8';
+const BODY_SIDE = '#B85F45';
+const TYPIST_SIDE = `<rect class="side" x="11" y="1" width="3" height="8" fill="${BODY_SIDE}"/>`;
+const TYPIST_KIT =
+  `<g class="feet" fill="${BODY_SIDE}"><rect x="4" y="10.2" width="1" height="1"/><rect x="6" y="10.2" width="1" height="1"/>` +
+  `<rect x="11" y="10.2" width="1" height="1"/><rect x="13" y="10.2" width="1" height="1"/></g>` +
+  `<g class="laptop" fill="${LAPTOP_GREY}"><rect class="shut" x="-1" y="1" width="3.4" height="1.1"/>` +
+  `<rect class="edge" x="0.4" y="-3" width="0.6" height="3.6"/>` +
+  `<g class="open"><rect x="-4.2" y="10.5" width="3.4" height="0.7"/>` +
+  `<path d="M-4.2 10.9L-6 7.8" fill="none" stroke="${LAPTOP_GREY}" stroke-width="0.7"/></g></g>`;
 
-/** The writer of the text, drawn again next to the answer they are working on. */
-function scribe(box: HTMLElement): Element | null {
-  const face = box.querySelector('.who svg');
+const typists = new WeakMap<Element, Typist>();
+
+/** The writer drawn at the head of the questions, ready to act an answer out. */
+function writerOf(box: HTMLElement): Typist | null {
+  const face = box.querySelector<SVGElement>('.who svg');
   if (!face) return null;
-  const copy = face.cloneNode(true) as Element;
-  copy.setAttribute('class', 'scribe');
-  copy.setAttribute('aria-hidden', 'true');
-  copy.removeAttribute('role');
-  copy.querySelector('title')?.remove();
-  copy.insertAdjacentHTML('beforeend', KEYBOARD);
-  return copy;
+  let acted = typists.get(face);
+  if (!acted) {
+    face
+      .querySelector(':scope > rect')
+      ?.insertAdjacentHTML('afterend', TYPIST_SIDE);
+    face.insertAdjacentHTML('beforeend', TYPIST_KIT);
+    acted = typist(
+      (pose) => (face.dataset.pose = pose),
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+    typists.set(face, acted);
+  }
+  return acted;
 }
 
 /**
  * Asks about the text on the page. Its writer thinks until the first words come,
- * then types while they arrive, and rests beside the answer once it is whole.
+ * then takes a laptop out and types while they arrive.
  */
 function askHere(question: string): void {
   const q = question.trim();
@@ -607,20 +623,17 @@ function askHere(question: string): void {
   const me = document.createElement('p');
   me.className = 'me';
   me.textContent = q;
-  const reply = document.createElement('div');
-  reply.className = 'reply thinking';
-  reply.setAttribute('aria-busy', 'true');
   const answer = document.createElement('p');
   answer.className = 'cl';
+  answer.setAttribute('aria-busy', 'true');
   answer.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>';
-  const writer = scribe(box);
-  if (writer) reply.append(writer);
-  reply.append(answer);
-  log.append(me, reply);
+  log.append(me, answer);
+  const writer = writerOf(box);
+  writer?.think();
   const settle = (text: string) => {
     answer.textContent = text;
-    reply.className = 'reply';
-    reply.removeAttribute('aria-busy');
+    answer.removeAttribute('aria-busy');
+    writer?.rest();
   };
   // Naming the text keeps a general question ("sum it up") on this text's passages.
   const title = s2().querySelector('.sheet.text h1')?.textContent ?? '';
@@ -629,7 +642,7 @@ function askHere(question: string): void {
     persona: box.dataset.persona,
     scopeSlug: box.dataset.slug,
     onText: (t) => {
-      reply.className = 'reply writing';
+      writer?.write();
       answer.textContent = t;
     },
   }).then(settle, () => {

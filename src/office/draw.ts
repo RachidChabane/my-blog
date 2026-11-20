@@ -209,12 +209,12 @@ export function clawd(look: ClawdLook = {}): string {
     ? R(4.6, 4, 1.8, 0.6, INK) + R(9.6, 4, 1.8, 0.6, INK)
     : `<g class="eyes">${R(5, 3, 1, 2, INK)}${R(10, 3, 1, 2, INK)}</g>`;
   if (has('brows'))
-    s += `<path d="M3.6 1.6L7 2.6V3.4L3.6 2.4ZM12.4 1.6L9 2.6V3.4L12.4 2.4Z" fill="${INK}"/>`;
+    s += `<path class="face" d="M3.6 1.6L7 2.6V3.4L3.6 2.4ZM12.4 1.6L9 2.6V3.4L12.4 2.4Z" fill="${INK}"/>`;
   if (has('beard'))
     s +=
       `<g class="beard">${R(3.5, 5.6, 9, 3, '#FFFFFF')}${R(4.5, 8.6, 7, 3, '#FFFFFF')}` +
       `${R(5.5, 11.6, 5, 2.6, '#F1EEE6')}${R(6.5, 14.2, 3, 2, '#F1EEE6')}${R(7.4, 16.2, 1.2, 1.4, '#E6E1D5')}</g>` +
-      `<g fill="none" stroke="${INK}" stroke-width="0.4"><circle cx="5.5" cy="4" r="1.5"/><circle cx="10.5" cy="4" r="1.5"/><path d="M7 4H9"/></g>`;
+      `<g class="face" fill="none" stroke="${INK}" stroke-width="0.4"><circle cx="5.5" cy="4" r="1.5"/><circle cx="10.5" cy="4" r="1.5"/><path d="M7 4H9"/></g>`;
   if (has('wizard'))
     s +=
       `<g class="hat"><path d="M2.5 1.2L8.6 -6.4L13.5 1.2Z" fill="#6C4BD8"/>${R(1, 0.6, 14, 1, '#6C4BD8')}` +
@@ -230,7 +230,7 @@ export function clawd(look: ClawdLook = {}): string {
       R(2, 1.3, 12, 0.4, tint) +
       R(13.4, 1.6, 1.6, 1.6, '#FFFFFF');
   if (has('glasses'))
-    s += `<g fill="none" stroke="${INK}" stroke-width="0.45"><rect x="4" y="2.4" width="3" height="3.2"/><rect x="9" y="2.4" width="3" height="3.2"/><path d="M7 3.6H9"/></g>`;
+    s += `<g class="face" fill="none" stroke="${INK}" stroke-width="0.45"><rect x="4" y="2.4" width="3" height="3.2"/><rect x="9" y="2.4" width="3" height="3.2"/><path d="M7 3.6H9"/></g>`;
   if (has('visor'))
     s +=
       `<rect x="2" y="2.1" width="12" height="1" fill="#3E9B6E" opacity="0.9"/>` +
