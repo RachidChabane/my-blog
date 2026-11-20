@@ -1,0 +1,103 @@
+{
+  "slug": "check-the-serving-stack-before-the-quant-level",
+  "lang": "en",
+  "translationKey": "serving-stack-before-quantization-coding-agents",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Mehboob, Shafique, Qadeer and Farooq, Beyond Accuracy: How Quantization Affects Coding Agents (arXiv 2611.02368)",
+      "url": "https://arxiv.org/abs/2611.02368",
+      "excerpt": "We detect no statistically significant accuracy loss for any of the coding agents."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Mehboob, Shafique, Qadeer and Farooq, Beyond Accuracy: How Quantization Affects Coding Agents (arXiv 2611.02368)",
+      "url": "https://arxiv.org/abs/2611.02368",
+      "excerpt": "However, final accuracy can conceal substantial behavioral changes: AWQ reduces Qwen-7B one-shot solves from 17 to 0 while increasing loop-based solves from 10 to 25."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Mehboob, Shafique, Qadeer and Farooq, Beyond Accuracy: How Quantization Affects Coding Agents (arXiv 2611.02368)",
+      "url": "https://arxiv.org/abs/2611.02368",
+      "excerpt": "We compare BF16 with 4-bit AWQ and GPTQ for Qwen2.5-Coder-Instruct (7B, 14B, and 32B) and Devstral-Small-2507 (24B) on OJBench coding problems across three seeds."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Mehboob, Shafique, Qadeer and Farooq, Beyond Accuracy: How Quantization Affects Coding Agents (arXiv 2611.02368)",
+      "url": "https://arxiv.org/abs/2611.02368",
+      "excerpt": "These findings indicate that quantization robustness in coding agents should be assessed through solution trajectories, tool use, and failure modes, in addition to final accuracy."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Edward J. Schwartz, Benchmarking Quantized LLMs for Local Coding Agents Part 4",
+      "url": "https://edmcman.github.io/blog/2026-07-22--benchmarking-quantized-ll-ms-for-local-coding-agents-part-4-investigating-the-impact-of-thinking-on-qwen3-5-35-b-a3-b/",
+      "excerpt": "nonthinking-BF16  273/500  54.6%"
+    },
+    {
+      "sourceId": "s6",
+      "label": "Edward J. Schwartz, Benchmarking Quantized LLMs for Local Coding Agents Part 4",
+      "url": "https://edmcman.github.io/blog/2026-07-22--benchmarking-quantized-ll-ms-for-local-coding-agents-part-4-investigating-the-impact-of-thinking-on-qwen3-5-35-b-a3-b/",
+      "excerpt": "nonthinking-Q8_0  260/500  52.0%"
+    },
+    {
+      "sourceId": "s7",
+      "label": "Edward J. Schwartz, Benchmarking Quantized LLMs for Local Coding Agents Part 4",
+      "url": "https://edmcman.github.io/blog/2026-07-22--benchmarking-quantized-ll-ms-for-local-coding-agents-part-4-investigating-the-impact-of-thinking-on-qwen3-5-35-b-a3-b/",
+      "excerpt": "nonthinking-Q5_K_M  263/500  52.6%"
+    },
+    {
+      "sourceId": "s8",
+      "label": "Edward J. Schwartz, Benchmarking Quantized LLMs for Local Coding Agents Part 4",
+      "url": "https://edmcman.github.io/blog/2026-07-22--benchmarking-quantized-ll-ms-for-local-coding-agents-part-4-investigating-the-impact-of-thinking-on-qwen3-5-35-b-a3-b/",
+      "excerpt": "thinking-BF16  173/500  34.6%"
+    },
+    {
+      "sourceId": "s9",
+      "label": "Edward J. Schwartz, Benchmarking Quantized LLMs for Local Coding Agents Part 5",
+      "url": "https://edmcman.github.io/blog/2026-08-19--benchmarking-quantized-ll-ms-for-local-coding-agents-part-5-do-qwens-recommended-sampling-parameters-explain-the-thinking-penalty/",
+      "excerpt": "Non-thinking runs consistently perform significantly better than thinking runs."
+    },
+    {
+      "sourceId": "s10",
+      "label": "Edward J. Schwartz, Benchmarking Quantized LLMs for Local Coding Agents Part 6",
+      "url": "https://edmcman.github.io/blog/2026-09-04--benchmarking-quantized-ll-ms-for-local-coding-agents-part-6-one-mystery-solved/",
+      "excerpt": "thinking-general-BF16  187/500 (37.4%)  254/500 (50.8%)   +13.4pp"
+    },
+    {
+      "sourceId": "s11",
+      "label": "Edward J. Schwartz, Benchmarking Quantized LLMs for Local Coding Agents Part 6",
+      "url": "https://edmcman.github.io/blog/2026-09-04--benchmarking-quantized-ll-ms-for-local-coding-agents-part-6-one-mystery-solved/",
+      "excerpt": "So upgrading llama.cpp fixed the thinking parsing bug."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Edward J. Schwartz, Benchmarking Quantized LLMs for Local Coding Agents Part 6",
+      "url": "https://edmcman.github.io/blog/2026-09-04--benchmarking-quantized-ll-ms-for-local-coding-agents-part-6-one-mystery-solved/",
+      "excerpt": "openhands  274/500  54.8%"
+    },
+    {
+      "sourceId": "s13",
+      "label": "Edward J. Schwartz, Benchmarking Quantized LLMs for Local Coding Agents Part 6",
+      "url": "https://edmcman.github.io/blog/2026-09-04--benchmarking-quantized-ll-ms-for-local-coding-agents-part-6-one-mystery-solved/",
+      "excerpt": "mini-swe-agent  308/500  61.6%"
+    },
+    {
+      "sourceId": "s14",
+      "label": "Edward J. Schwartz, Benchmarking Quantized LLMs for Local Coding Agents Part 6",
+      "url": "https://edmcman.github.io/blog/2026-09-04--benchmarking-quantized-ll-ms-for-local-coding-agents-part-6-one-mystery-solved/",
+      "excerpt": "Only one number really moved: llama.cpp with thinking enabled, which gained 67"
+    },
+    {
+      "sourceId": "s15",
+      "label": "Mehboob, Shafique, Qadeer and Farooq, Beyond Accuracy, author line",
+      "url": "https://arxiv.org/abs/2611.02368",
+      "excerpt": "Authors: Areej Mehboob , Muhammad Ali Shafique , Muhammad Usman Qadeer , Hamza Farooq"
+    },
+    {
+      "sourceId": "s16",
+      "label": "Edward J. Schwartz, Benchmarking Quantized LLMs Part 6, site byline",
+      "url": "https://edmcman.github.io/blog/2026-09-04--benchmarking-quantized-ll-ms-for-local-coding-agents-part-6-one-mystery-solved/",
+      "excerpt": "Edward J. Schwartz: Computer Science Researcher"
+    }
+  ]
+}

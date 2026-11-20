@@ -581,7 +581,8 @@
       "compaction-summaries-carry-no-authority",
       "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache",
       "claude-code-agent-summary-side-calls-escape-transcript-cost-accounting",
-      "terminal-bench-score-is-conditional-on-runtime-budget"
+      "terminal-bench-score-is-conditional-on-runtime-budget",
+      "serving-stack-before-quantization-coding-agents"
     ],
     "addedOn": "17-06-2026"
   },
@@ -1910,7 +1911,8 @@
       "glm-5-2-open-weight-where-you-run-it",
       "multi-agent-gains-compute-artifact",
       "kimi-k3-ranked-endpoint-not-weights",
-      "agent-session-budget-inflection-point"
+      "agent-session-budget-inflection-point",
+      "serving-stack-before-quantization-coding-agents"
     ],
     "addedOn": "17-06-2026"
   },
@@ -2914,7 +2916,8 @@
       "edit-unit-size-beside-edit-format",
       "patch-quality-rate-needs-a-consistent-grader",
       "low-resource-language-scores-do-not-transfer-to-an-unseen-language",
-      "terminal-bench-score-is-conditional-on-runtime-budget"
+      "terminal-bench-score-is-conditional-on-runtime-budget",
+      "serving-stack-before-quantization-coding-agents"
     ],
     "addedOn": "15-07-2026"
   },
@@ -3722,7 +3725,8 @@
       "afd-throughput-does-not-transfer-without-the-fabric",
       "arret-anticipe-sondes-2026-08",
       "lossless-decoding-precision-property",
-      "strict-tool-decoding-is-a-per-model-serving-decision"
+      "strict-tool-decoding-is-a-per-model-serving-decision",
+      "serving-stack-before-quantization-coding-agents"
     ],
     "addedOn": "04-05-2026"
   },
@@ -4817,7 +4821,8 @@
     "articles": [
       "quantizing-open-models",
       "kimi-k3-ranked-endpoint-not-weights",
-      "provable-inference-proves-greedy-integer-replay-not-sampled-traffic"
+      "provable-inference-proves-greedy-integer-replay-not-sampled-traffic",
+      "serving-stack-before-quantization-coding-agents"
     ],
     "addedOn": "19-05-2026"
   },
@@ -4842,7 +4847,8 @@
       "open-weight-models"
     ],
     "articles": [
-      "quantizing-open-models"
+      "quantizing-open-models",
+      "serving-stack-before-quantization-coding-agents"
     ],
     "addedOn": "19-05-2026"
   },
@@ -4981,6 +4987,33 @@
       "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache"
     ],
     "addedOn": "10-09-2026"
+  },
+  {
+    "id": "reasoning-output-parsing",
+    "label": {
+      "fr": "Analyse de la sortie de raisonnement",
+      "en": "Reasoning output parsing"
+    },
+    "definition": {
+      "fr": "L'étape du runtime de serving qui sépare la sortie brute d'un modèle de raisonnement en deux parties, le raisonnement et la réponse finale ou l'appel d'outil, en général en repérant les jetons délimiteurs propres au modèle. Un défaut à cette étape altère ce que reçoit l'agent quelle que soit la précision des poids, et fausse ses résultats sans que le modèle soit en cause.",
+      "en": "The serving-runtime step that splits a reasoning model's raw generation into its thinking segment and its final answer or tool call, usually by detecting model-specific delimiter tokens. A defect at this step corrupts what the agent receives at every weight precision, so it changes agent results without the model being at fault."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "thinking output parsing",
+      "reasoning parser",
+      "reasoning content extraction",
+      "analyse de la sortie de raisonnement"
+    ],
+    "related": [
+      "llm-serving",
+      "chat-template",
+      "reasoning-effort"
+    ],
+    "articles": [
+      "serving-stack-before-quantization-coding-agents"
+    ],
+    "addedOn": "20-11-2026"
   },
   {
     "id": "reasoning-trace-monitorability",
@@ -6581,6 +6614,33 @@
       "kolibri-tokenizer-is-the-sovereign-model-cost-lever"
     ],
     "addedOn": "06-10-2026"
+  },
+  {
+    "id": "trajectory-level-evaluation",
+    "label": {
+      "fr": "Évaluation des trajectoires",
+      "en": "Trajectory-level evaluation"
+    },
+    "definition": {
+      "fr": "Évaluer un agent sur le chemin qu'il a suivi pour chaque résultat (nombre de tours, appels d'outils, nouvelles tentatives, modes d'échec) en plus de la précision finale. Deux configurations qui résolvent autant de tâches peuvent différer nettement dans la part résolue du premier coup, et donc dans les tokens, le temps et l'argent que coûte chaque tâche résolue.",
+      "en": "Evaluating an agent on the path it took to each result (number of turns, tool calls, retries, failure modes) alongside final accuracy. Two configurations with the same resolved count can differ sharply in how many tasks they solve on the first attempt, and so in the tokens, time and money each solved task costs."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "trajectory evaluation",
+      "trajectory analysis",
+      "turns per resolved task",
+      "évaluation des trajectoires"
+    ],
+    "related": [
+      "agent-evaluation",
+      "cost-aware-evaluation",
+      "tool-use"
+    ],
+    "articles": [
+      "serving-stack-before-quantization-coding-agents"
+    ],
+    "addedOn": "20-11-2026"
   },
   {
     "id": "trust-boundary",
