@@ -2148,6 +2148,7 @@ a.folder:hover {
   }
   .tabs a {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     justify-items: center;
     align-content: start;
     padding-top: 9px;
@@ -2162,7 +2163,7 @@ a.folder:hover {
     font-weight: 800;
     font-size: clamp(11px, 3.1vw, 12px);
     line-height: 1;
-    padding: 6px 4px 7px;
+    padding: 6px 3px 7px;
     max-width: 100%;
     border-radius: 5px;
     box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);

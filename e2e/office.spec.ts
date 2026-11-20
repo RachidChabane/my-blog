@@ -365,6 +365,8 @@ test.describe('phone bar at 360 px', () => {
       page,
     }) => {
       await page.goto(`/${lang}/training/`);
+      // labels are measured in the site's own face, not in the fallback shown while it loads
+      await page.evaluate(() => document.fonts.ready);
       const tabs = page.locator('#tabs a');
       await expect(tabs).toHaveCount(ROOM_SECTIONS.length);
       const boxes = [];
