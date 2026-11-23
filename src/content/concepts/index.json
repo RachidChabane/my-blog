@@ -1092,6 +1092,32 @@
     "addedOn": "30-06-2026"
   },
   {
+    "id": "canary-credential",
+    "label": {
+      "fr": "Identifiant canari",
+      "en": "Canary credential"
+    },
+    "definition": {
+      "fr": "Un faux secret, par exemple une fausse clé d'API, qui ne donne accès à rien et qu'on place là où un attaquant le trouverait, avec une alerte déclenchée à la moindre tentative d'utilisation. En émettre un différent par emplacement ou par requête permet de savoir, à partir d'une seule alerte, où la fuite a eu lieu et à peu près quand.",
+      "en": "A decoy secret, such as a fake API key, that grants no real access and is planted where an attacker would find it, with an alert wired to any attempt to use it. Issuing a distinct one per location or per request turns a single alert into evidence of where the leak happened and roughly when."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "canary token",
+      "honeytoken",
+      "decoy credential",
+      "identifiant canari"
+    ],
+    "related": [
+      "secret-scanning",
+      "exposure-window"
+    ],
+    "articles": [
+      "prompt-leaks-went-around-the-privacy-flag"
+    ],
+    "addedOn": "23-11-2026"
+  },
+  {
     "id": "canary-deployment",
     "label": {
       "fr": "Déploiement canari",
@@ -2455,7 +2481,8 @@
     ],
     "articles": [
       "ai-rediscovered-vulnerabilities-leak-the-disclosure-window",
-      "agent-sandbox-strength-is-host-kernel-patch-lag"
+      "agent-sandbox-strength-is-host-kernel-patch-lag",
+      "prompt-leaks-went-around-the-privacy-flag"
     ],
     "addedOn": "25-10-2026"
   },
@@ -3192,6 +3219,33 @@
       "provable-inference-proves-greedy-integer-replay-not-sampled-traffic"
     ],
     "addedOn": "22-06-2026"
+  },
+  {
+    "id": "inference-provider-routing",
+    "label": {
+      "fr": "Routage entre fournisseurs d'inférence",
+      "en": "Inference provider routing"
+    },
+    "definition": {
+      "fr": "Le fait de confier chaque requête à un modèle à un routeur qui choisit, requête par requête, quel fournisseur ou quel endpoint la sert, selon le prix, la latence, la disponibilité ou des filtres de politique, et qui peut la relancer chez un autre fournisseur après une erreur. Le fournisseur qui a réellement servi une requête devient donc une donnée propre à chaque requête, que l'appelant lit dans la réponse ou les journaux du routeur et non dans sa propre configuration.",
+      "en": "Sending each model request through a router that picks, per request, which provider or endpoint serves it, based on price, latency, availability or policy filters, and that may retry on another provider after an error. The provider that actually served a request is therefore a per-request fact, which the caller learns from the router's response or logs rather than from its own configuration."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "LLM router",
+      "model router",
+      "provider routing",
+      "provider fallback",
+      "routeur LLM"
+    ],
+    "related": [
+      "llm-serving",
+      "served-endpoint-benchmarking"
+    ],
+    "articles": [
+      "prompt-leaks-went-around-the-privacy-flag"
+    ],
+    "addedOn": "23-11-2026"
   },
   {
     "id": "infrastructure-noise",
@@ -5585,7 +5639,8 @@
       "least-privilege"
     ],
     "articles": [
-      "attack-agent-harness-state-holds-the-secrets-it-finds"
+      "attack-agent-harness-state-holds-the-secrets-it-finds",
+      "prompt-leaks-went-around-the-privacy-flag"
     ],
     "addedOn": "20-10-2026"
   },
@@ -7121,5 +7176,31 @@
       "harness-over-model-has-no-global-ordering"
     ],
     "addedOn": "15-07-2026"
+  },
+  {
+    "id": "zero-data-retention",
+    "label": {
+      "fr": "Rétention zéro des données",
+      "en": "Zero data retention"
+    },
+    "definition": {
+      "fr": "Engagement d'un fournisseur, pris par contrat ou par un réglage du compte, de ne pas conserver les prompts et les réponses d'une requête une fois celle-ci servie, ni pour la journalisation, ni pour l'entraînement, ni pour un autre usage. Il porte sur ce que le fournisseur stocke. Il ne protège pas une requête pendant son traitement et, quand la requête est transmise à un autre fournisseur, il ne tient que si celui-ci prend le même engagement.",
+      "en": "A provider's commitment, made by contract or through an account setting, not to store the prompts and outputs of a request once it has been served, whether for logging, training or any other use. It governs what the provider persists. It does not protect a request while it is being processed, and when the request is forwarded to another provider it holds only if that provider makes the same commitment."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "ZDR",
+      "zero retention",
+      "no-retention policy",
+      "rétention zéro"
+    ],
+    "related": [
+      "data-residency",
+      "inference-provider-routing"
+    ],
+    "articles": [
+      "prompt-leaks-went-around-the-privacy-flag"
+    ],
+    "addedOn": "23-11-2026"
   }
 ]

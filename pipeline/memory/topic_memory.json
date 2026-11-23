@@ -10907,5 +10907,299 @@
     ],
     "published_at": "2026-11-20",
     "embedding": null
+  },
+  {
+    "translation_key": "prompt-leaks-went-around-the-privacy-flag",
+    "topic_id": "prompt-leaks-went-around-the-privacy-flag",
+    "dedup_key": "zero data retention flags cannot bind an intruder who copies requests at an inference provider front door before a model runs or who controls an inference vm and sees in flight request data, and per request canary credentials seeded in prompts are what surfaced the dragos, phala and together breaches, so secret free prompts and canaries are the detection control a customer owns, with operator side stored test copies only a supporting case",
+    "title": "Plant a fake key in your prompts",
+    "slugs": {
+      "fr": "glissez-une-fausse-cle-dans-vos-prompts",
+      "en": "plant-a-fake-key-in-your-prompts"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Dragos, Three breaches, endless leaks: Your AI supply chain needs canaries: We found attackers actively stealing data",
+        "url": "https://www.dragos.com/blog/ai-supply-chain-security-canary-tokens",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "We found attackers actively stealing data from three different hosting providers.",
+        "source_date": "2026-11-19"
+      },
+      {
+        "source_id": "s2",
+        "label": "Dragos, Three breaches, endless leaks: Your AI supply chain needs canaries: In the other two breaches, some",
+        "url": "https://www.dragos.com/blog/ai-supply-chain-security-canary-tokens",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "In the other two breaches, some of the stolen requests were marked as ZDR.",
+        "source_date": "2026-11-19"
+      },
+      {
+        "source_id": "s3",
+        "label": "Dragos, Three breaches, endless leaks: Your AI supply chain needs canaries: Some of the stolen keys came",
+        "url": "https://www.dragos.com/blog/ai-supply-chain-security-canary-tokens",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Some of the stolen keys came from requests that the provider rejected before a model ever ran",
+        "source_date": "2026-11-19"
+      },
+      {
+        "source_id": "s4",
+        "label": "Dragos, Three breaches, endless leaks: Your AI supply chain needs canaries: Keep in mind that a privacy",
+        "url": "https://www.dragos.com/blog/ai-supply-chain-security-canary-tokens",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Keep in mind that a privacy flag only binds the first hop, and that AI agents will happily send whatever they can read, including credentials.",
+        "source_date": "2026-11-19"
+      },
+      {
+        "source_id": "s5",
+        "label": "Dragos, Three breaches, endless leaks: Your AI supply chain needs canaries: Seed your own canaries. Add a",
+        "url": "https://www.dragos.com/blog/ai-supply-chain-security-canary-tokens",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Seed your own canaries. Add a fake credential to the context that your agents and pipelines already send and treat any use of it as an incident.",
+        "source_date": "2026-11-19"
+      },
+      {
+        "source_id": "s6",
+        "label": "Dragos, Three breaches, endless leaks: Your AI supply chain needs canaries: Pick the upstream providers yourself instead",
+        "url": "https://www.dragos.com/blog/ai-supply-chain-security-canary-tokens",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Pick the upstream providers yourself instead of accepting the default pool, and verify that your privacy settings actually change where your requests go.",
+        "source_date": "2026-11-19"
+      },
+      {
+        "source_id": "s7",
+        "label": "Phala, November Preliminary Incident Report: The attacker chained a legacy internet-facing",
+        "url": "https://phala.com/posts/phala-november-preliminary-incident-report",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "The attacker chained a legacy internet-facing service with management interfaces that relied on loopback access for trust and did not independently authenticate callers.",
+        "source_date": "2026-11-10"
+      },
+      {
+        "source_id": "s8",
+        "label": "Phala, November Preliminary Incident Report: It was serving production traffic without",
+        "url": "https://phala.com/posts/phala-november-preliminary-incident-report",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "It was serving production traffic without our full production security hardening.",
+        "source_date": "2026-11-10"
+      },
+      {
+        "source_id": "s9",
+        "label": "Phala, November Preliminary Incident Report: The attacker used a similar access",
+        "url": "https://phala.com/posts/phala-november-preliminary-incident-report",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "The attacker used a similar access pattern to take control of the inference VM, making in-flight request data visible during processing.",
+        "source_date": "2026-11-10"
+      },
+      {
+        "source_id": "s10",
+        "label": "Phala, November Preliminary Incident Report: Owners of affected confidential virtual machines",
+        "url": "https://phala.com/posts/phala-november-preliminary-incident-report",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Owners of affected confidential virtual machines (CVMs).",
+        "source_date": "2026-11-10"
+      },
+      {
+        "source_id": "s11",
+        "label": "Phala, November Preliminary Incident Report: From July 1 through November 7",
+        "url": "https://phala.com/posts/phala-november-preliminary-incident-report",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "From July 1 through November 7, the researcher regularly included unique, per-request canary credentials in requests to Phala and monitored them for subsequent use.",
+        "source_date": "2026-11-10"
+      },
+      {
+        "source_id": "s12",
+        "label": "Phala, November Preliminary Incident Report: Only canary credentials from requests sent",
+        "url": "https://phala.com/posts/phala-november-preliminary-incident-report",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Only canary credentials from requests sent on October 21 and 22 were subsequently misused.",
+        "source_date": "2026-11-10"
+      },
+      {
+        "source_id": "s13",
+        "label": "Phala, November Preliminary Incident Report: They did not provide visibility into",
+        "url": "https://phala.com/posts/phala-november-preliminary-incident-report",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "They did not provide visibility into every request or every possible data-access event, so we retain the wider precautionary window for user guidance.",
+        "source_date": "2026-11-10"
+      },
+      {
+        "source_id": "s14",
+        "label": "Together AI, Security event: Prompt leakage for requests in June and July of 2026: As part of routine software testing",
+        "url": "https://www.together.ai/blog/security-event-prompt-leakage-for-requests-in-june-and-july-of-2026",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "As part of routine software testing, we collected prompt samples authorized for that use and stored them in a private Hugging Face repository.",
+        "source_date": "2026-11-21"
+      },
+      {
+        "source_id": "s15",
+        "label": "Together AI, Security event: Prompt leakage for requests in June and July of 2026: During development of our public GitHub",
+        "url": "https://www.together.ai/blog/security-event-prompt-leakage-for-requests-in-june-and-july-of-2026",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "During development of our public GitHub repository, xorl, an AI coding agent committed a credential that provided access to the private Hugging Face repository.",
+        "source_date": "2026-11-21"
+      },
+      {
+        "source_id": "s16",
+        "label": "Together AI, Security event: Prompt leakage for requests in June and July of 2026: Our automated scanning detected the exposed",
+        "url": "https://www.together.ai/blog/security-event-prompt-leakage-for-requests-in-june-and-july-of-2026",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Our automated scanning detected the exposed credential, and we reverted the commit.",
+        "source_date": "2026-11-21"
+      },
+      {
+        "source_id": "s17",
+        "label": "Together AI, Security event: Prompt leakage for requests in June and July of 2026: During the exposure window, an unauthorized",
+        "url": "https://www.together.ai/blog/security-event-prompt-leakage-for-requests-in-june-and-july-of-2026",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "During the exposure window, an unauthorized party obtained the credential and used it to download the stored prompt samples.",
+        "source_date": "2026-11-21"
+      },
+      {
+        "source_id": "s18",
+        "label": "Together AI, Security event: Prompt leakage for requests in June and July of 2026: Five of the credentials tested were",
+        "url": "https://www.together.ai/blog/security-event-prompt-leakage-for-requests-in-june-and-july-of-2026",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Five of the credentials tested were canary credentials associated with a Dragos security experiment.",
+        "source_date": "2026-11-21"
+      },
+      {
+        "source_id": "s19",
+        "label": "Together AI, Security event: Prompt leakage for requests in June and July of 2026: Making zero data retention (ZDR) the",
+        "url": "https://www.together.ai/blog/security-event-prompt-leakage-for-requests-in-june-and-july-of-2026",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Making zero data retention (ZDR) the default setting for new accounts.",
+        "source_date": "2026-11-21"
+      },
+      {
+        "source_id": "s20",
+        "label": "Together AI, Security event: Prompt leakage for requests in June and July of 2026: Updating our development processes governing the",
+        "url": "https://www.together.ai/blog/security-event-prompt-leakage-for-requests-in-june-and-july-of-2026",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Updating our development processes governing the use of AI coding agents.",
+        "source_date": "2026-11-21"
+      },
+      {
+        "source_id": "s21",
+        "label": "OpenRouter, Data Processing Incidents on Inference Providers: Off-boarded three providers from OpenRouter, based",
+        "url": "https://openrouter.ai/blog/announcements/data-processing-incidents-on-inference-providers/",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Off-boarded three providers from OpenRouter, based on the results of our investigations.",
+        "source_date": "2026-11-22"
+      },
+      {
+        "source_id": "s22",
+        "label": "OpenRouter, Data Processing Incidents on Inference Providers: Removed 125 endpoints from Zero Data",
+        "url": "https://openrouter.ai/blog/announcements/data-processing-incidents-on-inference-providers/",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Removed 125 endpoints from Zero Data Retention (ZDR) eligibility.",
+        "source_date": "2026-11-22"
+      },
+      {
+        "source_id": "s23",
+        "label": "OpenRouter, Data Processing Incidents on Inference Providers: We are conducting technical verification of",
+        "url": "https://openrouter.ai/blog/announcements/data-processing-incidents-on-inference-providers/",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "We are conducting technical verification of network paths to identify instances where requests and responses may be being forwarded to third parties.",
+        "source_date": "2026-11-22"
+      },
+      {
+        "source_id": "s24",
+        "label": "OpenRouter, Data Processing Incidents on Inference Providers: We are grateful for the Dragos",
+        "url": "https://openrouter.ai/blog/announcements/data-processing-incidents-on-inference-providers/",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "We are grateful for the Dragos report.",
+        "source_date": "2026-11-22"
+      },
+      {
+        "source_id": "s25",
+        "label": "Dragos, Three breaches, endless leaks: Your AI supply chain needs canaries: The earliest incident dates back to the",
+        "url": "https://www.dragos.com/blog/ai-supply-chain-security-canary-tokens",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "The earliest incident dates back to the middle of July, and none of the three providers knew about their breach until we notified them.",
+        "source_date": "2026-11-19"
+      },
+      {
+        "source_id": "s26",
+        "label": "Dragos, Three breaches, endless leaks: Your AI supply chain needs canaries: The largest breach involved a couple hundred",
+        "url": "https://www.dragos.com/blog/ai-supply-chain-security-canary-tokens",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "The largest breach involved a couple hundred of our AWS keys. Each key was sent in exactly one request to one provider, all within a few short windows in late October, and every request we sent during those windows was stolen.",
+        "source_date": "2026-11-19"
+      },
+      {
+        "source_id": "s27",
+        "label": "Dragos, Three breaches, endless leaks: Your AI supply chain needs canaries: Once the attacker had our credentials, they",
+        "url": "https://www.dragos.com/blog/ai-supply-chain-security-canary-tokens",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Once the attacker had our credentials, they followed a predictable path. First, they tested each key to see if it was live, in some cases within a few hours of our request.",
+        "source_date": "2026-11-19"
+      },
+      {
+        "source_id": "s28",
+        "label": "Phala, November Preliminary Incident Report: On November 5, we detected unauthorized activity",
+        "url": "https://phala.com/posts/phala-november-preliminary-incident-report",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "On November 5, we detected unauthorized activity on one server.",
+        "source_date": "2026-11-10"
+      },
+      {
+        "source_id": "s29",
+        "label": "Phala, November Preliminary Incident Report: On November 8 UTC, a third-party security",
+        "url": "https://phala.com/posts/phala-november-preliminary-incident-report",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "On November 8 UTC, a third-party security researcher provided evidence that request data sent to DeepSeek V4 Flash 0731 had been exposed.",
+        "source_date": "2026-11-10"
+      },
+      {
+        "source_id": "s30",
+        "label": "Phala, November Preliminary Incident Report: We traced this evidence to an inference",
+        "url": "https://phala.com/posts/phala-november-preliminary-incident-report",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "We traced this evidence to an inference deployment on a new GPU server. It was serving production traffic without our full production security hardening.",
+        "source_date": "2026-11-10"
+      },
+      {
+        "source_id": "s31",
+        "label": "Phala, November Preliminary Incident Report: These tests sampled requests and detected credential",
+        "url": "https://phala.com/posts/phala-november-preliminary-incident-report",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "These tests sampled requests and detected credential misuse. They did not provide visibility into every request or every possible data-access event, so we retain the wider precautionary window for user guidance.",
+        "source_date": "2026-11-10"
+      },
+      {
+        "source_id": "s32",
+        "label": "Together AI, Security event: Prompt leakage for requests in June and July of 2026: During the exposure window, an unauthorized party",
+        "url": "https://www.together.ai/blog/security-event-prompt-leakage-for-requests-in-june-and-july-of-2026",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "During the exposure window, an unauthorized party obtained the credential and used it to download the stored prompt samples. The party subsequently searched those samples for credentials to other services and tested whether those credentials were valid.",
+        "source_date": "2026-11-21"
+      },
+      {
+        "source_id": "s33",
+        "label": "Together AI, Security event: Prompt leakage for requests in June and July of 2026: Customers handling sensitive prompt data should enable",
+        "url": "https://www.together.ai/blog/security-event-prompt-leakage-for-requests-in-june-and-july-of-2026",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "Customers handling sensitive prompt data should enable ZDR in their account settings.",
+        "source_date": "2026-11-21"
+      },
+      {
+        "source_id": "s34",
+        "label": "OpenRouter, Data Processing Incidents on Inference Providers: We are adapting the researchers’ testing approach",
+        "url": "https://openrouter.ai/blog/announcements/data-processing-incidents-on-inference-providers/",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "We are adapting the researchers’ testing approach so we can run these checks on an ongoing basis.",
+        "source_date": "2026-11-22"
+      },
+      {
+        "source_id": "s35",
+        "label": "OpenRouter, Data Processing Incidents on Inference Providers: The removals included providers flagged by researchers,",
+        "url": "https://openrouter.ai/blog/announcements/data-processing-incidents-on-inference-providers/",
+        "retrieved_at": "2026-11-23",
+        "excerpt": "The removals included providers flagged by researchers, plus additional endpoints that we removed as a precautionary measure.",
+        "source_date": "2026-11-22"
+      }
+    ],
+    "published_at": "2026-11-23",
+    "embedding": null
   }
 ]
