@@ -5,11 +5,6 @@
 .prose > j-sample-size,
 .prose > j-review-queue {
   max-width: none;
-}
-.prose > .j-wide,
-.prose > j-first-glance,
-.prose > j-sample-size,
-.prose > j-review-queue {
   margin: 1.8em 0;
 }
 j-first-glance,
@@ -24,9 +19,13 @@ j-review-queue {
   margin: 0.7em 0 0;
   line-height: 1.5;
 }
+/* a caption that follows a figure sits right under it */
+.prose > p.j-caption {
+  margin: -1.1em 0 2em;
+}
 
 /* --- timeline of the versions */
-.j-timeline {
+.prose .j-timeline {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -88,7 +87,7 @@ j-review-queue {
   font-size: 2.5em;
   line-height: 1;
   margin-bottom: 8px;
-  color: var(--jrnl);
+  color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
 .j-figures .j-hot b {
@@ -161,7 +160,7 @@ j-review-queue {
   stroke-linejoin: round;
 }
 .jf-dot {
-  fill: var(--jrnl);
+  fill: var(--ctrl);
   stroke: var(--paper-2);
   stroke-width: 3;
 }
@@ -207,6 +206,9 @@ j-review-queue {
   font-family: var(--mono);
   font-size: 40px;
   color: #171b2b;
+}
+.jg-below:focus {
+  outline: none;
 }
 .jg-below {
   text-align: center;
@@ -271,7 +273,7 @@ j-review-queue {
 }
 
 @media (max-width: 640px) {
-  .j-timeline {
+  .prose .j-timeline {
     grid-template-columns: 1fr;
     border-top: 0;
     border-left: 4px solid var(--ink);

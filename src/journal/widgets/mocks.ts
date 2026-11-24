@@ -10,7 +10,6 @@ type Shape = [
 ];
 
 interface Mock {
-  id: string;
   background: string;
   shapes: Shape[];
 }
@@ -19,7 +18,6 @@ const VIEW_W = 160;
 const VIEW_H = 100;
 
 const calm: Mock = {
-  id: 'calm',
   background: '#fffdf8',
   shapes: [
     [12, 9, 14, 4, '#171b2b', 1],
@@ -45,7 +43,6 @@ const busyColors = [
   '#ffe600',
 ];
 const busy: Mock = {
-  id: 'busy',
   background: '#ffff3b',
   shapes: [
     [0, 0, 160, 11, '#ff2a00'],
@@ -82,7 +79,6 @@ const busy: Mock = {
 };
 
 const plain: Mock = {
-  id: 'plain',
   background: '#d6d6d6',
   shapes: [
     [6, 6, 148, 3, '#6f6f6f'],

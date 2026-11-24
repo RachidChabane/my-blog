@@ -7,7 +7,7 @@ import {
 } from '../src/journal/model';
 
 describe('shareFound', () => {
-  it('gives the published 85% for five people who each find 31%', () => {
+  it('gives 84% for five people who each find 31%, which Nielsen publishes as 85%', () => {
     expect(shareFound(0.31, 5)).toBeCloseTo(0.8436, 3);
   });
 

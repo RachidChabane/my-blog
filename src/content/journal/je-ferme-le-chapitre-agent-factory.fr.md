@@ -54,7 +54,7 @@ sources:
 - label: Zhong, McDonald and Hsieh, Synthetic Cognitive Walkthrough (2025)
   url: https://arxiv.org/abs/2512.03568
   date: 24-11-2026
-contentHash: sha256:be8e2f13503ecf78
+contentHash: sha256:ee711cf152ba6fb3
 publishState: published
 ---
 
@@ -160,7 +160,7 @@ Le premier chiffre vient de [l'équipe d'expérimentation de Microsoft](https://
 Avec cinq personnes qui rencontrent chacune 31 % des problèmes, on en rencontre environ 85 %.
 </j-sample-size>
 
-<p class="j-caption">La courbe suit la formule de Nielsen et Landauer, qui donne la part trouvée par n personnes quand une seule en trouve L.</p>
+<p class="j-caption">La courbe suit la formule de Nielsen et Landauer, qui donne la part trouvée par n personnes quand une seule en trouve L. Avec L à 31 %, elle donne 84 % pour cinq personnes, que Nielsen arrondit à 85 %.</p>
 
 Ce retour rapporte. Nielsen relève qu'en consacrant environ 10 % du budget d'un projet à ces essais, les indicateurs visés [s'améliorent de 83 % en moyenne](https://www.nngroup.com/articles/usability-roi-declining-but-still-strong/). Et s'en passer coûte. Pendo estime, sur les produits de ses propres clients, que [80 % des fonctionnalités sont rarement ou jamais utilisées](https://www.pendo.io/resources/the-2019-feature-adoption-report/). Dans une analyse de 101 récits d'échec de startups, la première cause citée, dans 42 % des cas, est [l'absence de besoin pour le produit](https://fortune.com/2014/09/25/why-startups-fail-according-to-their-founders).
 

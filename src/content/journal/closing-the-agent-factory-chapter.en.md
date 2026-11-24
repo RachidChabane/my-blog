@@ -54,7 +54,7 @@ sources:
 - label: Zhong, McDonald and Hsieh, Synthetic Cognitive Walkthrough (2025)
   url: https://arxiv.org/abs/2512.03568
   date: 24-11-2026
-contentHash: sha256:e9b0d54f9e1c2ec9
+contentHash: sha256:1dc65dec02a5e146
 publishState: published
 ---
 
@@ -160,7 +160,7 @@ The first number comes from [the experimentation team at Microsoft](https://ai.s
 With five people who each meet 31% of the problems, about 85% of them are met.
 </j-sample-size>
 
-<p class="j-caption">The curve follows the formula of Nielsen and Landauer, which gives the share found by n people when a single one finds L.</p>
+<p class="j-caption">The curve follows the formula of Nielsen and Landauer, which gives the share found by n people when a single one finds L. With L at 31%, it gives 84% for five people, which Nielsen rounds to 85%.</p>
 
 That feedback pays. Nielsen reports that when about 10% of a project's budget goes to these trials, the targeted indicators [improve by 83% on average](https://www.nngroup.com/articles/usability-roi-declining-but-still-strong/). And going without it costs. Pendo estimates, on its own customers' products, that [80% of features are rarely or never used](https://www.pendo.io/resources/the-2019-feature-adoption-report/). In an analysis of 101 accounts of failed startups, the first cause cited, in 42% of cases, is [the lack of a need for the product](https://fortune.com/2014/09/25/why-startups-fail-according-to-their-founders).
 
