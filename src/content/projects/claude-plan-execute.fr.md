@@ -16,7 +16,7 @@ links:
   - label: 'GitHub'
     url: 'https://github.com/RachidChabane/claude-plan-execute'
 publishState: 'published'
-year: '2025'
+year: '2026'
 highlights:
   - 'Chaque tâche suit un cycle fixe : Plan écrit un plan structuré, une boucle de révision itère un agent de révision jusqu''à approbation, puis Implement le construit'
   - 'Seul un plan APPROVED atteint l''agent Implement, qui travaille par commits avec une checklist de progression reprise'

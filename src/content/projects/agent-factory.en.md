@@ -28,7 +28,7 @@ highlights:
   - 'The factory runs the gate again in its own sandbox, and an agent in a fresh context reviews the change against the spec and the checks'
   - 'A failure gets two corrections in the same session, then one fresh restart, then the issue waits for a person with the reason'
   - 'Every action is an event in one SQLite log. The cockpit and every decision of the daemons are projections of it'
-  - 'Agents and check commands run confined by the operating system''s sandbox, sandbox-exec on macOS and bubblewrap on Linux'
+  - 'Check commands run under sandbox-exec on macOS and bubblewrap on Linux, and agents in Claude Code''s own sandbox, set up with the same deny lists'
   - 'A fake Claude plays scenario files, so the tests and the demonstration run the whole cycle with no account and no network'
   - 'The merge stays with the operator, or with an orchestrator agent within the autonomy the project delegates, each accepted gesture recorded with its actor and reason'
 metrics:

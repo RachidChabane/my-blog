@@ -295,7 +295,7 @@
     }
   },
   "claude-plan-execute": {
-    "year": "2025",
+    "year": "2026",
     "en": {
       "name": "Claude Plan Execute: Autonomous Task Orchestrator",
       "body": "Claude Plan Execute runs a fixed lifecycle for every task: Plan agent writes a structured plan; a Review loop checks it (APPROVED / NEEDS_REVISION) and iterates a revise agent up to the configured round cap; only an approved plan reaches the Implement agent, which works in committed chunks with a resumable progress checklist. Role specialization is prompt-swapping, not separate binaries. A dual-backend driver lets the same code run either the `claude -p` print backend or a real interactive Claude TUI inside tmux; the latter keeps usage on the Claude subscription pool rather than the metered API. The project dogfoods itself: its own roadmap is the tasks.yaml it executes.",
@@ -872,7 +872,7 @@
         "The factory runs the gate again in its own sandbox, and an agent in a fresh context reviews the change against the spec and the checks",
         "A failure gets two corrections in the same session, then one fresh restart, then the issue waits for a person with the reason",
         "Every action is an event in one SQLite log. The cockpit and every decision of the daemons are projections of it",
-        "Agents and check commands run confined by the operating system's sandbox, sandbox-exec on macOS and bubblewrap on Linux",
+        "Check commands run under sandbox-exec on macOS and bubblewrap on Linux, and agents in Claude Code's own sandbox, set up with the same deny lists",
         "A fake Claude plays scenario files, so the tests and the demonstration run the whole cycle with no account and no network",
         "The merge stays with the operator, or with an orchestrator agent within the autonomy the project delegates, each accepted gesture recorded with its actor and reason"
       ],
@@ -974,9 +974,9 @@
         "Les contrôles d'acceptation sont écrits par un agent, prouvés en échec sur la base par assertion, puis figés par hash avant qu'aucun code ne soit écrit",
         "L'agent qui implémente ne reçoit aucune consigne de se vérifier. Une porte dans son hook Stop retient la session tant que les contrôles figés, le lint et les tests ne passent pas",
         "La fabrique rejoue la porte dans son propre bac à sable, et un agent au contexte neuf relit le changement face à la spec et aux contrôles",
-        "Un échec a droit à deux corrections dans la même session, puis à un redémarrage à neuf, puis l'issue attend une personne avec la raison",
+        "Un échec a droit à deux corrections dans la même session, puis à un redémarrage à zéro, puis l'issue attend une personne avec la raison",
         "Chaque action est un événement dans un seul journal SQLite. Le cockpit et chaque décision des démons en sont des projections",
-        "Les agents et les commandes de contrôle tournent confinés par le bac à sable du système d'exploitation, sandbox-exec sur macOS et bubblewrap sur Linux",
+        "Les commandes de contrôle tournent sous sandbox-exec sur macOS et bubblewrap sur Linux, et les agents dans le bac à sable de Claude Code, réglé avec les mêmes listes d'interdictions",
         "Un faux Claude joue des fichiers de scénario, si bien que les tests et la démonstration déroulent tout le cycle sans compte ni réseau",
         "Le merge reste à l'opérateur, ou à un agent orchestrateur dans l'autonomie que le projet délègue, chaque geste accepté étant consigné avec son acteur et sa raison"
       ],

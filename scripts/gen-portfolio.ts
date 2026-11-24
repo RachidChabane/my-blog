@@ -308,7 +308,7 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
         'sable, un agent au contexte neuf relit le changement face à la spec et aux ' +
         "contrôles, et la pull request s'ouvre avec les preuves avant et après. Le merge se " +
         "fait sur ordre de l'opérateur. Un échec a droit à deux corrections dans la même " +
-        "session, puis à un redémarrage à neuf, après quoi l'issue attend une personne, avec " +
+        "session, puis à un redémarrage à zéro, après quoi l'issue attend une personne, avec " +
         'la raison. Tout ce que fait la fabrique est un événement ajouté à un seul journal ' +
         'SQLite. Le cockpit, la commande de statut et les décisions des démons en sont des ' +
         'projections. Les agents et les commandes de contrôle tournent dans le bac à sable ' +

@@ -16,7 +16,7 @@ links:
   - label: 'GitHub'
     url: 'https://github.com/RachidChabane/claude-plan-execute'
 publishState: 'published'
-year: '2025'
+year: '2026'
 highlights:
   - 'Every task runs a fixed lifecycle: Plan writes a structured plan, a Review loop iterates a revise agent until approval, then Implement builds it'
   - 'Only an APPROVED plan reaches the Implement agent, which works in committed chunks with a resumable progress checklist'
