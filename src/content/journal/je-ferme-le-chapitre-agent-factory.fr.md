@@ -60,7 +60,7 @@ sources:
 - label: Zhong, McDonald and Hsieh, Synthetic Cognitive Walkthrough (2025)
   url: https://arxiv.org/abs/2512.03568
   date: 24-11-2026
-contentHash: sha256:9ca2d02b4535c909
+contentHash: sha256:c73bfa5942d2cfdb
 publishState: published
 ---
 
@@ -139,7 +139,9 @@ Pour moi, cela n'apporte pourtant pas grand-chose, parce qu'on reste sur le mêm
 
 Je ne dis pas que c'est inutile. Une équipe qui a déjà ses dépôts, ses règles de protection de branche et des obligations d'audit ne peut pas tout changer d'un coup, et pour elle c'est le chemin le plus réaliste. Annuler moins de changements tout en en fusionnant deux fois plus est un vrai résultat. Agent Factory ouvre d'ailleurs lui aussi une pull request à la fin. Mais j'y vois une étape de transition. Tant que l'unité de travail reste la pull request, on accélère la relecture d'un texte, alors que la question utile est de savoir si le produit fait ce qu'on attendait de lui.
 
-C'est pour cette raison que j'ai créé [musthold](https://github.com/RachidChabane/musthold). Il vérifie, exigence par exigence, que les tests échoueraient si le code ne respectait plus ce qui a été demandé. Ce n'est qu'une ébauche, et la philosophie qu'il y a derrière n'est pas encore aboutie.
+C'est pour cette raison que j'ai créé [musthold](https://github.com/RachidChabane/musthold). L'idée est de remplacer la relecture du code par une preuve qu'on peut lire sans ouvrir le code. On écrit ce qu'on attend en langage courant, exigence par exigence. Pendant que l'agent travaille, musthold abîme volontairement le code de plusieurs façons et regarde si les tests s'en aperçoivent. Si une version cassée passe tous les tests, l'agent n'a pas le droit de s'arrêter. Il doit renforcer ses tests, et il ne voit jamais le code cassé, pour ne pas écrire un test sur mesure. musthold contrôle aussi que chaque test vérifie bien ce que dit son exigence, et il signale ce que la demande a laissé dans le flou.
+
+À la fin, je n'ai plus à lire un diff ni à faire confiance à des tests parce qu'ils sont verts. Je lis une liste d'exigences, et je sais pour chacune si elle est prouvée ou non. C'est ce qui permettrait de fusionner un changement sans qu'une personne le relise. Ce n'est qu'une ébauche, et la philosophie qu'il y a derrière n'est pas encore aboutie.
 
 ## Ce que coûte la synchronisation
 
