@@ -60,7 +60,7 @@ sources:
 - label: Zhong, McDonald and Hsieh, Synthetic Cognitive Walkthrough (2025)
   url: https://arxiv.org/abs/2512.03568
   date: 24-11-2026
-contentHash: sha256:80a3471480f69707
+contentHash: sha256:bd36aee5228f7754
 publishState: published
 ---
 
@@ -145,23 +145,22 @@ At the end, I no longer have to read a diff or trust tests because they are gree
 
 ## What coordination costs
 
-On a project in production there were four of us developers, with unlimited access to AI and the classic method. You write a spec, you code, you get it reviewed, you merge, and you sort out the conflicts. The headcount was then reduced and I ended up alone on the project. I moved much faster, and the customers were served much faster.
+I have worked in a team with the classic method, where you write a spec, code, get it reviewed, merge and sort out the conflicts. I have also worked alone with agents, on the same kind of project. Alone, I shipped faster.
 
-I am not better than my former colleagues, who are very competent. Two things explain the difference. I chose to put productivity first, even if it meant questioning practices that our trade has held as good for a very long time, while still having good code written. And I was alone, so there was nobody left to synchronise with.
+This is not about the people. The developers I worked with are very competent, and I am no more competent than they are. The difference comes from the organisation. A good part of a team's time goes into agreeing with each other, in meetings, in debates and in git conflicts. These practices were designed so that several people could write the same code without getting in each other's way. When agents do the writing, their cost stays whole while part of what they protected is gone. Alone, I had nobody to synchronise with, and I could question these practices without waiting for an agreement, while still having good code written.
 
 <div class="j-wide tablewrap">
 <table class="j-compare">
-<thead><tr><th></th><th>Four of us</th><th>Alone</th></tr></thead>
+<thead><tr><th></th><th>In a team</th><th>Alone with agents</th></tr></thead>
 <tbody>
 <tr><td>Meetings</td><td>regular</td><td>none</td></tr>
-<tr><td>Git conflicts</td><td>to sort out between us</td><td>none</td></tr>
+<tr><td>Git conflicts</td><td>to sort out between people</td><td>none</td></tr>
 <tr><td>Debates</td><td>before deciding</td><td>none</td></tr>
-<tr><td>Service to customers</td><td>at the pace of the team</td><td>much faster</td></tr>
 </tbody>
 </table>
 </div>
 
-I find this observation unfortunate. Very competent people can be replaced without productivity going down. Today I think a development team can be a waste of time and efficiency.
+I take no pleasure in this. I simply think that with agents, the number of developers is no longer what moves a project forward, and that coordination can cost more than it brings.
 
 ## Very close tools are arriving
 

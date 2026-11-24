@@ -60,7 +60,7 @@ sources:
 - label: Zhong, McDonald and Hsieh, Synthetic Cognitive Walkthrough (2025)
   url: https://arxiv.org/abs/2512.03568
   date: 24-11-2026
-contentHash: sha256:c73bfa5942d2cfdb
+contentHash: sha256:1b7a41a42c1df03c
 publishState: published
 ---
 
@@ -145,23 +145,22 @@ C'est pour cette raison que j'ai créé [musthold](https://github.com/RachidChab
 
 ## Ce que coûte la synchronisation
 
-Sur un projet en production, nous étions quatre développeurs, avec un accès illimité à l'IA et la méthode classique. On écrit une spec, on code, on fait relire, on merge, et on règle les conflits. L'effectif a ensuite été réduit et je me suis retrouvé seul sur le projet. J'ai avancé beaucoup plus vite, et les clients ont été servis beaucoup plus vite.
+J'ai travaillé en équipe avec la méthode classique, où l'on écrit une spec, on code, on fait relire, on merge et on règle les conflits. J'ai aussi travaillé seul avec des agents, sur le même genre de projet. Seul, j'ai livré plus vite.
 
-Je ne suis pas meilleur que mes anciens collègues, qui sont très compétents. Deux choses expliquent la différence. J'ai choisi de privilégier la productivité, quitte à remettre en cause des pratiques tenues pour bonnes depuis très longtemps dans notre métier, tout en continuant à faire écrire du bon code. Et j'étais seul, donc il n'y avait plus personne avec qui se synchroniser.
+Cela ne tient pas aux personnes. Les développeurs avec qui j'ai travaillé sont très compétents, et je ne le suis pas plus qu'eux. La différence vient de l'organisation. Une bonne partie du temps d'une équipe passe à se mettre d'accord, en réunions, en débats et en conflits git. Ces pratiques ont été pensées pour que plusieurs personnes écrivent le même code sans se gêner. Quand ce sont des agents qui écrivent, leur coût reste entier alors que ce qu'elles protégeaient a en partie disparu. Seul, je n'avais personne avec qui me synchroniser, et j'ai pu remettre ces pratiques en cause sans attendre un accord, tout en continuant à faire écrire du bon code.
 
 <div class="j-wide tablewrap">
 <table class="j-compare">
-<thead><tr><th></th><th>À quatre</th><th>Seul</th></tr></thead>
+<thead><tr><th></th><th>En équipe</th><th>Seul avec des agents</th></tr></thead>
 <tbody>
 <tr><td>Réunions</td><td>régulières</td><td>aucune</td></tr>
-<tr><td>Conflits git</td><td>à régler entre nous</td><td>aucun</td></tr>
+<tr><td>Conflits git</td><td>à régler entre personnes</td><td>aucun</td></tr>
 <tr><td>Débats</td><td>avant de trancher</td><td>aucun</td></tr>
-<tr><td>Service aux clients</td><td>au rythme de l'équipe</td><td>beaucoup plus rapide</td></tr>
 </tbody>
 </table>
 </div>
 
-Je trouve ce constat malheureux. Des gens très compétents peuvent être remplacés sans que la productivité baisse. Je pense aujourd'hui qu'une équipe de développement peut être une perte de temps et d'efficacité.
+Je ne m'en réjouis pas. Je pense simplement qu'avec des agents, ce n'est plus le nombre de développeurs qui fait avancer un projet, et que la coordination peut coûter plus qu'elle ne rapporte.
 
 ## Des outils très proches arrivent
 
