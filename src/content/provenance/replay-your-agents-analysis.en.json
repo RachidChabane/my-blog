@@ -1,0 +1,79 @@
+{
+  "slug": "replay-your-agents-analysis",
+  "lang": "en",
+  "translationKey": "agent-run-analysis-needs-a-replay",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Gunsilius, Van Dijcke and Wuthrich, Inference after coding agents (arXiv 2611.23174)",
+      "url": "https://arxiv.org/abs/2611.23174",
+      "excerpt": "Indeed, we find that on simulated data with zero effects, four frontier agents report significant p-values between 54% and 98% of the time when asked to produce a compelling finding."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Gunsilius, Van Dijcke and Wuthrich, Inference after coding agents (arXiv 2611.23174)",
+      "url": "https://arxiv.org/abs/2611.23174",
+      "excerpt": "After an agent has completed its analysis, we reset and replay it on subsamples of the data"
+    },
+    {
+      "sourceId": "s3",
+      "label": "Gunsilius, Van Dijcke and Wuthrich, Inference after coding agents (arXiv 2611.23174)",
+      "url": "https://arxiv.org/abs/2611.23174",
+      "excerpt": "In simulations, the correction robustly lowers the high false rejection rates to near the nominal 5%."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Gao and Xiao, When AI Analysts Disagree: Agentic Multiverse Analysis (arXiv 2611.25198)",
+      "url": "https://arxiv.org/abs/2611.25198",
+      "excerpt": "A pilot study first deploys 150 autonomous AI coding agents on one dataset and one set of research questions and finds that they disagree through the same defensible methodological choices human analysts make, though over a narrower range."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Gao and Xiao, When AI Analysts Disagree: Agentic Multiverse Analysis (arXiv 2611.25198)",
+      "url": "https://arxiv.org/abs/2611.25198",
+      "excerpt": "AI peer review leaves their dispersion almost unchanged."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Gao and Xiao, When AI Analysts Disagree: Agentic Multiverse Analysis (arXiv 2611.25198)",
+      "url": "https://arxiv.org/abs/2611.25198",
+      "excerpt": "Exposure to top-rated exemplar reports then collapses it, largely through imitation rather than analysis."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Gao and Xiao, When AI Analysts Disagree: Agentic Multiverse Analysis (arXiv 2611.25198)",
+      "url": "https://arxiv.org/abs/2611.25198",
+      "excerpt": "our exercises take hours of agent time and tens of dollars per paper"
+    },
+    {
+      "sourceId": "s8",
+      "label": "Gunsilius et al., author line (arXiv 2611.23174)",
+      "url": "https://arxiv.org/abs/2611.23174",
+      "excerpt": "Authors:  Florian Gunsilius ,  David Van Dijcke ,  Kaspar Wüthrich"
+    },
+    {
+      "sourceId": "s9",
+      "label": "Gao and Xiao, author line (arXiv 2611.25198)",
+      "url": "https://arxiv.org/abs/2611.25198",
+      "excerpt": "Authors:  Ruijiang Gao ,  Steven Chong Xiao"
+    },
+    {
+      "sourceId": "s10",
+      "label": "Gunsilius, Van Dijcke and Wuthrich, Inference after coding agents (arXiv 2611.23174), abstract passage on agent search and replayability",
+      "url": "https://arxiv.org/abs/2611.23174",
+      "excerpt": "In particular, we argue that coding agents carrying out empirical research introduce a new type of post-selection inference that combines human-like, open-ended search over an implicit space of estimators with programmatic replayability of both the selection and the estimation process."
+    },
+    {
+      "sourceId": "s11",
+      "label": "Gunsilius, Van Dijcke and Wuthrich, Inference after coding agents (arXiv 2611.23174), related-work passage on agents' analytical choices",
+      "url": "https://arxiv.org/abs/2611.23174",
+      "excerpt": "Recent studies empirically examine agents’ analytical choices ( Bertran et al., 2026 ; Gao and Xiao, 2026 ; McCully, 2026 ; Galiani et al., 2026 ; Asher et al., 2026 ) , their sensitivity to prompting ( Asher et al., 2026 ; Miao et al., 2026 ) , and their influence on human researchers’ analytical decisions ( Herdağdelen et al., 2026 ) , extending similar evidence of variation across human analysts ( Silberzahn et al., 2018 ; Huntington-Klein et al., 2021 ; Breznau et al., 2022 )"
+    },
+    {
+      "sourceId": "s12",
+      "label": "Gao and Xiao, When AI Analysts Disagree: Agentic Multiverse Analysis (arXiv 2611.25198), related-work passage on many-analyst studies",
+      "url": "https://arxiv.org/abs/2611.25198",
+      "excerpt": "Such many-analyst studies are costly and consume person-years of volunteer labor"
+    }
+  ]
+}

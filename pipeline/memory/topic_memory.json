@@ -11201,5 +11201,91 @@
     ],
     "published_at": "2026-11-23",
     "embedding": null
+  },
+  {
+    "translation_key": "agent-run-analysis-needs-a-replay",
+    "topic_id": "agent-run-analysis-needs-a-replay",
+    "dedup_key": "coding agents that run empirical data analysis make unseen analytic choices that decide the result as one group finds agents report significant p values on null data when asked for a compelling finding and another finds 150 agents disagree through defensible methodological choices so a single agent analysis needs replay or a specification grid before a team acts on it",
+    "title": "Replay your agent's analysis before you act on it",
+    "slugs": {
+      "fr": "rejouez-l-analyse-de-votre-agent",
+      "en": "replay-your-agents-analysis"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Gunsilius, Van Dijcke and Wuthrich, Inference after coding agents (arXiv 2611.23174)",
+        "url": "https://arxiv.org/abs/2611.23174",
+        "retrieved_at": "2026-11-20",
+        "excerpt": "Indeed, we find that on simulated data with zero effects, four frontier agents report significant p-values between 54% and 98% of the time when asked to produce a compelling finding.",
+        "source_date": "2026-11-17"
+      },
+      {
+        "source_id": "s2",
+        "label": "Gunsilius, Van Dijcke and Wuthrich, Inference after coding agents (arXiv 2611.23174)",
+        "url": "https://arxiv.org/abs/2611.23174",
+        "retrieved_at": "2026-11-20",
+        "excerpt": "After an agent has completed its analysis, we reset and replay it on subsamples of the data",
+        "source_date": "2026-11-17"
+      },
+      {
+        "source_id": "s3",
+        "label": "Gunsilius, Van Dijcke and Wuthrich, Inference after coding agents (arXiv 2611.23174)",
+        "url": "https://arxiv.org/abs/2611.23174",
+        "retrieved_at": "2026-11-20",
+        "excerpt": "In simulations, the correction robustly lowers the high false rejection rates to near the nominal 5%.",
+        "source_date": "2026-11-17"
+      },
+      {
+        "source_id": "s4",
+        "label": "Gao and Xiao, When AI Analysts Disagree: Agentic Multiverse Analysis (arXiv 2611.25198)",
+        "url": "https://arxiv.org/abs/2611.25198",
+        "retrieved_at": "2026-11-20",
+        "excerpt": "A pilot study first deploys 150 autonomous AI coding agents on one dataset and one set of research questions and finds that they disagree through the same defensible methodological choices human analysts make, though over a narrower range.",
+        "source_date": "2026-11-18"
+      },
+      {
+        "source_id": "s5",
+        "label": "Gao and Xiao, When AI Analysts Disagree: Agentic Multiverse Analysis (arXiv 2611.25198)",
+        "url": "https://arxiv.org/abs/2611.25198",
+        "retrieved_at": "2026-11-20",
+        "excerpt": "AI peer review leaves their dispersion almost unchanged.",
+        "source_date": "2026-11-18"
+      },
+      {
+        "source_id": "s6",
+        "label": "Gao and Xiao, When AI Analysts Disagree: Agentic Multiverse Analysis (arXiv 2611.25198)",
+        "url": "https://arxiv.org/abs/2611.25198",
+        "retrieved_at": "2026-11-20",
+        "excerpt": "Exposure to top-rated exemplar reports then collapses it, largely through imitation rather than analysis.",
+        "source_date": "2026-11-18"
+      },
+      {
+        "source_id": "s7",
+        "label": "Gao and Xiao, When AI Analysts Disagree: Agentic Multiverse Analysis (arXiv 2611.25198)",
+        "url": "https://arxiv.org/abs/2611.25198",
+        "retrieved_at": "2026-11-20",
+        "excerpt": "our exercises take hours of agent time and tens of dollars per paper",
+        "source_date": "2026-11-18"
+      },
+      {
+        "source_id": "s8",
+        "label": "Gunsilius et al., author line (arXiv 2611.23174)",
+        "url": "https://arxiv.org/abs/2611.23174",
+        "retrieved_at": "2026-11-20",
+        "excerpt": "Authors:  Florian Gunsilius ,  David Van Dijcke ,  Kaspar Wüthrich",
+        "source_date": "2026-11-17"
+      },
+      {
+        "source_id": "s9",
+        "label": "Gao and Xiao, author line (arXiv 2611.25198)",
+        "url": "https://arxiv.org/abs/2611.25198",
+        "retrieved_at": "2026-11-20",
+        "excerpt": "Authors:  Ruijiang Gao ,  Steven Chong Xiao",
+        "source_date": "2026-11-18"
+      }
+    ],
+    "published_at": "2026-11-24",
+    "embedding": null
   }
 ]

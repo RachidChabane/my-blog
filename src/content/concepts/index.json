@@ -642,6 +642,31 @@
     "addedOn": "16-10-2026"
   },
   {
+    "id": "analytic-flexibility",
+    "label": {
+      "fr": "Flexibilité analytique",
+      "en": "Analytic flexibility"
+    },
+    "definition": {
+      "fr": "Latitude dont dispose un analyste entre les données brutes et le résultat publié, à travers une suite de choix tous défendables : quelles observations exclure, quelle période retenir, quelles variables de contrôle inclure, quel test appliquer. Des analystes différents, ou plusieurs exécutions du même analyste automatisé, peuvent ainsi tirer des conclusions différentes des mêmes données, alors qu'un rapport isolé ne montre que le chemin qui a été suivi.",
+      "en": "The latitude an analyst has between raw data and a reported result, exercised through a sequence of defensible choices: which observations to exclude, which time window to keep, which control variables to include, which test to run. Different analysts, or repeated runs of the same automated analyst, can reach different conclusions from the same data, while any single report shows only the path that was taken."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "garden of forking paths",
+      "researcher degrees of freedom",
+      "nonstandard errors",
+      "degrés de liberté du chercheur"
+    ],
+    "related": [
+      "selective-reporting"
+    ],
+    "articles": [
+      "agent-run-analysis-needs-a-replay"
+    ],
+    "addedOn": "24-11-2026"
+  },
+  {
     "id": "applicability-ceiling",
     "label": {
       "fr": "Plafond d'éligibilité",
@@ -3695,7 +3720,8 @@
       "patch-quality-rate-needs-a-consistent-grader",
       "kolibri-tokenizer-is-the-sovereign-model-cost-lever",
       "agent-benchmarks-cover-little-of-the-work-your-agent-does",
-      "llm-findings-expire-across-model-generations"
+      "llm-findings-expire-across-model-generations",
+      "agent-run-analysis-needs-a-replay"
     ],
     "addedOn": "03-08-2026"
   },
@@ -4423,6 +4449,31 @@
     "addedOn": "19-07-2026"
   },
   {
+    "id": "p-hacking",
+    "label": {
+      "fr": "P-hacking",
+      "en": "P-hacking"
+    },
+    "definition": {
+      "fr": "Fait de multiplier les analyses sur les mêmes données, en variant les tests, les sous-ensembles ou les spécifications, jusqu'à obtenir une p-value sous le seuil de significativité, puis de ne rapporter que celle-là. Chaque essai supplémentaire augmente le risque d'un résultat significatif dû au hasard : la p-value rapportée ne garantit plus son taux nominal de faux positifs, sauf à savoir combien d'essais ont été faits et à corriger en conséquence.",
+      "en": "Running many analyses on the same data, varying tests, subsets or specifications, until one yields a p-value below the significance threshold, then reporting that one. Each extra attempt raises the chance of a significant result produced by chance, so the reported p-value no longer carries its nominal false-positive rate unless the number of attempts is known and corrected for."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "data dredging",
+      "significance chasing",
+      "chasse à la significativité"
+    ],
+    "related": [
+      "analytic-flexibility",
+      "selective-reporting"
+    ],
+    "articles": [
+      "agent-run-analysis-needs-a-replay"
+    ],
+    "addedOn": "24-11-2026"
+  },
+  {
     "id": "pass-at-1",
     "label": {
       "fr": "pass@1",
@@ -4575,7 +4626,8 @@
       "token-similarity-score"
     ],
     "articles": [
-      "low-similarity-score-does-not-clear-an-agent-rewrite"
+      "low-similarity-score-does-not-clear-an-agent-rewrite",
+      "agent-run-analysis-needs-a-replay"
     ],
     "addedOn": "06-11-2026"
   },
@@ -5694,7 +5746,8 @@
     ],
     "articles": [
       "bulk-ai-research-release-ships-review-cost-to-readers",
-      "low-similarity-score-does-not-clear-an-agent-rewrite"
+      "low-similarity-score-does-not-clear-an-agent-rewrite",
+      "agent-run-analysis-needs-a-replay"
     ],
     "addedOn": "26-10-2026"
   },
@@ -6220,6 +6273,32 @@
       "terminal-bench-score-is-conditional-on-runtime-budget"
     ],
     "addedOn": "09-11-2026"
+  },
+  {
+    "id": "subsample-replay",
+    "label": {
+      "fr": "Rejeu sur sous-échantillons",
+      "en": "Subsample replay"
+    },
+    "definition": {
+      "fr": "Contrôle d'une analyse automatisée qui consiste à réinitialiser l'agent et à le relancer avec la même consigne sur des sous-échantillons aléatoires des données, puis à comparer d'un run à l'autre les choix faits et les résultats obtenus. Une conclusion qui revient par des chemins d'analyse différents a plus de chances de tenir aux données, et la dispersion entre rejeux peut servir à corriger l'incertitude annoncée pour tenir compte de la recherche menée par l'agent lui-même.",
+      "en": "Checking an automated analysis by resetting the agent and rerunning it with the same instructions on random subsamples of the data, then comparing the choices made and the results obtained across runs. A conclusion that recurs through different analytical paths is more likely to reflect the data, and the spread across replays can be used to correct the reported uncertainty for the agent's own search."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "subsample rerun",
+      "replay on subsamples",
+      "rejeu sur sous-échantillons"
+    ],
+    "related": [
+      "analytic-flexibility",
+      "p-hacking",
+      "process-evidence"
+    ],
+    "articles": [
+      "agent-run-analysis-needs-a-replay"
+    ],
+    "addedOn": "24-11-2026"
   },
   {
     "id": "supply-chain-attack",
