@@ -1,13 +1,5 @@
 /** The arithmetic behind the journal's interactive figures. Pure: no DOM, no I/O. */
 
-/**
- * Share of the usability problems found by `users` people when one person finds a
- * share `perUser` of them (Nielsen and Landauer, 1993): 1 - (1 - L)^n.
- */
-export function shareFound(perUser: number, users: number): number {
-  return 1 - (1 - perUser) ** users;
-}
-
 /** Changes still waiting for a review at the end of each day, from day 1 to `days`. */
 export function reviewBacklog(
   producedPerDay: number,
@@ -56,15 +48,21 @@ export function isMet(trial: number, perUser: number): boolean {
   return trial < perUser;
 }
 
-/** For each problem, whether at least one of the first `people` people met it. */
-export function problemsMet(
+/**
+ * For each person in turn, how many problems they met that nobody before them had met
+ * (`fresh`) and how many were already known (`seen`).
+ */
+export function discoveries(
   trials: number[][],
-  perUser: number,
-  people: number
-): boolean[] {
-  const tested = trials.slice(0, people);
-  const problems = trials[0]?.length ?? 0;
-  return Array.from({ length: problems }, (_, problem) =>
-    tested.some((person) => isMet(person[problem] ?? 1, perUser))
-  );
+  perUser: number
+): { fresh: number; seen: number }[] {
+  const known = new Set<number>();
+  return trials.map((person) => {
+    const met = person.flatMap((trial, problem) =>
+      isMet(trial, perUser) ? [problem] : []
+    );
+    const fresh = met.filter((problem) => !known.has(problem));
+    for (const problem of fresh) known.add(problem);
+    return { fresh: fresh.length, seen: met.length - fresh.length };
+  });
 }

@@ -60,7 +60,7 @@ sources:
 - label: Zhong, McDonald and Hsieh, Synthetic Cognitive Walkthrough (2025)
   url: https://arxiv.org/abs/2512.03568
   date: 24-11-2026
-contentHash: sha256:bd36aee5228f7754
+contentHash: sha256:ab2ae89414a8f864
 publishState: published
 ---
 
@@ -182,13 +182,13 @@ Today you get that feedback with an early access. You put the product in front o
 <div class="j-hot"><b>50 ms</b>are enough to judge whether a page is pleasing, and that judgment holds when you look at it longer.</div>
 </div>
 
-The first number comes from [the experimentation team at Microsoft](https://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf). It says that the people who build a product are wrong two times out of three about what will work, and that it takes feedback from use to find out. The second comes from [Jakob Nielsen](https://www.nngroup.com/articles/why-you-only-need-to-test-with-5-users/), who adds that it holds for people who use the product in comparable ways. You can try it with people drawn at random.
+The first number comes from [the experimentation team at Microsoft](https://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf). It says that the people who build a product are wrong two times out of three about what will work, and that it takes feedback from use to find out. The second comes from [Jakob Nielsen](https://www.nngroup.com/articles/why-you-only-need-to-test-with-5-users/), who adds that it holds for people who use the product in comparable ways. Have one more person try the product and look at what they bring that is new.
 
 <j-sample-size>
 With five people who each meet 31% of the problems, about 85% of them are met.
 </j-sample-size>
 
-<p class="j-caption">Each dot is drawn at random, so the result changes from one draw to the next. The formula of Nielsen and Landauer gives the average. For five people who each run into 31% of the problems it gives 84%, which Nielsen rounds to 85%.</p>
+<p class="j-caption">Each person runs into about 31% of the problems at random, so the result changes from one draw to the next. On average, the formula of Nielsen and Landauer gives 84% of the problems known after five people, which Nielsen rounds to 85%.</p>
 
 That feedback pays. Nielsen reports that when about 10% of a project's budget goes to these trials, the targeted indicators [improve by 83% on average](https://www.nngroup.com/articles/usability-roi-declining-but-still-strong/). And going without it costs. Pendo estimates, on its own customers' products, that [80% of features are rarely or never used](https://www.pendo.io/resources/the-2019-feature-adoption-report/). In an analysis of 101 accounts of failed startups, the first cause cited, in 42% of cases, is [the lack of a need for the product](https://fortune.com/2014/09/25/why-startups-fail-according-to-their-founders).
 

@@ -60,7 +60,7 @@ sources:
 - label: Zhong, McDonald and Hsieh, Synthetic Cognitive Walkthrough (2025)
   url: https://arxiv.org/abs/2512.03568
   date: 24-11-2026
-contentHash: sha256:1b7a41a42c1df03c
+contentHash: sha256:fac4903a68c2a996
 publishState: published
 ---
 
@@ -182,13 +182,13 @@ Aujourd'hui, on obtient ce retour avec un accès anticipé. On met le produit de
 <div class="j-hot"><b>50 ms</b>suffisent pour juger si une page plaît, et ce jugement tient quand on la regarde plus longtemps.</div>
 </div>
 
-Le premier chiffre vient de [l'équipe d'expérimentation de Microsoft](https://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf). Il dit que ceux qui construisent un produit se trompent deux fois sur trois sur ce qui va marcher, et qu'il faut un retour d'usage pour le savoir. Le deuxième vient de [Jakob Nielsen](https://www.nngroup.com/articles/why-you-only-need-to-test-with-5-users/), qui précise qu'il vaut pour des personnes qui utilisent le produit de façon comparable. Vous pouvez faire l'essai avec des personnes tirées au hasard.
+Le premier chiffre vient de [l'équipe d'expérimentation de Microsoft](https://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf). Il dit que ceux qui construisent un produit se trompent deux fois sur trois sur ce qui va marcher, et qu'il faut un retour d'usage pour le savoir. Le deuxième vient de [Jakob Nielsen](https://www.nngroup.com/articles/why-you-only-need-to-test-with-5-users/), qui précise qu'il vaut pour des personnes qui utilisent le produit de façon comparable. Faites essayer le produit à une personne de plus et regardez ce qu'elle apporte de nouveau.
 
 <j-sample-size>
 Avec cinq personnes qui rencontrent chacune 31 % des problèmes, on en rencontre environ 85 %.
 </j-sample-size>
 
-<p class="j-caption">Chaque point est tiré au hasard, donc le résultat change d'un tirage à l'autre. La formule de Nielsen et Landauer donne la moyenne. Pour cinq personnes qui rencontrent chacune 31 % des problèmes, elle donne 84 %, que Nielsen arrondit à 85 %.</p>
+<p class="j-caption">Chaque personne rencontre au hasard environ 31 % des problèmes, donc le résultat change d'un tirage à l'autre. En moyenne, la formule de Nielsen et Landauer donne 84 % des problèmes connus après cinq personnes, que Nielsen arrondit à 85 %.</p>
 
 Ce retour rapporte. Nielsen relève qu'en consacrant environ 10 % du budget d'un projet à ces essais, les indicateurs visés [s'améliorent de 83 % en moyenne](https://www.nngroup.com/articles/usability-roi-declining-but-still-strong/). Et s'en passer coûte. Pendo estime, sur les produits de ses propres clients, que [80 % des fonctionnalités sont rarement ou jamais utilisées](https://www.pendo.io/resources/the-2019-feature-adoption-report/). Dans une analyse de 101 récits d'échec de startups, la première cause citée, dans 42 % des cas, est [l'absence de besoin pour le produit](https://fortune.com/2014/09/25/why-startups-fail-according-to-their-founders).
 

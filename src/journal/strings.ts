@@ -19,19 +19,13 @@ export interface JournalStrings {
     again: string;
   };
   sample: {
-    metByAnyone: string;
-    metByEach: string;
     add: string;
-    remove: string;
-    redraw: string;
-    perUser: string;
-    found: (
-      people: number,
-      count: number,
-      problems: number,
-      share: string,
-      expected: string
-    ) => string;
+    restart: string;
+    keyNew: string;
+    keySeen: string;
+    person: (rank: number) => string;
+    brought: (fresh: number, seen: number) => string;
+    found: (people: number, known: number, problems: number) => string;
   };
   queue: {
     produced: string;
@@ -64,15 +58,15 @@ const fr: JournalStrings = {
     again: 'Recommencer',
   },
   sample: {
-    metByAnyone:
-      "Les 40 problèmes du produit, en couleur quand quelqu'un en a rencontré un",
-    metByEach: 'Une ligne par personne',
-    add: 'Ajouter une personne',
-    remove: 'En retirer une',
-    redraw: "Tirer d'autres personnes",
-    perUser: "Part des problèmes qu'une seule personne rencontre",
-    found: (people, count, problems, share, expected) =>
-      `${people} ${people > 1 ? 'personnes ont' : 'personne a'} rencontré ${count} des ${problems} problèmes, soit ${share}. La formule en prévoit ${expected}.`,
+    add: 'Faire essayer une personne de plus',
+    restart: "Recommencer avec d'autres personnes",
+    keyNew: "problèmes que personne n'avait encore vus",
+    keySeen: "problèmes déjà vus par quelqu'un",
+    person: (rank) => `Personne ${rank}`,
+    brought: (fresh, seen) =>
+      `${fresh} ${fresh > 1 ? 'nouveaux' : 'nouveau'}, ${seen} déjà ${seen > 1 ? 'vus' : 'vu'}`,
+    found: (people, known, problems) =>
+      `Après ${people} ${people > 1 ? 'personnes' : 'personne'}, ${known} problèmes sur ${problems} sont connus.`,
   },
   queue: {
     produced: 'changements produits par jour',
@@ -107,15 +101,14 @@ const en: JournalStrings = {
     again: 'Start again',
   },
   sample: {
-    metByAnyone:
-      'The 40 problems of the product, coloured once somebody has met one',
-    metByEach: 'One row per person',
-    add: 'Add a person',
-    remove: 'Remove one',
-    redraw: 'Draw other people',
-    perUser: 'Share of the problems one person runs into',
-    found: (people, count, problems, share, expected) =>
-      `${people} ${people > 1 ? 'people' : 'person'} met ${count} of the ${problems} problems, or ${share}. The formula predicts ${expected}.`,
+    add: 'Have one more person try it',
+    restart: 'Start again with other people',
+    keyNew: 'problems nobody had seen yet',
+    keySeen: 'problems somebody had already seen',
+    person: (rank) => `Person ${rank}`,
+    brought: (fresh, seen) => `${fresh} new, ${seen} already seen`,
+    found: (people, known, problems) =>
+      `After ${people} ${people > 1 ? 'people' : 'person'}, ${known} problems out of ${problems} are known.`,
   },
   queue: {
     produced: 'changes produced per day',

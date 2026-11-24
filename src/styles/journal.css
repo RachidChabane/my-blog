@@ -236,41 +236,75 @@ j-sample-size {
   line-height: 1.25;
   margin: 0 0 14px;
 }
-.jm-label {
-  font-family: var(--mono);
-  font-size: 0.82em;
-  color: var(--ink-2);
-  margin: 12px 0 5px;
-}
-.jm-row {
-  display: grid;
-  grid-template-columns: repeat(40, 1fr);
-  gap: 3px;
-  margin-bottom: 3px;
-}
-.jm-row i {
-  aspect-ratio: 1;
-  border-radius: 50%;
+.jm-known {
+  height: 22px;
   background: var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 18px;
 }
-.jm-row i.met {
-  background: var(--ink);
+.jm-known i {
+  display: block;
+  height: 100%;
+  background: var(--jrnl);
+  transition: width 0.3s ease-out;
 }
-.jm-found i {
-  border-radius: 2px;
-  aspect-ratio: 1 / 2;
+.prose .jm-people {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
-.jm-found i.met {
+.prose .jm-people li {
+  display: grid;
+  grid-template-columns: 6.5em 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin: 0 0 6px;
+}
+.jm-who,
+.jm-what,
+.jm-key {
+  font-family: var(--mono);
+  font-size: 0.86em;
+}
+.jm-what,
+.jm-key {
+  color: var(--ink-2);
+}
+.jm-what {
+  white-space: nowrap;
+  min-width: 15em;
+}
+.jm-bar {
+  display: flex;
+  height: 16px;
+}
+.jm-new {
   background: var(--jrnl);
 }
-.jm-people {
-  min-height: 2em;
+.jm-seen {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--ink-2) 0 2px,
+    transparent 2px 5px
+  );
+}
+.jm-key {
+  margin: 12px 0 0;
+}
+.jm-key i {
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+  margin: 0 6px 0 0;
+}
+.jm-key .jm-seen {
+  margin-left: 14px;
 }
 .jm-controls {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  align-items: center;
   margin-top: 14px;
 }
 .jm-controls button {
@@ -291,47 +325,6 @@ j-sample-size {
 .jm-controls button[aria-disabled='true'] {
   opacity: 0.4;
   cursor: default;
-}
-.jm-choice {
-  border: 0;
-  padding: 0;
-  margin: 6px 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
-  flex-basis: 100%;
-}
-.jm-choice legend {
-  float: left;
-  padding: 0;
-  margin-right: 8px;
-  font-family: var(--mono);
-  font-size: 0.82em;
-  color: var(--ink-2);
-}
-.jm-choice input {
-  position: absolute;
-  opacity: 0;
-}
-.jm-choice span {
-  display: inline-grid;
-  place-items: center;
-  min-width: 56px;
-  min-height: 36px;
-  font-family: var(--mono);
-  font-weight: 700;
-  border: 2px solid var(--ink);
-  border-radius: 999px;
-  cursor: pointer;
-}
-.jm-choice input:checked + span {
-  background: var(--ink);
-  color: var(--paper);
-}
-.jm-choice input:focus-visible + span {
-  outline: 3px solid var(--jrnl);
-  outline-offset: 2px;
 }
 
 /* --- published figures, before and after */
@@ -462,8 +455,17 @@ j-sample-size {
   j-review-queue {
     padding: 14px;
   }
-  .jm-row {
-    gap: 2px;
+  .prose .jm-people li {
+    grid-template-columns: 1fr auto;
+    gap: 2px 10px;
+    margin-bottom: 10px;
+  }
+  .jm-bar {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .jm-what {
+    min-width: 0;
   }
   .jq-pile {
     height: 230px;

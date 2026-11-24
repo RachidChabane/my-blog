@@ -1,60 +1,40 @@
-/** <j-sample-size>: people drawn at random, and the problems each of them runs into. */
-import {
-  drawTrials,
-  isMet,
-  problemsMet,
-  seededRandom,
-  shareFound,
-} from '../model';
+/** <j-sample-size>: people try a product one after the other, and each finds less that is new. */
+import { discoveries, drawTrials, seededRandom } from '../model';
 import { journalStrings } from '../strings';
 
 const PROBLEMS = 40;
 const PEOPLE = { max: 15, start: 5 };
-/** Shares of the problems one person may meet, in percent; Nielsen's average is 31. */
-const PER_USER_CHOICES = [10, 31, 50];
-const PER_USER_START = 31;
-/** The draw shown first: with five people at 31% it lands on Nielsen's 85%. */
+/** Share of the problems one person runs into: Nielsen's average. */
+const PER_USER = 0.31;
+/** The draw shown first: with five people it lands on Nielsen's 85%. */
 const FIRST_DRAW = 6;
 
 export class SampleSize extends HTMLElement {
   private people = PEOPLE.start;
-  private perUser = PER_USER_START / 100;
   private draw = FIRST_DRAW;
   private trials: number[][] = [];
 
   connectedCallback(): void {
     if (this.dataset.ready) return;
     this.dataset.ready = 'true';
-    const lang = document.documentElement.lang;
-    const t = journalStrings(lang).sample;
-    const percent = new Intl.NumberFormat(lang, { style: 'percent' });
-    const choices = PER_USER_CHOICES.map(
-      (choice) =>
-        `<label><input type="radio" name="jm-per-user" value="${choice}"${choice === PER_USER_START ? ' checked' : ''}><span>${percent.format(choice / 100)}</span></label>`
-    ).join('');
+    const t = journalStrings(document.documentElement.lang).sample;
     this.innerHTML = `
       <p class="jm-result" aria-live="polite"></p>
-      <p class="jm-label">${t.metByAnyone}</p>
-      <div class="jm-row jm-found" aria-hidden="true"></div>
-      <p class="jm-label">${t.metByEach}</p>
-      <div class="jm-people" aria-hidden="true"></div>
+      <div class="jm-known" aria-hidden="true"><i></i></div>
+      <ol class="jm-people"></ol>
+      <p class="jm-key" aria-hidden="true"><i class="jm-new"></i>${t.keyNew}<i class="jm-seen"></i>${t.keySeen}</p>
       <div class="jm-controls">
-        <button type="button" data-do="remove">${t.remove}</button>
         <button type="button" data-do="add">${t.add}</button>
-        <button type="button" data-do="redraw">${t.redraw}</button>
-        <fieldset class="jm-choice"><legend>${t.perUser}</legend>${choices}</fieldset>
+        <button type="button" data-do="restart">${t.restart}</button>
       </div>`;
     this.addEventListener('click', (event) => {
       const pressed = (event.target as HTMLElement).closest('button');
-      if (pressed?.getAttribute('aria-disabled') === 'true') return;
-      const action = pressed?.dataset.do;
-      if (action === 'add') this.people = Math.min(PEOPLE.max, this.people + 1);
-      if (action === 'remove') this.people = Math.max(1, this.people - 1);
-      if (action === 'redraw') this.shuffle(this.draw + 1);
-      if (action) this.render();
-    });
-    this.addEventListener('change', (event) => {
-      this.perUser = Number((event.target as HTMLInputElement).value) / 100;
+      if (!pressed || pressed.getAttribute('aria-disabled') === 'true') return;
+      if (pressed.dataset.do === 'add') this.people += 1;
+      if (pressed.dataset.do === 'restart') {
+        this.shuffle(this.draw + 1);
+        this.people = 1;
+      }
       this.render();
     });
     this.shuffle(FIRST_DRAW);
@@ -67,37 +47,29 @@ export class SampleSize extends HTMLElement {
   }
 
   private render(): void {
-    const lang = document.documentElement.lang;
-    const t = journalStrings(lang).sample;
-    const percent = new Intl.NumberFormat(lang, {
-      style: 'percent',
-      maximumFractionDigits: 0,
-    });
-    const found = problemsMet(this.trials, this.perUser, this.people);
-    const count = found.filter(Boolean).length;
-    const cells = (met: boolean[]) =>
-      met.map((yes) => `<i${yes ? ' class="met"' : ''}></i>`).join('');
+    const t = journalStrings(document.documentElement.lang).sample;
+    const found = discoveries(this.trials, PER_USER).slice(0, this.people);
+    const known = found.reduce((sum, person) => sum + person.fresh, 0);
+    const width = (count: number) => `${(count / PROBLEMS) * 100}%`;
     this.querySelector('.jm-result')!.textContent = t.found(
       this.people,
-      count,
-      PROBLEMS,
-      percent.format(count / PROBLEMS),
-      percent.format(shareFound(this.perUser, this.people))
+      known,
+      PROBLEMS
     );
-    this.querySelector('.jm-found')!.innerHTML = cells(found);
-    this.querySelector('.jm-people')!.innerHTML = this.trials
-      .slice(0, this.people)
+    this.querySelector<HTMLElement>('.jm-known i')!.style.width = width(known);
+    this.querySelector('.jm-people')!.innerHTML = found
       .map(
-        (person) =>
-          `<div class="jm-row">${cells(person.map((trial) => isMet(trial, this.perUser)))}</div>`
+        (person, i) => `
+        <li>
+          <span class="jm-who">${t.person(i + 1)}</span>
+          <span class="jm-bar" aria-hidden="true"><i class="jm-new" style="width:${width(person.fresh)}"></i><i class="jm-seen" style="width:${width(person.seen)}"></i></span>
+          <span class="jm-what">${t.brought(person.fresh, person.seen)}</span>
+        </li>`
       )
       .join('');
-    const button = (name: string) =>
-      this.querySelector<HTMLElement>(`button[data-do="${name}"]`)!;
-    button('add').setAttribute(
+    this.querySelector('button[data-do="add"]')!.setAttribute(
       'aria-disabled',
       String(this.people >= PEOPLE.max)
     );
-    button('remove').setAttribute('aria-disabled', String(this.people <= 1));
   }
 }
