@@ -636,6 +636,39 @@ const SCENES: Record<string, Scene> = {
       R(254, 148, 26, 5, '#F2C230') +
       R(272, 152, 4, 8, '#F2C230'),
   ],
+  'agent-factory': [
+    '#2B3154',
+    () =>
+      R(40, 178, 640, 10, INK) +
+      [0, 1, 2, 3, 4, 5, 6, 7]
+        .map(
+          (i) => `<circle cx="${66 + i * 84}" cy="193" r="6" fill="#9AA3BD"/>`
+        )
+        .join('') +
+      [0, 1, 2]
+        .map((i) => {
+          const x = 70 + i * 250;
+          return (
+            R(x, 122, 62, 56, '#FFFFFF') +
+            R(x + 8, 131, 30, 5, '#9AA3BD') +
+            R(x + 8, 141, 46, 4, '#C9CDDA') +
+            (i === 0
+              ? `<path d="M${x + 22} 152l18 18m0-18l-18 18" stroke="#D4472F" stroke-width="5"/>`
+              : `<path d="M${x + 18} 162l9 9 18-18" fill="none" stroke="#2E8B62" stroke-width="5"/>`)
+          );
+        })
+        .join('') +
+      who('Balai', 'type', { x: 172, y: 100, w: 108 }) +
+      who('Tampon', 'd2', { x: 424, y: 100, w: 108 }) +
+      '<path d="M296 150h18m-8-8l8 8-8 8M546 150h18m-8-8l8 8-8 8" fill="none" stroke="#FFFFFF" stroke-width="5"/>' +
+      R(566, 26, 124, 78, INK) +
+      R(576, 38, 32, 22, '#55B98B') +
+      R(614, 38, 32, 22, '#F2C230') +
+      R(652, 38, 28, 22, '#D77757') +
+      R(576, 68, 80, 4, '#9AA3BD') +
+      R(576, 78, 56, 4, '#9AA3BD') +
+      '<rect class="blink" x="576" y="88" width="8" height="8" fill="#55B98B"/>',
+  ],
   'claude-plan-execute': [
     '#F2C230',
     () =>

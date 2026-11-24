@@ -12,7 +12,9 @@ stack:
   - 'pytest'
   - 'FastAPI'
 status: 'active'
-links: []
+links:
+  - label: 'GitHub'
+    url: 'https://github.com/RachidChabane/claude-plan-execute'
 publishState: 'published'
 year: '2025'
 highlights:

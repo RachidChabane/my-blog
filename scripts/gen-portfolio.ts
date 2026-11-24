@@ -12,7 +12,6 @@ export const FLAGGED_TERMS: string[] = [
   'quality-gate-AI',
   'knowledge-master',
   'math-monster',
-  'cc-mvp-scaffold',
   'kairox-studio',
   'modular-web-factory',
   // Third-party personal data identifiers
@@ -233,12 +232,108 @@ export const PORTFOLIO_PROJECTS: PortfolioEntry[] = [
     },
   },
 
+  // ── 3b. Agent Factory ─────────────────────────────────────────────────────
+  // Public repository (AGPL-3.0-only). The links name the two public projects it
+  // grew out of.
+  {
+    translationKey: 'agent-factory',
+    stack: [
+      'TypeScript',
+      'Node.js',
+      'Claude Code',
+      'React 19',
+      'SQLite',
+      'Zod',
+      'Playwright',
+    ],
+    status: { en: 'active', fr: 'actif' },
+    links: [
+      {
+        label: 'GitHub',
+        url: 'https://github.com/RachidChabane/agent-factory',
+      },
+      {
+        label: 'Claude Plan Execute',
+        url: 'https://github.com/RachidChabane/claude-plan-execute',
+      },
+      {
+        label: 'Claude Autopilot',
+        url: 'https://github.com/RachidChabane/cc-mvp-scaffold',
+      },
+    ],
+    publishState: 'published',
+    en: {
+      slug: 'agent-factory',
+      name: 'Agent Factory: From a Validated Spec to a Proof-Carrying Pull Request',
+      summary:
+        'An agentic software factory that drives Claude Code from an issue specification ' +
+        'validated by the operator to a pull request that carries its own proof, on any ' +
+        'repository, with a live cockpit to follow and steer each step.',
+      body:
+        'Agent Factory takes an issue whose specification the operator has validated and ' +
+        'carries it to a pull request. One agent writes acceptance checks that prove each ' +
+        'criterion from the outside. The factory runs them on the base, where they must fail ' +
+        'by assertion, then freezes them by hash. Another agent implements the change, and a ' +
+        'gate in its Stop hook holds the session until the frozen checks, lint and tests ' +
+        'pass. The factory runs the gate again in its own sandbox, an agent in a fresh ' +
+        'context reviews the change against the spec and the checks, and the pull request ' +
+        "opens with the evidence before and after. The merge happens on the operator's " +
+        'order. A failure gets two corrections in the same session, then one fresh restart, ' +
+        'and after that the issue waits for a person, with the reason. Everything the ' +
+        'factory does is an event appended to one SQLite log. The cockpit, the status ' +
+        'command and the decisions of the daemons are projections of that log. Agents and ' +
+        "check commands run in the operating system's sandbox, away from credentials and " +
+        "from other projects. The factory reads the subscription's usage and pauses before " +
+        'a limit. A demonstration plays a working week of two fictional teams with a fake ' +
+        'Claude, with no account and no network. Agent Factory is the final version of an ' +
+        "idea started in September 2025 with Claude Autopilot, which ran a project's tasks " +
+        'one after the other through Claude Code with quality gates and a watchdog, and ' +
+        'continued in 2026 with Claude Plan Execute. It is published under AGPL-3.0-only.',
+    },
+    fr: {
+      slug: 'agent-factory-fr',
+      name: "Agent Factory : d'une spec validée à une pull request qui porte sa preuve",
+      summary:
+        "Une fabrique logicielle agentique qui pilote Claude Code depuis la spec d'une " +
+        "issue validée par l'opérateur jusqu'à une pull request qui porte sa propre preuve, " +
+        "sur n'importe quel dépôt, avec un cockpit en direct pour suivre et diriger chaque " +
+        'étape.',
+      body:
+        "Agent Factory prend une issue dont l'opérateur a validé la spec et la mène jusqu'à " +
+        "une pull request. Un agent écrit des contrôles d'acceptation qui prouvent chaque " +
+        "critère de l'extérieur. La fabrique les exécute sur la base, où ils doivent échouer " +
+        'par assertion, puis les fige par hash. Un autre agent implémente le changement, et ' +
+        'une porte dans son hook Stop retient la session tant que les contrôles figés, le ' +
+        'lint et les tests ne passent pas. La fabrique rejoue la porte dans son propre bac à ' +
+        'sable, un agent au contexte neuf relit le changement face à la spec et aux ' +
+        "contrôles, et la pull request s'ouvre avec les preuves avant et après. Le merge se " +
+        "fait sur ordre de l'opérateur. Un échec a droit à deux corrections dans la même " +
+        "session, puis à un redémarrage à neuf, après quoi l'issue attend une personne, avec " +
+        'la raison. Tout ce que fait la fabrique est un événement ajouté à un seul journal ' +
+        'SQLite. Le cockpit, la commande de statut et les décisions des démons en sont des ' +
+        'projections. Les agents et les commandes de contrôle tournent dans le bac à sable ' +
+        "du système d'exploitation, loin des identifiants et des autres projets. La " +
+        "fabrique lit la consommation de l'abonnement et se met en pause avant une limite. " +
+        'Une démonstration joue une semaine de travail de deux équipes fictives avec un faux ' +
+        "Claude, sans compte ni réseau. Agent Factory est la version finale d'une idée " +
+        "commencée en septembre 2025 avec Claude Autopilot, qui exécutait les tâches d'un " +
+        "projet l'une après l'autre dans Claude Code avec des portes de qualité et un chien " +
+        'de garde, et poursuivie en 2026 avec Claude Plan Execute. Il est publié sous ' +
+        'AGPL-3.0-only.',
+    },
+  },
+
   // ── 4. Claude Plan Execute ────────────────────────────────────────────────
   {
     translationKey: 'claude-plan-execute',
     stack: ['Python', 'Claude Code', 'tmux', 'YAML', 'pytest', 'FastAPI'],
     status: { en: 'active', fr: 'actif' },
-    links: [],
+    links: [
+      {
+        label: 'GitHub',
+        url: 'https://github.com/RachidChabane/claude-plan-execute',
+      },
+    ],
     publishState: 'published',
     en: {
       slug: 'claude-plan-execute',

@@ -799,6 +799,7 @@ export interface ProjectCardVM {
  */
 export const PROJECT_ORDER = [
   'sterna-ai-platform',
+  'agent-factory',
   'claude-plan-execute',
   'shallnot',
   'musthold',
