@@ -30,6 +30,12 @@ sources:
     Production (2026)'
   url: https://fion.ac/jellyfish.pdf
   date: 24-11-2026
+- label: Anthropic, Introducing Claude Ship (2026)
+  url: https://claude.com/blog/introducing-claude-ship
+  date: 24-11-2026
+- label: Anthropic, How the Claude Code team does code review (2026)
+  url: https://claude.dev/blog/solving-code-review-at-anthropic
+  date: 24-11-2026
 - label: Kohavi et al., Online Experimentation at Microsoft (2009)
   url: https://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf
   date: 24-11-2026
@@ -54,7 +60,7 @@ sources:
 - label: Zhong, McDonald and Hsieh, Synthetic Cognitive Walkthrough (2025)
   url: https://arxiv.org/abs/2512.03568
   date: 24-11-2026
-contentHash: sha256:1dc65dec02a5e146
+contentHash: sha256:d4c62bf39949fe4f
 publishState: published
 ---
 
@@ -104,17 +110,38 @@ The pull request was invented so that one person could read another person's cod
 
 The measurements point the same way. Two researchers at Harvard, Fiona Chen and James Stratton, [studied 655 firms and more than 720,000 people](https://fion.ac/jellyfish.pdf). After coding agents are adopted, the time between the review request and the merge goes up by 56%, and code waits 60% longer before a reviewer picks it up. 79% of those firms have adopted AI review tools, yet humans still write almost all of the reviews. The authors conclude that review has become the bottleneck.
 
-You can redo the arithmetic yourself.
+You can watch the queue fill up.
 
 <j-review-queue>
 When fourteen changes arrive every day and eight are reviewed, one hundred and twenty are waiting after twenty days.
 </j-review-queue>
 
-<p class="j-caption">This is a subtraction and not a measurement. It shows what piles up as soon as you produce faster than you review.</p>
+<p class="j-caption">Each square is a change that is waiting. This is a subtraction and not a measurement. It shows what piles up as soon as you produce faster than you review.</p>
+
+On 23 November 2026 Anthropic released [Claude Ship](https://claude.com/blog/introducing-claude-ship), which goes after this bottleneck. One agent reviews the pull request, another fixes what breaks in CI and answers the comments, and a third approves it when the policy written by the team allows it. Anthropic published [the figures of the team that builds Claude Code](https://claude.dev/blog/solving-code-review-at-anthropic), and they are good.
+
+<div class="j-wide tablewrap">
+<table class="j-ledger">
+<thead><tr><th>On the Claude Code team</th><th>Before</th><th>After</th></tr></thead>
+<tbody>
+<tr><td>Pull requests merged, June to September 2026</td><td></td><td>more than double</td></tr>
+<tr><td>Share of them that had to be reverted</td><td></td><td>down by more than 40%</td></tr>
+<tr><td>Accepted after a single round of review</td><td>65%</td><td>78%</td></tr>
+<tr><td>Five rounds of review or more</td><td>8.9%</td><td>1.5%</td></tr>
+<tr><td>Reviews per pull request, on average</td><td>2.08</td><td>1.32</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="j-caption">Figures published by Anthropic about its own repositories. Anthropic notes that Claude's review is only one part of its process.</p>
+
+For me it still does not change much, because the mechanism stays the same. Every change is still a branch, then a pull request that waits for its turn, gets reviewed, checked against the main branch and merged. Claude Ship moves that queue along faster, but the queue is still there, and what goes into it grows faster still. In the same article, Anthropic says its main repository went from about 2,500 changes a day in May to more than 30,000 in September. Ordinary changes still need one person to agree, the riskiest ones need two, and those people still read a diff.
+
+I am not saying it is useless. A team that already has its repositories, its branch protection rules and audit obligations cannot change everything at once, and for that team it is the most realistic path. Reverting fewer changes while merging twice as many is a real result. Agent Factory itself still opens a pull request at the end. But I see it as a transition. As long as the unit of work is the pull request, we are speeding up the review of a text, when the useful question is whether the product does what we expected of it.
 
 This is the reason I created [musthold](https://github.com/RachidChabane/musthold). It checks, requirement by requirement, that the tests would fail if the code stopped doing what was asked. It is only a sketch, and the philosophy behind it is not finished yet.
 
-## Alone, I went faster than the four of us
+## What coordination costs
 
 On a project in production there were four of us developers, with unlimited access to AI and the classic method. You write a spec, you code, you get it reviewed, you merge, and you sort out the conflicts. The headcount was then reduced and I ended up alone on the project. I moved much faster, and the customers were served much faster.
 
@@ -154,13 +181,13 @@ Today you get that feedback with an early access. You put the product in front o
 <div class="j-hot"><b>50 ms</b>are enough to judge whether a page is pleasing, and that judgment holds when you look at it longer.</div>
 </div>
 
-The first number comes from [the experimentation team at Microsoft](https://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf). It says that the people who build a product are wrong two times out of three about what will work, and that it takes feedback from use to find out. The second comes from [Jakob Nielsen](https://www.nngroup.com/articles/why-you-only-need-to-test-with-5-users/), who adds that it holds for people who use the product in comparable ways. You can move both parameters.
+The first number comes from [the experimentation team at Microsoft](https://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf). It says that the people who build a product are wrong two times out of three about what will work, and that it takes feedback from use to find out. The second comes from [Jakob Nielsen](https://www.nngroup.com/articles/why-you-only-need-to-test-with-5-users/), who adds that it holds for people who use the product in comparable ways. You can try it with people drawn at random.
 
 <j-sample-size>
 With five people who each meet 31% of the problems, about 85% of them are met.
 </j-sample-size>
 
-<p class="j-caption">The curve follows the formula of Nielsen and Landauer, which gives the share found by n people when a single one finds L. With L at 31%, it gives 84% for five people, which Nielsen rounds to 85%.</p>
+<p class="j-caption">Each dot is drawn at random, so the result changes from one draw to the next. The formula of Nielsen and Landauer gives the average. For five people who each run into 31% of the problems it gives 84%, which Nielsen rounds to 85%.</p>
 
 That feedback pays. Nielsen reports that when about 10% of a project's budget goes to these trials, the targeted indicators [improve by 83% on average](https://www.nngroup.com/articles/usability-roi-declining-but-still-strong/). And going without it costs. Pendo estimates, on its own customers' products, that [80% of features are rarely or never used](https://www.pendo.io/resources/the-2019-feature-adoption-report/). In an analysis of 101 accounts of failed startups, the first cause cited, in 42% of cases, is [the lack of a need for the product](https://fortune.com/2014/09/25/why-startups-fail-according-to-their-founders).
 

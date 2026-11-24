@@ -19,18 +19,29 @@ export interface JournalStrings {
     again: string;
   };
   sample: {
-    users: string;
+    metByAnyone: string;
+    metByEach: string;
+    add: string;
+    remove: string;
+    redraw: string;
     perUser: string;
-    found: (percent: string, users: number) => string;
-    chartLabel: string;
+    found: (
+      people: number,
+      count: number,
+      problems: number,
+      share: string,
+      expected: string
+    ) => string;
   };
   queue: {
     produced: string;
     reviewed: string;
+    less: string;
+    more: string;
+    replay: (days: number) => string;
+    status: (day: number, waiting: number, merged: number) => string;
     waiting: (count: number, days: number) => string;
     none: (days: number) => string;
-    chartLabel: string;
-    day: string;
   };
 }
 
@@ -53,20 +64,27 @@ const fr: JournalStrings = {
     again: 'Recommencer',
   },
   sample: {
-    users: 'Personnes qui essaient le produit',
+    metByAnyone:
+      "Les 40 problèmes du produit, en couleur quand quelqu'un en a rencontré un",
+    metByEach: 'Une ligne par personne',
+    add: 'Ajouter une personne',
+    remove: 'En retirer une',
+    redraw: "Tirer d'autres personnes",
     perUser: "Part des problèmes qu'une seule personne rencontre",
-    found: (percent, users) =>
-      `${percent} des problèmes rencontrés avec ${users} ${users > 1 ? 'personnes' : 'personne'}`,
-    chartLabel: 'Part des problèmes trouvés selon le nombre de personnes',
+    found: (people, count, problems, share, expected) =>
+      `${people} ${people > 1 ? 'personnes ont' : 'personne a'} rencontré ${count} des ${problems} problèmes, soit ${share}. La formule en prévoit ${expected}.`,
   },
   queue: {
-    produced: 'Changements produits par jour',
-    reviewed: 'Changements relus par jour',
+    produced: 'changements produits par jour',
+    reviewed: 'changements relus par jour',
+    less: 'Un de moins',
+    more: 'Un de plus',
+    replay: (days) => `Rejouer les ${days} jours`,
+    status: (day, waiting, merged) =>
+      `Jour ${day} · ${waiting} en attente · ${merged} fusionnés`,
     waiting: (count, days) =>
       `${count} changements attendent une relecture au bout de ${days} jours`,
     none: (days) => `Rien n'attend au bout de ${days} jours`,
-    chartLabel: 'Changements en attente de relecture, jour après jour',
-    day: 'jour',
   },
 };
 
@@ -89,20 +107,27 @@ const en: JournalStrings = {
     again: 'Start again',
   },
   sample: {
-    users: 'People who try the product',
+    metByAnyone:
+      'The 40 problems of the product, coloured once somebody has met one',
+    metByEach: 'One row per person',
+    add: 'Add a person',
+    remove: 'Remove one',
+    redraw: 'Draw other people',
     perUser: 'Share of the problems one person runs into',
-    found: (percent, users) =>
-      `${percent} of the problems met with ${users} ${users > 1 ? 'people' : 'person'}`,
-    chartLabel: 'Share of the problems found by number of people',
+    found: (people, count, problems, share, expected) =>
+      `${people} ${people > 1 ? 'people' : 'person'} met ${count} of the ${problems} problems, or ${share}. The formula predicts ${expected}.`,
   },
   queue: {
-    produced: 'Changes produced per day',
-    reviewed: 'Changes reviewed per day',
+    produced: 'changes produced per day',
+    reviewed: 'changes reviewed per day',
+    less: 'One fewer',
+    more: 'One more',
+    replay: (days) => `Replay the ${days} days`,
+    status: (day, waiting, merged) =>
+      `Day ${day} · ${waiting} waiting · ${merged} merged`,
     waiting: (count, days) =>
       `${count} changes are waiting for a review after ${days} days`,
     none: (days) => `Nothing is waiting after ${days} days`,
-    chartLabel: 'Changes waiting for a review, day after day',
-    day: 'day',
   },
 };
 

@@ -30,6 +30,12 @@ sources:
     Production (2026)'
   url: https://fion.ac/jellyfish.pdf
   date: 24-11-2026
+- label: Anthropic, Introducing Claude Ship (2026)
+  url: https://claude.com/blog/introducing-claude-ship
+  date: 24-11-2026
+- label: Anthropic, How the Claude Code team does code review (2026)
+  url: https://claude.dev/blog/solving-code-review-at-anthropic
+  date: 24-11-2026
 - label: Kohavi et al., Online Experimentation at Microsoft (2009)
   url: https://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf
   date: 24-11-2026
@@ -54,7 +60,7 @@ sources:
 - label: Zhong, McDonald and Hsieh, Synthetic Cognitive Walkthrough (2025)
   url: https://arxiv.org/abs/2512.03568
   date: 24-11-2026
-contentHash: sha256:ee711cf152ba6fb3
+contentHash: sha256:9ca2d02b4535c909
 publishState: published
 ---
 
@@ -104,17 +110,38 @@ La pull request a été inventée pour qu'une personne relise le code d'une autr
 
 Les mesures vont dans le même sens. Deux chercheurs de Harvard, Fiona Chen et James Stratton, ont [étudié 655 entreprises et plus de 720 000 personnes](https://fion.ac/jellyfish.pdf). Après l'adoption d'agents de code, le délai entre la demande de relecture et le merge augmente de 56 %, et le code attend 60 % plus longtemps avant qu'un relecteur s'en occupe. 79 % de ces entreprises ont pourtant adopté des outils de relecture par IA, mais ce sont encore des humains qui écrivent presque toutes les relectures. Les auteurs concluent que la relecture est devenue le goulot d'étranglement.
 
-Vous pouvez refaire le calcul vous-même.
+Vous pouvez regarder la file se remplir.
 
 <j-review-queue>
 Quand quatorze changements arrivent chaque jour et que huit sont relus, cent vingt attendent au bout de vingt jours.
 </j-review-queue>
 
-<p class="j-caption">Ce calcul est une soustraction et pas une mesure. Il montre ce qui s'accumule dès qu'on produit plus vite qu'on ne relit.</p>
+<p class="j-caption">Chaque carré est un changement qui attend. Ce calcul est une soustraction et pas une mesure. Il montre ce qui s'accumule dès qu'on produit plus vite qu'on ne relit.</p>
+
+Anthropic a sorti le 23 novembre 2026 [Claude Ship](https://claude.com/blog/introducing-claude-ship), qui s'attaque à ce goulot. Un agent relit la pull request, un autre corrige ce qui casse dans la CI et répond aux remarques, et un troisième l'approuve quand la politique écrite par l'équipe le permet. Anthropic a publié [les chiffres de l'équipe qui développe Claude Code](https://claude.dev/blog/solving-code-review-at-anthropic), et ils sont bons.
+
+<div class="j-wide tablewrap">
+<table class="j-ledger">
+<thead><tr><th>Dans l'équipe de Claude Code</th><th>Avant</th><th>Après</th></tr></thead>
+<tbody>
+<tr><td>Pull requests fusionnées, de juin à septembre 2026</td><td></td><td>plus du double</td></tr>
+<tr><td>Part de celles qu'il a fallu annuler</td><td></td><td>plus de 40 % en moins</td></tr>
+<tr><td>Acceptées après un seul tour de relecture</td><td>65 %</td><td>78 %</td></tr>
+<tr><td>Cinq tours de relecture ou plus</td><td>8,9 %</td><td>1,5 %</td></tr>
+<tr><td>Relectures par pull request, en moyenne</td><td>2,08</td><td>1,32</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="j-caption">Chiffres publiés par Anthropic sur ses propres dépôts. Anthropic précise que la relecture par Claude n'est qu'une partie de sa méthode.</p>
+
+Pour moi, cela n'apporte pourtant pas grand-chose, parce qu'on reste sur le même mécanisme. Chaque changement est toujours une branche, puis une pull request qui attend son tour, qui est relue, vérifiée contre la branche principale et fusionnée. Claude Ship fait avancer cette file plus vite, mais la file est toujours là, et ce qui y entre augmente plus vite encore. Dans le même article, Anthropic indique que son dépôt principal est passé d'environ 2 500 changements par jour en mai à plus de 30 000 en septembre. Les changements ordinaires demandent encore l'accord d'une personne, les plus risqués celui de deux, et ces personnes lisent toujours un diff.
+
+Je ne dis pas que c'est inutile. Une équipe qui a déjà ses dépôts, ses règles de protection de branche et des obligations d'audit ne peut pas tout changer d'un coup, et pour elle c'est le chemin le plus réaliste. Annuler moins de changements tout en en fusionnant deux fois plus est un vrai résultat. Agent Factory ouvre d'ailleurs lui aussi une pull request à la fin. Mais j'y vois une étape de transition. Tant que l'unité de travail reste la pull request, on accélère la relecture d'un texte, alors que la question utile est de savoir si le produit fait ce qu'on attendait de lui.
 
 C'est pour cette raison que j'ai créé [musthold](https://github.com/RachidChabane/musthold). Il vérifie, exigence par exigence, que les tests échoueraient si le code ne respectait plus ce qui a été demandé. Ce n'est qu'une ébauche, et la philosophie qu'il y a derrière n'est pas encore aboutie.
 
-## Seul, je suis allé plus vite qu'à quatre
+## Ce que coûte la synchronisation
 
 Sur un projet en production, nous étions quatre développeurs, avec un accès illimité à l'IA et la méthode classique. On écrit une spec, on code, on fait relire, on merge, et on règle les conflits. L'effectif a ensuite été réduit et je me suis retrouvé seul sur le projet. J'ai avancé beaucoup plus vite, et les clients ont été servis beaucoup plus vite.
 
@@ -154,13 +181,13 @@ Aujourd'hui, on obtient ce retour avec un accès anticipé. On met le produit de
 <div class="j-hot"><b>50 ms</b>suffisent pour juger si une page plaît, et ce jugement tient quand on la regarde plus longtemps.</div>
 </div>
 
-Le premier chiffre vient de [l'équipe d'expérimentation de Microsoft](https://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf). Il dit que ceux qui construisent un produit se trompent deux fois sur trois sur ce qui va marcher, et qu'il faut un retour d'usage pour le savoir. Le deuxième vient de [Jakob Nielsen](https://www.nngroup.com/articles/why-you-only-need-to-test-with-5-users/), qui précise qu'il vaut pour des personnes qui utilisent le produit de façon comparable. Vous pouvez faire varier les deux paramètres.
+Le premier chiffre vient de [l'équipe d'expérimentation de Microsoft](https://ai.stanford.edu/~ronnyk/ExPThinkWeek2009Public.pdf). Il dit que ceux qui construisent un produit se trompent deux fois sur trois sur ce qui va marcher, et qu'il faut un retour d'usage pour le savoir. Le deuxième vient de [Jakob Nielsen](https://www.nngroup.com/articles/why-you-only-need-to-test-with-5-users/), qui précise qu'il vaut pour des personnes qui utilisent le produit de façon comparable. Vous pouvez faire l'essai avec des personnes tirées au hasard.
 
 <j-sample-size>
 Avec cinq personnes qui rencontrent chacune 31 % des problèmes, on en rencontre environ 85 %.
 </j-sample-size>
 
-<p class="j-caption">La courbe suit la formule de Nielsen et Landauer, qui donne la part trouvée par n personnes quand une seule en trouve L. Avec L à 31 %, elle donne 84 % pour cinq personnes, que Nielsen arrondit à 85 %.</p>
+<p class="j-caption">Chaque point est tiré au hasard, donc le résultat change d'un tirage à l'autre. La formule de Nielsen et Landauer donne la moyenne. Pour cinq personnes qui rencontrent chacune 31 % des problèmes, elle donne 84 %, que Nielsen arrondit à 85 %.</p>
 
 Ce retour rapporte. Nielsen relève qu'en consacrant environ 10 % du budget d'un projet à ces essais, les indicateurs visés [s'améliorent de 83 % en moyenne](https://www.nngroup.com/articles/usability-roi-declining-but-still-strong/). Et s'en passer coûte. Pendo estime, sur les produits de ses propres clients, que [80 % des fonctionnalités sont rarement ou jamais utilisées](https://www.pendo.io/resources/the-2019-feature-adoption-report/). Dans une analyse de 101 récits d'échec de startups, la première cause citée, dans 42 % des cas, est [l'absence de besoin pour le produit](https://fortune.com/2014/09/25/why-startups-fail-according-to-their-founders).
 
