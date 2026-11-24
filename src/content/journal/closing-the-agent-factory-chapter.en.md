@@ -60,7 +60,7 @@ sources:
 - label: Zhong, McDonald and Hsieh, Synthetic Cognitive Walkthrough (2025)
   url: https://arxiv.org/abs/2512.03568
   date: 24-11-2026
-contentHash: sha256:d4c62bf39949fe4f
+contentHash: sha256:80a3471480f69707
 publishState: published
 ---
 
@@ -139,7 +139,9 @@ For me it still does not change much, because the mechanism stays the same. Ever
 
 I am not saying it is useless. A team that already has its repositories, its branch protection rules and audit obligations cannot change everything at once, and for that team it is the most realistic path. Reverting fewer changes while merging twice as many is a real result. Agent Factory itself still opens a pull request at the end. But I see it as a transition. As long as the unit of work is the pull request, we are speeding up the review of a text, when the useful question is whether the product does what we expected of it.
 
-This is the reason I created [musthold](https://github.com/RachidChabane/musthold). It checks, requirement by requirement, that the tests would fail if the code stopped doing what was asked. It is only a sketch, and the philosophy behind it is not finished yet.
+That is the reason I created [musthold](https://github.com/RachidChabane/musthold). The idea is to replace the review of the code with a proof that can be read without opening the code. You write what you expect in plain language, one requirement at a time. While the agent works, musthold deliberately damages the code in several ways and watches whether the tests notice. If a broken version passes every test, the agent is not allowed to stop. It has to strengthen its tests, and it never sees the broken code, so it cannot write a test made to measure. musthold also checks that each test verifies what its requirement says, and it points out what the request left vague.
+
+At the end, I no longer have to read a diff or trust tests because they are green. I read a list of requirements, and for each one I know whether it is proven or not. That is what would allow a change to be merged without a person reviewing it. It is only a draft, and the philosophy behind it is not finished yet.
 
 ## What coordination costs
 
