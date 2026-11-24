@@ -1,0 +1,294 @@
+/* Hand-made figures of the journal pieces: static blocks and interactive elements. */
+
+.prose > .j-wide,
+.prose > j-first-glance,
+.prose > j-sample-size,
+.prose > j-review-queue {
+  max-width: none;
+}
+.prose > .j-wide,
+.prose > j-first-glance,
+.prose > j-sample-size,
+.prose > j-review-queue {
+  margin: 1.8em 0;
+}
+j-first-glance,
+j-sample-size,
+j-review-queue {
+  display: block;
+}
+.j-caption {
+  font-family: var(--mono);
+  font-size: 0.72em;
+  color: var(--ink-2);
+  margin: 0.7em 0 0;
+  line-height: 1.5;
+}
+
+/* --- timeline of the versions */
+.j-timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 4px solid var(--ink);
+}
+.prose .j-timeline li {
+  margin: 0;
+  padding: 14px 14px 4px 0;
+  position: relative;
+  font-size: 0.82em;
+  line-height: 1.45;
+}
+.j-timeline li::before {
+  content: '';
+  position: absolute;
+  top: -11px;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  background: var(--jrnl);
+  border: 3px solid var(--paper);
+  border-radius: 50%;
+}
+.j-timeline li.j-private::before {
+  background: var(--paper);
+  border-color: var(--ink);
+}
+.j-timeline time {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.82em;
+  color: var(--ink-2);
+}
+.j-timeline strong {
+  display: block;
+  font-size: 1.12em;
+  margin: 2px 0 4px;
+}
+
+/* --- big figures */
+.j-figures {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.j-figures > div {
+  background: var(--paper-2);
+  border-radius: 4px;
+  padding: 16px 16px 14px;
+  font-size: 0.8em;
+  line-height: 1.45;
+}
+.j-figures b {
+  display: block;
+  font-family: var(--display);
+  font-size: 2.5em;
+  line-height: 1;
+  margin-bottom: 8px;
+  color: var(--jrnl);
+  font-variant-numeric: tabular-nums;
+}
+.j-figures .j-hot b {
+  color: var(--ctrl);
+}
+
+/* --- before and after table */
+.prose table.j-compare {
+  font-size: 0.84em;
+}
+.prose table.j-compare th:first-child,
+.prose table.j-compare td:first-child {
+  width: 30%;
+  color: var(--ink-2);
+}
+.prose table.j-compare td:last-child {
+  font-weight: 600;
+}
+
+/* --- film of the cockpit */
+.j-film {
+  margin: 0;
+}
+.j-film video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--paper-2);
+}
+
+/* --- interactive figures, shared frame */
+j-first-glance,
+j-sample-size,
+j-review-queue {
+  background: var(--paper-2);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 18px;
+  font-size: 0.84em;
+  line-height: 1.45;
+}
+.jf-result {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.35em;
+  line-height: 1.2;
+  margin: 0 0 10px;
+}
+.jf-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 12px;
+}
+.jf-grid {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+.jf-tick {
+  font-family: var(--mono);
+  font-size: 11px;
+  fill: var(--ink-2);
+}
+.jf-line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+.jf-dot {
+  fill: var(--jrnl);
+  stroke: var(--paper-2);
+  stroke-width: 3;
+}
+.jf-bar {
+  fill: var(--ctrl);
+}
+.jf-slider {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  align-items: baseline;
+  margin-top: 10px;
+}
+.jf-slider output {
+  font-family: var(--mono);
+  font-weight: 700;
+}
+.jf-slider input {
+  grid-column: 1 / -1;
+  width: 100%;
+  accent-color: var(--jrnl);
+  min-height: 28px;
+}
+
+/* --- first glance test */
+.jg-stage {
+  aspect-ratio: 16 / 10;
+  max-width: 520px;
+  margin: 0 auto;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  overflow: hidden;
+  background: #b9b9b9;
+  display: grid;
+  place-items: center;
+}
+.jg-stage svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.jg-cross {
+  font-family: var(--mono);
+  font-size: 40px;
+  color: #171b2b;
+}
+.jg-below {
+  text-align: center;
+  min-height: 6.2em;
+  padding-top: 12px;
+}
+.jg-below p {
+  margin: 0 0 10px;
+}
+.jg-go,
+.jg-scale button {
+  font: inherit;
+  font-weight: 700;
+  color: var(--pill-ink);
+  background: var(--pill);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.jg-go {
+  padding: 8px 22px;
+}
+.jg-scale {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 0.86em;
+  color: var(--ink-2);
+}
+.jg-scale button {
+  width: 44px;
+}
+.jg-go:hover,
+.jg-scale button:hover {
+  background: var(--art);
+  color: #171b2b;
+}
+.prose table.jg-result {
+  font-size: 1em;
+}
+.prose table.jg-result td {
+  vertical-align: middle;
+  font-family: var(--mono);
+  font-weight: 700;
+}
+.jg-thumb {
+  display: block;
+  width: 96px;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.jg-thumb svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .j-timeline {
+    grid-template-columns: 1fr;
+    border-top: 0;
+    border-left: 4px solid var(--ink);
+  }
+  .prose .j-timeline li {
+    padding: 0 0 16px 18px;
+  }
+  .j-timeline li::before {
+    top: 2px;
+    left: -11px;
+  }
+  .j-figures {
+    grid-template-columns: 1fr;
+  }
+  j-first-glance,
+  j-sample-size,
+  j-review-queue {
+    padding: 14px;
+  }
+}

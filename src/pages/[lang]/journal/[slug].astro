@@ -15,6 +15,7 @@ import Office from '@/layouts/Office.astro';
 import Reading from '@/components/office/Reading.astro';
 import { NEXT_COUNT, journalRow, shortDek } from '@/office/view';
 import type { Row } from '@/office/view';
+import '@/styles/journal.css';
 
 export const getStaticPaths = (async () => {
   const journal = await getCollection('journal');
@@ -80,3 +81,7 @@ const jsonLd = {
     <Content />
   </Reading>
 </Office>
+
+<script>
+  import '@/journal/widgets';
+</script>
