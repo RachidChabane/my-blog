@@ -287,7 +287,8 @@
       "live-web-agent-evals-run-side-effects-on-third-party-sites",
       "agent-benchmarks-cover-little-of-the-work-your-agent-does",
       "low-resource-language-scores-do-not-transfer-to-an-unseen-language",
-      "terminal-bench-score-is-conditional-on-runtime-budget"
+      "terminal-bench-score-is-conditional-on-runtime-budget",
+      "gemini-4-neon-wins-on-speed"
     ],
     "addedOn": "12-05-2026"
   },
@@ -1657,6 +1658,32 @@
     "addedOn": "02-08-2026"
   },
   {
+    "id": "composite-benchmark-index",
+    "label": {
+      "en": "Composite benchmark index",
+      "fr": "Indice composite de benchmarks"
+    },
+    "definition": {
+      "en": "A single score pooled from many benchmarks, each rescaled to a common scale, sometimes adjusted for benchmark difficulty or for results a model is missing. When models are run on different subsets, two scores can rest on very different amounts of evidence, and without error bars a small gap ranks nothing.",
+      "fr": "Score unique agrégé à partir de nombreux benchmarks, chacun ramené à une échelle commune, parfois corrigé de la difficulté du benchmark ou des résultats manquants pour un modèle. Quand les modèles ne passent pas le même sous-ensemble, deux scores peuvent reposer sur des quantités de preuves très différentes, et sans barres d'erreur un petit écart ne classe rien."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "composite index",
+      "aggregate benchmark score",
+      "meta-benchmark",
+      "indice agrégé"
+    ],
+    "related": [
+      "benchmark-task-coverage",
+      "cost-aware-evaluation"
+    ],
+    "articles": [
+      "gemini-4-neon-wins-on-speed"
+    ],
+    "addedOn": "26-11-2026"
+  },
+  {
     "id": "confidence-calibration",
     "label": {
       "fr": "Calibration de la confiance",
@@ -1963,7 +1990,8 @@
       "multi-agent-gains-compute-artifact",
       "kimi-k3-ranked-endpoint-not-weights",
       "agent-session-budget-inflection-point",
-      "serving-stack-before-quantization-coding-agents"
+      "serving-stack-before-quantization-coding-agents",
+      "gemini-4-neon-wins-on-speed"
     ],
     "addedOn": "17-06-2026"
   },
@@ -2277,6 +2305,33 @@
       "agent-fetch-tools-should-refuse-hosts-nobody-named"
     ],
     "addedOn": "07-09-2026"
+  },
+  {
+    "id": "elo-rating",
+    "label": {
+      "en": "Elo rating",
+      "fr": "Score Elo"
+    },
+    "definition": {
+      "en": "A rating computed from pairwise outcomes, such as human votes between two models' answers to the same prompt, in which beating a higher-rated opponent counts for more than beating a lower-rated one. A rating gap predicts a win probability, and a model has a measured rating only once it has collected votes of its own.",
+      "fr": "Note calculée à partir de confrontations deux à deux, par exemple des votes humains entre les réponses de deux modèles au même prompt, où battre un adversaire mieux noté rapporte davantage que battre un adversaire moins bien noté. Un écart de notes prédit une probabilité de victoire, et un modèle n'a de note mesurée qu'une fois qu'il a reçu ses propres votes."
+    },
+    "theme": "evals-quality",
+    "aliases": [
+      "Elo",
+      "arena Elo",
+      "Bradley-Terry rating",
+      "pairwise preference leaderboard",
+      "classement Elo"
+    ],
+    "related": [
+      "agent-evaluation",
+      "composite-benchmark-index"
+    ],
+    "articles": [
+      "gemini-4-neon-wins-on-speed"
+    ],
+    "addedOn": "26-11-2026"
   },
   {
     "id": "elusion-test",
@@ -3806,7 +3861,8 @@
       "arret-anticipe-sondes-2026-08",
       "lossless-decoding-precision-property",
       "strict-tool-decoding-is-a-per-model-serving-decision",
-      "serving-stack-before-quantization-coding-agents"
+      "serving-stack-before-quantization-coding-agents",
+      "gemini-4-neon-wins-on-speed"
     ],
     "addedOn": "04-05-2026"
   },
@@ -5827,7 +5883,8 @@
     ],
     "articles": [
       "kimi-k3-ranked-endpoint-not-weights",
-      "strict-tool-decoding-is-a-per-model-serving-decision"
+      "strict-tool-decoding-is-a-per-model-serving-decision",
+      "gemini-4-neon-wins-on-speed"
     ],
     "addedOn": "23-07-2026"
   },

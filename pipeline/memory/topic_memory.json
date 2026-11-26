@@ -11287,5 +11287,103 @@
     ],
     "published_at": "2026-11-24",
     "embedding": null
+  },
+  {
+    "translation_key": "gemini-4-neon-wins-on-speed",
+    "topic_id": "gemini-4-neon-wins-on-speed",
+    "dedup_key": "a vote based agent leaderboard prices serving speed into elo as much as model identity so gemini 4 neon projects level with opus 5.5 on speed while a speed blind task composite ranks it ahead at lower cost and teams must pick the board whose blind spot matches their latency budget",
+    "title": "Gemini 4 Neon's projected Elo has no votes behind it",
+    "slugs": {
+      "fr": "elo-projete-de-gemini-4-neon-sans-aucun-vote",
+      "en": "gemini-4-neon-projected-elo-has-no-votes-behind-it"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Google, Introducing Gemini 4 Neon: release summary",
+        "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/",
+        "retrieved_at": "2026-11-26",
+        "excerpt": "Bringing frontier-level intelligence with fast end-to-end task completion across complex software engineering, knowledge work, and science workflows.",
+        "source_date": "2026-11-18"
+      },
+      {
+        "source_id": "s2",
+        "label": "Google, Introducing Gemini 4 Neon: Artificial Analysis rank",
+        "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/",
+        "retrieved_at": "2026-11-26",
+        "excerpt": "Neon ranks ahead of comparable models and #3 overall with a score of 61 on the Artificial Analysis Intelligence Index at its xhigh thinking level, landing just behind larger, slower models.",
+        "source_date": "2026-11-18"
+      },
+      {
+        "source_id": "s3",
+        "label": "Google, Introducing Gemini 4 Neon: API price",
+        "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/",
+        "retrieved_at": "2026-11-26",
+        "excerpt": "The model is priced at $3 per million input tokens ($0.15 per million cached input tokens, a 95% discount) and $15 per million output tokens, with a 1 million-token context window.",
+        "source_date": "2026-11-18"
+      },
+      {
+        "source_id": "s4",
+        "label": "micjm, Gemini 4 Neon looks like an Opus 5.5 competitor: Neon serving speed",
+        "url": "https://micjm.com/blog/gemini-4-neon-looks-like-a-top-model/",
+        "retrieved_at": "2026-11-26",
+        "excerpt": "Earlier today, it was being served extremely fast via OpenRouter: 127 tokens per second .",
+        "source_date": "2026-11-18"
+      },
+      {
+        "source_id": "s5",
+        "label": "micjm, Gemini 4 Neon looks like an Opus 5.5 competitor: Carbon serving speed",
+        "url": "https://micjm.com/blog/gemini-4-neon-looks-like-a-top-model/",
+        "retrieved_at": "2026-11-26",
+        "excerpt": "This is way faster than Carbon at 46 tokens per second .",
+        "source_date": "2026-11-18"
+      },
+      {
+        "source_id": "s6",
+        "label": "micjm, Gemini 4 Neon looks like an Opus 5.5 competitor: speed versus model identity",
+        "url": "https://micjm.com/blog/gemini-4-neon-looks-like-a-top-model/",
+        "retrieved_at": "2026-11-26",
+        "excerpt": "And surprisingly, speed seems to be pretty much as important as model identity (another blog on that soon).",
+        "source_date": "2026-11-18"
+      },
+      {
+        "source_id": "s7",
+        "label": "micjm, Gemini 4 Neon looks like an Opus 5.5 competitor: projected Agent Duel Elo",
+        "url": "https://micjm.com/blog/gemini-4-neon-looks-like-a-top-model/",
+        "retrieved_at": "2026-11-26",
+        "excerpt": "If you assume the same performance as Gemini 4 Carbon (which is reasonable given even better benchmark scores), and 127 tps , we would project an Elo on the Agent Duel leaderboard of 1,066, just below Opus 5.5 at 1,078 in our later analysis snapshot.",
+        "source_date": "2026-11-18"
+      },
+      {
+        "source_id": "s8",
+        "label": "Models Engineering Index (Mei): how the score is built",
+        "url": "https://git-aarvin.github.io/mei/",
+        "retrieved_at": "2026-11-26",
+        "excerpt": "Each model's score is a composite index across 17 coding benchmarks, adjusted for benchmark difficulty and missing results so models average 50. Cost and token use are adjusted the same way and shown relative to the typical model (1×)."
+      },
+      {
+        "source_id": "s9",
+        "label": "Models Engineering Index (Mei): Gemini 4 Neon row (score, cost, tokens)",
+        "url": "https://git-aarvin.github.io/mei/",
+        "retrieved_at": "2026-11-26",
+        "excerpt": "# Model Index bar Index Cost Tokens ... 4 Neon Google 66.0 3.1× 0.84×"
+      },
+      {
+        "source_id": "s10",
+        "label": "Models Engineering Index (Mei): Claude Opus 5.5 row (score, cost, tokens)",
+        "url": "https://git-aarvin.github.io/mei/",
+        "retrieved_at": "2026-11-26",
+        "excerpt": "# Model Index bar Index Cost Tokens ... Opus 5.5 Confident score Anthropic 63.2 5.6× 1.5×"
+      },
+      {
+        "source_id": "s11",
+        "label": "Models Engineering Index (Mei): caveat on benchmark subsets",
+        "url": "https://git-aarvin.github.io/mei/openai/6.2-sol",
+        "retrieved_at": "2026-11-26",
+        "excerpt": "Models are tested on different subsets of benchmarks, so some scores rest on far less evidence than others, and there are no error bars, so small gaps are not meaningful."
+      }
+    ],
+    "published_at": "2026-11-26",
+    "embedding": null
   }
 ]

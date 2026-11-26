@@ -1,0 +1,73 @@
+{
+  "slug": "elo-projete-de-gemini-4-neon-sans-aucun-vote",
+  "lang": "fr",
+  "translationKey": "gemini-4-neon-wins-on-speed",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Google, Introducing Gemini 4 Neon: release summary",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/",
+      "excerpt": "Bringing frontier-level intelligence with fast end-to-end task completion across complex software engineering, knowledge work, and science workflows."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Google, Introducing Gemini 4 Neon: Artificial Analysis rank",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/",
+      "excerpt": "Neon ranks ahead of comparable models and #3 overall with a score of 61 on the Artificial Analysis Intelligence Index at its xhigh thinking level, landing just behind larger, slower models."
+    },
+    {
+      "sourceId": "s3",
+      "label": "Google, Introducing Gemini 4 Neon: API price",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/",
+      "excerpt": "The model is priced at $3 per million input tokens ($0.15 per million cached input tokens, a 95% discount) and $15 per million output tokens, with a 1 million-token context window."
+    },
+    {
+      "sourceId": "s4",
+      "label": "micjm, Gemini 4 Neon looks like an Opus 5.5 competitor: Neon serving speed",
+      "url": "https://micjm.com/blog/gemini-4-neon-looks-like-a-top-model/",
+      "excerpt": "Earlier today, it was being served extremely fast via OpenRouter: 127 tokens per second ."
+    },
+    {
+      "sourceId": "s5",
+      "label": "micjm, Gemini 4 Neon looks like an Opus 5.5 competitor: Carbon serving speed",
+      "url": "https://micjm.com/blog/gemini-4-neon-looks-like-a-top-model/",
+      "excerpt": "This is way faster than Carbon at 46 tokens per second ."
+    },
+    {
+      "sourceId": "s6",
+      "label": "micjm, Gemini 4 Neon looks like an Opus 5.5 competitor: speed versus model identity",
+      "url": "https://micjm.com/blog/gemini-4-neon-looks-like-a-top-model/",
+      "excerpt": "And surprisingly, speed seems to be pretty much as important as model identity (another blog on that soon)."
+    },
+    {
+      "sourceId": "s7",
+      "label": "micjm, Gemini 4 Neon looks like an Opus 5.5 competitor: projected Agent Duel Elo",
+      "url": "https://micjm.com/blog/gemini-4-neon-looks-like-a-top-model/",
+      "excerpt": "If you assume the same performance as Gemini 4 Carbon (which is reasonable given even better benchmark scores), and 127 tps , we would project an Elo on the Agent Duel leaderboard of 1,066, just below Opus 5.5 at 1,078 in our later analysis snapshot."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Models Engineering Index (Mei): how the score is built",
+      "url": "https://git-aarvin.github.io/mei/",
+      "excerpt": "Each model's score is a composite index across 17 coding benchmarks, adjusted for benchmark difficulty and missing results so models average 50. Cost and token use are adjusted the same way and shown relative to the typical model (1×)."
+    },
+    {
+      "sourceId": "s9",
+      "label": "Models Engineering Index (Mei): Gemini 4 Neon row (score, cost, tokens)",
+      "url": "https://git-aarvin.github.io/mei/",
+      "excerpt": "# Model Index bar Index Cost Tokens ... 4 Neon Google 66.0 3.1× 0.84×"
+    },
+    {
+      "sourceId": "s10",
+      "label": "Models Engineering Index (Mei): Claude Opus 5.5 row (score, cost, tokens)",
+      "url": "https://git-aarvin.github.io/mei/",
+      "excerpt": "# Model Index bar Index Cost Tokens ... Opus 5.5 Confident score Anthropic 63.2 5.6× 1.5×"
+    },
+    {
+      "sourceId": "s11",
+      "label": "Models Engineering Index (Mei): caveat on benchmark subsets",
+      "url": "https://git-aarvin.github.io/mei/openai/6.2-sol",
+      "excerpt": "Models are tested on different subsets of benchmarks, so some scores rest on far less evidence than others, and there are no error bars, so small gaps are not meaningful."
+    }
+  ]
+}
