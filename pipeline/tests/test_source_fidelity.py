@@ -43,6 +43,29 @@ def test_distinctive_figures_dedups_order_preserving():
     assert sf.distinctive_figures("0.94 then 0.94 then 0.001") == ["0.94", "0.001"]
 
 
+def test_distinctive_figures_keeps_a_dotted_literal_whole():
+    # A log timestamp or version string is one literal; splitting it yields fragments that the
+    # boundary-aware matcher can never find beside their neighbouring dots.
+    assert sf.distinctive_figures("0.02.389.608 I srv n_slots = 4") == ["0.02.389.608"]
+    assert sf.distinctive_figures("not GMP v6.3.0, but v6.1.2") == ["6.3.0", "6.1.2"]
+
+
+def test_dotted_literal_present_verbatim_passes():
+    csm = _csm("0.02.389.608 I srv load_model: n_slots = 4, n_ctx_slot = 32000")
+    fetcher = sf.FakeSourceFetcher(
+        {"https://ex/abs/p": "<code>0.02.389.608 I srv    load_model: n_slots = 4, n_ctx_slot = 32000"}
+    )
+    report = sf.check_source_fidelity(csm, "en", fetcher)
+    assert not report.blocking and not report.warnings
+
+
+def test_dotted_literal_absent_still_counts_as_missing():
+    csm = _csm("upgraded from v6.3.0 to v6.1.2 on 2048 nodes")
+    fetcher = sf.FakeSourceFetcher({"https://ex/abs/p": "upgraded from v6.3 to v6.1 on 2048 nodes"})
+    report = sf.check_source_fidelity(csm, "en", fetcher)
+    assert report.blocking and "6.3.0" in report.blocking[0]
+
+
 # --- _present boundary matching ------------------------------------------------
 
 def test_present_is_boundary_aware():

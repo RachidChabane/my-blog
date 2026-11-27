@@ -46,11 +46,13 @@ from typing import Protocol
 
 from ..contracts.claim_source_map import ClaimSourceMap, ContractError
 
-# A "distinctive" figure: a decimal (14.8, 0.94, 2.3) or a 3+-digit integer (196, 473, 8192).
-# Bare 1-2 digit integers (36, 20, 11) are deliberately SKIPPED: they recur all over any document,
-# so checking them is noisy and false-negative-prone, and a small-integer swap is the least likely
-# fabrication to matter. Decimals and big integers are where the load-bearing statistics live.
-_NUMBER_RE = re.compile(r"\d+(?:\.\d+)?")
+# A "distinctive" figure: a decimal (14.8, 0.94, 2.3), a dotted literal (v6.3.0, a log timestamp
+# 0.02.389.608) or a 3+-digit integer (196, 473, 8192). A dotted literal is extracted WHOLE, the
+# same literal boundary ``_present`` matches on; a fragment of it could never be found beside its
+# neighbouring dots. Bare 1-2 digit integers (36, 20, 11) are deliberately SKIPPED: they recur all
+# over any document, so checking them is noisy and false-negative-prone, and a small-integer swap
+# is the least likely fabrication to matter.
+_NUMBER_RE = re.compile(r"\d+(?:\.\d+)*")
 _THOUSANDS_RE = re.compile(r"(?<=\d),(?=\d)")  # 8,192 -> 8192 before extraction/matching
 
 # BLOCK only when at least this many distinct distinctive-figures from one excerpt are absent from
@@ -73,7 +75,8 @@ def _canon(text: str) -> str:
 
 
 def distinctive_figures(excerpt: str) -> list[str]:
-    """The decimals and 3+-digit integers in ``excerpt``, de-duplicated, order-preserving."""
+    """The decimals, dotted literals and 3+-digit integers in ``excerpt``, de-duplicated,
+    order-preserving."""
     out: list[str] = []
     seen: set[str] = set()
     for tok in _NUMBER_RE.findall(_canon(excerpt)):
