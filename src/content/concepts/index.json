@@ -1885,7 +1885,8 @@
     "articles": [
       "context-budget",
       "ast-code-chunking",
-      "active-context-compression-prune-history"
+      "active-context-compression-prune-history",
+      "bonsai-2-5-27b-llama-server-slot-default-costs-vram-headroom"
     ],
     "addedOn": "10-06-2026"
   },
@@ -3559,7 +3560,8 @@
       "serving-oss-llm-production-cost",
       "active-context-compression-prune-history",
       "prompt-caching-prefix-stability",
-      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache"
+      "reasoning-effort-switches-and-tool-edits-break-the-agent-prefix-cache",
+      "bonsai-2-5-27b-llama-server-slot-default-costs-vram-headroom"
     ],
     "addedOn": "04-05-2026"
   },
@@ -3862,7 +3864,8 @@
       "lossless-decoding-precision-property",
       "strict-tool-decoding-is-a-per-model-serving-decision",
       "serving-stack-before-quantization-coding-agents",
-      "gemini-4-neon-wins-on-speed"
+      "gemini-4-neon-wins-on-speed",
+      "bonsai-2-5-27b-llama-server-slot-default-costs-vram-headroom"
     ],
     "addedOn": "04-05-2026"
   },
@@ -4984,7 +4987,8 @@
       "quantizing-open-models",
       "kimi-k3-ranked-endpoint-not-weights",
       "provable-inference-proves-greedy-integer-replay-not-sampled-traffic",
-      "serving-stack-before-quantization-coding-agents"
+      "serving-stack-before-quantization-coding-agents",
+      "bonsai-2-5-27b-llama-server-slot-default-costs-vram-headroom"
     ],
     "addedOn": "19-05-2026"
   },
@@ -6969,6 +6973,32 @@
       "llm-contribution-policy-premise-decides-the-leak"
     ],
     "addedOn": "08-08-2026"
+  },
+  {
+    "id": "unified-kv-cache",
+    "label": {
+      "en": "Unified KV cache",
+      "fr": "Cache KV unifié"
+    },
+    "definition": {
+      "en": "A KV cache layout in which all the sequences a server decodes in parallel draw from one pool sized by the total context budget, instead of each sequence receiving a fixed, equal share. The number of parallel sequences then caps how many requests run at once without shrinking the context any single request may use.",
+      "fr": "Mode d'allocation du cache KV dans lequel toutes les séquences qu'un serveur décode en parallèle puisent dans un même pool, dimensionné par le budget de contexte total, au lieu que chacune reçoive une part fixe et égale. Le nombre de séquences parallèles plafonne alors le nombre de requêtes simultanées sans réduire le contexte dont une requête peut disposer."
+    },
+    "theme": "infra-tooling",
+    "aliases": [
+      "shared KV cache",
+      "shared KV cache pool",
+      "cache KV partagé"
+    ],
+    "related": [
+      "kv-cache",
+      "context-window",
+      "llm-serving"
+    ],
+    "articles": [
+      "bonsai-2-5-27b-llama-server-slot-default-costs-vram-headroom"
+    ],
+    "addedOn": "27-11-2026"
   },
   {
     "id": "url-provenance-gating",

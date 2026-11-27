@@ -11385,5 +11385,100 @@
     ],
     "published_at": "2026-11-26",
     "embedding": null
+  },
+  {
+    "translation_key": "bonsai-2-5-27b-llama-server-slot-default-costs-vram-headroom",
+    "topic_id": "bonsai-2-5-27b-llama-server-slot-default-costs-vram-headroom",
+    "dedup_key": "llama server automatic four slot unified kv cache default costs ternary bonsai 2 5 27b vram headroom on a 10 gb consumer gpu by a mechanism neither llama cpp docs nor the vendor explain so small gpu deployments should pin the slot count",
+    "title": "Ternary Bonsai 2.5 27B wants one llama-server slot",
+    "slugs": {
+      "fr": "bonsai-2-5-27b-un-seul-slot-llama-server",
+      "en": "bonsai-2-5-27b-one-llama-server-slot"
+    },
+    "sources": [
+      {
+        "source_id": "s1",
+        "label": "Prism ML, Ternary Bonsai 2.5 27B GGUF model card",
+        "url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2.5-27B-GGUF",
+        "retrieved_at": "2026-11-27",
+        "excerpt": "so it is still 1.76 bits per weight and 5.93 GB , against 53.8 GB for the FP16 model."
+      },
+      {
+        "source_id": "s2",
+        "label": "Prism ML, Ternary Bonsai 2.5 27B GGUF model card",
+        "url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2.5-27B-GGUF",
+        "retrieved_at": "2026-11-27",
+        "excerpt": "If you use the Prism llama.cpp server for one request at a time on a GPU with limited VRAM, add -np 1 to your existing llama-server command. This limits the server to one request slot. In automatic mode, the server can start with four slots that share a unified KV cache."
+      },
+      {
+        "source_id": "s3",
+        "label": "Prism ML, Ternary Bonsai 2.5 27B GGUF model card",
+        "url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2.5-27B-GGUF",
+        "retrieved_at": "2026-11-27",
+        "excerpt": "A community report on an RTX 3080 10 GB measured about 9.5 GB of total GPU memory use before adding -np 1 and about 7.8 GB afterward, including desktop usage. Memory use depends on your build, context size, and other settings."
+      },
+      {
+        "source_id": "s4",
+        "label": "Hugging Face discussion \"KV Cache Tip\" on the Bonsai 2.5 GGUF repo",
+        "url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2.5-27B-GGUF/discussions/1",
+        "retrieved_at": "2026-11-27",
+        "excerpt": "I got everything set up on my RTX 3080 10GB (the Prism fork of Llama.cpp), but I noticed the KV cache was using a ton more than it should. ... 0.02.389.608 I srv load_model: initializing, n_slots = 4, n_ctx_slot = 32000, kv_unified = 'true'"
+      },
+      {
+        "source_id": "s5",
+        "label": "Hugging Face discussion \"KV Cache Tip\" on the Bonsai 2.5 GGUF repo",
+        "url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2.5-27B-GGUF/discussions/1",
+        "retrieved_at": "2026-11-27",
+        "excerpt": "In my opinion, the default should be -np 1, or at most 2. 4 seems high considering this is intended for low VRAM devices."
+      },
+      {
+        "source_id": "s6",
+        "label": "Hugging Face discussion \"KV Cache Tip\" on the Bonsai 2.5 GGUF repo",
+        "url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2.5-27B-GGUF/discussions/1",
+        "retrieved_at": "2026-11-27",
+        "excerpt": "it went from about 9.5GB total VRAM (including desktop) to ~7.8GB."
+      },
+      {
+        "source_id": "s7",
+        "label": "Prism ML reply in the \"KV Cache Tip\" discussion",
+        "url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2.5-27B-GGUF/discussions/1",
+        "retrieved_at": "2026-11-27",
+        "excerpt": "We added a Known issues note to the model card recommending -np 1 for single-user servers on GPUs with limited VRAM. The four automatic slots share a unified KV cache. If you have the exact build, launch command, and CUDA buffer allocation lines from both runs, those would help us identify which buffers account for the difference."
+      },
+      {
+        "source_id": "s8",
+        "label": "llama.cpp PR #16736, server: support unified cache across slots",
+        "url": "https://github.com/ggml-org/llama.cpp/pull/16736",
+        "retrieved_at": "2026-11-27",
+        "excerpt": "By default, start the server using 4 slots and unified KV cache",
+        "source_date": "2025-10-23"
+      },
+      {
+        "source_id": "s9",
+        "label": "llama.cpp PR #16736, server: support unified cache across slots",
+        "url": "https://github.com/ggml-org/llama.cpp/pull/16736",
+        "retrieved_at": "2026-11-27",
+        "excerpt": "When using unified KV cache with -kvu , share the entire context -c N among all parallel slots of the server -np N ... The -np N argument is still utilized to control the max number of parallel jobs, but it is no longer used to change the per-slot context",
+        "source_date": "2025-10-23"
+      },
+      {
+        "source_id": "s10",
+        "label": "llama.cpp issue #17989, \"--parallel 1\" initializes 4 slots",
+        "url": "https://github.com/ggml-org/llama.cpp/issues/17989",
+        "retrieved_at": "2026-11-27",
+        "excerpt": "main: setting n_parallel = 4 and kv_unified = true (add -kvu to disable this)",
+        "source_date": "2025-12-13"
+      },
+      {
+        "source_id": "s11",
+        "label": "Prism ML, Ternary Bonsai 2.5 27B announcement",
+        "url": "https://prismml.com/news/bonsai-2-5-27b",
+        "retrieved_at": "2026-11-27",
+        "excerpt": "Ternary Bonsai 2.5 27B runs on NVIDIA and Intel GPUs via llama.cpp and on Apple devices (Mac, iPhone, iPad) via MLX.",
+        "source_date": "2026-11-24"
+      }
+    ],
+    "published_at": "2026-11-27",
+    "embedding": null
   }
 ]
