@@ -350,6 +350,34 @@
     "addedOn": "21-07-2026"
   },
   {
+    "id": "agent-lifecycle-hook",
+    "label": {
+      "en": "Agent lifecycle hook",
+      "fr": "Hook de cycle de vie d'agent"
+    },
+    "definition": {
+      "en": "A command declared in an agent client's configuration that the client runs at fixed points of a session, such as before or after a tool call, when a prompt is submitted or when the agent tries to stop. Depending on the event, its exit status can block the action or only report on it, and what happens when the hook crashes or times out can be configured separately from its exit status.",
+      "fr": "Commande déclarée dans la configuration d'un client d'agent, que le client exécute à des moments fixes de la session : avant ou après un appel d'outil, à la soumission d'un prompt, ou quand l'agent veut s'arrêter. Selon l'événement, son code de sortie peut bloquer l'action ou seulement la signaler, et ce qui se passe quand le hook plante ou dépasse son délai peut se régler à part."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "lifecycle hook",
+      "agent hook",
+      "tool-call hook",
+      "hook d'agent"
+    ],
+    "related": [
+      "coding-agents",
+      "out-of-band-enforcement",
+      "fail-closed",
+      "agent-instruction-file"
+    ],
+    "articles": [
+      "claude-code-hooks"
+    ],
+    "addedOn": "28-11-2026"
+  },
+  {
     "id": "agent-memory",
     "label": {
       "fr": "Mémoire d'agent",
@@ -1571,7 +1599,8 @@
       "agent-coding-gains-stop-at-the-review-queue",
       "agent-write-volume-breaks-git-design-assumptions",
       "low-resource-language-scores-do-not-transfer-to-an-unseen-language",
-      "system-prompt-persona-shifts-generated-code-security"
+      "system-prompt-persona-shifts-generated-code-security",
+      "claude-code-hooks"
     ],
     "addedOn": "30-05-2026"
   },
@@ -1656,6 +1685,32 @@
       "read-only-egress-is-a-write-channel"
     ],
     "addedOn": "02-08-2026"
+  },
+  {
+    "id": "completion-gate",
+    "label": {
+      "en": "Completion gate",
+      "fr": "Garde de fin de tour"
+    },
+    "definition": {
+      "en": "A check that runs when an agent tries to end its turn and refuses the stop until a condition holds, such as a passing test suite, sending the agent back to work. Unless the check detects that it has already forced a continuation, a condition that can never hold can keep the agent looping.",
+      "fr": "Contrôle exécuté quand un agent veut terminer son tour, qui refuse l'arrêt tant qu'une condition n'est pas remplie, par exemple une suite de tests au vert, et renvoie l'agent au travail. Si le contrôle ne détecte pas qu'il a déjà forcé une reprise, une condition impossible à remplir peut faire tourner l'agent en boucle."
+    },
+    "theme": "agentic-ai",
+    "aliases": [
+      "stop gate",
+      "turn-end gate",
+      "stop-blocking hook",
+      "contrôle de fin de tour"
+    ],
+    "related": [
+      "agent-lifecycle-hook",
+      "deterministic-workflows"
+    ],
+    "articles": [
+      "claude-code-hooks"
+    ],
+    "addedOn": "28-11-2026"
   },
   {
     "id": "composite-benchmark-index",
@@ -2642,7 +2697,8 @@
     ],
     "articles": [
       "live-web-agent-evals-run-side-effects-on-third-party-sites",
-      "agent-fetch-tools-should-refuse-hosts-nobody-named"
+      "agent-fetch-tools-should-refuse-hosts-nobody-named",
+      "claude-code-hooks"
     ],
     "addedOn": "11-10-2026"
   },
@@ -4503,7 +4559,8 @@
       "verification-frontiere-action-2026-08",
       "the-check-binds-the-action-not-the-decision",
       "impossible-goals-turn-assistant-inbox-into-leverage",
-      "agent-fetch-tools-should-refuse-hosts-nobody-named"
+      "agent-fetch-tools-should-refuse-hosts-nobody-named",
+      "claude-code-hooks"
     ],
     "addedOn": "19-07-2026"
   },
@@ -6382,7 +6439,8 @@
       "agent-scaffold"
     ],
     "articles": [
-      "claude-code-action-supply-chain-auth"
+      "claude-code-action-supply-chain-auth",
+      "claude-code-hooks"
     ],
     "addedOn": "11-07-2026"
   },

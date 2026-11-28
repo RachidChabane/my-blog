@@ -1,0 +1,103 @@
+{
+  "slug": "claude-code-hooks-fail-open",
+  "lang": "en",
+  "translationKey": "claude-code-hooks",
+  "citations": [
+    {
+      "sourceId": "s1",
+      "label": "Claude Code docs, Automate workflows with hooks",
+      "url": "https://code.claude.com/docs/en/hooks-guide",
+      "excerpt": "Hooks are user-defined shell commands. Claude Code runs them at specific points in its lifecycle, which gives you deterministic control: certain actions always happen rather than relying on the LLM to choose to run them."
+    },
+    {
+      "sourceId": "s2",
+      "label": "Claude Code docs, Hooks reference",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "excerpt": "PreToolUse   Before a tool call executes. Can block it"
+    },
+    {
+      "sourceId": "s3",
+      "label": "Claude Code docs, Hooks reference",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "excerpt": "Blocking error. Claude Code still reads the fields, but a  PreToolUse  call stays blocked even if you return  &quot;allow&quot;  or  continue: false ."
+    },
+    {
+      "sourceId": "s4",
+      "label": "Claude Code docs, Hooks reference",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "excerpt": "Command hooks execute shell commands with your full user permissions. They can modify, delete, or access any files your user account can access. Review and test all hook commands before adding them to your configuration."
+    },
+    {
+      "sourceId": "s5",
+      "label": "Blake Crosley, Claude Code Hooks Tutorial: 5 Production Hooks From Scratch",
+      "url": "https://blakecrosley.com/blog/claude-code-hooks-tutorial",
+      "excerpt": "PreToolUse hooks on Bash inspect commands and block destructive patterns with exit code 2. These hooks must be fast (under 500ms) because they gate every matched tool call, and they must use exit 2 (not exit 1) because exit 1 only warns without blocking."
+    },
+    {
+      "sourceId": "s6",
+      "label": "Blake Crosley, Claude Code Hooks Explained",
+      "url": "https://blakecrosley.com/blog/claude-code-hooks-explained",
+      "excerpt": "Configure them in  settings.json  under event names like  PreToolUse  and  Stop , filtered by matchers. Use hooks for anything that must always happen; use CLAUDE.md for anything the model should merely know."
+    },
+    {
+      "sourceId": "s7",
+      "label": "Claude Code docs, Hooks reference",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "excerpt": "UserPromptSubmit   Yes  Blocks the prompt."
+    },
+    {
+      "sourceId": "s8",
+      "label": "Claude Code docs, Hooks reference",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "excerpt": "Stop   Yes  Prevents Claude from stopping, continues the conversation"
+    },
+    {
+      "sourceId": "s9",
+      "label": "Claude Code docs, Hooks reference",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "excerpt": "PostToolUse   No  Shows stderr to Claude; the tool already ran"
+    },
+    {
+      "sourceId": "s10",
+      "label": "Claude Code docs, Hooks reference",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "excerpt": "The run is a  non-blocking error , so your hook didn’t stop the action."
+    },
+    {
+      "sourceId": "s11",
+      "label": "Blake Crosley, Claude Code Hooks Explained",
+      "url": "https://blakecrosley.com/blog/claude-code-hooks-explained",
+      "excerpt": "Nearly every production setup is built from five:  PreToolUse ,  PostToolUse ,  UserPromptSubmit ,  SessionStart , and  Stop ."
+    },
+    {
+      "sourceId": "s12",
+      "label": "Blake Crosley, Claude Code Hooks Explained",
+      "url": "https://blakecrosley.com/blog/claude-code-hooks-explained",
+      "excerpt": "Claude Code caps a Stop hook at 8 consecutive blocks by default (raiseable with  CLAUDE_CODE_STOP_HOOK_BLOCK_CAP ), and a gate that never checks whether it already triggered a continuation will burn straight through them."
+    },
+    {
+      "sourceId": "s13",
+      "label": "Wiz Research, keyv and cacheable npm supply chain attack",
+      "url": "https://www.wiz.io/blog/keyv-and-cacheable-npm-supply-chain-attack",
+      "excerpt": "Persistence is attempted via Claude Code hooks and VS Code  tasks.json ."
+    },
+    {
+      "sourceId": "s14",
+      "label": "Claude Code docs, Hooks reference",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "excerpt": "On most events, when a hook fails or times out, Claude Code still carries out the action. A policy hook with a wrong path or a crashing script then lets everything through. To block the action instead, set  &quot;onFailure&quot;: &quot;block&quot;  on a  command ,  http , or  mcp_tool  hook. Requires Claude Code v2.1.295 or later."
+    },
+    {
+      "sourceId": "s15",
+      "label": "Claude Code docs, Hooks reference",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "excerpt": "Exit code 1 without valid JSON output is a non-blocking error unless the hook is one  whose failure blocks the action , even though 1 is the conventional Unix failure code. If your hook is meant to enforce a policy, use  exit 2 ."
+    },
+    {
+      "sourceId": "s16",
+      "label": "Claude Code docs, Hooks reference",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "excerpt": "The  stop_hook_active  field is  true  when Claude Code is already continuing as a result of a stop hook. Check this value or process the transcript to avoid blocking on a condition that will never resolve. \n Claude Code applies an 8-consecutive-continuation cap: after stop hooks have continued the turn eight times in a row, Claude Code overrides the next block and ends the turn. The count of consecutive continuations resets each time Claude calls a tool. To raise the cap, set   CLAUDE_CODE_STOP_HOOK_BLOCK_CAP  ."
+    }
+  ]
+}
